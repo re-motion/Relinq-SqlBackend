@@ -331,6 +331,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitUnaryExpression_UnaryNot_NullableBool ()
+    {
+      var unaryNotExpression = Expression.Not (Expression.Equal (Expression.Constant (4, typeof (int?)), Expression.Constant (5, typeof (int?)), true, null));
+      Assert.That (unaryNotExpression.IsLiftedToNull, Is.True);
+      Assert.That (unaryNotExpression.Type, Is.SameAs (typeof (bool?)));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (unaryNotExpression, _commandBuilder, _stageMock);
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("NOT (@1 = @2)"));
+    }
+
+    [Test]
     public void VisitUnaryExpression_UnaryNot_WithBitwiseNot ()
     {
       var unaryNotExpression = Expression.Not (Expression.Constant (1));
@@ -399,15 +412,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VistSqlCaseExpression ()
+    public void VisitConditionalExpression ()
     {
       var caseExpression = Expression.Condition(
           Expression.Equal (Expression.Constant (2), Expression.Constant (2)),
           Expression.Constant (0),
           Expression.Constant (1));
 
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          caseExpression, _commandBuilder, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (caseExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN (@1 = @2) THEN @3 ELSE @4 END"));
     }
@@ -676,14 +688,36 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitConvertedBooleanExpression ()
+    public void VisitSqlConvertedBooleanExpression ()
     {
-      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
+      var expression = new SqlConvertedBooleanExpression (Expression.Constant (1));
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void VisitSqlPredicateAsValueExpression_NotNullable ()
+    {
+      var expression = new SqlPredicateAsValueExpression (Expression.Equal (Expression.Constant (2), Expression.Constant (2)));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
+    }
+
+    [Test]
+    public void VisitSqlPredicateAsValueExpression_Nullable ()
+    {
+      var expression =
+          new SqlPredicateAsValueExpression (
+              Expression.Equal (Expression.Constant (2, typeof (int?)), Expression.Constant (2, typeof (int?)), true, null));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 WHEN NOT (@3 = @4) THEN 0 ELSE NULL END"));
     }
   }
 }

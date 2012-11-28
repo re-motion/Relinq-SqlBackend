@@ -76,11 +76,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             e => ProcessNames (mappingResolutionContext, new NamedExpression (outerExpression.Name, e)));
         return mappingResolutionContext.UpdateGroupingSelectAndAddMapping (groupingSelectExpression, newKeyExpression, newElementExpression, newAggregationExpressions);
       }
-      else if (outerExpression.Expression is ConvertedBooleanExpression)
+      else if (outerExpression.Expression is SqlConvertedBooleanExpression)
       {
-        var convertedBooleanExpression = (ConvertedBooleanExpression) outerExpression.Expression;
+        var convertedBooleanExpression = (SqlConvertedBooleanExpression) outerExpression.Expression;
         var innerNamedExpression = new NamedExpression (outerExpression.Name, convertedBooleanExpression.Expression);
-        return new ConvertedBooleanExpression (ProcessNames (mappingResolutionContext, innerNamedExpression));
+        return new SqlConvertedBooleanExpression (ProcessNames (mappingResolutionContext, innerNamedExpression));
       }
       else if (outerExpression.Expression.NodeType == ExpressionType.Convert || outerExpression.Expression.NodeType == ExpressionType.ConvertChecked)
       {

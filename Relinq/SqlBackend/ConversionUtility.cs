@@ -38,7 +38,7 @@ namespace Remotion.Linq.SqlBackend
       ArgumentUtility.CheckNotNull ("left", left);
       ArgumentUtility.CheckNotNull ("right", right);
 
-      if (left.Type != right.Type)
+      if (NeedsConversion (expressionType, left, right))
       {
         if (left.Type.IsAssignableFrom (right.Type))
           right = Expression.Convert (right, left.Type);
@@ -52,6 +52,11 @@ namespace Remotion.Linq.SqlBackend
       }
 
       return Expression.MakeBinary (expressionType, left, right, isLiftedToNull, methodInfo);
+    }
+
+    private static bool NeedsConversion (ExpressionType expressionType, Expression left, Expression right)
+    {
+      return expressionType != ExpressionType.Coalesce && left.Type != right.Type;
     }
   }
 }

@@ -25,6 +25,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   {
     private readonly object _value;
 
+    // TODO 3335: Refactor to use strongly typed ctors, allow optional specification of type.
     public SqlLiteralExpression (object value)
         : base (ArgumentUtility.CheckNotNull ("value", value).GetType())
     {

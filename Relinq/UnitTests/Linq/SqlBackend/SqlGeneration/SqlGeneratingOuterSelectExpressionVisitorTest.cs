@@ -173,25 +173,41 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitConvertedBooleanExpression_ProjectionExpressonIsNull ()
+    public void VisitSqlConvertedBooleanExpression_ProjectionExpressonIsNull ()
     {
-      var expression = new ConvertedBooleanExpression (Expression.Constant (1));
-      _visitor.VisitConvertedBooleanExpression (expression);
+      var expression = new SqlConvertedBooleanExpression (Expression.Constant (1));
+      _visitor.VisitSqlConvertedBooleanExpression (expression);
 
       Assert.That (_commandBuilder.GetInMemoryProjectionBody (), Is.Null);
     }
 
     [Test]
-    public void VisitConvertedBooleanExpression_ProjectionExpressonIsNotNull ()
+    public void VisitSqlConvertedBooleanExpression_ProjectionExpressonIsNotNull ()
     {
-      var expression = new ConvertedBooleanExpression (_namedExpression);
+      var expression = new SqlConvertedBooleanExpression (_namedExpression);
 
-      _visitor.VisitConvertedBooleanExpression (expression);
+      _visitor.VisitSqlConvertedBooleanExpression (expression);
 
       var expectedProjection = Expression.Call (
           typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }),
           GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_ProjectionExpressonIsNotNull_NullableBool ()
+    {
+      var namedExpression = new NamedExpression ("test", Expression.Constant (0, typeof (int?)));
+      var expression = new SqlConvertedBooleanExpression (namedExpression);
+
+      _visitor.VisitSqlConvertedBooleanExpression (expression);
+
+      var expectedProjection = Expression.Call (
+          typeof (SqlGeneratingOuterSelectExpressionVisitor),
+          "ConvertNullableIntToNullableBool",
+          Type.EmptyTypes,
+          GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int?)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -253,6 +269,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
       _visitor.VisitSqlGroupingSelectExpression (expression);
+    }
+
+    [Test]
+    public void ConvertNullableIntToNullableBool ()
+    {
+      Assert.That (SqlGeneratingOuterSelectExpressionVisitor.ConvertNullableIntToNullableBool (null), Is.EqualTo (null));
+      Assert.That (SqlGeneratingOuterSelectExpressionVisitor.ConvertNullableIntToNullableBool (0), Is.EqualTo (false));
+      Assert.That (SqlGeneratingOuterSelectExpressionVisitor.ConvertNullableIntToNullableBool (1), Is.EqualTo (true));
     }
 
     private MethodCallExpression GetExpectedProjectionForEntityExpression (ParameterExpression expectedRowParameter, int columnPositionStart)

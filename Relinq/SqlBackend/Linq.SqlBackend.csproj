@@ -71,6 +71,7 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="BooleanUtility.cs" />
     <Compile Include="ConversionUtility.cs" />
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\GroupAggregateSimplifier.cs" />
@@ -148,9 +149,10 @@
     <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactory.cs" />
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
-    <Compile Include="SqlStatementModel\ConvertedBooleanExpression.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ISqlPredicateAsValueExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlConvertedBooleanExpression.cs" />
     <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />
-    <Compile Include="SqlStatementModel\IConvertedBooleanExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ISqlConvertedBooleanExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\IJoinConditionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\INamedExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\ISqlGroupingSelectExpressionVisitor.cs" />
@@ -201,6 +203,7 @@
     <Compile Include="SqlStatementModel\Resolved\SqlEntityReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedJoinedGroupingTableInfo.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlPredicateAsValueExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlConvertExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlExistsExpression.cs" />

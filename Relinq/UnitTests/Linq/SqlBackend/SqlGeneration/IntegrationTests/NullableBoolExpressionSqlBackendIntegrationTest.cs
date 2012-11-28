@@ -169,7 +169,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    public void NullableBool_Conjunctions_Lifted ()
+    public void NullableBool_AndAlso_Lifted ()
     {
       var kitchenParameter = Expression.Parameter (typeof (Kitchen), "k");
       var conjunction = Expression.AndAlso (
@@ -186,6 +186,85 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
          Kitchens.Where (predicate).Select (k => k.ID),
          "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1))");
+    }
+
+    [Test]
+    public void NullableBool_And_Lifted ()
+    {
+      var kitchenParameter = Expression.Parameter (typeof (Kitchen), "k");
+      var conjunction = Expression.And (
+          Expression.Property (kitchenParameter, "PassedLastInspection"), Expression.Property (kitchenParameter, "PassedLastInspection"));
+      Assert.That (conjunction.IsLiftedToNull, Is.True);
+      var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
+      CheckQuery (
+         Kitchens.Select (selector),
+         "SELECT CASE WHEN (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 1 WHEN NOT (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+
+      var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
+      CheckQuery (
+         Kitchens.Where (predicate).Select (k => k.ID),
+         "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1))");
+    }
+
+    [Test]
+    public void NullableBool_OrElse_Lifted ()
+    {
+      var kitchenParameter = Expression.Parameter (typeof (Kitchen), "k");
+      var conjunction = Expression.OrElse (
+          Expression.Property (kitchenParameter, "PassedLastInspection"), Expression.Property (kitchenParameter, "PassedLastInspection"));
+      Assert.That (conjunction.IsLiftedToNull, Is.True);
+      var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
+      CheckQuery (
+         Kitchens.Select (selector),
+         "SELECT CASE WHEN (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 1 WHEN NOT (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+
+      var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
+      CheckQuery (
+         Kitchens.Where (predicate).Select (k => k.ID),
+         "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1))");
+    }
+
+    [Test]
+    public void NullableBool_Or_Lifted ()
+    {
+      var kitchenParameter = Expression.Parameter (typeof (Kitchen), "k");
+      var conjunction = Expression.Or (
+          Expression.Property (kitchenParameter, "PassedLastInspection"), Expression.Property (kitchenParameter, "PassedLastInspection"));
+      Assert.That (conjunction.IsLiftedToNull, Is.True);
+      var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
+      CheckQuery (
+         Kitchens.Select (selector),
+         "SELECT CASE WHEN (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 1 WHEN NOT (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+
+      var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
+      CheckQuery (
+         Kitchens.Where (predicate).Select (k => k.ID),
+         "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1))");
+    }
+
+    [Test]
+    public void NullableBool_Not_Lifted ()
+    {
+      var kitchenParameter = Expression.Parameter (typeof (Kitchen), "k");
+      var conjunction = Expression.Not (Expression.Property (kitchenParameter, "PassedLastInspection"));
+      Assert.That (conjunction.IsLiftedToNull, Is.True);
+      var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
+      CheckQuery (
+         Kitchens.Select (selector),
+         "SELECT CASE WHEN (NOT ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 1 WHEN NOT (NOT ([t0].[PassedLastInspection] = 1)) "
+          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+
+      var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
+      CheckQuery (
+         Kitchens.Where (predicate).Select (k => k.ID),
+         "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (NOT ([t0].[PassedLastInspection] = 1))");
     }
 
     [Test]

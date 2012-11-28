@@ -172,11 +172,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ProcessNames_ConvertedBooleanExpression ()
     {
-      var namedExpression = new NamedExpression ("outer", new ConvertedBooleanExpression (new NamedExpression ("inner", Expression.Constant (1))));
+      var namedExpression = new NamedExpression ("outer", new SqlConvertedBooleanExpression (new NamedExpression ("inner", Expression.Constant (1))));
 
       var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
 
-      var expectedResult = new ConvertedBooleanExpression (new NamedExpression ("outer_inner", Expression.Constant (1)));
+      var expectedResult = new SqlConvertedBooleanExpression (new NamedExpression ("outer_inner", Expression.Constant (1)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

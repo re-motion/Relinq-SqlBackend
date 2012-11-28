@@ -47,7 +47,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         ISqlSubStatementVisitor,
         INamedExpressionVisitor,
         ISqlGroupingSelectExpressionVisitor,
-        IConvertedBooleanExpressionVisitor
+        ISqlConvertedBooleanExpressionVisitor,
+        ISqlPredicateAsValueExpressionVisitor
   {
     public static Expression ApplySqlExpressionContext (
         Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
@@ -77,7 +78,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public override Expression VisitExpression (Expression expression)
     {
       if (expression == null)
-        return expression;
+        return null;
 
       switch (_currentContext)
       {
@@ -91,10 +92,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
     }
 
-    public Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression)
+    public Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
     {
-      var newInner = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage, _context);
+      ArgumentUtility.CheckNotNull ("expression", expression);
 
+      var newInner = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage, _context);
       Debug.Assert (
           newInner == expression.Expression,
           "There is currently no visit method that would change an int-typed expression with ValueRequired.");
@@ -106,28 +108,46 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
+    public Expression VisitSqlPredicateAsValueExpression (SqlPredicateAsValueExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newPredicate = ApplySqlExpressionContext (expression.Predicate, SqlExpressionContext.PredicateRequired, _stage, _context);
+      if (newPredicate != expression.Predicate)
+        return new SqlPredicateAsValueExpression (newPredicate);
+
+      return expression;
+    }
+
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
       // Always convert boolean constants to int constants because in the database, there are no boolean constants
-      if (expression.Type == typeof (bool))
+      
+      if (BooleanUtility.IsBooleanType (expression.Type))
       {
-        Expression convertedExpression = expression.Value.Equals (true) ? Expression.Constant (1) : Expression.Constant (0);
-        return new ConvertedBooleanExpression (convertedExpression);
+        var intType = BooleanUtility.GetMatchingIntType (expression.Type);
+        var convertedExpression = expression.Value == null
+                                      ? Expression.Constant (null, intType)
+                                      : expression.Value.Equals (true)
+                                            ? Expression.Constant (1, intType)
+                                            : Expression.Constant (0, intType);
+        return new SqlConvertedBooleanExpression (convertedExpression);
       }
-      else
-        return expression; // rely on VisitExpression to apply correct semantics
+      
+      return expression; // rely on VisitExpression to apply correct semantics
     }
 
     public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
     {
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
-      if (expression.Type == typeof (bool))
+      if (BooleanUtility.IsBooleanType (expression.Type))
       {
-        Expression convertedExpression = expression.Update (typeof (int), expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
-        return new ConvertedBooleanExpression (convertedExpression);
+        var intType = BooleanUtility.GetMatchingIntType (expression.Type);
+        Expression convertedExpression = expression.Update (intType, expression.OwningTableAlias, expression.ColumnName, expression.IsPrimaryKey);
+        return new SqlConvertedBooleanExpression (convertedExpression);
       }
-      else
-        return expression; // rely on VisitExpression to apply correct semantics
+      
+      return expression; // rely on VisitExpression to apply correct semantics
     }
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -154,15 +174,38 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Type != typeof (bool))
+      if (!BooleanUtility.IsBooleanType (expression.Type))
         return base.VisitBinaryExpression (expression);
 
       var childContext = GetChildSemanticsForBinaryBoolExpression (expression.NodeType);
       var left = ApplySqlExpressionContext (expression.Left, childContext, _stage, _context);
       var right = ApplySqlExpressionContext (expression.Right, childContext, _stage, _context);
 
+      if (expression.NodeType == ExpressionType.Coalesce)
+      {
+        // In predicate context, we can ignore coalesces towards false, treat like a conversion to bool instead. (SQL treats NULL values in a falsey
+        // way in predicate contexts.)
+        if (_currentContext == SqlExpressionContext.PredicateRequired
+            && expression.Right is ConstantExpression
+            && Equals (((ConstantExpression) expression.Right).Value, false))
+        {
+          return VisitExpression (Expression.Convert (expression.Left, expression.Type));
+        }
+
+        // We'll pull out the bool conversion marker from the operands of the Coalesce expression and instead put it around the whole expression.
+        // That way, HandleValueSemantics will not try to convert us back to a value; this avoids double CASE WHENs.
+        // We know that left and right must be ConvertedBooleanExpressions because Coalesce has single value semantics for its operands, and boolean
+        // Coalesces must have booleans operands. Applying value semantics to boolean operands results in ConvertedBooleanExpression values.
+        
+        Debug.Assert (childContext == SqlExpressionContext.SingleValueRequired);
+        Debug.Assert (left is SqlConvertedBooleanExpression);
+        Debug.Assert (right is SqlConvertedBooleanExpression);
+        var newCoalesceExpression = Expression.Coalesce (((SqlConvertedBooleanExpression) left).Expression, ((SqlConvertedBooleanExpression) right).Expression);
+        return new SqlConvertedBooleanExpression (newCoalesceExpression);
+      }
+
       if (left != expression.Left || right != expression.Right)
-        expression = ConversionUtility.MakeBinaryWithOperandConversion (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
+        return ConversionUtility.MakeBinaryWithOperandConversion (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
 
       return expression;
     }
@@ -176,12 +219,25 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       if (newOperand != expression.Operand)
       {
-        // If the operand changes its type due to context application, we must also strip any Convert nodes since they are most likely no longer 
-        // applicable after the context switch.
-        if (expression.NodeType == ExpressionType.Convert && expression.Operand.Type != newOperand.Type)
-          return newOperand;
-        else
-          return Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
+        if (expression.NodeType == ExpressionType.Convert)
+        {
+          // If the operand changes its type due to context application, we must also strip any Convert nodes since they are most likely no longer 
+          // applicable after the context switch.
+          if (expression.Operand.Type != newOperand.Type)
+            return newOperand;
+
+          // If this is a convert of a SqlConvertedBooleanExpression to bool? or bool, move the Convert into the SqlConvertedBooleanExpression
+          var convertedBooleanExpressionOperand = newOperand as SqlConvertedBooleanExpression;
+          if (convertedBooleanExpressionOperand != null)
+          {
+            if (expression.Type == typeof (bool))
+              return new SqlConvertedBooleanExpression (Expression.Convert (convertedBooleanExpressionOperand.Expression, typeof (int)));
+            else if (expression.Type == typeof (bool?))
+              return new SqlConvertedBooleanExpression (Expression.Convert (convertedBooleanExpressionOperand.Expression, typeof (int?)));
+          }
+        }
+
+        return Expression.MakeUnary (expression.NodeType, newOperand, expression.Type, expression.Method);
       }
 
       return expression;
@@ -222,7 +278,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newSqlStatement = _stage.ApplySelectionContext (expression.SqlStatement, _currentContext, _context);
-      if (expression.SqlStatement != newSqlStatement)
+      if (!ReferenceEquals (expression.SqlStatement, newSqlStatement))
         return new SqlSubStatementExpression (newSqlStatement);
       return expression;
     }
@@ -273,18 +329,21 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var expressions = expression.Arguments.Select (expr => ApplySqlExpressionContext (expr, SqlExpressionContext.ValueRequired, _stage, _context));
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
       if (expression.Members != null && expression.Members.Count > 0)
         return Expression.New (expression.Constructor, expressions, expression.Members);
       else
         return Expression.New (expression.Constructor, expressions);
+// ReSharper restore ConditionIsAlwaysTrueOrFalse
     }
 
     public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
     {
       var newKeyExpression = ApplySqlExpressionContext (expression.KeyExpression, SqlExpressionContext.ValueRequired, _stage, _context);
       var newElementExpression = ApplySqlExpressionContext (expression.ElementExpression, SqlExpressionContext.ValueRequired, _stage, _context);
-      var newAggregationExpressions = expression.AggregationExpressions.Select (
-          e => ApplySqlExpressionContext (e, SqlExpressionContext.ValueRequired, _stage, _context));
+      var newAggregationExpressions = expression.AggregationExpressions
+          .Select (e => ApplySqlExpressionContext (e, SqlExpressionContext.ValueRequired, _stage, _context))
+          .ToArray();
 
       if (newKeyExpression != expression.KeyExpression
           || newElementExpression != expression.ElementExpression
@@ -366,7 +425,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         case ExpressionType.Convert:
           return _currentContext;
         case ExpressionType.Not:
-          if (expression.Type == typeof (bool))
+          if (BooleanUtility.IsBooleanType (expression.Type))
             return SqlExpressionContext.PredicateRequired;
           else
             return SqlExpressionContext.SingleValueRequired;
@@ -379,17 +438,17 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       switch (expressionType)
       {
-        case ExpressionType.NotEqual:
-        case ExpressionType.Equal:
-          return SqlExpressionContext.SingleValueRequired;
-
         case ExpressionType.AndAlso:
         case ExpressionType.OrElse:
         case ExpressionType.And:
         case ExpressionType.Or:
         case ExpressionType.ExclusiveOr:
           return SqlExpressionContext.PredicateRequired;
+
         default:
+          // case ExpressionType.NotEqual:
+          // case ExpressionType.Equal:
+          // case ExpressionType.Coalesce:
           return SqlExpressionContext.SingleValueRequired;
       }
     }
@@ -397,24 +456,34 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     private Expression HandleValueSemantics (Expression expression)
     {
       var newExpression = base.VisitExpression (expression);
-      if (newExpression.Type == typeof (bool) && !(newExpression is ConvertedBooleanExpression))
+      if (newExpression is SqlConvertedBooleanExpression)
+        return newExpression;
+
+      if (BooleanUtility.IsBooleanType (newExpression.Type))
       {
-        var convertedExpression = Expression.Condition (newExpression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
-        return new ConvertedBooleanExpression (convertedExpression);
+        var convertedExpression = new SqlPredicateAsValueExpression (newExpression);
+        return new SqlConvertedBooleanExpression (convertedExpression);
       }
       else
+      {
         return newExpression;
+      }
     }
 
     private Expression HandlePredicateSemantics (Expression expression)
     {
       var newExpression = base.VisitExpression (expression);
 
-      var convertedBooleanExpression = newExpression as ConvertedBooleanExpression;
+      var convertedBooleanExpression = newExpression as SqlConvertedBooleanExpression;
       if (convertedBooleanExpression != null)
-        return Expression.Equal (convertedBooleanExpression.Expression, new SqlLiteralExpression (1));
+      {
+        if (convertedBooleanExpression.Expression.Type == typeof (int))
+          return Expression.Equal (convertedBooleanExpression.Expression, new SqlLiteralExpression (1));
+        else
+          return Expression.Equal (convertedBooleanExpression.Expression, Expression.Convert (new SqlLiteralExpression (1), typeof (int?)), true, null);
+      }
 
-      if (newExpression.Type != typeof (bool))
+      if (!BooleanUtility.IsBooleanType (newExpression.Type))
       {
         var message = string.Format (
             "Cannot convert an expression of type '{0}' to a boolean expression. Expression: '{1}'", 

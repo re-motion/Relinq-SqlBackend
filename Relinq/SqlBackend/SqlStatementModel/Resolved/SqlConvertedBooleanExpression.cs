@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
@@ -21,23 +22,34 @@ using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// Holds an <see cref="Expression"/> that originally had <see cref="bool"/> type but was converted to <see cref="int"/> because SQL doesn't know
+  /// Holds an <see cref="Expression"/> that originally had <see cref="bool"/> type, but was converted to <see cref="int"/> because SQL doesn't know
   /// a boolean data type.
   /// </summary>
-  public class ConvertedBooleanExpression : ExtensionExpression
+  // TODO 3335: Maybe use simple ConvertExpression instead?
+  public class SqlConvertedBooleanExpression : ExtensionExpression
   {
-    private readonly Expression _expression;
-
-    public ConvertedBooleanExpression (Expression expression)
-        : base (typeof (bool))
+    private static Type GetMatchingBoolType (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      if (expression.Type != typeof (int))
-        throw new ArgumentException ("The inner expression must be an expression of type Int32.", "expression");
+      try
+      {
+        return BooleanUtility.GetMatchingBoolType (ArgumentUtility.CheckNotNull ("expression", expression).Type);
+      }
+      catch (ArgumentException ex)
+      {
+        throw new ArgumentException ("The inner expression must be an expression of type Int32 or Nullable<Int32>.", "expression", ex);
+      }
+    }
 
+    private readonly Expression _expression;
+
+    public SqlConvertedBooleanExpression (Expression expression)
+      : base (GetMatchingBoolType (expression))
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
       _expression = expression;
     }
 
@@ -50,16 +62,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       var newExpression = visitor.VisitExpression (_expression);
       if (newExpression != _expression)
-        return new ConvertedBooleanExpression (newExpression);
+        return new SqlConvertedBooleanExpression (newExpression);
 
       return this;
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as IConvertedBooleanExpressionVisitor;
+      var specificVisitor = visitor as ISqlConvertedBooleanExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitConvertedBooleanExpression (this);
+        return specificVisitor.VisitSqlConvertedBooleanExpression (this);
       else
         return base.Accept (visitor);
     }

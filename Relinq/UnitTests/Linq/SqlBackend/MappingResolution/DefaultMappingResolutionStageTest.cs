@@ -108,7 +108,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveWhereExpression ()
     {
       var expression = Expression.Constant (true);
-      var fakeResult = new ConvertedBooleanExpression (Expression.Constant (0));
+      var fakeResult = new SqlConvertedBooleanExpression (Expression.Constant (0));
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
@@ -467,9 +467,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _stage.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _mappingResolutionContext);
 
       Assert.That (result, Is.Not.SameAs (tableInfo));
-      Assert.That (((ResolvedSubStatementTableInfo) result).SqlStatement.SelectProjection, Is.TypeOf (typeof (ConvertedBooleanExpression)));
+      Assert.That (((ResolvedSubStatementTableInfo) result).SqlStatement.SelectProjection, Is.TypeOf (typeof (SqlConvertedBooleanExpression)));
       Assert.That (
-          ((ConstantExpression) ((ConvertedBooleanExpression) ((ResolvedSubStatementTableInfo) result).SqlStatement.SelectProjection).Expression).
+          ((ConstantExpression) ((SqlConvertedBooleanExpression) ((ResolvedSubStatementTableInfo) result).SqlStatement.SelectProjection).Expression).
               Value,
           Is.EqualTo (1));
     }
@@ -490,10 +490,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.Not.SameAs (joinInfo));
       Assert.That (
           ((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) result).ForeignTableInfo).SqlStatement.SelectProjection,
-          Is.TypeOf (typeof (ConvertedBooleanExpression)));
+          Is.TypeOf (typeof (SqlConvertedBooleanExpression)));
       Assert.That (
           ((ConstantExpression)
-           ((ConvertedBooleanExpression) ((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) result).ForeignTableInfo).SqlStatement.SelectProjection)
+           ((SqlConvertedBooleanExpression) ((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) result).ForeignTableInfo).SqlStatement.SelectProjection)
                .Expression).Value,
           Is.EqualTo (1));
     }

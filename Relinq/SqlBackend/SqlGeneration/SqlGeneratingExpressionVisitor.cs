@@ -42,7 +42,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
-        IConvertedBooleanExpressionVisitor
+        ISqlConvertedBooleanExpressionVisitor,
+        ISqlPredicateAsValueExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -271,7 +272,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       switch (expression.NodeType)
       {
         case ExpressionType.Not:
-          if (expression.Operand.Type == typeof (bool))
+          if (BooleanUtility.IsBooleanType (expression.Operand.Type))
             _commandBuilder.Append ("NOT ");
           else
             _commandBuilder.Append ("~");
@@ -384,12 +385,40 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression)
+    public virtual Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.Expression);
       return expression;
+    }
+
+    public virtual Expression VisitSqlPredicateAsValueExpression (SqlPredicateAsValueExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var trueValue = new SqlLiteralExpression (1);
+      var falseValue = new SqlLiteralExpression (0);
+
+      // For boolean predicates, generate the same SQL as for Expression.Condition. For nullable boolean predicates, generate SQL with a NULL case.
+
+      if (expression.Predicate.Type == typeof (bool?))
+      {
+        _commandBuilder.Append ("CASE WHEN ");
+        VisitExpression (expression.Predicate);
+        _commandBuilder.Append (" THEN ");
+        VisitExpression (trueValue);
+        _commandBuilder.Append (" WHEN ");
+        VisitExpression (Expression.Not (expression.Predicate));
+        _commandBuilder.Append (" THEN ");
+        VisitExpression (falseValue);
+        _commandBuilder.Append (" ELSE ");
+        VisitExpression (Expression.Constant (null));
+        _commandBuilder.Append (" END");
+        return expression;
+      }
+
+      return VisitExpression (Expression.Condition (expression.Predicate, trueValue, falseValue));
     }
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)

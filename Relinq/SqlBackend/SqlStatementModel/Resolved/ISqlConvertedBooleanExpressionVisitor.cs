@@ -14,16 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
 
-namespace Remotion.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// Defines an interface for <see cref="ExpressionTreeVisitor"/> subclasses that can handle <see cref="ConvertedBooleanExpression"/> instances.
+  /// Defines an interface for <see cref="ExpressionTreeVisitor"/> subclasses that can handle <see cref="SqlConvertedBooleanExpression"/> instances.
   /// </summary>
-  public interface IConvertedBooleanExpressionVisitor
+  public interface ISqlConvertedBooleanExpressionVisitor
   {
-    Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression);
+    Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression);
   }
 }

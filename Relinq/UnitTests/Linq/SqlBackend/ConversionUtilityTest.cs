@@ -74,5 +74,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
       var expectedExpression = BinaryExpression.Equal (left, right);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
+
+    [Test]
+    public void MakeBinaryWithOperandConversion_Coalesce ()
+    {
+      var left = Expression.Constant (0, typeof (int?));
+      var right = Expression.Constant (0, typeof (int));
+
+      var result = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Coalesce, left, right, false, null);
+
+      var expectedExpression = BinaryExpression.Coalesce (left, right);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
   }
 }

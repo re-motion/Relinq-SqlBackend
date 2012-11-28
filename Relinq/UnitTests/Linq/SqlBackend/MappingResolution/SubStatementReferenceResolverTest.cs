@@ -201,7 +201,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSubStatementReferenceExpression_ResolvesChildren_ForUnknownExpression ()
     {
-      var referencedExpression = new ConvertedBooleanExpression (new NamedExpression ("test", Expression.Constant (0)));
+      var referencedExpression = new SqlConvertedBooleanExpression (new NamedExpression ("test", Expression.Constant (0)));
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (referencedExpression);
 
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
@@ -210,7 +210,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (
           referencedExpression, tableInfo, sqlTable, _context);
 
-      var expectedResult = new ConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "q0", "test", false));
+      var expectedResult = new SqlConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "q0", "test", false));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

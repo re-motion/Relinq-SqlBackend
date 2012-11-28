@@ -36,6 +36,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");
     private static readonly MethodInfo s_getEntityMethod = typeof (IDatabaseResultRow).GetMethod ("GetEntity");
     private static readonly MethodInfo s_toBooleanMethod = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
+    private static readonly MethodInfo s_toNullableBooleanMethod = 
+        typeof (SqlGeneratingOuterSelectExpressionVisitor).GetMethod ("ConvertNullableIntToNullableBool", new[] { typeof (int) });
 
     public new static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -106,16 +108,17 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public override Expression VisitConvertedBooleanExpression (ConvertedBooleanExpression expression)
+    public override Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
     {
-      var result = base.VisitConvertedBooleanExpression (expression);
+      var result = base.VisitSqlConvertedBooleanExpression (expression);
 
       var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
       if (oldInMemoryProjectionBody != null)
       {
-        Debug.Assert (oldInMemoryProjectionBody.Type == typeof (int));
+        Debug.Assert (oldInMemoryProjectionBody.Type == typeof (int) || oldInMemoryProjectionBody.Type == typeof (int?));
 
-        var newInMemoryProjectionBody = Expression.Call (s_toBooleanMethod, oldInMemoryProjectionBody);
+        var conversionMethod = oldInMemoryProjectionBody.Type == typeof (int) ? s_toBooleanMethod : s_toNullableBooleanMethod;
+        var newInMemoryProjectionBody = Expression.Call (conversionMethod, oldInMemoryProjectionBody);
         CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
       }
 
@@ -172,9 +175,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return argumentInMemoryProjectionBody;
     }
 
-    public static bool? ConvertNullableIntToNullableBool (int? value)
+    public static bool? ConvertNullableIntToNullableBool (int? nullableValue)
     {
-      throw new NotImplementedException ("TODO 3335");
+      return nullableValue.HasValue ? (bool?) Convert.ToBoolean (nullableValue.Value) : null;
     }
   }
 }
