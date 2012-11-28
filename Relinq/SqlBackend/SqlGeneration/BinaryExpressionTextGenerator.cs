@@ -91,11 +91,11 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private void GenerateSqlForInfixOperator (Expression left, Expression right, ExpressionType nodeType, Type expressionType)
     {
-      if (nodeType == ExpressionType.And && expressionType == typeof (bool))
+      if (nodeType == ExpressionType.And && BooleanUtility.IsBooleanType (expressionType))
         GenerateSqlForInfixOperator (left, right, ExpressionType.AndAlso, expressionType);
-      else if (nodeType == ExpressionType.Or && expressionType == typeof (bool))
+      else if (nodeType == ExpressionType.Or && BooleanUtility.IsBooleanType (expressionType))
         GenerateSqlForInfixOperator (left, right, ExpressionType.OrElse, expressionType);
-      else if (nodeType == ExpressionType.ExclusiveOr && expressionType == typeof (bool))
+      else if (nodeType == ExpressionType.ExclusiveOr && BooleanUtility.IsBooleanType (expressionType))
       {
         // SQL has no logical XOR operator, so we simulate: a XOR b <=> (a AND NOT b) OR (NOT a AND b)
         var exclusiveOrSimulationExpression = Expression.OrElse (

@@ -43,6 +43,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     private Expression _nullExpression;
     private Expression _trueExpression;
     private Expression _falseExpression;
+    private Expression _nullableTrueExpression;
+    private Expression _nullableFalseExpression;
 
     private Expression _sqlEntityExpression;
 
@@ -109,6 +111,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .Stub (stub => stub.VisitExpression (_falseExpression))
           .WhenCalled (mi => _commandBuilder.Append ("false"))
           .Return (_falseExpression);
+
+      _nullableTrueExpression = Expression.Constant (true, typeof (bool?));
+      _expressionVisitorMock
+          .Stub (stub => stub.VisitExpression (_nullableTrueExpression))
+          .WhenCalled (mi => _commandBuilder.Append ("true"))
+          .Return (_nullableTrueExpression);
+
+      _nullableFalseExpression = Expression.Constant (false, typeof (bool?));
+      _expressionVisitorMock
+          .Stub (stub => stub.VisitExpression (_nullableFalseExpression))
+          .WhenCalled (mi => _commandBuilder.Append ("false"))
+          .Return (_nullableFalseExpression);
 
       _sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
       _expressionVisitorMock
@@ -252,6 +266,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitBinaryExpression_And_OnNullableBooleans ()
+    {
+      var binaryExpression = Expression.And (_nullableTrueExpression, _nullableFalseExpression);
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("true AND false"));
+    }
+
+    [Test]
     public void VisitBinaryExpression_Or ()
     {
       var binaryExpression = Expression.Or (_leftIntegerExpression, _rightIntegerExpression);
@@ -266,6 +291,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitBinaryExpression_Or_OnBooleans ()
     {
       var binaryExpression = Expression.Or (_trueExpression, _falseExpression);
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("true OR false"));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_Or_OnNullableBooleans ()
+    {
+      var binaryExpression = Expression.Or (_nullableTrueExpression, _nullableFalseExpression);
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
       var result = _commandBuilder.GetCommandText ();
@@ -304,6 +340,32 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
       _expressionVisitorMock.VerifyAllExpectations();
+
+      var result = _commandBuilder.GetCommandText ();
+
+      Assert.That (result, Is.EqualTo ("XOR SIMULATION"));
+    }
+
+    [Test]
+    public void VisitBinaryExpression_ExclusiveOr_OnNullableBooleans ()
+    {
+      var binaryExpression = Expression.ExclusiveOr (_nullableTrueExpression, _nullableFalseExpression);
+      var expectedXorSimulation = Expression.OrElse (
+          Expression.AndAlso (_nullableTrueExpression, Expression.Not (_nullableFalseExpression)),
+          Expression.AndAlso (Expression.Not (_nullableTrueExpression), _nullableFalseExpression));
+      _expressionVisitorMock
+          .Expect (mock => mock.VisitExpression (Arg<Expression>.Matches (expr => expr is BinaryExpression)))
+          .WhenCalled (mi =>
+          {
+            var expr = (BinaryExpression) mi.Arguments[0];
+            ExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
+            _commandBuilder.Append ("XOR SIMULATION");
+          })
+          .Return (null);
+
+      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+
+      _expressionVisitorMock.VerifyAllExpectations ();
 
       var result = _commandBuilder.GetCommandText ();
 

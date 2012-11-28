@@ -24,7 +24,6 @@ using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {
   [TestFixture]
-  [Ignore ("TODO 3335")]
   public class NullableBoolExpressionSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
@@ -257,14 +256,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
       CheckQuery (
          Kitchens.Select (selector),
-         "SELECT CASE WHEN (NOT ([t0].[PassedLastInspection] = 1)) "
-          + "THEN 1 WHEN NOT (NOT ([t0].[PassedLastInspection] = 1)) "
+         "SELECT CASE WHEN NOT ([t0].[PassedLastInspection] = 1) "
+          + "THEN 1 WHEN NOT NOT ([t0].[PassedLastInspection] = 1) "
           + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
 
       var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
       CheckQuery (
          Kitchens.Where (predicate).Select (k => k.ID),
-         "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE (NOT ([t0].[PassedLastInspection] = 1))");
+         "SELECT [t0].[ID] AS [value] FROM [KitchenTable] AS [t0] WHERE NOT ([t0].[PassedLastInspection] = 1)");
     }
 
     [Test]
