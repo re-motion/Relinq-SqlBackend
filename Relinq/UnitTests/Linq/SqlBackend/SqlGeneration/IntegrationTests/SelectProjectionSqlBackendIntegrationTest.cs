@@ -22,7 +22,6 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -83,7 +82,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens select true,
           "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
-          row => (object) Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0)))),
           new CommandParameter ("@1", 1));
     }
 
@@ -93,7 +92,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens select false,
           "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
-          row => (object) Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
           new CommandParameter ("@1", 0));
     }
 
@@ -103,18 +102,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks select c.IsStarredCook,
           "SELECT [t0].[IsStarredCook] AS [value] FROM [CookTable] AS [t0]",
-          row => (object)Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))));
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))));
 
       CheckQuery (
           from c in Cooks select true,
           "SELECT @1 AS [value] FROM [CookTable] AS [t0]",
-          row => (object) Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))),
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0)))),
           new CommandParameter ("@1", 1));
 
       CheckQuery (
           from c in Cooks select c.FirstName != null,
           "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]",
-          row => (object)Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0))));
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0)))));
     }
 
     [Test]
@@ -358,15 +357,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook },
           "SELECT [t0].[IsStarredCook] AS [IsStarredCook] FROM [CookTable] AS [t0]",
-          row => (object) new { IsStarredCook = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0))) });
+          row => (object) new { IsStarredCook = ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0)))) });
 
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook, True = true },
           "SELECT [t0].[IsStarredCook] AS [IsStarredCook],@1 AS [True] FROM [CookTable] AS [t0]",
           row => (object) new 
-          { 
-              IsStarredCook = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0))), 
-              True = Convert.ToBoolean (row.GetValue<int> (new ColumnID("True", 1))) 
+          {
+            IsStarredCook = ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0)))),
+            True = ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("True", 1)))) 
           },
           new CommandParameter ("@1", 1));
       
@@ -375,10 +374,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT [t0].[IsStarredCook] AS [IsStarredCook]," 
           + "@1 AS [True],CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [HasFirstName] FROM [CookTable] AS [t0]",
           row => (object) new
-          { 
-              IsStarredCook = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0))),
-              True = Convert.ToBoolean (row.GetValue<int> (new ColumnID("True", 1))),
-              HasFirstName = Convert.ToBoolean (row.GetValue<int> (new ColumnID ("HasFirstName", 2)))
+          {
+              IsStarredCook = ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("IsStarredCook", 0)))),
+              True = ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("True", 1)))),
+              HasFirstName = ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("HasFirstName", 2))))
           },
           new CommandParameter ("@1", 1));
     }

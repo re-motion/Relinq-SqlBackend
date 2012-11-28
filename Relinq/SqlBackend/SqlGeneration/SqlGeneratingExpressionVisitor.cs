@@ -42,7 +42,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
-        ISqlConvertedBooleanExpressionVisitor,
         ISqlPredicateAsValueExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
@@ -382,14 +381,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       _commandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => VisitExpression (expr));
-      return expression;
-    }
-
-    public virtual Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      VisitExpression (expression.Expression);
       return expression;
     }
 

@@ -28,7 +28,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// Holds an <see cref="Expression"/> that originally had <see cref="bool"/> type, but was converted to <see cref="int"/> because SQL doesn't know
   /// a boolean data type.
   /// </summary>
-  // TODO 3335: Maybe use simple ConvertExpression instead?
   public class SqlConvertedBooleanExpression : ExtensionExpression
   {
     private static Type GetMatchingBoolType (Expression expression)
@@ -74,6 +73,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
         return specificVisitor.VisitSqlConvertedBooleanExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    public override bool CanReduce
+    {
+      get { return true; }
+    }
+
+    public override Expression Reduce ()
+    {
+      return Expression.Convert (Expression, Type, BooleanUtility.GetIntToBoolConversionMethod (Expression.Type));
     }
 
     public override string ToString ()

@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -156,7 +157,54 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       if (expectedInMemoryProjection != null)
       {
         var simplifiedExpectedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection);
+        simplifiedExpectedInMemoryProjection = ReplaceConvertExpressionMarker (simplifiedExpectedInMemoryProjection);
         ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.GetInMemoryProjection<object>());
+      }
+    }
+
+    /// <summary>
+    /// Denotes that the <paramref name="methodCallResult"/> should be represented as a 
+    /// <see cref="Expression.Convert(System.Linq.Expressions.Expression,System.Type,System.Reflection.MethodInfo)"/> expression.
+    /// </summary>
+    protected T ConvertExpressionMarker<T> (T methodCallResult)
+    {
+      return methodCallResult;
+    }
+
+    private Expression ReplaceConvertExpressionMarker (Expression simplifiedExpectedInMemoryProjection)
+    {
+      var markerReplacer = new AdHocExpressionTreeVisitor (
+          expr =>
+          {
+            var methodCallExpression = expr as MethodCallExpression;
+            if (methodCallExpression != null && methodCallExpression.Method.Name == "ConvertExpressionMarker")
+            {
+              var conversionMethodCall = methodCallExpression.Arguments.Single () as MethodCallExpression;
+              if (conversionMethodCall == null || conversionMethodCall.Object != null || conversionMethodCall.Arguments.Count != 1)
+              {
+                throw new InvalidOperationException (
+                    "The argument to ConvertExpressionMarker must be a MethodCallExpression to a static method with a single argument.");
+              }
+              return Expression.Convert (conversionMethodCall.Arguments.Single (), conversionMethodCall.Type, conversionMethodCall.Method);
+            }
+            
+            return expr;
+          });
+      return markerReplacer.VisitExpression (simplifiedExpectedInMemoryProjection);
+    }
+
+    private class AdHocExpressionTreeVisitor : ExpressionTreeVisitor
+    {
+      private readonly Func<Expression, Expression> _transformation;
+
+      public AdHocExpressionTreeVisitor (Func<Expression, Expression> transformation)
+      {
+        _transformation = transformation;
+      }
+
+      public override Expression VisitExpression (Expression expression)
+      {
+        return _transformation (base.VisitExpression (expression));
       }
     }
   }

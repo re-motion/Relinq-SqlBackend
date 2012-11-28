@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Reflection;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend
@@ -51,6 +53,21 @@ namespace Remotion.Linq.SqlBackend
         return typeof (bool?);
       else
         throw new ArgumentException ("Type must be Int32 or Nullable<Int32>.", "type");
+    }
+
+    public static bool? ConvertNullableIntToNullableBool (int? nullableValue)
+    {
+      return nullableValue.HasValue ? (bool?) Convert.ToBoolean (nullableValue.Value) : null;
+    }
+
+    public static MethodInfo GetIntToBoolConversionMethod (Type intType)
+    {
+      if (intType == typeof (int))
+        return typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
+      else if (intType == typeof (int?))
+        return typeof (BooleanUtility).GetMethod ("ConvertNullableIntToNullableBool", new[] { typeof (int?) });
+      else
+        throw new ArgumentException ("Type must be Int32 or Nullable<Int32>.", "intType");
     }
   }
 }

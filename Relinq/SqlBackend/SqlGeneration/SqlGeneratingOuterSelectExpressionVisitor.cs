@@ -35,9 +35,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   {
     private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");
     private static readonly MethodInfo s_getEntityMethod = typeof (IDatabaseResultRow).GetMethod ("GetEntity");
-    private static readonly MethodInfo s_toBooleanMethod = typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) });
-    private static readonly MethodInfo s_toNullableBooleanMethod = 
-        typeof (SqlGeneratingOuterSelectExpressionVisitor).GetMethod ("ConvertNullableIntToNullableBool", new[] { typeof (int) });
 
     public new static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -100,29 +97,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       var projectionExpressions = new List<Expression>();
       CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add (VisitArgumentExpression (expr)));
 
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      // ReSharper disable HeuristicUnreachableCode
       if (expression.Members == null)
         CommandBuilder.SetInMemoryProjectionBody (Expression.New (expression.Constructor, projectionExpressions));
       else
         CommandBuilder.SetInMemoryProjectionBody (Expression.New (expression.Constructor, projectionExpressions, expression.Members));
+      // ReSharper restore HeuristicUnreachableCode
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
 
       return expression;
-    }
-
-    public override Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
-    {
-      var result = base.VisitSqlConvertedBooleanExpression (expression);
-
-      var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
-      if (oldInMemoryProjectionBody != null)
-      {
-        Debug.Assert (oldInMemoryProjectionBody.Type == typeof (int) || oldInMemoryProjectionBody.Type == typeof (int?));
-
-        var conversionMethod = oldInMemoryProjectionBody.Type == typeof (int) ? s_toBooleanMethod : s_toNullableBooleanMethod;
-        var newInMemoryProjectionBody = Expression.Call (conversionMethod, oldInMemoryProjectionBody);
-        CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
-      }
-
-      return result;
     }
 
     protected override Expression VisitUnaryExpression (UnaryExpression expression)
@@ -173,11 +157,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       CommandBuilder.SetInMemoryProjectionBody (null);
 
       return argumentInMemoryProjectionBody;
-    }
-
-    public static bool? ConvertNullableIntToNullableBool (int? nullableValue)
-    {
-      return nullableValue.HasValue ? (bool?) Convert.ToBoolean (nullableValue.Value) : null;
     }
   }
 }

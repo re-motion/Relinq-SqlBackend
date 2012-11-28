@@ -18,9 +18,11 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestUtilities;
 using Rhino.Mocks;
 
@@ -112,6 +114,37 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     public void Accept_VisitorNotSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_sqlConvertedBooleanExpression);
+    }
+
+    [Test]
+    public void CanReduce ()
+    {
+      Assert.That (_sqlConvertedBooleanExpression.CanReduce, Is.True);
+    }
+
+    [Test]
+    public void Reduce_NonNullable ()
+    {
+      var innerExpression = Expression.Constant (1);
+      var convertedExpression = new SqlConvertedBooleanExpression (innerExpression);
+
+      var result = convertedExpression.Reduce();
+
+      var expectedResult = Expression.Convert (innerExpression, typeof (bool), typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void Reduce_Nullable ()
+    {
+      var innerExpression = Expression.Constant (1, typeof (int?));
+      var convertedExpression = new SqlConvertedBooleanExpression (innerExpression);
+
+      var result = convertedExpression.Reduce ();
+
+      var expectedResult = Expression.Convert (
+          innerExpression, typeof (bool?), typeof (BooleanUtility).GetMethod ("ConvertNullableIntToNullableBool", new[] { typeof (int?) }));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

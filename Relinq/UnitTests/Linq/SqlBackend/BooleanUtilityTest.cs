@@ -51,5 +51,27 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           () => BooleanUtility.GetMatchingBoolType (typeof (bool)),
           Throws.ArgumentException.With.Message.EqualTo ("Type must be Int32 or Nullable<Int32>.\r\nParameter name: type"));
     }
+
+    [Test]
+    public void ConvertNullableIntToNullableBool ()
+    {
+      Assert.That (BooleanUtility.ConvertNullableIntToNullableBool (null), Is.EqualTo (null));
+      Assert.That (BooleanUtility.ConvertNullableIntToNullableBool (0), Is.EqualTo (false));
+      Assert.That (BooleanUtility.ConvertNullableIntToNullableBool (1), Is.EqualTo (true));
+    }
+
+    [Test]
+    public void GetIntToBoolConversionMethod ()
+    {
+      Assert.That (
+          BooleanUtility.GetIntToBoolConversionMethod (typeof (int)),
+          Is.Not.Null.And.EqualTo (typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) })));
+      Assert.That (
+          BooleanUtility.GetIntToBoolConversionMethod (typeof (int?)),
+          Is.Not.Null.And.EqualTo (typeof (BooleanUtility).GetMethod ("ConvertNullableIntToNullableBool", new[] { typeof (int?) })));
+      Assert.That (
+          () => BooleanUtility.GetIntToBoolConversionMethod (typeof (bool)),
+          Throws.ArgumentException.With.Message.EqualTo ("Type must be Int32 or Nullable<Int32>.\r\nParameter name: intType"));
+    }
   }
 }

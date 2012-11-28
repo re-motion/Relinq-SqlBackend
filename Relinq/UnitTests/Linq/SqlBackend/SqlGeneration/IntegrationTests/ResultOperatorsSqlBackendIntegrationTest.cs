@@ -205,7 +205,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           ( () => (from s in Cooks select s).Contains(cook)),
           "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END AS [value]",
-          row => (object) Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0))),
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
           new CommandParameter("@1", 23) );
     }
 
@@ -241,22 +241,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void Any_OnTopLevel_WithoutPredicate ()
     {
-      CheckQuery(
-        () => Cooks.Any(),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]",
-          row => (object) Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))
-        );
+      CheckQuery (
+          () => Cooks.Any(),
+          "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]",
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))));
     }
 
     [Test]
     public void Any_OnTopLevel_WithPredicate ()
     {
       CheckQuery (
-        () => Cooks.Any (c=>c.FirstName=="Hugo"),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END AS [value]",
-          row => (object) Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0))),
-        new CommandParameter("@1", "Hugo")
-        );
+          () => Cooks.Any (c => c.FirstName == "Hugo"),
+          "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END AS [value]",
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
+          new CommandParameter("@1", "Hugo"));
     }
 
     [Test]
@@ -271,21 +269,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void Any_OrderingsRemoved ()
     {
       CheckQuery (
-        () => Cooks.OrderBy (c => c.FirstName).Any (),
-        "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]",
-          row => (object) Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))
-        );
+          () => Cooks.OrderBy (c => c.FirstName).Any(),
+          "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]",
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0))))
+          );
     }
 
     [Test]
     public void All_OnTopLevel ()
     {
-      CheckQuery(
-        () => Cooks.All(c => c.Name=="Hugo"),
-        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
-        row => (object) Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0))),
-        new CommandParameter("@1", "Hugo")
-        );
+      CheckQuery (
+          () => Cooks.All (c => c.Name == "Hugo"),
+          "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
+          new CommandParameter ("@1", "Hugo"));
     }
 
     [Test]
@@ -303,11 +300,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void All_OrderingsRemoved ()
     {
       CheckQuery (
-       () => Cooks.OrderBy (c => c.FirstName).All (c => c.Name == "Hugo"),
-        "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
-          row => (object) Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0))),
-        new CommandParameter ("@1", "Hugo")
-        );
+          () => Cooks.OrderBy (c => c.FirstName).All (c => c.Name == "Hugo"),
+          "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
+          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
+          new CommandParameter ("@1", "Hugo"));
     }
     
     [Test]
