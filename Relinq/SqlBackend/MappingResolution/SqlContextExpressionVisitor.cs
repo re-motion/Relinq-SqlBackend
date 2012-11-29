@@ -47,8 +47,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         ISqlSubStatementVisitor,
         INamedExpressionVisitor,
         ISqlGroupingSelectExpressionVisitor,
-        ISqlConvertedBooleanExpressionVisitor,
-        ISqlPredicateAsValueExpressionVisitor
+        ISqlConvertedBooleanExpressionVisitor
   {
     public static Expression ApplySqlExpressionContext (
         Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
@@ -104,17 +103,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       // This condition cannot be true at the moment because there currently is no int-typed expression that would be changed by ValueRequired.
       //if (newInner != expression.Expression)
       //  return new ConvertedBooleanExpression (newInner);
-
-      return expression;
-    }
-
-    public Expression VisitSqlPredicateAsValueExpression (SqlPredicateAsValueExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var newPredicate = ApplyPredicateContext (expression.Predicate);
-      if (newPredicate != expression.Predicate)
-        return new SqlPredicateAsValueExpression (newPredicate);
 
       return expression;
     }
@@ -342,7 +330,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var newKeyExpression = ApplyValueContext (expression.KeyExpression);
       var newElementExpression = ApplyValueContext (expression.ElementExpression);
       var newAggregationExpressions = expression.AggregationExpressions
-          .Select (e => ApplyValueContext (e))
+          .Select (ApplyValueContext)
           .ToArray();
 
       if (newKeyExpression != expression.KeyExpression
@@ -479,7 +467,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       if (BooleanUtility.IsBooleanType (newExpression.Type))
       {
-        var convertedExpression = new SqlPredicateAsValueExpression (newExpression);
+        var convertedExpression = CreateValueExpressionForPredicate (newExpression);
         return new SqlConvertedBooleanExpression (convertedExpression);
       }
       else
@@ -529,6 +517,29 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     private Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext expressionContext)
     {
       return ApplySqlExpressionContext (expression, expressionContext, _stage, _context);
+    }
+
+    private Expression CreateValueExpressionForPredicate (Expression predicate)
+    {
+      // If the predicate is nullable, we have three cases (true, false, null). Otherweise, we just have two cases.
+      if (predicate.Type == typeof (bool?))
+      {
+        var cases = new[]
+                    {
+                        new SqlCaseExpression.CaseWhenPair (predicate, new SqlLiteralExpression (1)),
+                        new SqlCaseExpression.CaseWhenPair (Expression.Not (predicate), new SqlLiteralExpression (0))
+                    };
+        var elseCase = Expression.Constant (null, typeof (int?));
+        return new SqlCaseExpression (typeof (int?), cases, elseCase);
+      }
+      else
+      {
+        var cases = new[]
+                    {
+                        new SqlCaseExpression.CaseWhenPair (predicate, new SqlLiteralExpression (1))
+                    };
+        return new SqlCaseExpression (typeof (int), cases, new SqlLiteralExpression (0));
+      }
     }
   }
 }

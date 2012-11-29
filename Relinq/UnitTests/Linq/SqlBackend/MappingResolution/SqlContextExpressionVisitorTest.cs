@@ -119,9 +119,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = visitor.VisitExpression (expression);
       var resultNullable = visitor.VisitExpression (nullableExpression);
 
-      var expected = new SqlConvertedBooleanExpression (new SqlPredicateAsValueExpression (expression));
+      var expected = new SqlConvertedBooleanExpression (GetNonNullablePredicateAsValueExpression (expression));
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
-      var expectedNullable = new SqlConvertedBooleanExpression (new SqlPredicateAsValueExpression (nullableExpression));
+      var expectedNullable = new SqlConvertedBooleanExpression (GetNullablePredicateAsValueExpression (nullableExpression));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullable, resultNullable);
     }
 
@@ -135,9 +135,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = visitor.VisitExpression (expression);
       var resultNullable = visitor.VisitExpression (nullableExpression);
 
-      var expected = new SqlConvertedBooleanExpression (new SqlPredicateAsValueExpression (expression));
+      var expected = new SqlConvertedBooleanExpression (GetNonNullablePredicateAsValueExpression (expression));
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
-      var expectedNullable = new SqlConvertedBooleanExpression (new SqlPredicateAsValueExpression (nullableExpression));
+      var expectedNullable = new SqlConvertedBooleanExpression (GetNullablePredicateAsValueExpression (nullableExpression));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedNullable, resultNullable);
     }
 
@@ -243,27 +243,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _valueRequiredVisitor.VisitSqlConvertedBooleanExpression (converted);
 
       Assert.That (result, Is.SameAs (converted));
-    }
-
-    [Test]
-    public void VisitSqlPredicateAsValueExpression_AppliesPredicateSemantics ()
-    {
-      var predicateAsValueExpression = new SqlPredicateAsValueExpression (Expression.Constant (true));
-
-      var result = _valueRequiredVisitor.VisitSqlPredicateAsValueExpression (predicateAsValueExpression);
-
-      var expectedResult = new SqlPredicateAsValueExpression (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitSqlPredicateAsValueExpression_Unchanged ()
-    {
-      var predicateAsValueExpression = new SqlPredicateAsValueExpression (Expression.Equal (Expression.Constant (1), Expression.Constant (2)));
-
-      var result = _valueRequiredVisitor.VisitSqlPredicateAsValueExpression (predicateAsValueExpression);
-
-      Assert.That (result, Is.SameAs (predicateAsValueExpression));
     }
 
     [Test]
@@ -665,7 +644,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           BinaryExpression.And (
               Expression.Convert (
                   new SqlConvertedBooleanExpression (
-                      new SqlPredicateAsValueExpression (Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))))),
+                      GetNonNullablePredicateAsValueExpression (Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))))),
                   typeof (int)),
               Expression.Constant (5));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -765,7 +744,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.Not (
               Expression.Convert (
                   new SqlConvertedBooleanExpression (
-                      new SqlPredicateAsValueExpression (Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))))),
+                    GetNonNullablePredicateAsValueExpression (Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1))))),
                   typeof (int)));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
@@ -1246,6 +1225,24 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public static bool FakeAndOperator (bool operand1, bool operand2)
     {
       throw new NotImplementedException();
+    }
+
+    private static SqlCaseExpression GetNullablePredicateAsValueExpression (Expression expression)
+    {
+      return new SqlCaseExpression (
+          typeof (int?),
+          new[]
+          {
+              new SqlCaseExpression.CaseWhenPair (expression, new SqlLiteralExpression (1)),
+              new SqlCaseExpression.CaseWhenPair (Expression.Not (expression), new SqlLiteralExpression (0))
+          },
+          Expression.Constant (null, typeof (int?)));
+    }
+
+    private static SqlCaseExpression GetNonNullablePredicateAsValueExpression (Expression expression)
+    {
+      return new SqlCaseExpression (
+          typeof (int), new[] { new SqlCaseExpression.CaseWhenPair (expression, new SqlLiteralExpression (1)) }, new SqlLiteralExpression (0));
     }
   }
 }

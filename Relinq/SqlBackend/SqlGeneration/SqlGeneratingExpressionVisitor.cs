@@ -41,8 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
-        ISqlColumnExpressionVisitor,
-        ISqlPredicateAsValueExpressionVisitor
+        ISqlColumnExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -405,34 +404,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       _commandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => VisitExpression (expr));
       return expression;
-    }
-
-    public virtual Expression VisitSqlPredicateAsValueExpression (SqlPredicateAsValueExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var trueValue = new SqlLiteralExpression (1);
-      var falseValue = new SqlLiteralExpression (0);
-
-      // For boolean predicates, generate the same SQL as for Expression.Condition. For nullable boolean predicates, generate SQL with a NULL case.
-
-      if (expression.Predicate.Type == typeof (bool?))
-      {
-        _commandBuilder.Append ("CASE WHEN ");
-        VisitExpression (expression.Predicate);
-        _commandBuilder.Append (" THEN ");
-        VisitExpression (trueValue);
-        _commandBuilder.Append (" WHEN ");
-        VisitExpression (Expression.Not (expression.Predicate));
-        _commandBuilder.Append (" THEN ");
-        VisitExpression (falseValue);
-        _commandBuilder.Append (" ELSE ");
-        VisitExpression (Expression.Constant (null));
-        _commandBuilder.Append (" END");
-        return expression;
-      }
-
-      return VisitExpression (Expression.Condition (expression.Predicate, trueValue, falseValue));
     }
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)

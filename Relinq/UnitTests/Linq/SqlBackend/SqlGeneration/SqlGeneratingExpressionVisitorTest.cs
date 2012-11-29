@@ -722,27 +722,5 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
     }
-
-    [Test]
-    public void VisitSqlPredicateAsValueExpression_NotNullable ()
-    {
-      var expression = new SqlPredicateAsValueExpression (Expression.Equal (Expression.Constant (2), Expression.Constant (2)));
-
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 ELSE 0 END"));
-    }
-
-    [Test]
-    public void VisitSqlPredicateAsValueExpression_Nullable ()
-    {
-      var expression =
-          new SqlPredicateAsValueExpression (
-              Expression.Equal (Expression.Constant (2, typeof (int?)), Expression.Constant (2, typeof (int?)), true, null));
-
-      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN (@1 = @2) THEN 1 WHEN NOT (@3 = @4) THEN 0 ELSE NULL END"));
-    }
   }
 }

@@ -150,7 +150,6 @@
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />
-    <Compile Include="SqlStatementModel\Resolved\ISqlPredicateAsValueExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlConvertedBooleanExpression.cs" />
     <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Resolved\ISqlConvertedBooleanExpressionVisitor.cs" />
@@ -204,7 +203,6 @@
     <Compile Include="SqlStatementModel\Resolved\SqlEntityReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\ResolvedJoinedGroupingTableInfo.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
-    <Compile Include="SqlStatementModel\Resolved\SqlPredicateAsValueExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlConvertExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlExistsExpression.cs" />
