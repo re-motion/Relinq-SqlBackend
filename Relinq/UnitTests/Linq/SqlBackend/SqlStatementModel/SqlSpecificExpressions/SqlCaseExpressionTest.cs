@@ -19,7 +19,6 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Rhino.Mocks;
@@ -35,7 +34,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
     private Expression _value1;
     private Expression _value2;
     private Expression _nullableValue1;
-    private Expression _nullableValue2;
     private Expression _elseValue;
 
     private SqlCaseExpression _caseExpressionWithElse;
@@ -49,7 +47,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
       _value1 = Expression.Constant (17);
       _value2 = Expression.Constant (4);
       _nullableValue1 = Expression.Constant (47, typeof (int?));
-      _nullableValue2 = Expression.Constant (11, typeof (int?));
       _elseValue = Expression.Constant (42);
 
       _caseExpressionWithElse = new SqlCaseExpression (
@@ -58,7 +55,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
           _elseValue);
       _caseExpressionWithoutElse = new SqlCaseExpression (
           typeof (int?),
-          new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _nullableValue1), new SqlCaseExpression.CaseWhenPair (_predicate2, _nullableValue2) },
+          new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _nullableValue1), new SqlCaseExpression.CaseWhenPair (_predicate2, _value2) },
           null);
     }
 
@@ -105,6 +102,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
           () => new SqlCaseExpression (typeof (int), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _value1) }, Expression.Constant ("a")),
           Throws.ArgumentException.With.Message.EqualTo (
               "The ELSE expression's type must match the expression type.\r\nParameter name: elseCase"));
+
+      Assert.That (
+          () => new SqlCaseExpression (typeof (int?), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _value1) }, _elseValue), Throws.Nothing);
+      Assert.That (
+          () => new SqlCaseExpression (typeof (int?), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _value1) }, null), Throws.Nothing);
     }
 
     [Test]
@@ -149,8 +151,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
           .Expect (mock => mock.VisitExpression (_nullableValue1))
           .Return (_nullableValue1);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_nullableValue2))
-        .Return (_nullableValue2);
+        .Expect (mock => mock.VisitExpression (_value2))
+        .Return (_value2);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithoutElse, visitorMock);
 
@@ -264,9 +266,75 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
     }
 
     [Test]
+    public void Update_NoChanges ()
+    {
+      var resultWithElse = _caseExpressionWithElse.Update (_caseExpressionWithElse.Cases, _caseExpressionWithElse.ElseCase);
+      var resultWithoutElse = _caseExpressionWithoutElse.Update (_caseExpressionWithoutElse.Cases, _caseExpressionWithoutElse.ElseCase);
+
+      Assert.That (resultWithElse, Is.SameAs (_caseExpressionWithElse));
+      Assert.That (resultWithoutElse, Is.SameAs (_caseExpressionWithoutElse));
+    }
+
+    [Test]
+    public void Update_ChangedCases ()
+    {
+      var newCases = Array.AsReadOnly (new[] { new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), Expression.Constant (1)) });
+      var result = _caseExpressionWithElse.Update (newCases, _caseExpressionWithElse.ElseCase);
+
+      Assert.That (result, Is.Not.SameAs (_caseExpressionWithElse));
+      Assert.That (result.Cases, Is.EqualTo (newCases));
+      Assert.That (result.ElseCase, Is.SameAs (_caseExpressionWithElse.ElseCase));
+    }
+
+    [Test]
+    public void Update_ChangedElseCase ()
+    {
+      var newElseCase = Expression.Constant (1);
+      var result = _caseExpressionWithElse.Update (_caseExpressionWithElse.Cases, newElseCase);
+
+      Assert.That (result, Is.Not.SameAs (_caseExpressionWithElse));
+      Assert.That (result.Cases, Is.EqualTo (_caseExpressionWithElse.Cases));
+      Assert.That (result.ElseCase, Is.SameAs (newElseCase));
+    }
+
+    [Test]
+    public void Update_CaseWhenPair_NoChanges ()
+    {
+      var caseWhenPair = new SqlCaseExpression.CaseWhenPair (_predicate1, _value1);
+
+      var result = caseWhenPair.Update (_predicate1, _value1);
+
+      Assert.That (result, Is.SameAs (caseWhenPair));
+    }
+
+    [Test]
+    public void Update_CaseWhenPair_ChangeWhen ()
+    {
+      var caseWhenPair = new SqlCaseExpression.CaseWhenPair (_predicate1, _value1);
+
+      var result = caseWhenPair.Update (_predicate2, _value1);
+
+      Assert.That (result, Is.Not.SameAs (caseWhenPair));
+      Assert.That (result.When, Is.SameAs (_predicate2));
+      Assert.That (result.Then, Is.SameAs (_value1));
+    }
+
+    [Test]
+    public void Update_CaseWhenPair_ChangeThen ()
+    {
+      var caseWhenPair = new SqlCaseExpression.CaseWhenPair (_predicate1, _value1);
+
+      var result = caseWhenPair.Update (_predicate1, _value2);
+
+      Assert.That (result, Is.Not.SameAs (caseWhenPair));
+      Assert.That (result.When, Is.SameAs (_predicate1));
+      Assert.That (result.Then, Is.SameAs (_value2));
+    }
+
+    [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlCaseExpression, ISqlCaseExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlCaseExpression, ISqlSpecificExpressionVisitor> (
           _caseExpressionWithElse,
           mock => mock.VisitSqlCaseExpression (_caseExpressionWithElse));
     }
@@ -284,7 +352,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
       Assert.That (resultWithElse, Is.EqualTo ("CASE WHEN True THEN 17 WHEN False THEN 4 ELSE 42 END"));
 
       var resultWithoutElse = _caseExpressionWithoutElse.ToString ();
-      Assert.That (resultWithoutElse, Is.EqualTo ("CASE WHEN True THEN 47 WHEN False THEN 11 END"));
+      Assert.That (resultWithoutElse, Is.EqualTo ("CASE WHEN True THEN 47 WHEN False THEN 4 END"));
     }
   }
 }

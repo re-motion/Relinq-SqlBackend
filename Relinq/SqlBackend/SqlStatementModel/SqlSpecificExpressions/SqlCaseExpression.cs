@@ -23,7 +23,6 @@ using System.Text;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.Utilities;
 using System.Linq;
 
@@ -66,6 +65,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         var newWhen = visitor.VisitExpression (_when);
         var newThen = visitor.VisitExpression (_then);
 
+        return Update (newWhen, newThen);
+      }
+
+      public CaseWhenPair Update (Expression newWhen, Expression newThen)
+      {
         if (newWhen != _when || newThen != _then)
           return new CaseWhenPair (newWhen, newThen);
 
@@ -90,10 +94,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         throw new ArgumentException ("When no ELSE case is given, the expression's result type must be nullable.", "type");
 
       var casesArray = cases.ToArray();
-      if (casesArray.Any (c => c.Then.Type != type))
+      if (casesArray.Any (c => !type.IsAssignableFrom (c.Then.Type)))
         throw new ArgumentException ("The THEN expressions' types must match the expression type.", "cases");
 
-      if (elseCase != null && elseCase.Type != type)
+      if (elseCase != null && !type.IsAssignableFrom (elseCase.Type))
         throw new ArgumentException ("The ELSE expression's type must match the expression type.", "elseCase");
 
       _cases = Array.AsReadOnly (casesArray);
@@ -114,6 +118,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       var newCases = visitor.VisitList (_cases, p => p.VisitChildren (visitor));
       var newElseCase = _elseCase != null ? visitor.VisitExpression (_elseCase) : null;
+
+      return Update (newCases, newElseCase);
+    }
+
+    // ReSharper disable ParameterTypeCanBeEnumerable.Global
+    public SqlCaseExpression Update (ReadOnlyCollection<CaseWhenPair> newCases, Expression newElseCase)
+    // ReSharper restore ParameterTypeCanBeEnumerable.Global
+    {
       if (newCases != _cases || newElseCase != _elseCase)
         return new SqlCaseExpression (Type, newCases, newElseCase);
 
@@ -122,7 +134,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as ISqlCaseExpressionVisitor;
+      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlCaseExpression (this);
       else
@@ -147,5 +159,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       stringBuilder.Append (" END");
       return stringBuilder.ToString();
     }
-  }
+
+ }
 }

@@ -532,6 +532,31 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitSqlCaseExpression_NoElse ()
+    {
+      var case1 = new SqlCaseExpression.CaseWhenPair (new SqlCustomTextExpression ("test1", typeof (bool)), new SqlCustomTextExpression ("value1", typeof (int)));
+      var case2 = new SqlCaseExpression.CaseWhenPair (new SqlCustomTextExpression ("test2", typeof (bool)), new SqlCustomTextExpression ("value2", typeof (int)));
+      var expression = new SqlCaseExpression (typeof (int?), new[] { case1, case2 }, null);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN test1 THEN value1 WHEN test2 THEN value2 END"));
+    }
+
+    [Test]
+    public void VisitSqlCaseExpression_WithElse ()
+    {
+      var case1 = new SqlCaseExpression.CaseWhenPair (new SqlCustomTextExpression ("test1", typeof (bool)), new SqlCustomTextExpression ("value1", typeof (int)));
+      var case2 = new SqlCaseExpression.CaseWhenPair (new SqlCustomTextExpression ("test2", typeof (bool)), new SqlCustomTextExpression ("value2", typeof (int)));
+      var elseCase = new SqlCustomTextExpression ("elseValue", typeof (int));
+      var expression = new SqlCaseExpression (typeof (int), new[] { case1, case2 }, elseCase);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("CASE WHEN test1 THEN value1 WHEN test2 THEN value2 ELSE elseValue END"));
+    }
+
+    [Test]
     public void VisitSqlLiteralExpression_String ()
     {
       var expression = new SqlLiteralExpression ("1");

@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newInner = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.ValueRequired, _stage, _context);
+      var newInner = ApplyValueContext (expression.Expression);
       Debug.Assert (
           newInner == expression.Expression,
           "There is currently no visit method that would change an int-typed expression with ValueRequired.");
@@ -112,7 +112,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newPredicate = ApplySqlExpressionContext (expression.Predicate, SqlExpressionContext.PredicateRequired, _stage, _context);
+      var newPredicate = ApplyPredicateContext (expression.Predicate);
       if (newPredicate != expression.Predicate)
         return new SqlPredicateAsValueExpression (newPredicate);
 
@@ -160,9 +160,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitConditionalExpression (ConditionalExpression expression)
     {
-      var testPredicate = ApplySqlExpressionContext (expression.Test, SqlExpressionContext.PredicateRequired, _stage, _context);
-      var thenValue = ApplySqlExpressionContext (expression.IfTrue, SqlExpressionContext.SingleValueRequired, _stage, _context);
-      var elseValue = ApplySqlExpressionContext (expression.IfFalse, SqlExpressionContext.SingleValueRequired, _stage, _context);
+      var testPredicate = ApplyPredicateContext (expression.Test);
+      var thenValue = ApplySingleValueContext (expression.IfTrue);
+      var elseValue = ApplySingleValueContext (expression.IfFalse);
 
       if (testPredicate != expression.Test || thenValue != expression.IfTrue || elseValue != expression.IfFalse)
         return Expression.Condition (testPredicate, thenValue, elseValue);
@@ -178,8 +178,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return base.VisitBinaryExpression (expression);
 
       var childContext = GetChildSemanticsForBinaryBoolExpression (expression.NodeType);
-      var left = ApplySqlExpressionContext (expression.Left, childContext, _stage, _context);
-      var right = ApplySqlExpressionContext (expression.Right, childContext, _stage, _context);
+      var left = ApplySqlExpressionContext (expression.Left, childContext);
+      var right = ApplySqlExpressionContext (expression.Right, childContext);
 
       if (expression.NodeType == ExpressionType.Coalesce)
       {
@@ -215,7 +215,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var childContext = GetChildSemanticsForUnaryExpression (expression);
-      var newOperand = ApplySqlExpressionContext (expression.Operand, childContext, _stage, _context);
+      var newOperand = ApplySqlExpressionContext (expression.Operand, childContext);
 
       if (newOperand != expression.Operand)
       {
@@ -247,7 +247,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
+      var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)
         return new SqlIsNullExpression (newExpression);
       return expression;
@@ -257,7 +257,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = ApplySqlExpressionContext (expression.Expression, SqlExpressionContext.SingleValueRequired, _stage, _context);
+      var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)
         return new SqlIsNotNullExpression (newExpression);
       return expression;
@@ -314,7 +314,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var expressionWithAppliedInnerContext = new NamedExpression (
           expression.Name,
-          ApplySqlExpressionContext (expression.Expression, _currentContext, _stage, _context));
+          VisitExpression (expression.Expression));
 
       var result = NamedExpressionCombiner.ProcessNames (_context, expressionWithAppliedInnerContext);
 
@@ -328,7 +328,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var expressions = expression.Arguments.Select (expr => ApplySqlExpressionContext (expr, SqlExpressionContext.ValueRequired, _stage, _context));
+      var expressions = expression.Arguments.Select (ApplyValueContext);
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
       if (expression.Members != null && expression.Members.Count > 0)
         return Expression.New (expression.Constructor, expressions, expression.Members);
@@ -339,10 +339,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
     {
-      var newKeyExpression = ApplySqlExpressionContext (expression.KeyExpression, SqlExpressionContext.ValueRequired, _stage, _context);
-      var newElementExpression = ApplySqlExpressionContext (expression.ElementExpression, SqlExpressionContext.ValueRequired, _stage, _context);
+      var newKeyExpression = ApplyValueContext (expression.KeyExpression);
+      var newElementExpression = ApplyValueContext (expression.ElementExpression);
       var newAggregationExpressions = expression.AggregationExpressions
-          .Select (e => ApplySqlExpressionContext (e, SqlExpressionContext.ValueRequired, _stage, _context))
+          .Select (e => ApplyValueContext (e))
           .ToArray();
 
       if (newKeyExpression != expression.KeyExpression
@@ -386,6 +386,24 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlLengthExpression (SqlLengthExpression expression)
     {
       return VisitChildrenWithSingleValueSemantics (expression);
+    }
+
+    public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var newCases = VisitList (
+          expression.Cases,
+          caseWhenPair =>
+          {
+            var newWhen = ApplyPredicateContext (caseWhenPair.When);
+            // Actually, this should be single value context, but we don't yet support entities in a SqlCaseExpression
+            var newThen = ApplyValueContext (caseWhenPair.Then);
+            return caseWhenPair.Update (newWhen, newThen);
+          });
+      // Actually, this should be single value context, but we don't yet support entities in a SqlCaseExpression
+      var newElseCase = expression.ElseCase != null ? ApplyValueContext (expression.ElseCase) : null;
+      return expression.Update (newCases, newElseCase);
     }
 
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
@@ -491,6 +509,26 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
 
       return newExpression;
+    }
+
+    private Expression ApplySingleValueContext (Expression expression)
+    {
+      return ApplySqlExpressionContext (expression, SqlExpressionContext.SingleValueRequired);
+    }
+
+    private Expression ApplyValueContext (Expression expression)
+    {
+      return ApplySqlExpressionContext (expression, SqlExpressionContext.ValueRequired);
+    }
+
+    private Expression ApplyPredicateContext (Expression expression)
+    {
+      return ApplySqlExpressionContext (expression, SqlExpressionContext.PredicateRequired);
+    }
+
+    private Expression ApplySqlExpressionContext (Expression expression, SqlExpressionContext expressionContext)
+    {
+      return ApplySqlExpressionContext (expression, expressionContext, _stage, _context);
     }
   }
 }

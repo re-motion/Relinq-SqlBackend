@@ -1138,6 +1138,42 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void VisitSqlCaseExpression_NoElse ()
+    {
+      var case1 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), Expression.Constant (true));
+      var case2 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (false), Expression.Constant (false));
+      var expression = new SqlCaseExpression (typeof (bool?), new[] { case1, case2 }, null);
+
+      var result = _valueRequiredVisitor.VisitSqlCaseExpression (expression);
+
+      var expectedCase1 = new SqlCaseExpression.CaseWhenPair (
+          Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
+      var expectedCase2 = new SqlCaseExpression.CaseWhenPair (
+          Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (0)));
+      var expectedExpression = new SqlCaseExpression (typeof (bool?), new[] { expectedCase1, expectedCase2 }, null);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void VisitSqlCaseExpression_WithElse ()
+    {
+      var case1 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), Expression.Constant (true));
+      var case2 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (false), Expression.Constant (false));
+      var elseCase = Expression.Constant (true);
+      var expression = new SqlCaseExpression (typeof (bool), new[] { case1, case2 }, elseCase);
+
+      var result = _valueRequiredVisitor.VisitSqlCaseExpression (expression);
+
+      var expectedCase1 = new SqlCaseExpression.CaseWhenPair (
+          Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
+      var expectedCase2 = new SqlCaseExpression.CaseWhenPair (
+          Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (0)));
+      var expectedElseCase = new SqlConvertedBooleanExpression (Expression.Constant (1));
+      var expectedExpression = new SqlCaseExpression (typeof (bool), new[] { expectedCase1, expectedCase2 }, expectedElseCase);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
     public void VisitSqlRowNumberExpression ()
     {
       var expression = new SqlRowNumberExpression (new[] { new Ordering (Expression.Constant (true), OrderingDirection.Asc) });

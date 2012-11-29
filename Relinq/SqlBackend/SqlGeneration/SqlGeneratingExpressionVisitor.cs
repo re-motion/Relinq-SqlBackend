@@ -257,6 +257,29 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return VisitExpression (newExpression);
     }
 
+    public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _commandBuilder.Append ("CASE");
+
+      foreach (var caseWhenPair in expression.Cases)
+      {
+        _commandBuilder.Append (" WHEN ");
+        VisitExpression (caseWhenPair.When);
+        _commandBuilder.Append (" THEN ");
+        VisitExpression (caseWhenPair.Then);
+      }
+
+      if (expression.ElseCase != null)
+      {
+        _commandBuilder.Append (" ELSE ");
+        VisitExpression (expression.ElseCase);
+      }
+      _commandBuilder.Append (" END");
+      return expression;
+    }
+
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
       _commandBuilder.Append ("(");
