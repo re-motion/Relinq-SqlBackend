@@ -412,19 +412,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitConditionalExpression ()
-    {
-      var caseExpression = Expression.Condition(
-          Expression.Equal (Expression.Constant (2), Expression.Constant (2)),
-          Expression.Constant (0),
-          Expression.Constant (1));
-
-      SqlGeneratingExpressionVisitor.GenerateSql (caseExpression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CASE WHEN (@1 = @2) THEN @3 ELSE @4 END"));
-    }
-
-    [Test]
     public void VisitSqlSubStatementExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));

@@ -143,14 +143,20 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var newInnerExpression = VisitExpression (expression.Expression);
 
-      var innerExpressionAsConditionalExpression = newInnerExpression as ConditionalExpression;
-      if (innerExpressionAsConditionalExpression != null)
+      var innerExpressionAsSqlCaseExpression = newInnerExpression as SqlCaseExpression;
+      if (innerExpressionAsSqlCaseExpression != null)
       {
-        var newConditionalExpression = Expression.Condition (
-            innerExpressionAsConditionalExpression.Test, 
-            Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfTrue, expression.Member), 
-            Expression.MakeMemberAccess (innerExpressionAsConditionalExpression.IfFalse, expression.Member));
-        return VisitExpression (newConditionalExpression);
+        var originalCases = innerExpressionAsSqlCaseExpression.Cases;
+        var originalElseCase = innerExpressionAsSqlCaseExpression.ElseCase;
+        var newCases = originalCases.Select (c => new SqlCaseExpression.CaseWhenPair (c.When, Expression.MakeMemberAccess (c.Then, expression.Member)));
+        var newElseCase = originalElseCase != null ? Expression.MakeMemberAccess (originalElseCase, expression.Member) : null;
+        // If there is no else case, ensure that the resulting type is nullable
+        var caseExpressionType =
+            newElseCase == null && expression.Type.IsValueType && Nullable.GetUnderlyingType (expression.Type) == null
+                ? typeof (Nullable<>).MakeGenericType (expression.Type)
+                : expression.Type;
+        var newSqlCaseExpression = new SqlCaseExpression (caseExpressionType, newCases, newElseCase);
+        return VisitExpression (newSqlCaseExpression);
       }
 
       if (newInnerExpression.NodeType == ExpressionType.Coalesce)
@@ -241,14 +247,15 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return Expression.Condition (VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
+      return SqlCaseExpression.CreateIfThenElse (
+          expression.Type, VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (e => VisitExpression (e)));
+      return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (VisitExpression));
     }
 
     private bool IsNullConstant (Expression expression)

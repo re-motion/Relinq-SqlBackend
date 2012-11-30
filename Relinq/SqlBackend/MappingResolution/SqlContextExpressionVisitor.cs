@@ -523,23 +523,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       // If the predicate is nullable, we have three cases (true, false, null). Otherweise, we just have two cases.
       if (predicate.Type == typeof (bool?))
-      {
-        var cases = new[]
-                    {
-                        new SqlCaseExpression.CaseWhenPair (predicate, new SqlLiteralExpression (1)),
-                        new SqlCaseExpression.CaseWhenPair (Expression.Not (predicate), new SqlLiteralExpression (0))
-                    };
-        var elseCase = Expression.Constant (null, typeof (int?));
-        return new SqlCaseExpression (typeof (int?), cases, elseCase);
-      }
+        return SqlCaseExpression.CreateIfThenElseNull (typeof (int?), predicate, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
       else
-      {
-        var cases = new[]
-                    {
-                        new SqlCaseExpression.CaseWhenPair (predicate, new SqlLiteralExpression (1))
-                    };
-        return new SqlCaseExpression (typeof (int), cases, new SqlLiteralExpression (0));
-      }
+        return SqlCaseExpression.CreateIfThenElse (typeof (int), predicate, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
     }
   }
 }

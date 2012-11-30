@@ -327,18 +327,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       throw new NotSupportedException (message);
     }
 
-    protected override Expression VisitConditionalExpression (ConditionalExpression expression)
-    {
-      _commandBuilder.Append ("CASE WHEN ");
-      VisitExpression (expression.Test);
-      _commandBuilder.Append (" THEN ");
-      VisitExpression (expression.IfTrue);
-      _commandBuilder.Append (" ELSE ");
-      VisitExpression (expression.IfFalse);
-      _commandBuilder.Append (" END");
-      return expression;
-    }
-
     public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
     {
       _commandBuilder.Append ("(");

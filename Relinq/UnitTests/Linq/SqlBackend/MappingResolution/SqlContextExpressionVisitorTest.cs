@@ -1227,22 +1227,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       throw new NotImplementedException();
     }
 
-    private static SqlCaseExpression GetNullablePredicateAsValueExpression (Expression expression)
-    {
-      return new SqlCaseExpression (
-          typeof (int?),
-          new[]
-          {
-              new SqlCaseExpression.CaseWhenPair (expression, new SqlLiteralExpression (1)),
-              new SqlCaseExpression.CaseWhenPair (Expression.Not (expression), new SqlLiteralExpression (0))
-          },
-          Expression.Constant (null, typeof (int?)));
-    }
-
     private static SqlCaseExpression GetNonNullablePredicateAsValueExpression (Expression expression)
     {
-      return new SqlCaseExpression (
-          typeof (int), new[] { new SqlCaseExpression.CaseWhenPair (expression, new SqlLiteralExpression (1)) }, new SqlLiteralExpression (0));
+      return SqlCaseExpression.CreateIfThenElse (typeof (int), expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+    }
+
+    private static SqlCaseExpression GetNullablePredicateAsValueExpression (Expression expression)
+    {
+      return SqlCaseExpression.CreateIfThenElseNull (typeof (int?), expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
     }
   }
 }

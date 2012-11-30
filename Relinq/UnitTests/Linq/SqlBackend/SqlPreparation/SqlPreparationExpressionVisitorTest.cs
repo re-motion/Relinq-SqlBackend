@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
@@ -247,8 +248,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitMemberExpression_WithNoPoperty ()
     {
-      var memberExpression = MemberExpression.MakeMemberAccess (
-          Expression.Constant (new TypeForNewExpression (5)), typeof (TypeForNewExpression).GetField ("C"));
+      var memberExpression = Expression.Field (Expression.Constant (new TypeWithMember<int> (5)), "Field");
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
@@ -258,8 +258,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitMemberExpression_WithProperty_NotRegistered ()
     {
-      var memberExpression = MemberExpression.MakeMemberAccess (
-          Expression.Constant (new TypeForNewExpression (5)), typeof (TypeForNewExpression).GetProperty ("B"));
+      var memberExpression = Expression.Property (Expression.Constant (new TypeWithMember<int> (5)), "Property");
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
@@ -270,7 +269,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitMemberExpression_WithProperty_Registered ()
     {
       var stringExpression = Expression.Constant ("test");
-      var memberExpression = MemberExpression.MakeMemberAccess (stringExpression, typeof (String).GetProperty ("Length"));
+      var memberExpression = Expression.Property (stringExpression, "Length");
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
@@ -280,55 +279,94 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    public void VisitMemberExpression_WithInnerConditionalExpression ()
+    public void VisitMemberExpression_WithInnerSqlCaseExpression ()
     {
-      var testPredicate = Expression.Constant (true);
-      var thenValue = Expression.Constant (new TypeForNewExpression(1));
-      var elseValue = Expression.Constant (new TypeForNewExpression(2));
-      var conditionalExpression = Expression.Condition (testPredicate, thenValue, elseValue);
-      var memberInfo = typeof (TypeForNewExpression).GetProperty ("A");
-      var memberExpression = Expression.MakeMemberAccess (conditionalExpression, memberInfo);
+      var testPredicate1 = Expression.Constant (true);
+      var testPredicate2 = Expression.Constant (false);
+      var value1 = Expression.Constant (new TypeWithMember<int> (1));
+      var value2 = Expression.Constant (new TypeWithMember<int> (2));
+      var elseValue = Expression.Constant (new TypeWithMember<int> (3));
+
+      var caseExpression = new SqlCaseExpression (
+          typeof (TypeWithMember<int>),
+          new[] { new SqlCaseExpression.CaseWhenPair (testPredicate1, value1), new SqlCaseExpression.CaseWhenPair (testPredicate2, value2) },
+          elseValue);
+      var memberExpression = Expression.Property (caseExpression, "Property");
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
-      
-      var expectedResult = Expression.Condition(
-          testPredicate, Expression.MakeMemberAccess (thenValue, memberInfo), Expression.MakeMemberAccess (elseValue, memberInfo));
 
+      var expectedResult = new SqlCaseExpression (
+          typeof (int),
+          new[]
+          {
+              new SqlCaseExpression.CaseWhenPair (testPredicate1, Expression.Property (value1, "Property")),
+              new SqlCaseExpression.CaseWhenPair (testPredicate2, Expression.Property (value2, "Property"))
+          },
+          Expression.Property (elseValue, "Property"));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
-    public void VisitMemberExpression_WithInnerConditionalExpression_RevisitsResult ()
+    public void VisitMemberExpression_WithInnerSqlCaseExpression_NoElse ()
     {
-      var testPredicate = Expression.Constant (true);
-      var thenValue = Expression.Constant ("testValue");
-      var elseValue = Expression.Constant ("elseValue");
-      var conditionalExpression = Expression.Condition (testPredicate, thenValue, elseValue);
-      var memberInfo = typeof (string).GetProperty ("Length");
-      var memberExpression = Expression.MakeMemberAccess (conditionalExpression, memberInfo);
+      var predicate = Expression.Constant (true);
+      var valueTypeValue = Expression.Constant (new TypeWithMember<int> (1));
+      var nullableValueTypeValue = Expression.Constant (new TypeWithMember<int?> (1));
+      var referenceTypeValue = Expression.Constant (new TypeWithMember<string> ("hoy"));
+
+      var valueTypeMemberExpression = CreateMemberExpressionWithInnerSqlCaseExpression<int> (predicate, valueTypeValue, null);
+      var nullableValueTypeMemberExpression = CreateMemberExpressionWithInnerSqlCaseExpression<int?> (predicate, nullableValueTypeValue, null);
+      var referenceTypeMemberExpression = CreateMemberExpressionWithInnerSqlCaseExpression<string> (predicate, referenceTypeValue, null);
+
+      var valueTypeResult = SqlPreparationExpressionVisitor.TranslateExpression (
+          valueTypeMemberExpression, _context, _stageMock, _methodCallTransformerProvider);
+      var nullableValueTypeResult = SqlPreparationExpressionVisitor.TranslateExpression (
+          nullableValueTypeMemberExpression, _context, _stageMock, _methodCallTransformerProvider);
+      var referenceTypeResult = SqlPreparationExpressionVisitor.TranslateExpression (
+          referenceTypeMemberExpression, _context, _stageMock, _methodCallTransformerProvider);
+
+      var expectedValueTypeResult = CreateSqlCaseExpressionWithInnerMemberExpressionNoElse<int?> (predicate, valueTypeValue);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedValueTypeResult, valueTypeResult);
+      var expectedNullableValueTypeResult = CreateSqlCaseExpressionWithInnerMemberExpressionNoElse<int?> (predicate, nullableValueTypeValue);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableValueTypeResult, nullableValueTypeResult);
+      var expectedReferenceTypeResult = CreateSqlCaseExpressionWithInnerMemberExpressionNoElse<string> (predicate, referenceTypeValue);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferenceTypeResult, referenceTypeResult);
+    }
+
+    [Test]
+    public void VisitMemberExpression_WithInnerSqlCaseExpression_RevisitsResult ()
+    {
+      var predicate = Expression.Constant (true);
+      var value = Expression.Constant ("value1");
+      var elseValue = Expression.Constant ("value2");
+
+      var caseExpression = new SqlCaseExpression (typeof (string), new[] { new SqlCaseExpression.CaseWhenPair (predicate, value) }, elseValue);
+      var memberExpression = Expression.Property (caseExpression, "Length");
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      var expectedResult = Expression.Condition(testPredicate, new SqlLengthExpression (thenValue), new SqlLengthExpression (elseValue));
-
+      var expectedResult = new SqlCaseExpression (
+          typeof (int),
+          new[] { new SqlCaseExpression.CaseWhenPair (predicate, new SqlLengthExpression (value)) },
+          new SqlLengthExpression (elseValue));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
     public void VisitMemberExpression_WithInnerCoalesceExpression ()
     {
-      var left = Expression.Constant (new TypeForNewExpression (1));
-      var right = Expression.Constant (new TypeForNewExpression (2));
+      var left = Expression.Constant (new TypeWithMember<int> (1));
+      var right = Expression.Constant (new TypeWithMember<int> (2));
       var coalesceExpression = Expression.Coalesce (left, right);
-      var memberInfo = typeof (TypeForNewExpression).GetProperty ("A");
-      var memberExpression = Expression.MakeMemberAccess (coalesceExpression, memberInfo);
+      var memberExpression = Expression.Property (coalesceExpression, "Property");
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      var expectedResult = Expression.Condition (
+      var expectedResult = SqlCaseExpression.CreateIfThenElse (
+          typeof (int),
           new SqlIsNotNullExpression (coalesceExpression.Left),
-          Expression.MakeMemberAccess (coalesceExpression.Left, memberInfo),
-          Expression.MakeMemberAccess (coalesceExpression.Right, memberInfo));
+          Expression.Property (coalesceExpression.Left, "Property"),
+          Expression.Property (coalesceExpression.Right, "Property"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -339,13 +377,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var left = Expression.Constant("left");
       var right = Expression.Constant("right");
       var coalesceExpression = Expression.Coalesce (left, right);
-      var memberInfo = typeof (string).GetProperty ("Length");
-      var memberExpression = Expression.MakeMemberAccess (coalesceExpression, memberInfo);
+      var memberExpression = Expression.Property (coalesceExpression, "Length");
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      var expectedResult = Expression.Condition (
-          new SqlIsNotNullExpression (coalesceExpression.Left), new SqlLengthExpression(coalesceExpression.Left), 
+      var expectedResult = SqlCaseExpression.CreateIfThenElse (
+          typeof (int),
+          new SqlIsNotNullExpression (coalesceExpression.Left), 
+          new SqlLengthExpression(coalesceExpression.Left), 
           new SqlLengthExpression (coalesceExpression.Right));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -486,26 +525,31 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      Assert.That (result, Is.TypeOf (typeof (ConditionalExpression)));
-      Assert.That (((ConditionalExpression) result).Test, Is.EqualTo (testPredicate));
-      Assert.That (((ConditionalExpression) result).IfTrue, Is.EqualTo (ifTrueExpression));
-      Assert.That (((ConditionalExpression) result).IfFalse, Is.EqualTo (ifFalseExpression));
+      Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
+      var sqlCaseExpression = (SqlCaseExpression) result;
+      Assert.That (sqlCaseExpression.Type, Is.SameAs (typeof (string)));
+      Assert.That (sqlCaseExpression.Cases, Has.Count.EqualTo (1));
+      Assert.That (sqlCaseExpression.Cases[0].When, Is.EqualTo (testPredicate));
+      Assert.That (sqlCaseExpression.Cases[0].Then, Is.EqualTo (ifTrueExpression));
+      Assert.That (sqlCaseExpression.ElseCase, Is.EqualTo (ifFalseExpression));
     }
 
     [Test]
-    public void VisitConditionalExpression_VisitSubExpressions ()
+    public void VisitConditionalExpression_VisitsSubExpressions ()
     {
-      var testPredicate = Expression.Condition (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
-      var ifTrueExpression = Expression.Condition (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
-      var ifFalseExpression = Expression.Condition (Expression.Constant (true), Expression.Constant (true), Expression.Constant (false));
+      var testPredicate = Expression.Equal (Expression.Constant ("test"), Expression.Constant (null, typeof (string)));
+      var ifTrueExpression = Expression.Equal (Expression.Constant ("test"), Expression.Constant (null, typeof (string)));
+      var ifFalseExpression = Expression.Equal (Expression.Constant ("test"), Expression.Constant (null, typeof (string)));
       var conditionalExpression = Expression.Condition (testPredicate, ifTrueExpression, ifFalseExpression);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (conditionalExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      Assert.That (result, Is.TypeOf (typeof (ConditionalExpression)));
-      Assert.That (((ConditionalExpression) result).Test, Is.TypeOf (typeof (ConditionalExpression)));
-      Assert.That (((ConditionalExpression) result).IfTrue, Is.TypeOf (typeof (ConditionalExpression)));
-      Assert.That (((ConditionalExpression) result).IfFalse, Is.TypeOf (typeof (ConditionalExpression)));
+      Assert.That (result, Is.TypeOf (typeof (SqlCaseExpression)));
+      var sqlCaseExpression = (SqlCaseExpression) result;
+      Assert.That (sqlCaseExpression.Cases, Has.Count.EqualTo (1));
+      Assert.That (sqlCaseExpression.Cases[0].When, Is.TypeOf<SqlIsNullExpression>());
+      Assert.That (sqlCaseExpression.Cases[0].Then, Is.TypeOf<SqlIsNullExpression> ());
+      Assert.That (sqlCaseExpression.ElseCase, Is.TypeOf<SqlIsNullExpression> ());
     }
 
     [Test]
@@ -520,13 +564,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
-      Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (ConditionalExpression)));
-
-      Assert.That (((ConditionalExpression) ((BinaryExpression) result).Right).Test, Is.SameAs (testPredicate));
-      Assert.That (((ConditionalExpression) ((BinaryExpression) result).Right).IfTrue, Is.SameAs (ifTrueExpression));
-      Assert.That (((ConditionalExpression) ((BinaryExpression) result).Right).IfFalse, Is.SameAs (ifFalseExpression));
+      var expectedResult = Expression.Equal (
+          leftExpression, SqlCaseExpression.CreateIfThenElse (typeof (string), testPredicate, ifTrueExpression, ifFalseExpression));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -632,6 +672,43 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NewExpression) result).Members, Is.Null);
       Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("m0"));
+    }
+
+    private static MemberExpression CreateMemberExpressionWithInnerSqlCaseExpression<TMemberType> (Expression when, Expression then, Expression elseCase)
+    {
+      var valueTypeCaseExpression = new SqlCaseExpression (
+          typeof (TypeWithMember<TMemberType>),
+          new[] { new SqlCaseExpression.CaseWhenPair (when, then) },
+          elseCase);
+      var valueTypeMemberExpression = Expression.Property (valueTypeCaseExpression, "Property");
+      return valueTypeMemberExpression;
+    }
+
+    private SqlCaseExpression CreateSqlCaseExpressionWithInnerMemberExpressionNoElse<TCaseType> (Expression when, Expression thenWithProperty)
+    {
+      return new SqlCaseExpression (
+          typeof (TCaseType),
+          new[] { new SqlCaseExpression.CaseWhenPair (when, Expression.Property (thenWithProperty, "Property")) },
+          null);
+    }
+
+    class TypeWithMember<T>
+    {
+      private readonly T _t;
+
+      [UsedImplicitly]
+      public T Field = default (T);
+
+      public TypeWithMember (T t)
+      {
+        _t = t;
+      }
+
+      [UsedImplicitly]
+      public T Property
+      {
+        get { return _t; }
+      }
     }
     
   }

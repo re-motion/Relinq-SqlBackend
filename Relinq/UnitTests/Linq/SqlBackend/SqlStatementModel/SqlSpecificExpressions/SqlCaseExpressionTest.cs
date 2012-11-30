@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -107,6 +108,30 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
           () => new SqlCaseExpression (typeof (int?), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _value1) }, _elseValue), Throws.Nothing);
       Assert.That (
           () => new SqlCaseExpression (typeof (int?), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _value1) }, null), Throws.Nothing);
+    }
+
+    [Test]
+    public void CreateIfThenElse ()
+    {
+      var result = SqlCaseExpression.CreateIfThenElse (typeof (int), _predicate1, _value1, _value2);
+
+      Assert.That (result.Cases, Has.Count.EqualTo (1));
+      Assert.That (result.Cases[0].When, Is.SameAs (_predicate1));
+      Assert.That (result.Cases[0].Then, Is.SameAs (_value1));
+      Assert.That (result.ElseCase, Is.SameAs (_value2));
+    }
+
+    [Test]
+    public void CreateIfThenElseNull ()
+    {
+      var result = SqlCaseExpression.CreateIfThenElseNull (typeof (int?), _predicate1, _value1, _value2);
+
+      Assert.That (result.Cases, Has.Count.EqualTo (2));
+      Assert.That (result.Cases[0].When, Is.SameAs (_predicate1));
+      Assert.That (result.Cases[0].Then, Is.SameAs (_value1));
+      ExpressionTreeComparer.CheckAreEqualTrees (result.Cases[1].When, Expression.Not (_predicate1));
+      Assert.That (result.Cases[1].Then, Is.SameAs (_value2));
+      ExpressionTreeComparer.CheckAreEqualTrees (result.ElseCase, Expression.Constant (null, typeof (int?)));
     }
 
     [Test]

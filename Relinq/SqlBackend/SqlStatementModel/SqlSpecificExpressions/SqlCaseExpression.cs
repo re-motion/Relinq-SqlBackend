@@ -82,6 +82,26 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       }
     }
 
+    public static SqlCaseExpression CreateIfThenElse (Type type, Expression test, Expression thenCase, Expression elseCase)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("test", test);
+      ArgumentUtility.CheckNotNull ("thenCase", thenCase);
+      ArgumentUtility.CheckNotNull ("elseCase", elseCase);
+
+      return new SqlCaseExpression (type, new[] { new CaseWhenPair (test, thenCase) }, elseCase);
+    }
+
+    public static SqlCaseExpression CreateIfThenElseNull (Type type, Expression test, Expression trueCase, Expression falseCase)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("test", test);
+      ArgumentUtility.CheckNotNull ("trueCase", trueCase);
+      ArgumentUtility.CheckNotNull ("falseCase", falseCase);
+
+      return new SqlCaseExpression (type, new[] { new CaseWhenPair (test, trueCase), new CaseWhenPair (Not (test), falseCase) }, Constant (null, type));
+    }
+
     private readonly ReadOnlyCollection<CaseWhenPair> _cases;
     private readonly Expression _elseCase;
     
