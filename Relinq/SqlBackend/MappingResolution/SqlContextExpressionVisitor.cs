@@ -146,18 +146,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return expression; // rely on VisitExpression to apply correct semantics
     }
 
-    protected override Expression VisitConditionalExpression (ConditionalExpression expression)
-    {
-      var testPredicate = ApplyPredicateContext (expression.Test);
-      var thenValue = ApplySingleValueContext (expression.IfTrue);
-      var elseValue = ApplySingleValueContext (expression.IfFalse);
-
-      if (testPredicate != expression.Test || thenValue != expression.IfTrue || elseValue != expression.IfFalse)
-        return Expression.Condition (testPredicate, thenValue, elseValue);
-      else
-        return expression;
-    }
-
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
