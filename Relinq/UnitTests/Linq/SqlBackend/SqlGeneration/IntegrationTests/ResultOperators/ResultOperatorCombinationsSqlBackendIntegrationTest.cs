@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests.ResultOperators
 {
   [TestFixture]
   public class ResultOperatorCombinationsSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
@@ -72,7 +73,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           () => (from c in Cooks select c.FirstName).Take (5).Count(),
           "SELECT COUNT(*) AS [value] FROM (SELECT TOP (5) [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]");
     }
-[Test]
+
+    [Test]
     public void TakeAndTake ()
     {
       CheckQuery (
