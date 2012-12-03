@@ -83,6 +83,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 3763")]
     public void Contains_WithConstantCollection ()
     {
       var cookNames = new[] { "hugo", "hans", "heinz" };
@@ -97,6 +98,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks where cookNamesAsEnumerable.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
+          new CommandParameter ("@1", "hugo"),
+          new CommandParameter ("@2", "hans"),
+          new CommandParameter ("@3", "heinz"));
+
+      CheckQuery (
+          from c in Cooks where cookNames.Contains (c.FirstName) || cookNames.Contains (c.Name) select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IN (@1, @2, @3) OR [t0].[Name] IN (@1, @2, @3))",
           new CommandParameter ("@1", "hugo"),
           new CommandParameter ("@2", "hans"),
           new CommandParameter ("@3", "heinz"));
