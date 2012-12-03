@@ -235,6 +235,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitConstantExpression_TwiceWithSameExpression ()
+    {
+      var expression = Expression.Constant (1);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandParameters ().Length, Is.EqualTo (1));
+      Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
+    }
+
+    [Test]
     public void VisitConstantExpression_NullValue ()
     {
       var expression = Expression.Constant (null);
@@ -273,6 +284,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (SELECT NULL WHERE 1 = 0)"));
     }
+
+
 
     [Test]
     public void VisitLiteralExpression ()

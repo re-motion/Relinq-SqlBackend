@@ -249,67 +249,57 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void IndexOf ()
     {
+      // ReSharper disable StringIndexOfIsCultureSpecific.1
+      // ReSharper disable StringIndexOfIsCultureSpecific.2
+      // ReSharper disable StringIndexOfIsCultureSpecific.3
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test"),
-          "SELECT CASE WHEN ((LEN((@1 + '#')) - 1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter ("@1", "test"),
-          new CommandParameter ("@2", "test")
+          "SELECT CASE WHEN ((LEN((@1 + '#')) - 1) = 0) THEN 0 ELSE (CHARINDEX(@1, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", "test")
           );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t'),
-          "SELECT CASE WHEN ((LEN((@1 + '#')) - 1) = 0) THEN 0 ELSE (CHARINDEX(@2, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter ("@1", 't'),
-          new CommandParameter ("@2", 't')
+          "SELECT CASE WHEN ((LEN((@1 + '#')) - 1) = 0) THEN 0 ELSE (CHARINDEX(@1, [t0].[FirstName]) - 1) END AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter ("@1", 't')
           );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test", 2),
-          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @2 ELSE (CHARINDEX(@1, [t0].[FirstName], (@2 + 1)) - 1) END AS [value] "
           + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
-          new CommandParameter ("@2", 2),
-          new CommandParameter ("@3", 2),
-          new CommandParameter ("@4", "test"),
-          new CommandParameter ("@5", 2)
+          new CommandParameter ("@2", 2)
           );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2),
-          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 ELSE (CHARINDEX(@4, [t0].[FirstName], (@5 + 1)) - 1) END AS [value] "
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @2 ELSE (CHARINDEX(@1, [t0].[FirstName], (@2 + 1)) - 1) END AS [value] "
           + "FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
-          new CommandParameter ("@2", 2),
-          new CommandParameter ("@3", 2),
-          new CommandParameter ("@4", 't'),
-          new CommandParameter ("@5", 2)
+          new CommandParameter ("@2", 2)
           );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ("test", 2, 5),
-          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 "
-          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @2 "
+          + "ELSE (CHARINDEX(@1, SUBSTRING([t0].[FirstName], 1, (@2 + @3)), (@2 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", "test"),
           new CommandParameter ("@2", 2),
-          new CommandParameter ("@3", 2),
-          new CommandParameter ("@4", "test"),
-          new CommandParameter ("@5", 2),
-          new CommandParameter ("@6", 5),
-          new CommandParameter ("@7", 2)
+          new CommandParameter ("@3", 5)
           );
 
       CheckQuery (
           from c in Cooks select c.FirstName.IndexOf ('t', 2, 5),
-          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @3 "
-          + "ELSE (CHARINDEX(@4, SUBSTRING([t0].[FirstName], 1, (@5 + @6)), (@7 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
+          "SELECT CASE WHEN (((LEN((@1 + '#')) - 1) = 0) AND ((@2 + 1) <= (LEN(([t0].[FirstName] + '#')) - 1))) THEN @2 "
+          + "ELSE (CHARINDEX(@1, SUBSTRING([t0].[FirstName], 1, (@2 + @3)), (@2 + 1)) - 1) END AS [value] FROM [CookTable] AS [t0]",
           new CommandParameter ("@1", 't'),
           new CommandParameter ("@2", 2),
-          new CommandParameter ("@3", 2),
-          new CommandParameter ("@4", 't'),
-          new CommandParameter ("@5", 2),
-          new CommandParameter ("@6", 5),
-          new CommandParameter ("@7", 2)
+          new CommandParameter ("@3", 5)
           );
+      // ReSharper restore StringIndexOfIsCultureSpecific.3
+      // ReSharper restore StringIndexOfIsCultureSpecific.2
+      // ReSharper restore StringIndexOfIsCultureSpecific.1
     }
 
     [Test]
@@ -382,11 +372,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks select c.FirstName.Insert (3, "Test"),
-          "SELECT CASE WHEN ((LEN(([t0].[FirstName] + '#')) - 1) = 4) "
-          + "THEN ([t0].[FirstName] + @1) "
-          + "ELSE STUFF([t0].[FirstName], 4, 0, @2) END AS [value] FROM [CookTable] AS [t0]",
-          new CommandParameter("@1", "Test"),
-          new CommandParameter("@2", "Test"));
+          "SELECT CASE WHEN ((LEN(([t0].[FirstName] + '#')) - 1) = (@1 + 1)) "
+          + "THEN ([t0].[FirstName] + @2) "
+          + "ELSE STUFF([t0].[FirstName], (@1 + 1), 0, @2) END AS [value] FROM [CookTable] AS [t0]",
+          new CommandParameter("@1", 3),
+          new CommandParameter ("@2", "Test"));
     }
 
     [Test]

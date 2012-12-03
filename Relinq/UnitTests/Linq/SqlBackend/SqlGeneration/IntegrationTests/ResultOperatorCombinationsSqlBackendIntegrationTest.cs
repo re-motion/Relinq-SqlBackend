@@ -187,10 +187,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Take(5),
           "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
-          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@2 + @3))) ORDER BY [q0].[Value] ASC",
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + @2))) ORDER BY [q0].[Value] ASC",
           new CommandParameter("@1", 100),
-          new CommandParameter("@2", 100),
-          new CommandParameter("@3", 5));
+          new CommandParameter("@2", 5));
     }
 
     [Test]
@@ -199,9 +198,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Single(),
           "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
-          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@2 + 2))) ORDER BY [q0].[Value] ASC",
-          new CommandParameter ("@1", 100),
-          new CommandParameter ("@2", 100));
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + 2))) ORDER BY [q0].[Value] ASC",
+          new CommandParameter ("@1", 100));
     }
 
     [Test]
@@ -210,9 +208,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).First(),
           "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
-          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@2 + 1))) ORDER BY [q0].[Value] ASC",
-          new CommandParameter ("@1", 100),
-          new CommandParameter ("@2", 100));
+          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + 1))) ORDER BY [q0].[Value] ASC",
+          new CommandParameter ("@1", 100));
     }
 
     [Test]
@@ -235,11 +232,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT [q1].[Key] AS [value] FROM (SELECT [q0].[Key] AS [Key],"+
           "ROW_NUMBER() OVER (ORDER BY [q0].[Value] ASC) AS [Value] FROM (SELECT [t0].[FirstName] AS [Key],"+
           "ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] FROM [CookTable] AS [t0]) AS [q0] "+
-          "WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@2 + @3)))) AS [q1] WHERE ([q1].[Value] > @4) ORDER BY [q1].[Value] ASC",
+          "WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + @2)))) AS [q1] WHERE ([q1].[Value] > @3) ORDER BY [q1].[Value] ASC",
           new CommandParameter ("@1", 100),
-          new CommandParameter ("@2", 100),
-          new CommandParameter ("@3", 10),
-          new CommandParameter ("@4", 100));
+          new CommandParameter ("@2", 10),
+          new CommandParameter ("@3", 100));
     }
 
     [Test]

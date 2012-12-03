@@ -125,7 +125,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
       else
       {
-        var parameter = _commandBuilder.CreateParameter (expression.Value);
+        var parameter = _commandBuilder.GetOrCreateParameter (expression);
         _commandBuilder.Append (parameter.Name);
       }
 

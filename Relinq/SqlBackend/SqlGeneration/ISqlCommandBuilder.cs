@@ -29,6 +29,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     ParameterExpression InMemoryProjectionRowParameter { get; }
     
     CommandParameter CreateParameter (object value);
+    CommandParameter GetOrCreateParameter (ConstantExpression constantExpression);
 
     void Append (string stringToAppend);
     void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<ISqlCommandBuilder, T> appender);

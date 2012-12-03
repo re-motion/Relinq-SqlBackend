@@ -117,12 +117,33 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void CreateParameter ()
+    public void CreateParameter_Value ()
     {
       var result = _sqlCommandBuilder.CreateParameter ("test");
 
       Assert.That (result.Name, Is.EqualTo ("@1"));
       Assert.That (result.Value, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void GetOrCreateParameter ()
+    {
+      var expression = Expression.Constant ("test");
+      var result = _sqlCommandBuilder.GetOrCreateParameter (expression);
+
+      Assert.That (result.Name, Is.EqualTo ("@1"));
+      Assert.That (result.Value, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void GetOrCreateParameter_Twice ()
+    {
+      var expression = Expression.Constant ("test");
+      var result1 = _sqlCommandBuilder.GetOrCreateParameter (expression);
+      var result2 = _sqlCommandBuilder.GetOrCreateParameter (expression);
+
+      Assert.That (result1, Is.EqualTo (result2));
+      Assert.That (_sqlCommandBuilder.GetCommandParameters(), Has.Length.EqualTo (1));
     }
 
     [Test]

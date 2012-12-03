@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
       MethodCallTransformerUtility.CheckConstantExpression ("Insert", methodCallExpression.Arguments[0], "insertionIndex");
 
-      var insertionIndexExpression = new SqlLiteralExpression (((int) ((ConstantExpression) methodCallExpression.Arguments[0]).Value) + 1);
+      var insertionIndexExpression = Expression.Add (methodCallExpression.Arguments[0], new SqlLiteralExpression (1));
       var testExpression = Expression.Equal(new SqlLengthExpression (methodCallExpression.Object), insertionIndexExpression);
 
       var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });

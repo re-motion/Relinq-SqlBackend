@@ -30,7 +30,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (InsertMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Insert", new[] { typeof (int), typeof (string) })));
+      Assert.That (
+          InsertMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Insert", new[] { typeof (int), typeof (string) })),
+          Is.True);
     }
 
     [Test]
@@ -45,10 +47,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
 
       var result = transformer.Transform (expression);
 
-      var expectedTestExpression = Expression.Equal (new SqlLengthExpression (objectExpression), new SqlLiteralExpression (4));
+      var expectedTestExpression = Expression.Equal (new SqlLengthExpression (objectExpression), Expression.Add (argument1, new SqlLiteralExpression (1)));
       var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       var expectedThenExpression = Expression.Add (objectExpression, argument2, concatMethod);
-      var expectedElseExpression = new SqlFunctionExpression (typeof (string), "STUFF", objectExpression, new SqlLiteralExpression(4), new SqlLiteralExpression(0), argument2);
+      var expectedElseExpression = new SqlFunctionExpression (typeof (string), "STUFF", objectExpression, Expression.Add (argument1, new SqlLiteralExpression (1)), new SqlLiteralExpression(0), argument2);
       var expectedResult = Expression.Condition (expectedTestExpression, expectedThenExpression, expectedElseExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }

@@ -27,22 +27,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class SqlCommandBuilder : ISqlCommandBuilder
   {
-    private readonly StringBuilder _stringBuilder;
-    private readonly List<CommandParameter> _parameters;
+    private readonly StringBuilder _stringBuilder = new StringBuilder();
+    private readonly List<CommandParameter> _parameters = new List<CommandParameter>();
+    private readonly Dictionary<ConstantExpression, CommandParameter> _parameterMap = new Dictionary<ConstantExpression, CommandParameter>();
 
-    private readonly ParameterExpression _inMemoryProjectionRowParameter;
-    
-    private Expression _inMemoryProjectionBody;
-    
-    public SqlCommandBuilder ()
-    {
-      _stringBuilder = new StringBuilder();
-      _parameters = new List<CommandParameter>();
-      
-      _inMemoryProjectionRowParameter = Expression.Parameter (typeof (IDatabaseResultRow), "row");
-      _inMemoryProjectionBody = null;
-    }
+    private readonly ParameterExpression _inMemoryProjectionRowParameter = Expression.Parameter (typeof (IDatabaseResultRow), "row");
 
+    private Expression _inMemoryProjectionBody = null;
+    
     public ParameterExpression InMemoryProjectionRowParameter
     {
       get { return _inMemoryProjectionRowParameter; }
@@ -54,6 +46,20 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       _parameters.Add (parameter);
 
       return parameter;
+    }
+
+    public CommandParameter GetOrCreateParameter (ConstantExpression constantExpression)
+    {
+      ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
+
+      CommandParameter result;
+      if (!_parameterMap.TryGetValue (constantExpression, out result))
+      {
+        result = CreateParameter (constantExpression.Value);
+        _parameterMap.Add (constantExpression, result);
+      }
+
+      return result;
     }
 
     public void Append (string stringToAppend)
