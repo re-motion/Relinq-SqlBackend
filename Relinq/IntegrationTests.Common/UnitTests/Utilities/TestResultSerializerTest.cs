@@ -194,8 +194,6 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
       Assert.That (_writer.ToString (), Is.EqualTo (expected));
     }
 
-    // TODO Review: Add a separate test for anonymous types with different numbers of properties
-
     [Test]
     public void Serialize_SimpleEnumerables ()
     {
@@ -280,8 +278,9 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
     {
       _serializer.Serialize (12, MethodBase.GetCurrentMethod());
 
-      var expected = "Serialize_WithTestMethod:" + Environment.NewLine + "  12";
-      // TODO Review: Missing assertion
+      var expected = "Serialize_WithTestMethod:" + Environment.NewLine
+                     + "  12" + Environment.NewLine;
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
     }
 
     [Test]
