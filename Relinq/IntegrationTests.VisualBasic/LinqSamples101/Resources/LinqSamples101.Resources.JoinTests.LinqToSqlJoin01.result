@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -27,7 +27,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -55,7 +55,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -83,7 +83,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -111,7 +111,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -139,7 +139,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -167,7 +167,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -195,7 +195,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -223,7 +223,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Berkeley Gardens 12  Brewery'
       City: 'London'
@@ -251,7 +251,7 @@ Enumerable {
       ShipPostalCode: 'WX1 6LT'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -279,7 +279,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Berkeley Gardens 12  Brewery'
       City: 'London'
@@ -307,7 +307,7 @@ Enumerable {
       ShipPostalCode: 'WX1 6LT'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -335,7 +335,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -363,7 +363,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -391,7 +391,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'South House 300 Queensbridge'
       City: 'London'
@@ -419,7 +419,7 @@ Enumerable {
       ShipPostalCode: 'SW7 1RZ'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -447,7 +447,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -475,7 +475,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -503,7 +503,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -531,7 +531,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -559,7 +559,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -587,7 +587,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -615,7 +615,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -643,7 +643,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -671,7 +671,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -699,7 +699,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -727,7 +727,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -755,7 +755,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'South House 300 Queensbridge'
       City: 'London'
@@ -783,7 +783,7 @@ Enumerable {
       ShipPostalCode: 'SW7 1RZ'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -811,7 +811,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -839,7 +839,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -867,7 +867,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -895,7 +895,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Berkeley Gardens 12  Brewery'
       City: 'London'
@@ -923,7 +923,7 @@ Enumerable {
       ShipPostalCode: 'WX1 6LT'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -951,7 +951,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '90 Wadhurst Rd.'
       City: 'London'
@@ -979,7 +979,7 @@ Enumerable {
       ShipPostalCode: 'OX15 4NB'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -1007,7 +1007,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -1035,7 +1035,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -1063,7 +1063,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -1091,7 +1091,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -1119,7 +1119,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '120 Hanover Sq.'
       City: 'London'
@@ -1147,7 +1147,7 @@ Enumerable {
       ShipPostalCode: 'CO7 6JX'
       ShipRegion: 'Essex'
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'Fauntleroy Circus'
       City: 'London'
@@ -1175,7 +1175,7 @@ Enumerable {
       ShipPostalCode: 'EC2 5NT'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -1203,7 +1203,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 1
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -1231,7 +1231,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 3
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: '35 King George'
       City: 'London'
@@ -1259,7 +1259,7 @@ Enumerable {
       ShipPostalCode: 'WX3 6FW'
       ShipRegion: null
       ShipVia: 2
-  AnonymousType0
+  AnonymousType
     cust: Customer
       Address: 'South House 300 Queensbridge'
       City: 'London'

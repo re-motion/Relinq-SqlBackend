@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     ProdCount: 12
     ProdGroup: Enumerable {
       Product
@@ -135,7 +135,7 @@ Enumerable {
         UnitsInStock: 57
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     ProdCount: 12
     ProdGroup: Enumerable {
       Product
@@ -271,7 +271,7 @@ Enumerable {
         UnitsInStock: 32
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     ProdCount: 13
     ProdGroup: Enumerable {
       Product
@@ -418,7 +418,7 @@ Enumerable {
         UnitsInStock: 6
         UnitsOnOrder: 10
     }
-  AnonymousType0
+  AnonymousType
     ProdCount: 10
     ProdGroup: Enumerable {
       Product
@@ -532,7 +532,7 @@ Enumerable {
         UnitsInStock: 14
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     ProdCount: 12
     ProdGroup: Enumerable {
       Product

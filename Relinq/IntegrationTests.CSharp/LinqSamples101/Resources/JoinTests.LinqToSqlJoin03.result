@@ -1,25 +1,25 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     FirstName: 'Nancy'
     LastName: 'Davolio'
     TerritoryDescription: 'Wilton                                            '
-  AnonymousType0
+  AnonymousType
     FirstName: 'Nancy'
     LastName: 'Davolio'
     TerritoryDescription: 'Neward                                            '
-  AnonymousType0
+  AnonymousType
     FirstName: 'Laura'
     LastName: 'Callahan'
     TerritoryDescription: 'Philadelphia                                      '
-  AnonymousType0
+  AnonymousType
     FirstName: 'Laura'
     LastName: 'Callahan'
     TerritoryDescription: 'Beachwood                                         '
-  AnonymousType0
+  AnonymousType
     FirstName: 'Laura'
     LastName: 'Callahan'
     TerritoryDescription: 'Findlay                                           '
-  AnonymousType0
+  AnonymousType
     FirstName: 'Laura'
     LastName: 'Callahan'
     TerritoryDescription: 'Racine                                            '

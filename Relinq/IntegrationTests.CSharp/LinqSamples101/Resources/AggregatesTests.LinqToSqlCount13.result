@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 1
@@ -25,7 +25,7 @@ Enumerable {
         UnitsOnOrder: 10
     }
     Key: 1
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 2
@@ -73,7 +73,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     Key: 2
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 3
@@ -121,7 +121,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     Key: 3
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 4
@@ -191,7 +191,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     Key: 4
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 5
@@ -228,7 +228,7 @@ Enumerable {
         UnitsOnOrder: 80
     }
     Key: 5
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 6
@@ -254,7 +254,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     Key: 6
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 7
@@ -280,7 +280,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     Key: 7
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 8

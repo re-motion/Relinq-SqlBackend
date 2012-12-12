@@ -1,100 +1,100 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Around the Horn'
     CustomerID: 'AROUT'
     InternationalPhone: '44-(171)-555-7788'
     Phone: '(171) 555-7788'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'B''s Beverages'
     CustomerID: 'BSBEV'
     InternationalPhone: '44-(171)-555-1212'
     Phone: '(171) 555-1212'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Consolidated Holdings'
     CustomerID: 'CONSH'
     InternationalPhone: '44-(171)-555-2282'
     Phone: '(171) 555-2282'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Eastern Connection'
     CustomerID: 'EASTC'
     InternationalPhone: '44-(171)-555-0297'
     Phone: '(171) 555-0297'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Great Lakes Food Market'
     CustomerID: 'GREAL'
     InternationalPhone: '1-(503)-555-7555'
     Phone: '(503) 555-7555'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Hungry Coyote Import Store'
     CustomerID: 'HUNGC'
     InternationalPhone: '1-(503)-555-6874'
     Phone: '(503) 555-6874'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Island Trading'
     CustomerID: 'ISLAT'
     InternationalPhone: '44-(198)-555-8888'
     Phone: '(198) 555-8888'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Lazy K Kountry Store'
     CustomerID: 'LAZYK'
     InternationalPhone: '1-(509)-555-7969'
     Phone: '(509) 555-7969'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Let''s Stop N Shop'
     CustomerID: 'LETSS'
     InternationalPhone: '1-(415)-555-5938'
     Phone: '(415) 555-5938'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Lonesome Pine Restaurant'
     CustomerID: 'LONEP'
     InternationalPhone: '1-(503)-555-9573'
     Phone: '(503) 555-9573'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'North/South'
     CustomerID: 'NORTS'
     InternationalPhone: '44-(171)-555-7733'
     Phone: '(171) 555-7733'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Old World Delicatessen'
     CustomerID: 'OLDWO'
     InternationalPhone: '1-(907)-555-7584'
     Phone: '(907) 555-7584'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Rattlesnake Canyon Grocery'
     CustomerID: 'RATTC'
     InternationalPhone: '1-(505)-555-5939'
     Phone: '(505) 555-5939'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Save-a-lot Markets'
     CustomerID: 'SAVEA'
     InternationalPhone: '1-(208)-555-8097'
     Phone: '(208) 555-8097'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Seven Seas Imports'
     CustomerID: 'SEVES'
     InternationalPhone: '44-(171)-555-1717'
     Phone: '(171) 555-1717'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Split Rail Beer & Ale'
     CustomerID: 'SPLIR'
     InternationalPhone: '1-(307)-555-4680'
     Phone: '(307) 555-4680'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'The Big Cheese'
     CustomerID: 'THEBI'
     InternationalPhone: '1-(503)-555-3612'
     Phone: '(503) 555-3612'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'The Cracker Box'
     CustomerID: 'THECR'
     InternationalPhone: '1-(406)-555-5834'
     Phone: '(406) 555-5834'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Trail''s Head Gourmet Provisioners'
     CustomerID: 'TRAIH'
     InternationalPhone: '1-(206)-555-8257'
     Phone: '(206) 555-8257'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'White Clover Markets'
     CustomerID: 'WHITC'
     InternationalPhone: '1-(206)-555-4112'

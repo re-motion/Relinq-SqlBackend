@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     AveragePrice: 37,9791
     CategoryID: 1
     prodGroup: Enumerable {
@@ -136,7 +136,7 @@ Enumerable {
         UnitsInStock: 57
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     AveragePrice: 23,0625
     CategoryID: 2
     prodGroup: Enumerable {
@@ -273,7 +273,7 @@ Enumerable {
         UnitsInStock: 32
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     AveragePrice: 25,1600
     CategoryID: 3
     prodGroup: Enumerable {
@@ -421,7 +421,7 @@ Enumerable {
         UnitsInStock: 6
         UnitsOnOrder: 10
     }
-  AnonymousType0
+  AnonymousType
     AveragePrice: 28,7300
     CategoryID: 4
     prodGroup: Enumerable {
@@ -536,7 +536,7 @@ Enumerable {
         UnitsInStock: 14
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     AveragePrice: 20,2500
     CategoryID: 5
     prodGroup: Enumerable {
@@ -618,7 +618,7 @@ Enumerable {
         UnitsInStock: 22
         UnitsOnOrder: 80
     }
-  AnonymousType0
+  AnonymousType
     AveragePrice: 54,0066
     CategoryID: 6
     prodGroup: Enumerable {
@@ -689,7 +689,7 @@ Enumerable {
         UnitsInStock: 115
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     AveragePrice: 32,3700
     CategoryID: 7
     prodGroup: Enumerable {
@@ -749,7 +749,7 @@ Enumerable {
         UnitsInStock: 4
         UnitsOnOrder: 20
     }
-  AnonymousType0
+  AnonymousType
     AveragePrice: 20,6825
     CategoryID: 8
     prodGroup: Enumerable {

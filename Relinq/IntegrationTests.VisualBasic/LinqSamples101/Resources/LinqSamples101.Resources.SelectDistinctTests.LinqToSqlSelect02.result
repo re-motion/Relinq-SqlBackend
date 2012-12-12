@@ -1,275 +1,275 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     ContactName: 'Maria Anders'
     Phone: '030-0074321'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Ana Trujillo'
     Phone: '(5) 555-4729'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Antonio Moreno'
     Phone: '(5) 555-3932'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Thomas Hardy'
     Phone: '(171) 555-7788'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Christina Berglund'
     Phone: '0921-12 34 65'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Hanna Moos'
     Phone: '0621-08460'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Frédérique Citeaux'
     Phone: '88.60.15.31'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Martín Sommer'
     Phone: '(91) 555 22 82'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Laurence Lebihan'
     Phone: '91.24.45.40'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Elizabeth Lincoln'
     Phone: '(604) 555-4729'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Victoria Ashworth'
     Phone: '(171) 555-1212'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Patricio Simpson'
     Phone: '(1) 135-5555'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Francisco Chang'
     Phone: '(5) 555-3392'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yang Wang'
     Phone: '0452-076545'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Pedro Afonso'
     Phone: '(11) 555-7647'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Elizabeth Brown'
     Phone: '(171) 555-2282'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Sven Ottlieb'
     Phone: '0241-039123'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Janine Labrune'
     Phone: '40.67.88.88'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Ann Devon'
     Phone: '(171) 555-0297'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Roland Mendel'
     Phone: '7675-3425'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Aria Cruz'
     Phone: '(11) 555-9857'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Diego Roel'
     Phone: '(91) 555 94 44'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Martine Rancé'
     Phone: '20.16.10.16'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Maria Larsson'
     Phone: '0695-34 67 21'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Peter Franken'
     Phone: '089-0877310'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Carine Schmitt'
     Phone: '40.32.21.21'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paolo Accorti'
     Phone: '011-4988260'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Lino Rodriguez'
     Phone: '(1) 354-2534'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Eduardo Saavedra'
     Phone: '(93) 203 4560'
-  AnonymousType0
+  AnonymousType
     ContactName: 'José Pedro Freyre'
     Phone: '(95) 555 82 82'
-  AnonymousType0
+  AnonymousType
     ContactName: 'André Fonseca'
     Phone: '(11) 555-9482'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Howard Snyder'
     Phone: '(503) 555-7555'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Manuel Pereira'
     Phone: '(2) 283-2951'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Mario Pontes'
     Phone: '(21) 555-0091'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Carlos Hernández'
     Phone: '(5) 555-1340'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yoshi Latimer'
     Phone: '(503) 555-6874'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Patricia McKenna'
     Phone: '2967 542'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Helen Bennett'
     Phone: '(198) 555-8888'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Philip Cramer'
     Phone: '0555-09876'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Daniel Tonini'
     Phone: '30.59.84.10'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Annette Roulet'
     Phone: '61.77.61.10'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yoshi Tannamuri'
     Phone: '(604) 555-3392'
-  AnonymousType0
+  AnonymousType
     ContactName: 'John Steel'
     Phone: '(509) 555-7969'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Renate Messner'
     Phone: '069-0245984'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jaime Yorres'
     Phone: '(415) 555-5938'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Carlos González'
     Phone: '(9) 331-6954'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Felipe Izquierdo'
     Phone: '(8) 34-56-12'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Fran Wilson'
     Phone: '(503) 555-9573'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Giovanni Rovelli'
     Phone: '035-640230'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Catherine Dewey'
     Phone: '(02) 201 24 67'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jean Fresnière'
     Phone: '(514) 555-8054'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Alexander Feuer'
     Phone: '0342-023176'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Simon Crowther'
     Phone: '(171) 555-7733'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yvonne Moncada'
     Phone: '(1) 135-5333'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Rene Phillips'
     Phone: '(907) 555-7584'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Henriette Pfalzheim'
     Phone: '0221-0644327'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Marie Bertrand'
     Phone: '(1) 42.34.22.66'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Guillermo Fernández'
     Phone: '(5) 552-3745'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Georg Pipps'
     Phone: '6562-9722'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Isabel de Castro'
     Phone: '(1) 356-5634'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Bernardo Batista'
     Phone: '(21) 555-4252'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Lúcia Carvalho'
     Phone: '(11) 555-1189'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Horst Kloss'
     Phone: '0372-035188'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Sergio Gutiérrez'
     Phone: '(1) 123-5555'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paula Wilson'
     Phone: '(505) 555-5939'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Maurizio Moroni'
     Phone: '0522-556721'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Janete Limeira'
     Phone: '(21) 555-3412'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Michael Holz'
     Phone: '0897-034214'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Alejandra Camino'
     Phone: '(91) 745 6200'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jonas Bergulfsen'
     Phone: '07-98 92 35'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jose Pavarotti'
     Phone: '(208) 555-8097'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Hari Kumar'
     Phone: '(171) 555-1717'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jytte Petersen'
     Phone: '31 12 34 56'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Dominique Perrier'
     Phone: '(1) 47.55.60.10'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Art Braunschweiger'
     Phone: '(307) 555-4680'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Pascale Cartrain'
     Phone: '(071) 23 67 22 20'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Liz Nixon'
     Phone: '(503) 555-3612'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Liu Wong'
     Phone: '(406) 555-5834'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Karin Josephs'
     Phone: '0251-031259'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Miguel Angel Paolino'
     Phone: '(5) 555-2933'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Anabela Domingues'
     Phone: '(11) 555-2167'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Helvetius Nagy'
     Phone: '(206) 555-8257'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Palle Ibsen'
     Phone: '86 21 32 43'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Mary Saveley'
     Phone: '78.32.54.86'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paul Henriot'
     Phone: '26.47.15.10'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Rita Müller'
     Phone: '0711-020361'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Pirkko Koskitalo'
     Phone: '981-443655'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paula Parente'
     Phone: '(14) 555-8122'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Karl Jablonski'
     Phone: '(206) 555-4112'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Matti Karttunen'
     Phone: '90-224 8858'
-  AnonymousType0
+  AnonymousType
     ContactName: 'Zbyszek Piestrzeniewicz'
     Phone: '(26) 642-7012'
 }

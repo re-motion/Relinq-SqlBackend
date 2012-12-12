@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     MaxPrice: 263,5000
     prodGroup: Enumerable {
       Product
@@ -135,7 +135,7 @@ Enumerable {
         UnitsInStock: 57
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     MaxPrice: 43,9000
     prodGroup: Enumerable {
       Product
@@ -271,7 +271,7 @@ Enumerable {
         UnitsInStock: 32
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     MaxPrice: 81,0000
     prodGroup: Enumerable {
       Product
@@ -418,7 +418,7 @@ Enumerable {
         UnitsInStock: 6
         UnitsOnOrder: 10
     }
-  AnonymousType0
+  AnonymousType
     MaxPrice: 55,0000
     prodGroup: Enumerable {
       Product
@@ -532,7 +532,7 @@ Enumerable {
         UnitsInStock: 14
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     MaxPrice: 38,0000
     prodGroup: Enumerable {
       Product
@@ -613,7 +613,7 @@ Enumerable {
         UnitsInStock: 22
         UnitsOnOrder: 80
     }
-  AnonymousType0
+  AnonymousType
     MaxPrice: 123,7900
     prodGroup: Enumerable {
       Product
@@ -683,7 +683,7 @@ Enumerable {
         UnitsInStock: 115
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     MaxPrice: 53,0000
     prodGroup: Enumerable {
       Product
@@ -742,7 +742,7 @@ Enumerable {
         UnitsInStock: 4
         UnitsOnOrder: 20
     }
-  AnonymousType0
+  AnonymousType
     MaxPrice: 62,5000
     prodGroup: Enumerable {
       Product

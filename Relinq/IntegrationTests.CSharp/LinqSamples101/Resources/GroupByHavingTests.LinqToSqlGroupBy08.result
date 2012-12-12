@@ -1,17 +1,17 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     Key: 1
     ProductCount: 12
-  AnonymousType0
+  AnonymousType
     Key: 2
     ProductCount: 12
-  AnonymousType0
+  AnonymousType
     Key: 3
     ProductCount: 13
-  AnonymousType0
+  AnonymousType
     Key: 4
     ProductCount: 10
-  AnonymousType0
+  AnonymousType
     Key: 8
     ProductCount: 12
 }

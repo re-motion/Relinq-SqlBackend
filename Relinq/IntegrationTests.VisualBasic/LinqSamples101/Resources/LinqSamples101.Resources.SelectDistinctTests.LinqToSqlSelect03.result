@@ -1,29 +1,29 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     Name: 'Nancy Davolio'
     Phone: '(206) 555-9857'
-  AnonymousType0
+  AnonymousType
     Name: 'Andrew Fuller'
     Phone: '(206) 555-9482'
-  AnonymousType0
+  AnonymousType
     Name: 'Janet Leverling'
     Phone: '(206) 555-3412'
-  AnonymousType0
+  AnonymousType
     Name: 'Margaret Peacock'
     Phone: '(206) 555-8122'
-  AnonymousType0
+  AnonymousType
     Name: 'Steven Buchanan'
     Phone: '(71) 555-4848'
-  AnonymousType0
+  AnonymousType
     Name: 'Michael Suyama'
     Phone: '(71) 555-7773'
-  AnonymousType0
+  AnonymousType
     Name: 'Robert King'
     Phone: '(71) 555-5598'
-  AnonymousType0
+  AnonymousType
     Name: 'Laura Callahan'
     Phone: '(206) 555-1189'
-  AnonymousType0
+  AnonymousType
     Name: 'Anne Dodsworth'
     Phone: '(71) 555-4444'
 }

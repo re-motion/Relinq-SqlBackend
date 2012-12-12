@@ -1,6 +1,6 @@
 Enumerable {
-  AnonymousType0
-    Key: AnonymousType0
+  AnonymousType
+    Key: AnonymousType
       Criterion: False
     ProductGroup: Enumerable {
       Product
@@ -158,8 +158,8 @@ Enumerable {
         UnitsInStock: 125
         UnitsOnOrder: 0
     }
-  AnonymousType0
-    Key: AnonymousType0
+  AnonymousType
+    Key: AnonymousType
       Criterion: True
     ProductGroup: Enumerable {
       Product

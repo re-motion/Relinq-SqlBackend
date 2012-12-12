@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 1
@@ -158,7 +158,7 @@ Enumerable {
         UnitsInStock: 57
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 2
@@ -339,7 +339,7 @@ Enumerable {
         UnitsInStock: 32
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 3
@@ -531,7 +531,7 @@ Enumerable {
         UnitsInStock: 6
         UnitsOnOrder: 10
     }
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 4
@@ -712,7 +712,7 @@ Enumerable {
         UnitsInStock: 14
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 5
@@ -827,7 +827,7 @@ Enumerable {
         UnitsInStock: 22
         UnitsOnOrder: 80
     }
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 6
@@ -920,7 +920,7 @@ Enumerable {
         UnitsInStock: 115
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 7
@@ -1002,7 +1002,7 @@ Enumerable {
         UnitsInStock: 4
         UnitsOnOrder: 20
     }
-  AnonymousType0
+  AnonymousType
     ExpensiveProducts: Enumerable {
       Product
         CategoryID: 8

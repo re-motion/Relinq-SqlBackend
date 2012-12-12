@@ -166,6 +166,34 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
       Assert.That (_writer.ToString (), Is.EqualTo (expected));
     }
 
+    [Test]
+    public void Serialize_AnonymousType_2 ()
+    {
+      var instance = new { PublicProperty1 = 17, PublicProperty2 = "test" };
+
+      _serializer.Serialize (instance);
+
+      var expected = "AnonymousType" + Environment.NewLine
+          + "  PublicProperty1: 17" + Environment.NewLine
+          + "  PublicProperty2: 'test'" + Environment.NewLine;
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Serialize_AnonymousType_4()
+    {
+      var instance = new { PublicProperty1 = 17, PublicProperty2 = "test", PublicProperty3 = "test2", PublicProperty4 = 12.0 };
+
+      _serializer.Serialize (instance);
+
+      var expected = "AnonymousType" + Environment.NewLine
+                     + "  PublicProperty1: 17" + Environment.NewLine
+                     + "  PublicProperty2: 'test'" + Environment.NewLine
+                     + "  PublicProperty3: 'test2'" + Environment.NewLine
+                     + "  PublicProperty4: 12" + Environment.NewLine;
+      Assert.That (_writer.ToString (), Is.EqualTo (expected));
+    }
+
     // TODO Review: Add a separate test for anonymous types with different numbers of properties
 
     [Test]
@@ -234,7 +262,7 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
 
       _serializer.Serialize (instance);
 
-      var expected = "AnonymousType0" + Environment.NewLine
+      var expected = "AnonymousType" + Environment.NewLine
                     + "  EnumerableProperty: Enumerable {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine
@@ -281,7 +309,7 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
       TestResultSerializer serializer = new TestResultSerializer (_writer, memberInfo => !memberInfo.Name.Equals("PublicField2"));
 
       serializer.Serialize (instance);
-      var expected = "AnonymousType0" + Environment.NewLine
+      var expected = "AnonymousType" + Environment.NewLine
                     + "  EnumerableProperty: Enumerable {" + Environment.NewLine
                     + "    SerializerTestClassWithFields" + Environment.NewLine
                     + "      PublicField1: 11" + Environment.NewLine

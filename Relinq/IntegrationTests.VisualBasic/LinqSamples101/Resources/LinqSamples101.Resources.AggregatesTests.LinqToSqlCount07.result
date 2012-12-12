@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CategoryID: 1
     CheapestProducts: Enumerable {
       Product
@@ -14,7 +14,7 @@ Enumerable {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryID: 2
     CheapestProducts: Enumerable {
       Product
@@ -29,7 +29,7 @@ Enumerable {
         UnitsInStock: 13
         UnitsOnOrder: 70
     }
-  AnonymousType0
+  AnonymousType
     CategoryID: 3
     CheapestProducts: Enumerable {
       Product
@@ -44,7 +44,7 @@ Enumerable {
         UnitsInStock: 25
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryID: 4
     CheapestProducts: Enumerable {
       Product
@@ -59,7 +59,7 @@ Enumerable {
         UnitsInStock: 112
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryID: 5
     CheapestProducts: Enumerable {
       Product
@@ -74,7 +74,7 @@ Enumerable {
         UnitsInStock: 38
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryID: 6
     CheapestProducts: Enumerable {
       Product
@@ -89,7 +89,7 @@ Enumerable {
         UnitsInStock: 21
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryID: 7
     CheapestProducts: Enumerable {
       Product
@@ -104,7 +104,7 @@ Enumerable {
         UnitsInStock: 4
         UnitsOnOrder: 20
     }
-  AnonymousType0
+  AnonymousType
     CategoryID: 8
     CheapestProducts: Enumerable {
       Product

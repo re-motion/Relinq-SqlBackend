@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -24,10 +24,10 @@ Enumerable {
         UnitsInStock: 17
         UnitsOnOrder: 40
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 1
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -41,10 +41,10 @@ Enumerable {
         UnitsInStock: 15
         UnitsOnOrder: 10
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 7
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -58,10 +58,10 @@ Enumerable {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 10
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -75,10 +75,10 @@ Enumerable {
         UnitsInStock: 125
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 12
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -114,10 +114,10 @@ Enumerable {
         UnitsInStock: 52
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 16
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -142,10 +142,10 @@ Enumerable {
         UnitsInStock: 69
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 18
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -159,10 +159,10 @@ Enumerable {
         UnitsInStock: 17
         UnitsOnOrder: 10
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 20
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 1
@@ -176,10 +176,10 @@ Enumerable {
         UnitsInStock: 57
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 1
       SupplierID: 23
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -193,10 +193,10 @@ Enumerable {
         UnitsInStock: 13
         UnitsOnOrder: 70
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 1
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -243,10 +243,10 @@ Enumerable {
         UnitsInStock: 4
         UnitsOnOrder: 100
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 2
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -271,10 +271,10 @@ Enumerable {
         UnitsInStock: 6
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 3
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -288,10 +288,10 @@ Enumerable {
         UnitsInStock: 39
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 6
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -305,10 +305,10 @@ Enumerable {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 7
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -322,10 +322,10 @@ Enumerable {
         UnitsInStock: 32
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 12
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -339,10 +339,10 @@ Enumerable {
         UnitsInStock: 27
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 20
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 2
@@ -356,10 +356,10 @@ Enumerable {
         UnitsInStock: 113
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 2
       SupplierID: 29
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 3
@@ -373,10 +373,10 @@ Enumerable {
         UnitsInStock: 29
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 3
       SupplierID: 7
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 3
@@ -423,10 +423,10 @@ Enumerable {
         UnitsInStock: 6
         UnitsOnOrder: 10
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 3
       SupplierID: 8
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 3
@@ -462,10 +462,10 @@ Enumerable {
         UnitsInStock: 49
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 3
       SupplierID: 11
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 3
@@ -490,10 +490,10 @@ Enumerable {
         UnitsInStock: 15
         UnitsOnOrder: 70
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 3
       SupplierID: 22
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 3
@@ -518,10 +518,10 @@ Enumerable {
         UnitsInStock: 65
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 3
       SupplierID: 23
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 3
@@ -535,10 +535,10 @@ Enumerable {
         UnitsInStock: 17
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 3
       SupplierID: 29
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 4
@@ -563,10 +563,10 @@ Enumerable {
         UnitsInStock: 86
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 4
       SupplierID: 5
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 4
@@ -602,10 +602,10 @@ Enumerable {
         UnitsInStock: 14
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 4
       SupplierID: 14
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 4
@@ -641,10 +641,10 @@ Enumerable {
         UnitsInStock: 26
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 4
       SupplierID: 15
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 4
@@ -669,10 +669,10 @@ Enumerable {
         UnitsInStock: 19
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 4
       SupplierID: 28
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 5
@@ -697,10 +697,10 @@ Enumerable {
         UnitsInStock: 61
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 5
       SupplierID: 9
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 5
@@ -714,10 +714,10 @@ Enumerable {
         UnitsInStock: 22
         UnitsOnOrder: 80
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 5
       SupplierID: 12
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 5
@@ -731,10 +731,10 @@ Enumerable {
         UnitsInStock: 26
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 5
       SupplierID: 20
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 5
@@ -748,10 +748,10 @@ Enumerable {
         UnitsInStock: 38
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 5
       SupplierID: 24
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 5
@@ -776,10 +776,10 @@ Enumerable {
         UnitsInStock: 36
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 5
       SupplierID: 26
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 6
@@ -793,10 +793,10 @@ Enumerable {
         UnitsInStock: 29
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 6
       SupplierID: 4
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 6
@@ -810,10 +810,10 @@ Enumerable {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 6
       SupplierID: 7
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 6
@@ -827,10 +827,10 @@ Enumerable {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 6
       SupplierID: 12
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 6
@@ -844,10 +844,10 @@ Enumerable {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 6
       SupplierID: 24
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 6
@@ -872,10 +872,10 @@ Enumerable {
         UnitsInStock: 115
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 6
       SupplierID: 25
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 7
@@ -889,10 +889,10 @@ Enumerable {
         UnitsInStock: 15
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 7
       SupplierID: 3
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 7
@@ -906,10 +906,10 @@ Enumerable {
         UnitsInStock: 4
         UnitsOnOrder: 20
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 7
       SupplierID: 4
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 7
@@ -923,10 +923,10 @@ Enumerable {
         UnitsInStock: 35
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 7
       SupplierID: 6
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 7
@@ -940,10 +940,10 @@ Enumerable {
         UnitsInStock: 26
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 7
       SupplierID: 12
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 7
@@ -957,10 +957,10 @@ Enumerable {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 7
       SupplierID: 24
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -974,10 +974,10 @@ Enumerable {
         UnitsInStock: 31
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 4
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -991,10 +991,10 @@ Enumerable {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 6
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -1008,10 +1008,10 @@ Enumerable {
         UnitsInStock: 42
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 7
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -1025,10 +1025,10 @@ Enumerable {
         UnitsInStock: 10
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 13
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -1064,10 +1064,10 @@ Enumerable {
         UnitsInStock: 101
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 17
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -1092,10 +1092,10 @@ Enumerable {
         UnitsInStock: 85
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 19
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -1120,10 +1120,10 @@ Enumerable {
         UnitsInStock: 95
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 21
-  AnonymousType0
+  AnonymousType
     g: Enumerable {
       Product
         CategoryID: 8
@@ -1137,7 +1137,7 @@ Enumerable {
         UnitsInStock: 62
         UnitsOnOrder: 0
     }
-    Key: AnonymousType0
+    Key: AnonymousType
       CategoryID: 8
       SupplierID: 27
 }

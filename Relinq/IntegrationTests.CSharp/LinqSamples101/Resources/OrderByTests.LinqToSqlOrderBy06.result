@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     Key: 1
     MostExpensiveProducts: Enumerable {
       Product
@@ -14,7 +14,7 @@ Enumerable {
         UnitsInStock: 17
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     Key: 2
     MostExpensiveProducts: Enumerable {
       Product
@@ -29,7 +29,7 @@ Enumerable {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     Key: 3
     MostExpensiveProducts: Enumerable {
       Product
@@ -44,7 +44,7 @@ Enumerable {
         UnitsInStock: 40
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     Key: 4
     MostExpensiveProducts: Enumerable {
       Product
@@ -59,7 +59,7 @@ Enumerable {
         UnitsInStock: 79
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     Key: 5
     MostExpensiveProducts: Enumerable {
       Product
@@ -74,7 +74,7 @@ Enumerable {
         UnitsInStock: 21
         UnitsOnOrder: 10
     }
-  AnonymousType0
+  AnonymousType
     Key: 6
     MostExpensiveProducts: Enumerable {
       Product
@@ -89,7 +89,7 @@ Enumerable {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     Key: 7
     MostExpensiveProducts: Enumerable {
       Product
@@ -104,7 +104,7 @@ Enumerable {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     Key: 8
     MostExpensiveProducts: Enumerable {
       Product

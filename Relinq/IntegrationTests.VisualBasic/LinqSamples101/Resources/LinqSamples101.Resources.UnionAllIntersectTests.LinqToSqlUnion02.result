@@ -1,302 +1,302 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     Name: 'Alfreds Futterkiste'
     Phone: '030-0074321'
-  AnonymousType0
+  AnonymousType
     Name: 'Ana Trujillo Emparedados y helados'
     Phone: '(5) 555-4729'
-  AnonymousType0
+  AnonymousType
     Name: 'Antonio Moreno Taquería'
     Phone: '(5) 555-3932'
-  AnonymousType0
+  AnonymousType
     Name: 'Around the Horn'
     Phone: '(171) 555-7788'
-  AnonymousType0
+  AnonymousType
     Name: 'Berglunds snabbköp'
     Phone: '0921-12 34 65'
-  AnonymousType0
+  AnonymousType
     Name: 'Blauer See Delikatessen'
     Phone: '0621-08460'
-  AnonymousType0
+  AnonymousType
     Name: 'Blondesddsl père et fils'
     Phone: '88.60.15.31'
-  AnonymousType0
+  AnonymousType
     Name: 'Bólido Comidas preparadas'
     Phone: '(91) 555 22 82'
-  AnonymousType0
+  AnonymousType
     Name: 'Bon app'''
     Phone: '91.24.45.40'
-  AnonymousType0
+  AnonymousType
     Name: 'Bottom-Dollar Markets'
     Phone: '(604) 555-4729'
-  AnonymousType0
+  AnonymousType
     Name: 'B''s Beverages'
     Phone: '(171) 555-1212'
-  AnonymousType0
+  AnonymousType
     Name: 'Cactus Comidas para llevar'
     Phone: '(1) 135-5555'
-  AnonymousType0
+  AnonymousType
     Name: 'Centro comercial Moctezuma'
     Phone: '(5) 555-3392'
-  AnonymousType0
+  AnonymousType
     Name: 'Chop-suey Chinese'
     Phone: '0452-076545'
-  AnonymousType0
+  AnonymousType
     Name: 'Comércio Mineiro'
     Phone: '(11) 555-7647'
-  AnonymousType0
+  AnonymousType
     Name: 'Consolidated Holdings'
     Phone: '(171) 555-2282'
-  AnonymousType0
+  AnonymousType
     Name: 'Drachenblut Delikatessen'
     Phone: '0241-039123'
-  AnonymousType0
+  AnonymousType
     Name: 'Du monde entier'
     Phone: '40.67.88.88'
-  AnonymousType0
+  AnonymousType
     Name: 'Eastern Connection'
     Phone: '(171) 555-0297'
-  AnonymousType0
+  AnonymousType
     Name: 'Ernst Handel'
     Phone: '7675-3425'
-  AnonymousType0
+  AnonymousType
     Name: 'Familia Arquibaldo'
     Phone: '(11) 555-9857'
-  AnonymousType0
+  AnonymousType
     Name: 'FISSA Fabrica Inter. Salchichas S.A.'
     Phone: '(91) 555 94 44'
-  AnonymousType0
+  AnonymousType
     Name: 'Folies gourmandes'
     Phone: '20.16.10.16'
-  AnonymousType0
+  AnonymousType
     Name: 'Folk och fä HB'
     Phone: '0695-34 67 21'
-  AnonymousType0
+  AnonymousType
     Name: 'Frankenversand'
     Phone: '089-0877310'
-  AnonymousType0
+  AnonymousType
     Name: 'France restauration'
     Phone: '40.32.21.21'
-  AnonymousType0
+  AnonymousType
     Name: 'Franchi S.p.A.'
     Phone: '011-4988260'
-  AnonymousType0
+  AnonymousType
     Name: 'Furia Bacalhau e Frutos do Mar'
     Phone: '(1) 354-2534'
-  AnonymousType0
+  AnonymousType
     Name: 'Galería del gastrónomo'
     Phone: '(93) 203 4560'
-  AnonymousType0
+  AnonymousType
     Name: 'Godos Cocina Típica'
     Phone: '(95) 555 82 82'
-  AnonymousType0
+  AnonymousType
     Name: 'Gourmet Lanchonetes'
     Phone: '(11) 555-9482'
-  AnonymousType0
+  AnonymousType
     Name: 'Great Lakes Food Market'
     Phone: '(503) 555-7555'
-  AnonymousType0
+  AnonymousType
     Name: 'GROSELLA-Restaurante'
     Phone: '(2) 283-2951'
-  AnonymousType0
+  AnonymousType
     Name: 'Hanari Carnes'
     Phone: '(21) 555-0091'
-  AnonymousType0
+  AnonymousType
     Name: 'HILARION-Abastos'
     Phone: '(5) 555-1340'
-  AnonymousType0
+  AnonymousType
     Name: 'Hungry Coyote Import Store'
     Phone: '(503) 555-6874'
-  AnonymousType0
+  AnonymousType
     Name: 'Hungry Owl All-Night Grocers'
     Phone: '2967 542'
-  AnonymousType0
+  AnonymousType
     Name: 'Island Trading'
     Phone: '(198) 555-8888'
-  AnonymousType0
+  AnonymousType
     Name: 'Königlich Essen'
     Phone: '0555-09876'
-  AnonymousType0
+  AnonymousType
     Name: 'La corne d''abondance'
     Phone: '30.59.84.10'
-  AnonymousType0
+  AnonymousType
     Name: 'La maison d''Asie'
     Phone: '61.77.61.10'
-  AnonymousType0
+  AnonymousType
     Name: 'Laughing Bacchus Wine Cellars'
     Phone: '(604) 555-3392'
-  AnonymousType0
+  AnonymousType
     Name: 'Lazy K Kountry Store'
     Phone: '(509) 555-7969'
-  AnonymousType0
+  AnonymousType
     Name: 'Lehmanns Marktstand'
     Phone: '069-0245984'
-  AnonymousType0
+  AnonymousType
     Name: 'Let''s Stop N Shop'
     Phone: '(415) 555-5938'
-  AnonymousType0
+  AnonymousType
     Name: 'LILA-Supermercado'
     Phone: '(9) 331-6954'
-  AnonymousType0
+  AnonymousType
     Name: 'LINO-Delicateses'
     Phone: '(8) 34-56-12'
-  AnonymousType0
+  AnonymousType
     Name: 'Lonesome Pine Restaurant'
     Phone: '(503) 555-9573'
-  AnonymousType0
+  AnonymousType
     Name: 'Magazzini Alimentari Riuniti'
     Phone: '035-640230'
-  AnonymousType0
+  AnonymousType
     Name: 'Maison Dewey'
     Phone: '(02) 201 24 67'
-  AnonymousType0
+  AnonymousType
     Name: 'Mère Paillarde'
     Phone: '(514) 555-8054'
-  AnonymousType0
+  AnonymousType
     Name: 'Morgenstern Gesundkost'
     Phone: '0342-023176'
-  AnonymousType0
+  AnonymousType
     Name: 'North/South'
     Phone: '(171) 555-7733'
-  AnonymousType0
+  AnonymousType
     Name: 'Océano Atlántico Ltda.'
     Phone: '(1) 135-5333'
-  AnonymousType0
+  AnonymousType
     Name: 'Old World Delicatessen'
     Phone: '(907) 555-7584'
-  AnonymousType0
+  AnonymousType
     Name: 'Ottilies Käseladen'
     Phone: '0221-0644327'
-  AnonymousType0
+  AnonymousType
     Name: 'Paris spécialités'
     Phone: '(1) 42.34.22.66'
-  AnonymousType0
+  AnonymousType
     Name: 'Pericles Comidas clásicas'
     Phone: '(5) 552-3745'
-  AnonymousType0
+  AnonymousType
     Name: 'Piccolo und mehr'
     Phone: '6562-9722'
-  AnonymousType0
+  AnonymousType
     Name: 'Princesa Isabel Vinhos'
     Phone: '(1) 356-5634'
-  AnonymousType0
+  AnonymousType
     Name: 'Que Delícia'
     Phone: '(21) 555-4252'
-  AnonymousType0
+  AnonymousType
     Name: 'Queen Cozinha'
     Phone: '(11) 555-1189'
-  AnonymousType0
+  AnonymousType
     Name: 'QUICK-Stop'
     Phone: '0372-035188'
-  AnonymousType0
+  AnonymousType
     Name: 'Rancho grande'
     Phone: '(1) 123-5555'
-  AnonymousType0
+  AnonymousType
     Name: 'Rattlesnake Canyon Grocery'
     Phone: '(505) 555-5939'
-  AnonymousType0
+  AnonymousType
     Name: 'Reggiani Caseifici'
     Phone: '0522-556721'
-  AnonymousType0
+  AnonymousType
     Name: 'Ricardo Adocicados'
     Phone: '(21) 555-3412'
-  AnonymousType0
+  AnonymousType
     Name: 'Richter Supermarkt'
     Phone: '0897-034214'
-  AnonymousType0
+  AnonymousType
     Name: 'Romero y tomillo'
     Phone: '(91) 745 6200'
-  AnonymousType0
+  AnonymousType
     Name: 'Santé Gourmet'
     Phone: '07-98 92 35'
-  AnonymousType0
+  AnonymousType
     Name: 'Save-a-lot Markets'
     Phone: '(208) 555-8097'
-  AnonymousType0
+  AnonymousType
     Name: 'Seven Seas Imports'
     Phone: '(171) 555-1717'
-  AnonymousType0
+  AnonymousType
     Name: 'Simons bistro'
     Phone: '31 12 34 56'
-  AnonymousType0
+  AnonymousType
     Name: 'Spécialités du monde'
     Phone: '(1) 47.55.60.10'
-  AnonymousType0
+  AnonymousType
     Name: 'Split Rail Beer & Ale'
     Phone: '(307) 555-4680'
-  AnonymousType0
+  AnonymousType
     Name: 'Suprêmes délices'
     Phone: '(071) 23 67 22 20'
-  AnonymousType0
+  AnonymousType
     Name: 'The Big Cheese'
     Phone: '(503) 555-3612'
-  AnonymousType0
+  AnonymousType
     Name: 'The Cracker Box'
     Phone: '(406) 555-5834'
-  AnonymousType0
+  AnonymousType
     Name: 'Toms Spezialitäten'
     Phone: '0251-031259'
-  AnonymousType0
+  AnonymousType
     Name: 'Tortuga Restaurante'
     Phone: '(5) 555-2933'
-  AnonymousType0
+  AnonymousType
     Name: 'Tradição Hipermercados'
     Phone: '(11) 555-2167'
-  AnonymousType0
+  AnonymousType
     Name: 'Trail''s Head Gourmet Provisioners'
     Phone: '(206) 555-8257'
-  AnonymousType0
+  AnonymousType
     Name: 'Vaffeljernet'
     Phone: '86 21 32 43'
-  AnonymousType0
+  AnonymousType
     Name: 'Victuailles en stock'
     Phone: '78.32.54.86'
-  AnonymousType0
+  AnonymousType
     Name: 'Vins et alcools Chevalier'
     Phone: '26.47.15.10'
-  AnonymousType0
+  AnonymousType
     Name: 'Die Wandernde Kuh'
     Phone: '0711-020361'
-  AnonymousType0
+  AnonymousType
     Name: 'Wartian Herkku'
     Phone: '981-443655'
-  AnonymousType0
+  AnonymousType
     Name: 'Wellington Importadora'
     Phone: '(14) 555-8122'
-  AnonymousType0
+  AnonymousType
     Name: 'White Clover Markets'
     Phone: '(206) 555-4112'
-  AnonymousType0
+  AnonymousType
     Name: 'Wilman Kala'
     Phone: '90-224 8858'
-  AnonymousType0
+  AnonymousType
     Name: 'Wolski  Zajazd'
     Phone: '(26) 642-7012'
-  AnonymousType0
+  AnonymousType
     Name: 'Nancy Davolio'
     Phone: '(206) 555-9857'
-  AnonymousType0
+  AnonymousType
     Name: 'Andrew Fuller'
     Phone: '(206) 555-9482'
-  AnonymousType0
+  AnonymousType
     Name: 'Janet Leverling'
     Phone: '(206) 555-3412'
-  AnonymousType0
+  AnonymousType
     Name: 'Margaret Peacock'
     Phone: '(206) 555-8122'
-  AnonymousType0
+  AnonymousType
     Name: 'Steven Buchanan'
     Phone: '(71) 555-4848'
-  AnonymousType0
+  AnonymousType
     Name: 'Michael Suyama'
     Phone: '(71) 555-7773'
-  AnonymousType0
+  AnonymousType
     Name: 'Robert King'
     Phone: '(71) 555-5598'
-  AnonymousType0
+  AnonymousType
     Name: 'Laura Callahan'
     Phone: '(206) 555-1189'
-  AnonymousType0
+  AnonymousType
     Name: 'Anne Dodsworth'
     Phone: '(71) 555-4444'
 }

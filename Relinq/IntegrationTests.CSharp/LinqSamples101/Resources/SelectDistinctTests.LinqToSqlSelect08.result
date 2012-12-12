@@ -1,820 +1,820 @@
 Enumerable {
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Berlin'
       CompanyName: 'Alfreds Futterkiste'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Maria Anders'
       ContactTitle: 'Sales Representative'
     CustomerID: 'ALFKI'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'México D.F.'
       CompanyName: 'Ana Trujillo Emparedados y helados'
       Country: 'Mexico'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Ana Trujillo'
       ContactTitle: 'Owner'
     CustomerID: 'ANATR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'México D.F.'
       CompanyName: 'Antonio Moreno Taquería'
       Country: 'Mexico'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Antonio Moreno'
       ContactTitle: 'Owner'
     CustomerID: 'ANTON'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'London'
       CompanyName: 'Around the Horn'
       Country: 'UK'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Thomas Hardy'
       ContactTitle: 'Sales Representative'
     CustomerID: 'AROUT'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Luleå'
       CompanyName: 'Berglunds snabbköp'
       Country: 'Sweden'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Christina Berglund'
       ContactTitle: 'Order Administrator'
     CustomerID: 'BERGS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Mannheim'
       CompanyName: 'Blauer See Delikatessen'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Hanna Moos'
       ContactTitle: 'Sales Representative'
     CustomerID: 'BLAUS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Strasbourg'
       CompanyName: 'Blondesddsl père et fils'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Frédérique Citeaux'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'BLONP'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Madrid'
       CompanyName: 'Bólido Comidas preparadas'
       Country: 'Spain'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Martín Sommer'
       ContactTitle: 'Owner'
     CustomerID: 'BOLID'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Marseille'
       CompanyName: 'Bon app'''
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Laurence Lebihan'
       ContactTitle: 'Owner'
     CustomerID: 'BONAP'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Tsawassen'
       CompanyName: 'Bottom-Dollar Markets'
       Country: 'Canada'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Elizabeth Lincoln'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'BOTTM'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'London'
       CompanyName: 'B''s Beverages'
       Country: 'UK'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Victoria Ashworth'
       ContactTitle: 'Sales Representative'
     CustomerID: 'BSBEV'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Buenos Aires'
       CompanyName: 'Cactus Comidas para llevar'
       Country: 'Argentina'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Patricio Simpson'
       ContactTitle: 'Sales Agent'
     CustomerID: 'CACTU'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'México D.F.'
       CompanyName: 'Centro comercial Moctezuma'
       Country: 'Mexico'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Francisco Chang'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'CENTC'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Bern'
       CompanyName: 'Chop-suey Chinese'
       Country: 'Switzerland'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Yang Wang'
       ContactTitle: 'Owner'
     CustomerID: 'CHOPS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Sao Paulo'
       CompanyName: 'Comércio Mineiro'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Pedro Afonso'
       ContactTitle: 'Sales Associate'
     CustomerID: 'COMMI'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'London'
       CompanyName: 'Consolidated Holdings'
       Country: 'UK'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Elizabeth Brown'
       ContactTitle: 'Sales Representative'
     CustomerID: 'CONSH'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Aachen'
       CompanyName: 'Drachenblut Delikatessen'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Sven Ottlieb'
       ContactTitle: 'Order Administrator'
     CustomerID: 'DRACD'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Nantes'
       CompanyName: 'Du monde entier'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Janine Labrune'
       ContactTitle: 'Owner'
     CustomerID: 'DUMON'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'London'
       CompanyName: 'Eastern Connection'
       Country: 'UK'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Ann Devon'
       ContactTitle: 'Sales Agent'
     CustomerID: 'EASTC'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Graz'
       CompanyName: 'Ernst Handel'
       Country: 'Austria'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Roland Mendel'
       ContactTitle: 'Sales Manager'
     CustomerID: 'ERNSH'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Sao Paulo'
       CompanyName: 'Familia Arquibaldo'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Aria Cruz'
       ContactTitle: 'Marketing Assistant'
     CustomerID: 'FAMIA'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Madrid'
       CompanyName: 'FISSA Fabrica Inter. Salchichas S.A.'
       Country: 'Spain'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Diego Roel'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'FISSA'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Lille'
       CompanyName: 'Folies gourmandes'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Martine Rancé'
       ContactTitle: 'Assistant Sales Agent'
     CustomerID: 'FOLIG'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Bräcke'
       CompanyName: 'Folk och fä HB'
       Country: 'Sweden'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Maria Larsson'
       ContactTitle: 'Owner'
     CustomerID: 'FOLKO'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'München'
       CompanyName: 'Frankenversand'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Peter Franken'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'FRANK'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Nantes'
       CompanyName: 'France restauration'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Carine Schmitt'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'FRANR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Torino'
       CompanyName: 'Franchi S.p.A.'
       Country: 'Italy'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Paolo Accorti'
       ContactTitle: 'Sales Representative'
     CustomerID: 'FRANS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Lisboa'
       CompanyName: 'Furia Bacalhau e Frutos do Mar'
       Country: 'Portugal'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Lino Rodriguez'
       ContactTitle: 'Sales Manager'
     CustomerID: 'FURIB'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Barcelona'
       CompanyName: 'Galería del gastrónomo'
       Country: 'Spain'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Eduardo Saavedra'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'GALED'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Sevilla'
       CompanyName: 'Godos Cocina Típica'
       Country: 'Spain'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'José Pedro Freyre'
       ContactTitle: 'Sales Manager'
     CustomerID: 'GODOS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Campinas'
       CompanyName: 'Gourmet Lanchonetes'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'André Fonseca'
       ContactTitle: 'Sales Associate'
     CustomerID: 'GOURL'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Eugene'
       CompanyName: 'Great Lakes Food Market'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Howard Snyder'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'GREAL'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Caracas'
       CompanyName: 'GROSELLA-Restaurante'
       Country: 'Venezuela'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Manuel Pereira'
       ContactTitle: 'Owner'
     CustomerID: 'GROSR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Rio de Janeiro'
       CompanyName: 'Hanari Carnes'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Mario Pontes'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'HANAR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'San Cristóbal'
       CompanyName: 'HILARION-Abastos'
       Country: 'Venezuela'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Carlos Hernández'
       ContactTitle: 'Sales Representative'
     CustomerID: 'HILAA'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Elgin'
       CompanyName: 'Hungry Coyote Import Store'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Yoshi Latimer'
       ContactTitle: 'Sales Representative'
     CustomerID: 'HUNGC'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Cork'
       CompanyName: 'Hungry Owl All-Night Grocers'
       Country: 'Ireland'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Patricia McKenna'
       ContactTitle: 'Sales Associate'
     CustomerID: 'HUNGO'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Cowes'
       CompanyName: 'Island Trading'
       Country: 'UK'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Helen Bennett'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'ISLAT'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Brandenburg'
       CompanyName: 'Königlich Essen'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Philip Cramer'
       ContactTitle: 'Sales Associate'
     CustomerID: 'KOENE'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Versailles'
       CompanyName: 'La corne d''abondance'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Daniel Tonini'
       ContactTitle: 'Sales Representative'
     CustomerID: 'LACOR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Toulouse'
       CompanyName: 'La maison d''Asie'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Annette Roulet'
       ContactTitle: 'Sales Manager'
     CustomerID: 'LAMAI'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Vancouver'
       CompanyName: 'Laughing Bacchus Wine Cellars'
       Country: 'Canada'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Yoshi Tannamuri'
       ContactTitle: 'Marketing Assistant'
     CustomerID: 'LAUGB'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Walla Walla'
       CompanyName: 'Lazy K Kountry Store'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'John Steel'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'LAZYK'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Frankfurt a.M.'
       CompanyName: 'Lehmanns Marktstand'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Renate Messner'
       ContactTitle: 'Sales Representative'
     CustomerID: 'LEHMS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'San Francisco'
       CompanyName: 'Let''s Stop N Shop'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Jaime Yorres'
       ContactTitle: 'Owner'
     CustomerID: 'LETSS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Barquisimeto'
       CompanyName: 'LILA-Supermercado'
       Country: 'Venezuela'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Carlos González'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'LILAS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'I. de Margarita'
       CompanyName: 'LINO-Delicateses'
       Country: 'Venezuela'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Felipe Izquierdo'
       ContactTitle: 'Owner'
     CustomerID: 'LINOD'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Portland'
       CompanyName: 'Lonesome Pine Restaurant'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Fran Wilson'
       ContactTitle: 'Sales Manager'
     CustomerID: 'LONEP'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Bergamo'
       CompanyName: 'Magazzini Alimentari Riuniti'
       Country: 'Italy'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Giovanni Rovelli'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'MAGAA'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Bruxelles'
       CompanyName: 'Maison Dewey'
       Country: 'Belgium'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Catherine Dewey'
       ContactTitle: 'Sales Agent'
     CustomerID: 'MAISD'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Montréal'
       CompanyName: 'Mère Paillarde'
       Country: 'Canada'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Jean Fresnière'
       ContactTitle: 'Marketing Assistant'
     CustomerID: 'MEREP'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Leipzig'
       CompanyName: 'Morgenstern Gesundkost'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Alexander Feuer'
       ContactTitle: 'Marketing Assistant'
     CustomerID: 'MORGK'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'London'
       CompanyName: 'North/South'
       Country: 'UK'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Simon Crowther'
       ContactTitle: 'Sales Associate'
     CustomerID: 'NORTS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Buenos Aires'
       CompanyName: 'Océano Atlántico Ltda.'
       Country: 'Argentina'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Yvonne Moncada'
       ContactTitle: 'Sales Agent'
     CustomerID: 'OCEAN'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Anchorage'
       CompanyName: 'Old World Delicatessen'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Rene Phillips'
       ContactTitle: 'Sales Representative'
     CustomerID: 'OLDWO'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Köln'
       CompanyName: 'Ottilies Käseladen'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Henriette Pfalzheim'
       ContactTitle: 'Owner'
     CustomerID: 'OTTIK'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Paris'
       CompanyName: 'Paris spécialités'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Marie Bertrand'
       ContactTitle: 'Owner'
     CustomerID: 'PARIS'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'México D.F.'
       CompanyName: 'Pericles Comidas clásicas'
       Country: 'Mexico'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Guillermo Fernández'
       ContactTitle: 'Sales Representative'
     CustomerID: 'PERIC'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Salzburg'
       CompanyName: 'Piccolo und mehr'
       Country: 'Austria'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Georg Pipps'
       ContactTitle: 'Sales Manager'
     CustomerID: 'PICCO'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Lisboa'
       CompanyName: 'Princesa Isabel Vinhos'
       Country: 'Portugal'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Isabel de Castro'
       ContactTitle: 'Sales Representative'
     CustomerID: 'PRINI'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Rio de Janeiro'
       CompanyName: 'Que Delícia'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Bernardo Batista'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'QUEDE'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Sao Paulo'
       CompanyName: 'Queen Cozinha'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Lúcia Carvalho'
       ContactTitle: 'Marketing Assistant'
     CustomerID: 'QUEEN'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Cunewalde'
       CompanyName: 'QUICK-Stop'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Horst Kloss'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'QUICK'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Buenos Aires'
       CompanyName: 'Rancho grande'
       Country: 'Argentina'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Sergio Gutiérrez'
       ContactTitle: 'Sales Representative'
     CustomerID: 'RANCH'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Albuquerque'
       CompanyName: 'Rattlesnake Canyon Grocery'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Paula Wilson'
       ContactTitle: 'Assistant Sales Representative'
     CustomerID: 'RATTC'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Reggio Emilia'
       CompanyName: 'Reggiani Caseifici'
       Country: 'Italy'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Maurizio Moroni'
       ContactTitle: 'Sales Associate'
     CustomerID: 'REGGC'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Rio de Janeiro'
       CompanyName: 'Ricardo Adocicados'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Janete Limeira'
       ContactTitle: 'Assistant Sales Agent'
     CustomerID: 'RICAR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Genève'
       CompanyName: 'Richter Supermarkt'
       Country: 'Switzerland'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Michael Holz'
       ContactTitle: 'Sales Manager'
     CustomerID: 'RICSU'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Madrid'
       CompanyName: 'Romero y tomillo'
       Country: 'Spain'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Alejandra Camino'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'ROMEY'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Stavern'
       CompanyName: 'Santé Gourmet'
       Country: 'Norway'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Jonas Bergulfsen'
       ContactTitle: 'Owner'
     CustomerID: 'SANTG'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Boise'
       CompanyName: 'Save-a-lot Markets'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Jose Pavarotti'
       ContactTitle: 'Sales Representative'
     CustomerID: 'SAVEA'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'London'
       CompanyName: 'Seven Seas Imports'
       Country: 'UK'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Hari Kumar'
       ContactTitle: 'Sales Manager'
     CustomerID: 'SEVES'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Kobenhavn'
       CompanyName: 'Simons bistro'
       Country: 'Denmark'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Jytte Petersen'
       ContactTitle: 'Owner'
     CustomerID: 'SIMOB'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Paris'
       CompanyName: 'Spécialités du monde'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Dominique Perrier'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'SPECD'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Lander'
       CompanyName: 'Split Rail Beer & Ale'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Art Braunschweiger'
       ContactTitle: 'Sales Manager'
     CustomerID: 'SPLIR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Charleroi'
       CompanyName: 'Suprêmes délices'
       Country: 'Belgium'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Pascale Cartrain'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'SUPRD'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Portland'
       CompanyName: 'The Big Cheese'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Liz Nixon'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'THEBI'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Butte'
       CompanyName: 'The Cracker Box'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Liu Wong'
       ContactTitle: 'Marketing Assistant'
     CustomerID: 'THECR'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Münster'
       CompanyName: 'Toms Spezialitäten'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Karin Josephs'
       ContactTitle: 'Marketing Manager'
     CustomerID: 'TOMSP'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'México D.F.'
       CompanyName: 'Tortuga Restaurante'
       Country: 'Mexico'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Miguel Angel Paolino'
       ContactTitle: 'Owner'
     CustomerID: 'TORTU'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Sao Paulo'
       CompanyName: 'Tradição Hipermercados'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Anabela Domingues'
       ContactTitle: 'Sales Representative'
     CustomerID: 'TRADH'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Kirkland'
       CompanyName: 'Trail''s Head Gourmet Provisioners'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Helvetius Nagy'
       ContactTitle: 'Sales Associate'
     CustomerID: 'TRAIH'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Århus'
       CompanyName: 'Vaffeljernet'
       Country: 'Denmark'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Palle Ibsen'
       ContactTitle: 'Sales Manager'
     CustomerID: 'VAFFE'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Lyon'
       CompanyName: 'Victuailles en stock'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Mary Saveley'
       ContactTitle: 'Sales Agent'
     CustomerID: 'VICTE'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Reims'
       CompanyName: 'Vins et alcools Chevalier'
       Country: 'France'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Paul Henriot'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'VINET'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Stuttgart'
       CompanyName: 'Die Wandernde Kuh'
       Country: 'Germany'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Rita Müller'
       ContactTitle: 'Sales Representative'
     CustomerID: 'WANDK'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Oulu'
       CompanyName: 'Wartian Herkku'
       Country: 'Finland'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Pirkko Koskitalo'
       ContactTitle: 'Accounting Manager'
     CustomerID: 'WARTH'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Resende'
       CompanyName: 'Wellington Importadora'
       Country: 'Brazil'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Paula Parente'
       ContactTitle: 'Sales Manager'
     CustomerID: 'WELLI'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Seattle'
       CompanyName: 'White Clover Markets'
       Country: 'USA'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Karl Jablonski'
       ContactTitle: 'Owner'
     CustomerID: 'WHITC'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Helsinki'
       CompanyName: 'Wilman Kala'
       Country: 'Finland'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Matti Karttunen'
       ContactTitle: 'Owner/Marketing Assistant'
     CustomerID: 'WILMK'
-  AnonymousType0
-    CompanyInfo: AnonymousType0
+  AnonymousType
+    CompanyInfo: AnonymousType
       City: 'Warszawa'
       CompanyName: 'Wolski  Zajazd'
       Country: 'Poland'
-    ContactInfo: AnonymousType0
+    ContactInfo: AnonymousType
       ContactName: 'Zbyszek Piestrzeniewicz'
       ContactTitle: 'Owner'
     CustomerID: 'WOLZA'

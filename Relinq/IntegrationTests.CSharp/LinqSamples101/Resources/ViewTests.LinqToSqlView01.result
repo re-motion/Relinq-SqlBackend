@@ -1,410 +1,410 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10289
     ProductName: 'Aniseed Syrup'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10289
     ProductName: 'Wimmers gute Semmelknödel'
     Quantity: 9
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10359
     ProductName: 'Pavlova'
     Quantity: 56
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10359
     ProductName: 'Gorgonzola Telino'
     Quantity: 70
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10359
     ProductName: 'Camembert Pierrot'
     Quantity: 80
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10364
     ProductName: 'Gudbrandsdalsost'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10364
     ProductName: 'Flotemysost'
     Quantity: 5
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10377
     ProductName: 'Rössle Sauerkraut'
     Quantity: 20
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10377
     ProductName: 'Chartreuse verte'
     Quantity: 20
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10388
     ProductName: 'Rogede sild'
     Quantity: 15
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10388
     ProductName: 'Filo Mix'
     Quantity: 20
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10388
     ProductName: 'Perth Pasties'
     Quantity: 40
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10400
     ProductName: 'Thüringer Rostbratwurst'
     Quantity: 21
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10400
     ProductName: 'Steeleye Stout'
     Quantity: 35
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10400
     ProductName: 'Maxilaku'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Consolidated Holdings'
     OrderID: 10435
     ProductName: 'Chang'
     Quantity: 10
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Consolidated Holdings'
     OrderID: 10435
     ProductName: 'Gustaf''s Knäckebröd'
     Quantity: 12
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Consolidated Holdings'
     OrderID: 10435
     ProductName: 'Mozzarella di Giovanni'
     Quantity: 10
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Consolidated Holdings'
     OrderID: 10462
     ProductName: 'Konbu'
     Quantity: 1
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Consolidated Holdings'
     OrderID: 10462
     ProductName: 'Tunnbröd'
     Quantity: 21
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10471
     ProductName: 'Uncle Bob''s Organic Dried Pears'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10471
     ProductName: 'Gnocchi di nonna Alice'
     Quantity: 20
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10472
     ProductName: 'Guaraná Fantástica'
     Quantity: 80
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10472
     ProductName: 'Manjimup Dried Apples'
     Quantity: 18
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10484
     ProductName: 'Sir Rodney''s Scones'
     Quantity: 14
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10484
     ProductName: 'Boston Crab Meat'
     Quantity: 10
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10484
     ProductName: 'Manjimup Dried Apples'
     Quantity: 3
-  AnonymousType0
+  AnonymousType
     CustomerName: 'North/South'
     OrderID: 10517
     ProductName: 'Filo Mix'
     Quantity: 6
-  AnonymousType0
+  AnonymousType
     CustomerName: 'North/South'
     OrderID: 10517
     ProductName: 'Raclette Courdavault'
     Quantity: 4
-  AnonymousType0
+  AnonymousType
     CustomerName: 'North/South'
     OrderID: 10517
     ProductName: 'Outback Lager'
     Quantity: 6
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10523
     ProductName: 'Alice Mutton'
     Quantity: 25
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10523
     ProductName: 'Sir Rodney''s Marmalade'
     Quantity: 15
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10523
     ProductName: 'Gravad lax'
     Quantity: 18
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10523
     ProductName: 'Jack''s New England Clam Chowder'
     Quantity: 6
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10532
     ProductName: 'Nord-Ost Matjeshering'
     Quantity: 15
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10532
     ProductName: 'Louisiana Hot Spiced Okra'
     Quantity: 24
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10538
     ProductName: 'Outback Lager'
     Quantity: 7
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10538
     ProductName: 'Mozzarella di Giovanni'
     Quantity: 1
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10539
     ProductName: 'Konbu'
     Quantity: 8
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10539
     ProductName: 'Sir Rodney''s Scones'
     Quantity: 15
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10539
     ProductName: 'Geitost'
     Quantity: 15
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10539
     ProductName: 'Maxilaku'
     Quantity: 6
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10547
     ProductName: 'Mascarpone Fabioli'
     Quantity: 24
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10547
     ProductName: 'Inlagd Sill'
     Quantity: 60
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10578
     ProductName: 'Steeleye Stout'
     Quantity: 20
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10578
     ProductName: 'Ravioli Angelo'
     Quantity: 6
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10599
     ProductName: 'Tarte au sucre'
     Quantity: 10
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10726
     ProductName: 'Chef Anton''s Cajun Seasoning'
     Quantity: 25
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10726
     ProductName: 'Queso Cabrales'
     Quantity: 5
-  AnonymousType0
+  AnonymousType
     CustomerName: 'North/South'
     OrderID: 10752
     ProductName: 'Chai'
     Quantity: 8
-  AnonymousType0
+  AnonymousType
     CustomerName: 'North/South'
     OrderID: 10752
     ProductName: 'Gudbrandsdalsost'
     Quantity: 3
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10800
     ProductName: 'Queso Cabrales'
     Quantity: 50
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10800
     ProductName: 'Manjimup Dried Apples'
     Quantity: 10
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10800
     ProductName: 'Tourtière'
     Quantity: 7
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10804
     ProductName: 'Ikura'
     Quantity: 36
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10804
     ProductName: 'Rössle Sauerkraut'
     Quantity: 24
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10804
     ProductName: 'Maxilaku'
     Quantity: 4
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Consolidated Holdings'
     OrderID: 10848
     ProductName: 'Chef Anton''s Gumbo Mix'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Consolidated Holdings'
     OrderID: 10848
     ProductName: 'Mishi Kobe Niku'
     Quantity: 3
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10869
     ProductName: 'Chai'
     Quantity: 40
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10869
     ProductName: 'Queso Cabrales'
     Quantity: 10
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10869
     ProductName: 'Tunnbröd'
     Quantity: 50
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Seven Seas Imports'
     OrderID: 10869
     ProductName: 'Scottish Longbreads'
     Quantity: 20
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10943
     ProductName: 'Konbu'
     Quantity: 15
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10943
     ProductName: 'Gustaf''s Knäckebröd'
     Quantity: 21
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10943
     ProductName: 'Spegesild'
     Quantity: 15
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 10947
     ProductName: 'Raclette Courdavault'
     Quantity: 4
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10987
     ProductName: 'Uncle Bob''s Organic Dried Pears'
     Quantity: 60
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10987
     ProductName: 'Ipoh Coffee'
     Quantity: 6
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 10987
     ProductName: 'Mozzarella di Giovanni'
     Quantity: 20
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 11023
     ProductName: 'Uncle Bob''s Organic Dried Pears'
     Quantity: 4
-  AnonymousType0
+  AnonymousType
     CustomerName: 'B''s Beverages'
     OrderID: 11023
     ProductName: 'Ipoh Coffee'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11024
     ProductName: 'Gumbär Gummibärchen'
     Quantity: 12
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11024
     ProductName: 'Geitost'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11024
     ProductName: 'Louisiana Fiery Hot Pepper Sauce'
     Quantity: 21
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11024
     ProductName: 'Flotemysost'
     Quantity: 50
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11047
     ProductName: 'Chai'
     Quantity: 25
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11047
     ProductName: 'Chef Anton''s Gumbo Mix'
     Quantity: 30
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11056
     ProductName: 'Uncle Bob''s Organic Dried Pears'
     Quantity: 40
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11056
     ProductName: 'Pâté chinois'
     Quantity: 35
-  AnonymousType0
+  AnonymousType
     CustomerName: 'Eastern Connection'
     OrderID: 11056
     ProductName: 'Camembert Pierrot'
     Quantity: 50
-  AnonymousType0
+  AnonymousType
     CustomerName: 'North/South'
     OrderID: 11057
     ProductName: 'Outback Lager'

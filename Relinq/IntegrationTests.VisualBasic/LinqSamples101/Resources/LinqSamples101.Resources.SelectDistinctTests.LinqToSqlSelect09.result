@@ -1,15 +1,15 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 32,3800
     OrderID: 10248
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,6100
     OrderID: 10249
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -26,7 +26,7 @@ Enumerable {
     }
     FreeShippingDiscount: 65,8300
     OrderID: 10250
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -43,7 +43,7 @@ Enumerable {
     }
     FreeShippingDiscount: 41,3400
     OrderID: 10251
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -60,12 +60,12 @@ Enumerable {
     }
     FreeShippingDiscount: 51,3000
     OrderID: 10252
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 58,1700
     OrderID: 10253
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -82,22 +82,22 @@ Enumerable {
     }
     FreeShippingDiscount: 22,9800
     OrderID: 10254
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 148,3300
     OrderID: 10255
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 13,9700
     OrderID: 10256
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 81,9100
     OrderID: 10257
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -120,12 +120,12 @@ Enumerable {
     }
     FreeShippingDiscount: 140,5100
     OrderID: 10258
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,2500
     OrderID: 10259
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -148,12 +148,12 @@ Enumerable {
     }
     FreeShippingDiscount: 55,0900
     OrderID: 10260
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,0500
     OrderID: 10261
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -164,7 +164,7 @@ Enumerable {
     }
     FreeShippingDiscount: 48,2900
     OrderID: 10262
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -187,7 +187,7 @@ Enumerable {
     }
     FreeShippingDiscount: 146,0600
     OrderID: 10263
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -198,12 +198,12 @@ Enumerable {
     }
     FreeShippingDiscount: 3,6700
     OrderID: 10264
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 55,2800
     OrderID: 10265
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -214,7 +214,7 @@ Enumerable {
     }
     FreeShippingDiscount: 25,7300
     OrderID: 10266
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -231,12 +231,12 @@ Enumerable {
     }
     FreeShippingDiscount: 208,5800
     OrderID: 10267
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 66,2900
     OrderID: 10268
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -253,22 +253,22 @@ Enumerable {
     }
     FreeShippingDiscount: 4,5600
     OrderID: 10269
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 136,5400
     OrderID: 10270
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,5400
     OrderID: 10271
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 98,0300
     OrderID: 10272
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -297,12 +297,12 @@ Enumerable {
     }
     FreeShippingDiscount: 76,0700
     OrderID: 10273
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,0100
     OrderID: 10274
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -319,22 +319,22 @@ Enumerable {
     }
     FreeShippingDiscount: 26,9300
     OrderID: 10275
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 13,8400
     OrderID: 10276
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 125,7700
     OrderID: 10277
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 92,6900
     OrderID: 10278
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -345,27 +345,27 @@ Enumerable {
     }
     FreeShippingDiscount: 25,8300
     OrderID: 10279
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,9800
     OrderID: 10280
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,9400
     OrderID: 10281
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 12,6900
     OrderID: 10282
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 84,8100
     OrderID: 10283
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -388,7 +388,7 @@ Enumerable {
     }
     FreeShippingDiscount: 76,5600
     OrderID: 10284
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -411,12 +411,12 @@ Enumerable {
     }
     FreeShippingDiscount: 76,8300
     OrderID: 10285
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 229,2400
     OrderID: 10286
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -433,7 +433,7 @@ Enumerable {
     }
     FreeShippingDiscount: 12,7600
     OrderID: 10287
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -450,17 +450,17 @@ Enumerable {
     }
     FreeShippingDiscount: 7,4500
     OrderID: 10288
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 22,7700
     OrderID: 10289
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 79,7000
     OrderID: 10290
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -483,37 +483,37 @@ Enumerable {
     }
     FreeShippingDiscount: 6,4000
     OrderID: 10291
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,3500
     OrderID: 10292
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 21,1800
     OrderID: 10293
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 147,2600
     OrderID: 10294
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,1500
     OrderID: 10295
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,1200
     OrderID: 10296
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 5,7400
     OrderID: 10297
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -530,27 +530,27 @@ Enumerable {
     }
     FreeShippingDiscount: 168,2200
     OrderID: 10298
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,7600
     OrderID: 10299
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 17,6800
     OrderID: 10300
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 45,0800
     OrderID: 10301
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,2700
     OrderID: 10302
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -573,12 +573,12 @@ Enumerable {
     }
     FreeShippingDiscount: 107,8300
     OrderID: 10303
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 63,7900
     OrderID: 10304
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -601,47 +601,47 @@ Enumerable {
     }
     FreeShippingDiscount: 257,6200
     OrderID: 10305
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,5600
     OrderID: 10306
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,5600
     OrderID: 10307
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,6100
     OrderID: 10308
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 47,3000
     OrderID: 10309
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 17,5200
     OrderID: 10310
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 24,6900
     OrderID: 10311
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 40,2600
     OrderID: 10312
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,9600
     OrderID: 10313
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -664,52 +664,52 @@ Enumerable {
     }
     FreeShippingDiscount: 74,1600
     OrderID: 10314
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 41,7600
     OrderID: 10315
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 150,1500
     OrderID: 10316
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 12,6900
     OrderID: 10317
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,7300
     OrderID: 10318
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 64,5000
     OrderID: 10319
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 34,5700
     OrderID: 10320
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,4300
     OrderID: 10321
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,4000
     OrderID: 10322
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,8800
     OrderID: 10323
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -738,17 +738,17 @@ Enumerable {
     }
     FreeShippingDiscount: 214,2700
     OrderID: 10324
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 64,8600
     OrderID: 10325
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 77,9200
     OrderID: 10326
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -777,12 +777,12 @@ Enumerable {
     }
     FreeShippingDiscount: 63,3600
     OrderID: 10327
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 87,0300
     OrderID: 10328
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -811,7 +811,7 @@ Enumerable {
     }
     FreeShippingDiscount: 191,6700
     OrderID: 10329
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -828,12 +828,12 @@ Enumerable {
     }
     FreeShippingDiscount: 12,7500
     OrderID: 10330
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 10,1900
     OrderID: 10331
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -856,7 +856,7 @@ Enumerable {
     }
     FreeShippingDiscount: 52,8400
     OrderID: 10332
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -873,12 +873,12 @@ Enumerable {
     }
     FreeShippingDiscount: 0,5900
     OrderID: 10333
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,5600
     OrderID: 10334
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -907,7 +907,7 @@ Enumerable {
     }
     FreeShippingDiscount: 42,1100
     OrderID: 10335
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -918,17 +918,17 @@ Enumerable {
     }
     FreeShippingDiscount: 15,5100
     OrderID: 10336
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 108,2600
     OrderID: 10337
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 84,2100
     OrderID: 10338
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -939,7 +939,7 @@ Enumerable {
     }
     FreeShippingDiscount: 15,6600
     OrderID: 10339
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -962,7 +962,7 @@ Enumerable {
     }
     FreeShippingDiscount: 166,3100
     OrderID: 10340
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -973,7 +973,7 @@ Enumerable {
     }
     FreeShippingDiscount: 26,7800
     OrderID: 10341
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1002,7 +1002,7 @@ Enumerable {
     }
     FreeShippingDiscount: 54,8300
     OrderID: 10342
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1013,7 +1013,7 @@ Enumerable {
     }
     FreeShippingDiscount: 110,3700
     OrderID: 10343
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -1024,12 +1024,12 @@ Enumerable {
     }
     FreeShippingDiscount: 23,2900
     OrderID: 10344
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 249,0600
     OrderID: 10345
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1040,7 +1040,7 @@ Enumerable {
     }
     FreeShippingDiscount: 142,0800
     OrderID: 10346
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1057,7 +1057,7 @@ Enumerable {
     }
     FreeShippingDiscount: 3,1000
     OrderID: 10347
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1068,12 +1068,12 @@ Enumerable {
     }
     FreeShippingDiscount: 0,7800
     OrderID: 10348
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,6300
     OrderID: 10349
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1090,7 +1090,7 @@ Enumerable {
     }
     FreeShippingDiscount: 64,1900
     OrderID: 10350
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1113,7 +1113,7 @@ Enumerable {
     }
     FreeShippingDiscount: 162,3300
     OrderID: 10351
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1124,7 +1124,7 @@ Enumerable {
     }
     FreeShippingDiscount: 1,3000
     OrderID: 10352
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1141,22 +1141,22 @@ Enumerable {
     }
     FreeShippingDiscount: 360,6300
     OrderID: 10353
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 53,8000
     OrderID: 10354
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 41,9500
     OrderID: 10355
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 36,7100
     OrderID: 10356
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1173,7 +1173,7 @@ Enumerable {
     }
     FreeShippingDiscount: 34,8800
     OrderID: 10357
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1196,7 +1196,7 @@ Enumerable {
     }
     FreeShippingDiscount: 19,6400
     OrderID: 10358
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1219,12 +1219,12 @@ Enumerable {
     }
     FreeShippingDiscount: 288,4300
     OrderID: 10359
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 131,7000
     OrderID: 10360
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1241,37 +1241,37 @@ Enumerable {
     }
     FreeShippingDiscount: 183,1700
     OrderID: 10361
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 96,0400
     OrderID: 10362
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 30,5400
     OrderID: 10363
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 71,9700
     OrderID: 10364
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 22,0000
     OrderID: 10365
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 10,1400
     OrderID: 10366
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 13,5500
     OrderID: 10367
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1294,7 +1294,7 @@ Enumerable {
     }
     FreeShippingDiscount: 101,9500
     OrderID: 10368
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -1305,7 +1305,7 @@ Enumerable {
     }
     FreeShippingDiscount: 195,6800
     OrderID: 10369
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1322,7 +1322,7 @@ Enumerable {
     }
     FreeShippingDiscount: 1,1700
     OrderID: 10370
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1333,7 +1333,7 @@ Enumerable {
     }
     FreeShippingDiscount: 0,4500
     OrderID: 10371
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -1362,7 +1362,7 @@ Enumerable {
     }
     FreeShippingDiscount: 890,7800
     OrderID: 10372
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1379,17 +1379,17 @@ Enumerable {
     }
     FreeShippingDiscount: 124,1200
     OrderID: 10373
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,9400
     OrderID: 10374
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 20,1200
     OrderID: 10375
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1400,7 +1400,7 @@ Enumerable {
     }
     FreeShippingDiscount: 20,3900
     OrderID: 10376
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1417,12 +1417,12 @@ Enumerable {
     }
     FreeShippingDiscount: 22,2100
     OrderID: 10377
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 5,4400
     OrderID: 10378
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1445,7 +1445,7 @@ Enumerable {
     }
     FreeShippingDiscount: 45,0300
     OrderID: 10379
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1468,27 +1468,27 @@ Enumerable {
     }
     FreeShippingDiscount: 35,0300
     OrderID: 10380
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,9900
     OrderID: 10381
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 94,7700
     OrderID: 10382
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 34,2400
     OrderID: 10383
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 168,6400
     OrderID: 10384
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1511,17 +1511,17 @@ Enumerable {
     }
     FreeShippingDiscount: 30,9600
     OrderID: 10385
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 13,9900
     OrderID: 10386
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 93,6300
     OrderID: 10387
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1538,12 +1538,12 @@ Enumerable {
     }
     FreeShippingDiscount: 34,8600
     OrderID: 10388
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 47,4200
     OrderID: 10389
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1566,17 +1566,17 @@ Enumerable {
     }
     FreeShippingDiscount: 126,3800
     OrderID: 10390
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 5,4500
     OrderID: 10391
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 122,4600
     OrderID: 10392
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -1605,12 +1605,12 @@ Enumerable {
     }
     FreeShippingDiscount: 126,5600
     OrderID: 10393
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 30,3400
     OrderID: 10394
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1627,12 +1627,12 @@ Enumerable {
     }
     FreeShippingDiscount: 184,4100
     OrderID: 10395
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 135,3500
     OrderID: 10396
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1649,7 +1649,7 @@ Enumerable {
     }
     FreeShippingDiscount: 60,2600
     OrderID: 10397
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1660,27 +1660,27 @@ Enumerable {
     }
     FreeShippingDiscount: 89,1600
     OrderID: 10398
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 27,3600
     OrderID: 10399
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 83,9300
     OrderID: 10400
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 12,5100
     OrderID: 10401
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 67,8800
     OrderID: 10402
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1697,7 +1697,7 @@ Enumerable {
     }
     FreeShippingDiscount: 73,7900
     OrderID: 10403
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1720,12 +1720,12 @@ Enumerable {
     }
     FreeShippingDiscount: 155,9700
     OrderID: 10404
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 34,8200
     OrderID: 10405
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1754,27 +1754,27 @@ Enumerable {
     }
     FreeShippingDiscount: 108,0400
     OrderID: 10406
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 91,4800
     OrderID: 10407
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,2600
     OrderID: 10408
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,8300
     OrderID: 10409
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,4000
     OrderID: 10410
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1797,7 +1797,7 @@ Enumerable {
     }
     FreeShippingDiscount: 23,6500
     OrderID: 10411
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1808,12 +1808,12 @@ Enumerable {
     }
     FreeShippingDiscount: 3,7700
     OrderID: 10412
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 95,6600
     OrderID: 10413
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1824,17 +1824,17 @@ Enumerable {
     }
     FreeShippingDiscount: 21,4800
     OrderID: 10414
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,2000
     OrderID: 10415
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 22,7200
     OrderID: 10416
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -1851,12 +1851,12 @@ Enumerable {
     }
     FreeShippingDiscount: 70,2900
     OrderID: 10417
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 17,5500
     OrderID: 10418
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -1873,7 +1873,7 @@ Enumerable {
     }
     FreeShippingDiscount: 137,3500
     OrderID: 10419
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -1902,7 +1902,7 @@ Enumerable {
     }
     FreeShippingDiscount: 44,1200
     OrderID: 10420
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -1925,17 +1925,17 @@ Enumerable {
     }
     FreeShippingDiscount: 99,2300
     OrderID: 10421
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,0200
     OrderID: 10422
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 24,5000
     OrderID: 10423
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -1958,7 +1958,7 @@ Enumerable {
     }
     FreeShippingDiscount: 370,6100
     OrderID: 10424
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -1975,22 +1975,22 @@ Enumerable {
     }
     FreeShippingDiscount: 7,9300
     OrderID: 10425
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 18,6900
     OrderID: 10426
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 31,2900
     OrderID: 10427
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,0900
     OrderID: 10428
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -2001,7 +2001,7 @@ Enumerable {
     }
     FreeShippingDiscount: 56,6300
     OrderID: 10429
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2018,7 +2018,7 @@ Enumerable {
     }
     FreeShippingDiscount: 458,7800
     OrderID: 10430
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -2041,17 +2041,17 @@ Enumerable {
     }
     FreeShippingDiscount: 44,1700
     OrderID: 10431
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,3400
     OrderID: 10432
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 73,8300
     OrderID: 10433
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2062,12 +2062,12 @@ Enumerable {
     }
     FreeShippingDiscount: 17,9200
     OrderID: 10434
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 9,2100
     OrderID: 10435
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2090,12 +2090,12 @@ Enumerable {
     }
     FreeShippingDiscount: 156,6600
     OrderID: 10436
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 19,9700
     OrderID: 10437
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2118,12 +2118,12 @@ Enumerable {
     }
     FreeShippingDiscount: 8,2400
     OrderID: 10438
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,0700
     OrderID: 10439
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2152,17 +2152,17 @@ Enumerable {
     }
     FreeShippingDiscount: 86,5300
     OrderID: 10440
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 73,0200
     OrderID: 10441
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 47,9400
     OrderID: 10442
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2173,17 +2173,17 @@ Enumerable {
     }
     FreeShippingDiscount: 13,9500
     OrderID: 10443
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,5000
     OrderID: 10444
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 9,3000
     OrderID: 10445
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2212,22 +2212,22 @@ Enumerable {
     }
     FreeShippingDiscount: 14,6800
     OrderID: 10446
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 68,6600
     OrderID: 10447
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 38,8200
     OrderID: 10448
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 53,3000
     OrderID: 10449
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2244,7 +2244,7 @@ Enumerable {
     }
     FreeShippingDiscount: 7,2300
     OrderID: 10450
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2273,7 +2273,7 @@ Enumerable {
     }
     FreeShippingDiscount: 189,0900
     OrderID: 10451
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2284,7 +2284,7 @@ Enumerable {
     }
     FreeShippingDiscount: 140,2600
     OrderID: 10452
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2301,7 +2301,7 @@ Enumerable {
     }
     FreeShippingDiscount: 25,3600
     OrderID: 10453
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2324,12 +2324,12 @@ Enumerable {
     }
     FreeShippingDiscount: 2,7400
     OrderID: 10454
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 180,4500
     OrderID: 10455
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2346,17 +2346,17 @@ Enumerable {
     }
     FreeShippingDiscount: 8,1200
     OrderID: 10456
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,5700
     OrderID: 10457
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 147,0600
     OrderID: 10458
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2373,7 +2373,7 @@ Enumerable {
     }
     FreeShippingDiscount: 25,0900
     OrderID: 10459
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -2390,7 +2390,7 @@ Enumerable {
     }
     FreeShippingDiscount: 16,2700
     OrderID: 10460
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -2413,17 +2413,17 @@ Enumerable {
     }
     FreeShippingDiscount: 148,6100
     OrderID: 10461
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,1700
     OrderID: 10462
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 14,7800
     OrderID: 10463
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2440,7 +2440,7 @@ Enumerable {
     }
     FreeShippingDiscount: 89,0000
     OrderID: 10464
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2457,22 +2457,22 @@ Enumerable {
     }
     FreeShippingDiscount: 145,0400
     OrderID: 10465
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,9300
     OrderID: 10466
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,9300
     OrderID: 10467
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 44,1200
     OrderID: 10468
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2495,17 +2495,17 @@ Enumerable {
     }
     FreeShippingDiscount: 60,1800
     OrderID: 10469
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 64,5600
     OrderID: 10470
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 45,5900
     OrderID: 10471
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2516,17 +2516,17 @@ Enumerable {
     }
     FreeShippingDiscount: 4,2000
     OrderID: 10472
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 16,3700
     OrderID: 10473
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 83,4900
     OrderID: 10474
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2549,7 +2549,7 @@ Enumerable {
     }
     FreeShippingDiscount: 68,5200
     OrderID: 10475
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2560,7 +2560,7 @@ Enumerable {
     }
     FreeShippingDiscount: 4,4100
     OrderID: 10476
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -2577,7 +2577,7 @@ Enumerable {
     }
     FreeShippingDiscount: 13,0200
     OrderID: 10477
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2588,27 +2588,27 @@ Enumerable {
     }
     FreeShippingDiscount: 4,8100
     OrderID: 10478
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 708,9500
     OrderID: 10479
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,3500
     OrderID: 10480
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 64,3300
     OrderID: 10481
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,4800
     OrderID: 10482
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2625,12 +2625,12 @@ Enumerable {
     }
     FreeShippingDiscount: 15,2800
     OrderID: 10483
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,8800
     OrderID: 10484
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2659,12 +2659,12 @@ Enumerable {
     }
     FreeShippingDiscount: 64,4500
     OrderID: 10485
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 30,5300
     OrderID: 10486
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -2675,7 +2675,7 @@ Enumerable {
     }
     FreeShippingDiscount: 71,0700
     OrderID: 10487
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2686,7 +2686,7 @@ Enumerable {
     }
     FreeShippingDiscount: 4,9300
     OrderID: 10488
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -2697,12 +2697,12 @@ Enumerable {
     }
     FreeShippingDiscount: 5,2900
     OrderID: 10489
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 210,1900
     OrderID: 10490
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2719,7 +2719,7 @@ Enumerable {
     }
     FreeShippingDiscount: 16,9600
     OrderID: 10491
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2736,7 +2736,7 @@ Enumerable {
     }
     FreeShippingDiscount: 62,8900
     OrderID: 10492
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2759,17 +2759,17 @@ Enumerable {
     }
     FreeShippingDiscount: 10,6400
     OrderID: 10493
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 65,9900
     OrderID: 10494
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,6500
     OrderID: 10495
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2780,22 +2780,22 @@ Enumerable {
     }
     FreeShippingDiscount: 46,7700
     OrderID: 10496
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 36,2100
     OrderID: 10497
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,7500
     OrderID: 10498
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 102,0200
     OrderID: 10499
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -2812,32 +2812,32 @@ Enumerable {
     }
     FreeShippingDiscount: 42,6800
     OrderID: 10500
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,8500
     OrderID: 10501
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 69,3200
     OrderID: 10502
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 16,7400
     OrderID: 10503
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 59,1300
     OrderID: 10504
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,1300
     OrderID: 10505
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2854,7 +2854,7 @@ Enumerable {
     }
     FreeShippingDiscount: 21,1900
     OrderID: 10506
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2871,17 +2871,17 @@ Enumerable {
     }
     FreeShippingDiscount: 47,4500
     OrderID: 10507
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,9900
     OrderID: 10508
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,1500
     OrderID: 10509
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -2892,7 +2892,7 @@ Enumerable {
     }
     FreeShippingDiscount: 367,6300
     OrderID: 10510
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2915,7 +2915,7 @@ Enumerable {
     }
     FreeShippingDiscount: 350,6400
     OrderID: 10511
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2944,7 +2944,7 @@ Enumerable {
     }
     FreeShippingDiscount: 3,5300
     OrderID: 10512
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -2967,12 +2967,12 @@ Enumerable {
     }
     FreeShippingDiscount: 105,6500
     OrderID: 10513
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 789,9500
     OrderID: 10514
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -2995,7 +2995,7 @@ Enumerable {
     }
     FreeShippingDiscount: 204,4700
     OrderID: 10515
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3012,17 +3012,17 @@ Enumerable {
     }
     FreeShippingDiscount: 62,7800
     OrderID: 10516
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 32,0700
     OrderID: 10517
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 218,1500
     OrderID: 10518
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3039,17 +3039,17 @@ Enumerable {
     }
     FreeShippingDiscount: 91,7600
     OrderID: 10519
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 13,3700
     OrderID: 10520
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 17,2200
     OrderID: 10521
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3072,7 +3072,7 @@ Enumerable {
     }
     FreeShippingDiscount: 45,3300
     OrderID: 10522
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3101,12 +3101,12 @@ Enumerable {
     }
     FreeShippingDiscount: 77,6300
     OrderID: 10523
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 244,7900
     OrderID: 10524
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3117,7 +3117,7 @@ Enumerable {
     }
     FreeShippingDiscount: 11,0600
     OrderID: 10525
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3134,7 +3134,7 @@ Enumerable {
     }
     FreeShippingDiscount: 58,5900
     OrderID: 10526
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3151,7 +3151,7 @@ Enumerable {
     }
     FreeShippingDiscount: 41,9000
     OrderID: 10527
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3162,27 +3162,27 @@ Enumerable {
     }
     FreeShippingDiscount: 3,3500
     OrderID: 10528
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 66,6900
     OrderID: 10529
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 339,2200
     OrderID: 10530
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,1200
     OrderID: 10531
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 74,4600
     OrderID: 10532
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3199,7 +3199,7 @@ Enumerable {
     }
     FreeShippingDiscount: 188,0400
     OrderID: 10533
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3216,7 +3216,7 @@ Enumerable {
     }
     FreeShippingDiscount: 27,9400
     OrderID: 10534
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3245,7 +3245,7 @@ Enumerable {
     }
     FreeShippingDiscount: 15,6400
     OrderID: 10535
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -3262,27 +3262,27 @@ Enumerable {
     }
     FreeShippingDiscount: 58,8800
     OrderID: 10536
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 78,8500
     OrderID: 10537
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,8700
     OrderID: 10538
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 12,3600
     OrderID: 10539
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1007,6400
     OrderID: 10540
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3311,7 +3311,7 @@ Enumerable {
     }
     FreeShippingDiscount: 68,6500
     OrderID: 10541
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3328,7 +3328,7 @@ Enumerable {
     }
     FreeShippingDiscount: 10,9500
     OrderID: 10542
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3345,22 +3345,22 @@ Enumerable {
     }
     FreeShippingDiscount: 48,1700
     OrderID: 10543
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 24,9100
     OrderID: 10544
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,9200
     OrderID: 10545
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 194,7200
     OrderID: 10546
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3371,7 +3371,7 @@ Enumerable {
     }
     FreeShippingDiscount: 178,4300
     OrderID: 10547
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -3382,7 +3382,7 @@ Enumerable {
     }
     FreeShippingDiscount: 1,4300
     OrderID: 10548
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3405,7 +3405,7 @@ Enumerable {
     }
     FreeShippingDiscount: 171,2400
     OrderID: 10549
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3428,7 +3428,7 @@ Enumerable {
     }
     FreeShippingDiscount: 4,3200
     OrderID: 10550
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3445,17 +3445,17 @@ Enumerable {
     }
     FreeShippingDiscount: 72,9500
     OrderID: 10551
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 83,2200
     OrderID: 10552
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 149,4900
     OrderID: 10553
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3484,7 +3484,7 @@ Enumerable {
     }
     FreeShippingDiscount: 120,9700
     OrderID: 10554
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3519,22 +3519,22 @@ Enumerable {
     }
     FreeShippingDiscount: 252,4900
     OrderID: 10555
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 9,8000
     OrderID: 10556
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 96,7200
     OrderID: 10557
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 72,9700
     OrderID: 10558
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3551,7 +3551,7 @@ Enumerable {
     }
     FreeShippingDiscount: 8,0500
     OrderID: 10559
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -3562,12 +3562,12 @@ Enumerable {
     }
     FreeShippingDiscount: 36,6500
     OrderID: 10560
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 242,2100
     OrderID: 10561
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3584,12 +3584,12 @@ Enumerable {
     }
     FreeShippingDiscount: 22,9500
     OrderID: 10562
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 60,4300
     OrderID: 10563
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3612,7 +3612,7 @@ Enumerable {
     }
     FreeShippingDiscount: 13,7500
     OrderID: 10564
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3629,7 +3629,7 @@ Enumerable {
     }
     FreeShippingDiscount: 7,1500
     OrderID: 10565
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3646,7 +3646,7 @@ Enumerable {
     }
     FreeShippingDiscount: 88,4000
     OrderID: 10566
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3663,12 +3663,12 @@ Enumerable {
     }
     FreeShippingDiscount: 33,9700
     OrderID: 10567
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,5400
     OrderID: 10568
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3679,7 +3679,7 @@ Enumerable {
     }
     FreeShippingDiscount: 58,9800
     OrderID: 10569
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3696,7 +3696,7 @@ Enumerable {
     }
     FreeShippingDiscount: 188,9900
     OrderID: 10570
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3713,7 +3713,7 @@ Enumerable {
     }
     FreeShippingDiscount: 26,0600
     OrderID: 10571
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -3736,42 +3736,42 @@ Enumerable {
     }
     FreeShippingDiscount: 116,4300
     OrderID: 10572
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 84,8400
     OrderID: 10573
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 37,6000
     OrderID: 10574
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 127,3400
     OrderID: 10575
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 18,5600
     OrderID: 10576
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 25,4100
     OrderID: 10577
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,6000
     OrderID: 10578
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 13,7300
     OrderID: 10579
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3794,7 +3794,7 @@ Enumerable {
     }
     FreeShippingDiscount: 75,8900
     OrderID: 10580
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3805,12 +3805,12 @@ Enumerable {
     }
     FreeShippingDiscount: 3,0100
     OrderID: 10581
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 27,7100
     OrderID: 10582
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3827,7 +3827,7 @@ Enumerable {
     }
     FreeShippingDiscount: 7,2800
     OrderID: 10583
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3838,12 +3838,12 @@ Enumerable {
     }
     FreeShippingDiscount: 59,1400
     OrderID: 10584
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 13,4100
     OrderID: 10585
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -3854,12 +3854,12 @@ Enumerable {
     }
     FreeShippingDiscount: 0,4800
     OrderID: 10586
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 62,5200
     OrderID: 10587
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3876,12 +3876,12 @@ Enumerable {
     }
     FreeShippingDiscount: 194,6700
     OrderID: 10588
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,4200
     OrderID: 10589
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3892,12 +3892,12 @@ Enumerable {
     }
     FreeShippingDiscount: 44,7700
     OrderID: 10590
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 55,9200
     OrderID: 10591
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -3914,7 +3914,7 @@ Enumerable {
     }
     FreeShippingDiscount: 32,1000
     OrderID: 10592
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3937,12 +3937,12 @@ Enumerable {
     }
     FreeShippingDiscount: 174,2000
     OrderID: 10593
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 5,2400
     OrderID: 10594
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -3965,7 +3965,7 @@ Enumerable {
     }
     FreeShippingDiscount: 96,7800
     OrderID: 10595
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -3988,7 +3988,7 @@ Enumerable {
     }
     FreeShippingDiscount: 16,3400
     OrderID: 10596
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4005,27 +4005,27 @@ Enumerable {
     }
     FreeShippingDiscount: 35,1200
     OrderID: 10597
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 44,4200
     OrderID: 10598
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,9800
     OrderID: 10599
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 45,1300
     OrderID: 10600
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 58,3000
     OrderID: 10601
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4036,7 +4036,7 @@ Enumerable {
     }
     FreeShippingDiscount: 2,9200
     OrderID: 10602
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4047,7 +4047,7 @@ Enumerable {
     }
     FreeShippingDiscount: 48,7700
     OrderID: 10603
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4064,7 +4064,7 @@ Enumerable {
     }
     FreeShippingDiscount: 7,4600
     OrderID: 10604
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4093,7 +4093,7 @@ Enumerable {
     }
     FreeShippingDiscount: 379,1300
     OrderID: 10605
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4116,22 +4116,22 @@ Enumerable {
     }
     FreeShippingDiscount: 79,4000
     OrderID: 10606
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 200,2400
     OrderID: 10607
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 27,7900
     OrderID: 10608
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,8500
     OrderID: 10609
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4142,17 +4142,17 @@ Enumerable {
     }
     FreeShippingDiscount: 26,7800
     OrderID: 10610
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 80,6500
     OrderID: 10611
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 544,0800
     OrderID: 10612
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4163,17 +4163,17 @@ Enumerable {
     }
     FreeShippingDiscount: 8,1100
     OrderID: 10613
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,9300
     OrderID: 10614
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,7500
     OrderID: 10615
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4196,7 +4196,7 @@ Enumerable {
     }
     FreeShippingDiscount: 116,5300
     OrderID: 10616
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -4207,27 +4207,27 @@ Enumerable {
     }
     FreeShippingDiscount: 18,5300
     OrderID: 10617
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 154,6800
     OrderID: 10618
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 91,0500
     OrderID: 10619
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,9400
     OrderID: 10620
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 23,7300
     OrderID: 10621
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4238,7 +4238,7 @@ Enumerable {
     }
     FreeShippingDiscount: 50,9700
     OrderID: 10622
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4261,22 +4261,22 @@ Enumerable {
     }
     FreeShippingDiscount: 97,1800
     OrderID: 10623
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 94,8000
     OrderID: 10624
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 43,9000
     OrderID: 10625
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 138,6900
     OrderID: 10626
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -4287,17 +4287,17 @@ Enumerable {
     }
     FreeShippingDiscount: 107,4600
     OrderID: 10627
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 30,3600
     OrderID: 10628
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 85,4600
     OrderID: 10629
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4308,7 +4308,7 @@ Enumerable {
     }
     FreeShippingDiscount: 32,3500
     OrderID: 10630
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4319,7 +4319,7 @@ Enumerable {
     }
     FreeShippingDiscount: 0,8700
     OrderID: 10631
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4336,7 +4336,7 @@ Enumerable {
     }
     FreeShippingDiscount: 41,3800
     OrderID: 10632
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -4365,12 +4365,12 @@ Enumerable {
     }
     FreeShippingDiscount: 477,9000
     OrderID: 10633
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 487,3800
     OrderID: 10634
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4387,12 +4387,12 @@ Enumerable {
     }
     FreeShippingDiscount: 47,4600
     OrderID: 10635
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,1500
     OrderID: 10636
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4409,17 +4409,17 @@ Enumerable {
     }
     FreeShippingDiscount: 201,2900
     OrderID: 10637
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 158,4400
     OrderID: 10638
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 38,6400
     OrderID: 10639
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4436,12 +4436,12 @@ Enumerable {
     }
     FreeShippingDiscount: 23,5500
     OrderID: 10640
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 179,6100
     OrderID: 10641
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4458,7 +4458,7 @@ Enumerable {
     }
     FreeShippingDiscount: 41,8900
     OrderID: 10642
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4481,7 +4481,7 @@ Enumerable {
     }
     FreeShippingDiscount: 1,2100
     OrderID: 10643
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4498,12 +4498,12 @@ Enumerable {
     }
     FreeShippingDiscount: 0,1400
     OrderID: 10644
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 12,4100
     OrderID: 10645
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4532,12 +4532,12 @@ Enumerable {
     }
     FreeShippingDiscount: 142,3300
     OrderID: 10646
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 45,5400
     OrderID: 10647
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -4548,12 +4548,12 @@ Enumerable {
     }
     FreeShippingDiscount: 14,2500
     OrderID: 10648
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,2000
     OrderID: 10649
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4564,7 +4564,7 @@ Enumerable {
     }
     FreeShippingDiscount: 176,8100
     OrderID: 10650
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4581,7 +4581,7 @@ Enumerable {
     }
     FreeShippingDiscount: 20,6000
     OrderID: 10651
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4592,7 +4592,7 @@ Enumerable {
     }
     FreeShippingDiscount: 7,1400
     OrderID: 10652
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4609,7 +4609,7 @@ Enumerable {
     }
     FreeShippingDiscount: 93,2500
     OrderID: 10653
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4632,7 +4632,7 @@ Enumerable {
     }
     FreeShippingDiscount: 55,2600
     OrderID: 10654
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4643,7 +4643,7 @@ Enumerable {
     }
     FreeShippingDiscount: 4,4100
     OrderID: 10655
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4666,12 +4666,12 @@ Enumerable {
     }
     FreeShippingDiscount: 57,1500
     OrderID: 10656
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 352,6900
     OrderID: 10657
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4694,7 +4694,7 @@ Enumerable {
     }
     FreeShippingDiscount: 364,1500
     OrderID: 10658
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4717,12 +4717,12 @@ Enumerable {
     }
     FreeShippingDiscount: 105,8100
     OrderID: 10659
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 111,2900
     OrderID: 10660
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4739,12 +4739,12 @@ Enumerable {
     }
     FreeShippingDiscount: 17,5500
     OrderID: 10661
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,2800
     OrderID: 10662
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -4767,7 +4767,7 @@ Enumerable {
     }
     FreeShippingDiscount: 113,1500
     OrderID: 10663
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -4790,17 +4790,17 @@ Enumerable {
     }
     FreeShippingDiscount: 1,2700
     OrderID: 10664
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 26,3100
     OrderID: 10665
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 232,4200
     OrderID: 10666
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4817,7 +4817,7 @@ Enumerable {
     }
     FreeShippingDiscount: 78,0900
     OrderID: 10667
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4840,22 +4840,22 @@ Enumerable {
     }
     FreeShippingDiscount: 47,2200
     OrderID: 10668
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 24,3900
     OrderID: 10669
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 203,4800
     OrderID: 10670
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 30,3400
     OrderID: 10671
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4866,27 +4866,27 @@ Enumerable {
     }
     FreeShippingDiscount: 95,7500
     OrderID: 10672
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 22,7600
     OrderID: 10673
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,9000
     OrderID: 10674
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 31,8500
     OrderID: 10675
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,0100
     OrderID: 10676
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -4903,17 +4903,17 @@ Enumerable {
     }
     FreeShippingDiscount: 4,0300
     OrderID: 10677
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 388,9800
     OrderID: 10678
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 27,9400
     OrderID: 10679
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -4936,7 +4936,7 @@ Enumerable {
     }
     FreeShippingDiscount: 26,6100
     OrderID: 10680
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -4953,27 +4953,27 @@ Enumerable {
     }
     FreeShippingDiscount: 76,1300
     OrderID: 10681
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 36,1300
     OrderID: 10682
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,4000
     OrderID: 10683
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 145,6300
     OrderID: 10684
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 33,7500
     OrderID: 10685
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -4984,7 +4984,7 @@ Enumerable {
     }
     FreeShippingDiscount: 96,5000
     OrderID: 10686
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5001,7 +5001,7 @@ Enumerable {
     }
     FreeShippingDiscount: 296,4300
     OrderID: 10687
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -5018,7 +5018,7 @@ Enumerable {
     }
     FreeShippingDiscount: 299,0900
     OrderID: 10688
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5029,7 +5029,7 @@ Enumerable {
     }
     FreeShippingDiscount: 13,4200
     OrderID: 10689
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5046,17 +5046,17 @@ Enumerable {
     }
     FreeShippingDiscount: 15,8000
     OrderID: 10690
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 810,0500
     OrderID: 10691
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 61,0200
     OrderID: 10692
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -5079,22 +5079,22 @@ Enumerable {
     }
     FreeShippingDiscount: 139,3400
     OrderID: 10693
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 398,3600
     OrderID: 10694
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 16,7200
     OrderID: 10695
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 102,5500
     OrderID: 10696
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5123,7 +5123,7 @@ Enumerable {
     }
     FreeShippingDiscount: 45,5200
     OrderID: 10697
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5152,12 +5152,12 @@ Enumerable {
     }
     FreeShippingDiscount: 272,4700
     OrderID: 10698
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,5800
     OrderID: 10699
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5186,7 +5186,7 @@ Enumerable {
     }
     FreeShippingDiscount: 65,1000
     OrderID: 10700
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -5209,32 +5209,32 @@ Enumerable {
     }
     FreeShippingDiscount: 220,3100
     OrderID: 10701
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 23,9400
     OrderID: 10702
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 152,3000
     OrderID: 10703
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,7800
     OrderID: 10704
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,5200
     OrderID: 10705
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 135,6300
     OrderID: 10706
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -5245,27 +5245,27 @@ Enumerable {
     }
     FreeShippingDiscount: 21,7400
     OrderID: 10707
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,9600
     OrderID: 10708
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 210,8000
     OrderID: 10709
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,9800
     OrderID: 10710
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 52,4100
     OrderID: 10711
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5276,12 +5276,12 @@ Enumerable {
     }
     FreeShippingDiscount: 89,9300
     OrderID: 10712
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 167,0500
     OrderID: 10713
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5316,17 +5316,17 @@ Enumerable {
     }
     FreeShippingDiscount: 24,4900
     OrderID: 10714
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 63,2000
     OrderID: 10715
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 22,5700
     OrderID: 10716
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5343,12 +5343,12 @@ Enumerable {
     }
     FreeShippingDiscount: 59,2500
     OrderID: 10717
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 170,8800
     OrderID: 10718
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5371,12 +5371,12 @@ Enumerable {
     }
     FreeShippingDiscount: 51,4400
     OrderID: 10719
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 9,5300
     OrderID: 10720
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5387,32 +5387,32 @@ Enumerable {
     }
     FreeShippingDiscount: 48,9200
     OrderID: 10721
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 74,5800
     OrderID: 10722
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 21,7200
     OrderID: 10723
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 57,7500
     OrderID: 10724
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 10,8300
     OrderID: 10725
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 16,5600
     OrderID: 10726
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5435,17 +5435,17 @@ Enumerable {
     }
     FreeShippingDiscount: 89,9000
     OrderID: 10727
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 58,3300
     OrderID: 10728
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 141,0600
     OrderID: 10729
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5468,7 +5468,7 @@ Enumerable {
     }
     FreeShippingDiscount: 20,1200
     OrderID: 10730
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5485,22 +5485,22 @@ Enumerable {
     }
     FreeShippingDiscount: 96,6500
     OrderID: 10731
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 16,9700
     OrderID: 10732
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 110,1100
     OrderID: 10733
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,6300
     OrderID: 10734
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -5517,27 +5517,27 @@ Enumerable {
     }
     FreeShippingDiscount: 45,9700
     OrderID: 10735
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 44,1000
     OrderID: 10736
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,7900
     OrderID: 10737
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,9100
     OrderID: 10738
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,0800
     OrderID: 10739
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5566,7 +5566,7 @@ Enumerable {
     }
     FreeShippingDiscount: 81,8800
     OrderID: 10740
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5577,12 +5577,12 @@ Enumerable {
     }
     FreeShippingDiscount: 10,9600
     OrderID: 10741
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 243,7300
     OrderID: 10742
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5593,7 +5593,7 @@ Enumerable {
     }
     FreeShippingDiscount: 23,7200
     OrderID: 10743
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5604,32 +5604,32 @@ Enumerable {
     }
     FreeShippingDiscount: 69,1900
     OrderID: 10744
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,5200
     OrderID: 10745
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 31,4300
     OrderID: 10746
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 117,3300
     OrderID: 10747
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 232,5500
     OrderID: 10748
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 61,5300
     OrderID: 10749
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -5652,7 +5652,7 @@ Enumerable {
     }
     FreeShippingDiscount: 79,3000
     OrderID: 10750
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -5669,22 +5669,22 @@ Enumerable {
     }
     FreeShippingDiscount: 130,7900
     OrderID: 10751
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,3900
     OrderID: 10752
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,7000
     OrderID: 10753
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,3800
     OrderID: 10754
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5713,7 +5713,7 @@ Enumerable {
     }
     FreeShippingDiscount: 16,7100
     OrderID: 10755
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5742,22 +5742,22 @@ Enumerable {
     }
     FreeShippingDiscount: 73,2100
     OrderID: 10756
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,1900
     OrderID: 10757
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 138,1700
     OrderID: 10758
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,9900
     OrderID: 10759
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5774,7 +5774,7 @@ Enumerable {
     }
     FreeShippingDiscount: 155,6400
     OrderID: 10760
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5785,17 +5785,17 @@ Enumerable {
     }
     FreeShippingDiscount: 18,6600
     OrderID: 10761
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 328,7400
     OrderID: 10762
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 37,3500
     OrderID: 10763
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -5812,7 +5812,7 @@ Enumerable {
     }
     FreeShippingDiscount: 145,4500
     OrderID: 10764
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -5823,22 +5823,22 @@ Enumerable {
     }
     FreeShippingDiscount: 42,7400
     OrderID: 10765
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 157,5500
     OrderID: 10766
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,5900
     OrderID: 10767
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 146,3200
     OrderID: 10768
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5855,7 +5855,7 @@ Enumerable {
     }
     FreeShippingDiscount: 65,0600
     OrderID: 10769
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5866,17 +5866,17 @@ Enumerable {
     }
     FreeShippingDiscount: 5,3200
     OrderID: 10770
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,1900
     OrderID: 10771
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 91,2800
     OrderID: 10772
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5893,7 +5893,7 @@ Enumerable {
     }
     FreeShippingDiscount: 96,4300
     OrderID: 10773
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -5904,12 +5904,12 @@ Enumerable {
     }
     FreeShippingDiscount: 48,2000
     OrderID: 10774
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 20,2500
     OrderID: 10775
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -5938,7 +5938,7 @@ Enumerable {
     }
     FreeShippingDiscount: 351,5300
     OrderID: 10776
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5949,22 +5949,22 @@ Enumerable {
     }
     FreeShippingDiscount: 3,0100
     OrderID: 10777
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,7900
     OrderID: 10778
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 58,1300
     OrderID: 10779
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 42,1300
     OrderID: 10780
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -5981,17 +5981,17 @@ Enumerable {
     }
     FreeShippingDiscount: 73,1600
     OrderID: 10781
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,1000
     OrderID: 10782
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 124,9800
     OrderID: 10783
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6008,12 +6008,12 @@ Enumerable {
     }
     FreeShippingDiscount: 70,0900
     OrderID: 10784
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,5100
     OrderID: 10785
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6036,7 +6036,7 @@ Enumerable {
     }
     FreeShippingDiscount: 110,8700
     OrderID: 10786
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -6053,7 +6053,7 @@ Enumerable {
     }
     FreeShippingDiscount: 249,9300
     OrderID: 10787
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -6070,12 +6070,12 @@ Enumerable {
     }
     FreeShippingDiscount: 42,7000
     OrderID: 10788
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 100,6000
     OrderID: 10789
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6092,7 +6092,7 @@ Enumerable {
     }
     FreeShippingDiscount: 28,2300
     OrderID: 10790
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -6109,17 +6109,17 @@ Enumerable {
     }
     FreeShippingDiscount: 16,8500
     OrderID: 10791
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 23,7900
     OrderID: 10792
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,5200
     OrderID: 10793
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6136,7 +6136,7 @@ Enumerable {
     }
     FreeShippingDiscount: 21,4900
     OrderID: 10794
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6147,7 +6147,7 @@ Enumerable {
     }
     FreeShippingDiscount: 126,6600
     OrderID: 10795
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6170,17 +6170,17 @@ Enumerable {
     }
     FreeShippingDiscount: 26,5200
     OrderID: 10796
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 33,3500
     OrderID: 10797
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,3300
     OrderID: 10798
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6197,7 +6197,7 @@ Enumerable {
     }
     FreeShippingDiscount: 30,7600
     OrderID: 10799
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -6220,7 +6220,7 @@ Enumerable {
     }
     FreeShippingDiscount: 137,4400
     OrderID: 10800
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6237,7 +6237,7 @@ Enumerable {
     }
     FreeShippingDiscount: 97,0900
     OrderID: 10801
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6266,7 +6266,7 @@ Enumerable {
     }
     FreeShippingDiscount: 257,2600
     OrderID: 10802
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -6289,7 +6289,7 @@ Enumerable {
     }
     FreeShippingDiscount: 55,2300
     OrderID: 10803
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6300,12 +6300,12 @@ Enumerable {
     }
     FreeShippingDiscount: 27,3300
     OrderID: 10804
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 237,3400
     OrderID: 10805
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6322,12 +6322,12 @@ Enumerable {
     }
     FreeShippingDiscount: 22,1100
     OrderID: 10806
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,3600
     OrderID: 10807
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6344,22 +6344,22 @@ Enumerable {
     }
     FreeShippingDiscount: 45,5300
     OrderID: 10808
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,8700
     OrderID: 10809
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,3300
     OrderID: 10810
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 31,2200
     OrderID: 10811
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -6376,7 +6376,7 @@ Enumerable {
     }
     FreeShippingDiscount: 59,7800
     OrderID: 10812
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6387,7 +6387,7 @@ Enumerable {
     }
     FreeShippingDiscount: 47,3800
     OrderID: 10813
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6410,12 +6410,12 @@ Enumerable {
     }
     FreeShippingDiscount: 130,9400
     OrderID: 10814
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 14,6200
     OrderID: 10815
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -6432,7 +6432,7 @@ Enumerable {
     }
     FreeShippingDiscount: 719,7800
     OrderID: 10816
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6455,32 +6455,32 @@ Enumerable {
     }
     FreeShippingDiscount: 306,0700
     OrderID: 10817
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 65,4800
     OrderID: 10818
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 19,7600
     OrderID: 10819
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 37,5200
     OrderID: 10820
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 36,6800
     OrderID: 10821
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,0000
     OrderID: 10822
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -6503,47 +6503,47 @@ Enumerable {
     }
     FreeShippingDiscount: 163,9700
     OrderID: 10823
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,2300
     OrderID: 10824
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 79,2500
     OrderID: 10825
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,0900
     OrderID: 10826
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 63,5400
     OrderID: 10827
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 90,8500
     OrderID: 10828
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 154,7200
     OrderID: 10829
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 81,8300
     OrderID: 10830
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 72,1900
     OrderID: 10831
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6566,7 +6566,7 @@ Enumerable {
     }
     FreeShippingDiscount: 43,2600
     OrderID: 10832
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -6589,7 +6589,7 @@ Enumerable {
     }
     FreeShippingDiscount: 71,4900
     OrderID: 10833
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -6606,7 +6606,7 @@ Enumerable {
     }
     FreeShippingDiscount: 29,7800
     OrderID: 10834
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6617,12 +6617,12 @@ Enumerable {
     }
     FreeShippingDiscount: 69,5300
     OrderID: 10835
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 411,8800
     OrderID: 10836
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6639,7 +6639,7 @@ Enumerable {
     }
     FreeShippingDiscount: 13,3200
     OrderID: 10837
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6662,7 +6662,7 @@ Enumerable {
     }
     FreeShippingDiscount: 59,2800
     OrderID: 10838
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -6679,7 +6679,7 @@ Enumerable {
     }
     FreeShippingDiscount: 35,4300
     OrderID: 10839
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6696,17 +6696,17 @@ Enumerable {
     }
     FreeShippingDiscount: 2,7100
     OrderID: 10840
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 424,3000
     OrderID: 10841
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 54,4200
     OrderID: 10842
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6717,12 +6717,12 @@ Enumerable {
     }
     FreeShippingDiscount: 9,2600
     OrderID: 10843
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 25,2200
     OrderID: 10844
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -6751,12 +6751,12 @@ Enumerable {
     }
     FreeShippingDiscount: 212,9800
     OrderID: 10845
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 56,4600
     OrderID: 10846
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -6797,12 +6797,12 @@ Enumerable {
     }
     FreeShippingDiscount: 487,5700
     OrderID: 10847
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 38,2400
     OrderID: 10848
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6813,7 +6813,7 @@ Enumerable {
     }
     FreeShippingDiscount: 0,5600
     OrderID: 10849
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6836,7 +6836,7 @@ Enumerable {
     }
     FreeShippingDiscount: 49,1900
     OrderID: 10850
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -6865,17 +6865,17 @@ Enumerable {
     }
     FreeShippingDiscount: 160,5500
     OrderID: 10851
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 174,0500
     OrderID: 10852
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 53,8300
     OrderID: 10853
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6892,7 +6892,7 @@ Enumerable {
     }
     FreeShippingDiscount: 100,2200
     OrderID: 10854
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6903,12 +6903,12 @@ Enumerable {
     }
     FreeShippingDiscount: 170,9700
     OrderID: 10855
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 58,4300
     OrderID: 10856
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6925,12 +6925,12 @@ Enumerable {
     }
     FreeShippingDiscount: 188,8500
     OrderID: 10857
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 52,5100
     OrderID: 10858
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -6953,22 +6953,22 @@ Enumerable {
     }
     FreeShippingDiscount: 76,1000
     OrderID: 10859
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 19,2600
     OrderID: 10860
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 14,9300
     OrderID: 10861
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 53,2300
     OrderID: 10862
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -6985,12 +6985,12 @@ Enumerable {
     }
     FreeShippingDiscount: 30,2600
     OrderID: 10863
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,0400
     OrderID: 10864
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7007,7 +7007,7 @@ Enumerable {
     }
     FreeShippingDiscount: 348,1400
     OrderID: 10865
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7030,12 +7030,12 @@ Enumerable {
     }
     FreeShippingDiscount: 109,1100
     OrderID: 10866
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,9300
     OrderID: 10867
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -7046,17 +7046,17 @@ Enumerable {
     }
     FreeShippingDiscount: 191,2700
     OrderID: 10868
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 143,2800
     OrderID: 10869
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 12,0400
     OrderID: 10870
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7079,7 +7079,7 @@ Enumerable {
     }
     FreeShippingDiscount: 112,2700
     OrderID: 10871
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7108,17 +7108,17 @@ Enumerable {
     }
     FreeShippingDiscount: 175,3200
     OrderID: 10872
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,8200
     OrderID: 10873
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 19,5800
     OrderID: 10874
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -7129,12 +7129,12 @@ Enumerable {
     }
     FreeShippingDiscount: 32,3700
     OrderID: 10875
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 60,4200
     OrderID: 10876
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7145,7 +7145,7 @@ Enumerable {
     }
     FreeShippingDiscount: 38,0600
     OrderID: 10877
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7156,12 +7156,12 @@ Enumerable {
     }
     FreeShippingDiscount: 46,6900
     OrderID: 10878
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,5000
     OrderID: 10879
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -7184,12 +7184,12 @@ Enumerable {
     }
     FreeShippingDiscount: 88,0100
     OrderID: 10880
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,8400
     OrderID: 10881
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7206,12 +7206,12 @@ Enumerable {
     }
     FreeShippingDiscount: 23,1000
     OrderID: 10882
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,5300
     OrderID: 10883
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7234,37 +7234,37 @@ Enumerable {
     }
     FreeShippingDiscount: 90,9700
     OrderID: 10884
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 5,6400
     OrderID: 10885
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,9900
     OrderID: 10886
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,2500
     OrderID: 10887
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 51,8700
     OrderID: 10888
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 280,6100
     OrderID: 10889
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 32,7600
     OrderID: 10890
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7275,7 +7275,7 @@ Enumerable {
     }
     FreeShippingDiscount: 20,3700
     OrderID: 10891
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7286,12 +7286,12 @@ Enumerable {
     }
     FreeShippingDiscount: 120,2700
     OrderID: 10892
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 77,7800
     OrderID: 10893
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7314,27 +7314,27 @@ Enumerable {
     }
     FreeShippingDiscount: 116,1300
     OrderID: 10894
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 162,7500
     OrderID: 10895
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 32,4500
     OrderID: 10896
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 603,5400
     OrderID: 10897
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,2700
     OrderID: 10898
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7345,7 +7345,7 @@ Enumerable {
     }
     FreeShippingDiscount: 1,2100
     OrderID: 10899
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7356,12 +7356,12 @@ Enumerable {
     }
     FreeShippingDiscount: 1,6600
     OrderID: 10900
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 62,0900
     OrderID: 10901
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7378,17 +7378,17 @@ Enumerable {
     }
     FreeShippingDiscount: 44,1500
     OrderID: 10902
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 36,7100
     OrderID: 10903
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 162,9500
     OrderID: 10904
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7399,17 +7399,17 @@ Enumerable {
     }
     FreeShippingDiscount: 13,7200
     OrderID: 10905
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 26,2900
     OrderID: 10906
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 9,1900
     OrderID: 10907
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7426,22 +7426,22 @@ Enumerable {
     }
     FreeShippingDiscount: 32,9600
     OrderID: 10908
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 53,0500
     OrderID: 10909
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 38,1100
     OrderID: 10910
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 38,1900
     OrderID: 10911
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7458,7 +7458,7 @@ Enumerable {
     }
     FreeShippingDiscount: 580,9100
     OrderID: 10912
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7475,27 +7475,27 @@ Enumerable {
     }
     FreeShippingDiscount: 33,0500
     OrderID: 10913
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 21,1900
     OrderID: 10914
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,5100
     OrderID: 10915
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 63,7700
     OrderID: 10916
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,2900
     OrderID: 10917
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7512,27 +7512,27 @@ Enumerable {
     }
     FreeShippingDiscount: 48,8300
     OrderID: 10918
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 19,8000
     OrderID: 10919
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,6100
     OrderID: 10920
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 176,4800
     OrderID: 10921
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 62,7400
     OrderID: 10922
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -7555,7 +7555,7 @@ Enumerable {
     }
     FreeShippingDiscount: 68,2600
     OrderID: 10923
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -7572,7 +7572,7 @@ Enumerable {
     }
     FreeShippingDiscount: 151,5200
     OrderID: 10924
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7589,27 +7589,27 @@ Enumerable {
     }
     FreeShippingDiscount: 2,2700
     OrderID: 10925
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 39,9200
     OrderID: 10926
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 19,7900
     OrderID: 10927
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,3600
     OrderID: 10928
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 33,9300
     OrderID: 10929
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -7626,7 +7626,7 @@ Enumerable {
     }
     FreeShippingDiscount: 15,5500
     OrderID: 10930
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7637,7 +7637,7 @@ Enumerable {
     }
     FreeShippingDiscount: 13,6000
     OrderID: 10931
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -7660,17 +7660,17 @@ Enumerable {
     }
     FreeShippingDiscount: 134,6400
     OrderID: 10932
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 54,1500
     OrderID: 10933
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 32,0100
     OrderID: 10934
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7687,7 +7687,7 @@ Enumerable {
     }
     FreeShippingDiscount: 47,5900
     OrderID: 10935
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -7698,12 +7698,12 @@ Enumerable {
     }
     FreeShippingDiscount: 33,6800
     OrderID: 10936
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 31,5100
     OrderID: 10937
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7732,7 +7732,7 @@ Enumerable {
     }
     FreeShippingDiscount: 31,8900
     OrderID: 10938
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7749,12 +7749,12 @@ Enumerable {
     }
     FreeShippingDiscount: 76,3300
     OrderID: 10939
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 19,7700
     OrderID: 10940
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7777,17 +7777,17 @@ Enumerable {
     }
     FreeShippingDiscount: 400,8100
     OrderID: 10941
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 17,9500
     OrderID: 10942
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,1700
     OrderID: 10943
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7804,37 +7804,37 @@ Enumerable {
     }
     FreeShippingDiscount: 52,9200
     OrderID: 10944
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 10,2200
     OrderID: 10945
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 27,2000
     OrderID: 10946
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,2600
     OrderID: 10947
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 23,3900
     OrderID: 10948
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 74,4400
     OrderID: 10949
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 2,5000
     OrderID: 10950
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7857,7 +7857,7 @@ Enumerable {
     }
     FreeShippingDiscount: 30,8500
     OrderID: 10951
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7868,7 +7868,7 @@ Enumerable {
     }
     FreeShippingDiscount: 40,4200
     OrderID: 10952
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7885,7 +7885,7 @@ Enumerable {
     }
     FreeShippingDiscount: 23,7200
     OrderID: 10953
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7908,7 +7908,7 @@ Enumerable {
     }
     FreeShippingDiscount: 27,9100
     OrderID: 10954
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -7919,22 +7919,22 @@ Enumerable {
     }
     FreeShippingDiscount: 3,2600
     OrderID: 10955
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 44,6500
     OrderID: 10956
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 105,3600
     OrderID: 10957
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 49,5600
     OrderID: 10958
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7945,7 +7945,7 @@ Enumerable {
     }
     FreeShippingDiscount: 4,9800
     OrderID: 10959
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -7956,7 +7956,7 @@ Enumerable {
     }
     FreeShippingDiscount: 2,0800
     OrderID: 10960
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -7967,12 +7967,12 @@ Enumerable {
     }
     FreeShippingDiscount: 104,4700
     OrderID: 10961
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 275,7900
     OrderID: 10962
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -7983,17 +7983,17 @@ Enumerable {
     }
     FreeShippingDiscount: 2,7000
     OrderID: 10963
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 87,3800
     OrderID: 10964
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 144,3800
     OrderID: 10965
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -8010,22 +8010,22 @@ Enumerable {
     }
     FreeShippingDiscount: 27,1900
     OrderID: 10966
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 62,2200
     OrderID: 10967
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 74,6000
     OrderID: 10968
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,2100
     OrderID: 10969
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8036,42 +8036,42 @@ Enumerable {
     }
     FreeShippingDiscount: 16,1600
     OrderID: 10970
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 121,8200
     OrderID: 10971
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,0200
     OrderID: 10972
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 15,1700
     OrderID: 10973
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 12,9600
     OrderID: 10974
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 32,2700
     OrderID: 10975
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 37,9700
     OrderID: 10976
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 208,5000
     OrderID: 10977
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -8094,12 +8094,12 @@ Enumerable {
     }
     FreeShippingDiscount: 32,8200
     OrderID: 10978
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 353,0700
     OrderID: 10979
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8110,17 +8110,17 @@ Enumerable {
     }
     FreeShippingDiscount: 1,2600
     OrderID: 10980
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 193,3700
     OrderID: 10981
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 14,0100
     OrderID: 10982
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -8131,12 +8131,12 @@ Enumerable {
     }
     FreeShippingDiscount: 657,5400
     OrderID: 10983
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 211,2200
     OrderID: 10984
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8159,17 +8159,17 @@ Enumerable {
     }
     FreeShippingDiscount: 91,5100
     OrderID: 10985
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 217,8600
     OrderID: 10986
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 185,4800
     OrderID: 10987
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8180,12 +8180,12 @@ Enumerable {
     }
     FreeShippingDiscount: 61,1400
     OrderID: 10988
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 34,7600
     OrderID: 10989
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -8208,7 +8208,7 @@ Enumerable {
     }
     FreeShippingDiscount: 117,6100
     OrderID: 10990
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8231,12 +8231,12 @@ Enumerable {
     }
     FreeShippingDiscount: 38,5100
     OrderID: 10991
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,2700
     OrderID: 10992
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8253,7 +8253,7 @@ Enumerable {
     }
     FreeShippingDiscount: 8,8100
     OrderID: 10993
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -8264,17 +8264,17 @@ Enumerable {
     }
     FreeShippingDiscount: 65,5300
     OrderID: 10994
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 46,0000
     OrderID: 10995
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 1,1200
     OrderID: 10996
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8291,12 +8291,12 @@ Enumerable {
     }
     FreeShippingDiscount: 73,9100
     OrderID: 10997
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 20,3100
     OrderID: 10998
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -8319,7 +8319,7 @@ Enumerable {
     }
     FreeShippingDiscount: 96,3500
     OrderID: 10999
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8336,12 +8336,12 @@ Enumerable {
     }
     FreeShippingDiscount: 55,1200
     OrderID: 11000
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 197,3000
     OrderID: 11001
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -8358,22 +8358,22 @@ Enumerable {
     }
     FreeShippingDiscount: 141,1600
     OrderID: 11002
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 14,9100
     OrderID: 11003
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 44,8400
     OrderID: 11004
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,7500
     OrderID: 11005
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8384,12 +8384,12 @@ Enumerable {
     }
     FreeShippingDiscount: 25,1900
     OrderID: 11006
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 202,2400
     OrderID: 11007
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -8406,7 +8406,7 @@ Enumerable {
     }
     FreeShippingDiscount: 79,4600
     OrderID: 11008
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8417,12 +8417,12 @@ Enumerable {
     }
     FreeShippingDiscount: 59,1100
     OrderID: 11009
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 28,7100
     OrderID: 11010
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -8433,7 +8433,7 @@ Enumerable {
     }
     FreeShippingDiscount: 1,2100
     OrderID: 11011
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -8456,12 +8456,12 @@ Enumerable {
     }
     FreeShippingDiscount: 242,9500
     OrderID: 11012
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 32,9900
     OrderID: 11013
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8472,32 +8472,32 @@ Enumerable {
     }
     FreeShippingDiscount: 23,6000
     OrderID: 11014
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,6200
     OrderID: 11015
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 33,8000
     OrderID: 11016
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 754,2600
     OrderID: 11017
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 11,6500
     OrderID: 11018
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,1700
     OrderID: 11019
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -8508,7 +8508,7 @@ Enumerable {
     }
     FreeShippingDiscount: 43,3000
     OrderID: 11020
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8525,22 +8525,22 @@ Enumerable {
     }
     FreeShippingDiscount: 297,1800
     OrderID: 11021
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 6,2700
     OrderID: 11022
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 123,8300
     OrderID: 11023
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 74,3600
     OrderID: 11024
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8557,12 +8557,12 @@ Enumerable {
     }
     FreeShippingDiscount: 29,1700
     OrderID: 11025
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 47,0900
     OrderID: 11026
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8579,17 +8579,17 @@ Enumerable {
     }
     FreeShippingDiscount: 52,5200
     OrderID: 11027
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,5900
     OrderID: 11028
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 47,8400
     OrderID: 11029
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8612,17 +8612,17 @@ Enumerable {
     }
     FreeShippingDiscount: 830,7500
     OrderID: 11030
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 227,2200
     OrderID: 11031
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 606,1900
     OrderID: 11032
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8639,7 +8639,7 @@ Enumerable {
     }
     FreeShippingDiscount: 84,7400
     OrderID: 11033
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8650,22 +8650,22 @@ Enumerable {
     }
     FreeShippingDiscount: 40,3200
     OrderID: 11034
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,1700
     OrderID: 11035
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 149,4700
     OrderID: 11036
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 3,2000
     OrderID: 11037
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8676,17 +8676,17 @@ Enumerable {
     }
     FreeShippingDiscount: 29,5900
     OrderID: 11038
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 65,0000
     OrderID: 11039
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 18,8400
     OrderID: 11040
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8697,27 +8697,27 @@ Enumerable {
     }
     FreeShippingDiscount: 48,2200
     OrderID: 11041
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 29,9900
     OrderID: 11042
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,8000
     OrderID: 11043
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 8,7200
     OrderID: 11044
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 70,5800
     OrderID: 11045
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -8740,7 +8740,7 @@ Enumerable {
     }
     FreeShippingDiscount: 71,6400
     OrderID: 11046
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8757,12 +8757,12 @@ Enumerable {
     }
     FreeShippingDiscount: 46,6200
     OrderID: 11047
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 24,1200
     OrderID: 11048
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8779,7 +8779,7 @@ Enumerable {
     }
     FreeShippingDiscount: 8,3400
     OrderID: 11049
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8790,7 +8790,7 @@ Enumerable {
     }
     FreeShippingDiscount: 59,4100
     OrderID: 11050
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8801,7 +8801,7 @@ Enumerable {
     }
     FreeShippingDiscount: 2,7900
     OrderID: 11051
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8818,7 +8818,7 @@ Enumerable {
     }
     FreeShippingDiscount: 67,2600
     OrderID: 11052
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8835,47 +8835,47 @@ Enumerable {
     }
     FreeShippingDiscount: 53,0500
     OrderID: 11053
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 0,3300
     OrderID: 11054
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 120,9200
     OrderID: 11055
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 278,9600
     OrderID: 11056
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 4,1300
     OrderID: 11057
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 31,1400
     OrderID: 11058
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 85,8000
     OrderID: 11059
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 10,9800
     OrderID: 11060
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 14,0100
     OrderID: 11061
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2
@@ -8892,7 +8892,7 @@ Enumerable {
     }
     FreeShippingDiscount: 29,9300
     OrderID: 11062
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8909,7 +8909,7 @@ Enumerable {
     }
     FreeShippingDiscount: 81,7300
     OrderID: 11063
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,1
@@ -8932,7 +8932,7 @@ Enumerable {
     }
     FreeShippingDiscount: 30,0900
     OrderID: 11064
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -8949,17 +8949,17 @@ Enumerable {
     }
     FreeShippingDiscount: 12,9100
     OrderID: 11065
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 44,7200
     OrderID: 11066
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 7,9800
     OrderID: 11067
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -8982,12 +8982,12 @@ Enumerable {
     }
     FreeShippingDiscount: 81,7500
     OrderID: 11068
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 15,6700
     OrderID: 11069
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -9010,7 +9010,7 @@ Enumerable {
     }
     FreeShippingDiscount: 136,0000
     OrderID: 11070
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -9027,17 +9027,17 @@ Enumerable {
     }
     FreeShippingDiscount: 0,9300
     OrderID: 11071
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 258,6400
     OrderID: 11072
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
     }
     FreeShippingDiscount: 24,9500
     OrderID: 11073
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,05
@@ -9048,7 +9048,7 @@ Enumerable {
     }
     FreeShippingDiscount: 18,4400
     OrderID: 11074
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,15
@@ -9071,7 +9071,7 @@ Enumerable {
     }
     FreeShippingDiscount: 6,1900
     OrderID: 11075
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,25
@@ -9094,7 +9094,7 @@ Enumerable {
     }
     FreeShippingDiscount: 38,2800
     OrderID: 11076
-  AnonymousType0
+  AnonymousType
     DiscountedProducts: Enumerable {
       OrderDetail
         Discount: 0,2

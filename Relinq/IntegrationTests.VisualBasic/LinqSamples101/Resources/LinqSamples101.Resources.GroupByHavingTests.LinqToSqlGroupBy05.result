@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CategoryID: 1
     prodGroup: Enumerable {
       Product
@@ -136,7 +136,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     TotalPrice: 455,7500
-  AnonymousType0
+  AnonymousType
     CategoryID: 2
     prodGroup: Enumerable {
       Product
@@ -273,7 +273,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     TotalPrice: 276,7500
-  AnonymousType0
+  AnonymousType
     CategoryID: 3
     prodGroup: Enumerable {
       Product
@@ -421,7 +421,7 @@ Enumerable {
         UnitsOnOrder: 10
     }
     TotalPrice: 327,0800
-  AnonymousType0
+  AnonymousType
     CategoryID: 4
     prodGroup: Enumerable {
       Product
@@ -536,7 +536,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     TotalPrice: 287,3000
-  AnonymousType0
+  AnonymousType
     CategoryID: 5
     prodGroup: Enumerable {
       Product
@@ -618,7 +618,7 @@ Enumerable {
         UnitsOnOrder: 80
     }
     TotalPrice: 141,7500
-  AnonymousType0
+  AnonymousType
     CategoryID: 6
     prodGroup: Enumerable {
       Product
@@ -689,7 +689,7 @@ Enumerable {
         UnitsOnOrder: 0
     }
     TotalPrice: 324,0400
-  AnonymousType0
+  AnonymousType
     CategoryID: 7
     prodGroup: Enumerable {
       Product
@@ -749,7 +749,7 @@ Enumerable {
         UnitsOnOrder: 20
     }
     TotalPrice: 161,8500
-  AnonymousType0
+  AnonymousType
     CategoryID: 8
     prodGroup: Enumerable {
       Product

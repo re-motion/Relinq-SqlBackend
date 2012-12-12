@@ -1,275 +1,275 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     ContactName: 'Maria Anders'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Ana Trujillo'
     OrderCount: 4
-  AnonymousType0
+  AnonymousType
     ContactName: 'Antonio Moreno'
     OrderCount: 7
-  AnonymousType0
+  AnonymousType
     ContactName: 'Thomas Hardy'
     OrderCount: 13
-  AnonymousType0
+  AnonymousType
     ContactName: 'Christina Berglund'
     OrderCount: 18
-  AnonymousType0
+  AnonymousType
     ContactName: 'Hanna Moos'
     OrderCount: 7
-  AnonymousType0
+  AnonymousType
     ContactName: 'Frédérique Citeaux'
     OrderCount: 11
-  AnonymousType0
+  AnonymousType
     ContactName: 'Martín Sommer'
     OrderCount: 3
-  AnonymousType0
+  AnonymousType
     ContactName: 'Laurence Lebihan'
     OrderCount: 17
-  AnonymousType0
+  AnonymousType
     ContactName: 'Elizabeth Lincoln'
     OrderCount: 14
-  AnonymousType0
+  AnonymousType
     ContactName: 'Victoria Ashworth'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Patricio Simpson'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Francisco Chang'
     OrderCount: 1
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yang Wang'
     OrderCount: 8
-  AnonymousType0
+  AnonymousType
     ContactName: 'Pedro Afonso'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Elizabeth Brown'
     OrderCount: 3
-  AnonymousType0
+  AnonymousType
     ContactName: 'Sven Ottlieb'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Janine Labrune'
     OrderCount: 4
-  AnonymousType0
+  AnonymousType
     ContactName: 'Ann Devon'
     OrderCount: 8
-  AnonymousType0
+  AnonymousType
     ContactName: 'Roland Mendel'
     OrderCount: 30
-  AnonymousType0
+  AnonymousType
     ContactName: 'Aria Cruz'
     OrderCount: 7
-  AnonymousType0
+  AnonymousType
     ContactName: 'Diego Roel'
     OrderCount: 0
-  AnonymousType0
+  AnonymousType
     ContactName: 'Martine Rancé'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Maria Larsson'
     OrderCount: 19
-  AnonymousType0
+  AnonymousType
     ContactName: 'Peter Franken'
     OrderCount: 15
-  AnonymousType0
+  AnonymousType
     ContactName: 'Carine Schmitt'
     OrderCount: 3
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paolo Accorti'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Lino Rodriguez'
     OrderCount: 8
-  AnonymousType0
+  AnonymousType
     ContactName: 'Eduardo Saavedra'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'José Pedro Freyre'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'André Fonseca'
     OrderCount: 9
-  AnonymousType0
+  AnonymousType
     ContactName: 'Howard Snyder'
     OrderCount: 11
-  AnonymousType0
+  AnonymousType
     ContactName: 'Manuel Pereira'
     OrderCount: 2
-  AnonymousType0
+  AnonymousType
     ContactName: 'Mario Pontes'
     OrderCount: 14
-  AnonymousType0
+  AnonymousType
     ContactName: 'Carlos Hernández'
     OrderCount: 18
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yoshi Latimer'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Patricia McKenna'
     OrderCount: 19
-  AnonymousType0
+  AnonymousType
     ContactName: 'Helen Bennett'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Philip Cramer'
     OrderCount: 14
-  AnonymousType0
+  AnonymousType
     ContactName: 'Daniel Tonini'
     OrderCount: 4
-  AnonymousType0
+  AnonymousType
     ContactName: 'Annette Roulet'
     OrderCount: 14
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yoshi Tannamuri'
     OrderCount: 3
-  AnonymousType0
+  AnonymousType
     ContactName: 'John Steel'
     OrderCount: 2
-  AnonymousType0
+  AnonymousType
     ContactName: 'Renate Messner'
     OrderCount: 15
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jaime Yorres'
     OrderCount: 4
-  AnonymousType0
+  AnonymousType
     ContactName: 'Carlos González'
     OrderCount: 14
-  AnonymousType0
+  AnonymousType
     ContactName: 'Felipe Izquierdo'
     OrderCount: 12
-  AnonymousType0
+  AnonymousType
     ContactName: 'Fran Wilson'
     OrderCount: 8
-  AnonymousType0
+  AnonymousType
     ContactName: 'Giovanni Rovelli'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Catherine Dewey'
     OrderCount: 7
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jean Fresnière'
     OrderCount: 13
-  AnonymousType0
+  AnonymousType
     ContactName: 'Alexander Feuer'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Simon Crowther'
     OrderCount: 3
-  AnonymousType0
+  AnonymousType
     ContactName: 'Yvonne Moncada'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Rene Phillips'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Henriette Pfalzheim'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Marie Bertrand'
     OrderCount: 0
-  AnonymousType0
+  AnonymousType
     ContactName: 'Guillermo Fernández'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Georg Pipps'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Isabel de Castro'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Bernardo Batista'
     OrderCount: 9
-  AnonymousType0
+  AnonymousType
     ContactName: 'Lúcia Carvalho'
     OrderCount: 13
-  AnonymousType0
+  AnonymousType
     ContactName: 'Horst Kloss'
     OrderCount: 28
-  AnonymousType0
+  AnonymousType
     ContactName: 'Sergio Gutiérrez'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paula Wilson'
     OrderCount: 18
-  AnonymousType0
+  AnonymousType
     ContactName: 'Maurizio Moroni'
     OrderCount: 12
-  AnonymousType0
+  AnonymousType
     ContactName: 'Janete Limeira'
     OrderCount: 11
-  AnonymousType0
+  AnonymousType
     ContactName: 'Michael Holz'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Alejandra Camino'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jonas Bergulfsen'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jose Pavarotti'
     OrderCount: 31
-  AnonymousType0
+  AnonymousType
     ContactName: 'Hari Kumar'
     OrderCount: 9
-  AnonymousType0
+  AnonymousType
     ContactName: 'Jytte Petersen'
     OrderCount: 7
-  AnonymousType0
+  AnonymousType
     ContactName: 'Dominique Perrier'
     OrderCount: 4
-  AnonymousType0
+  AnonymousType
     ContactName: 'Art Braunschweiger'
     OrderCount: 9
-  AnonymousType0
+  AnonymousType
     ContactName: 'Pascale Cartrain'
     OrderCount: 12
-  AnonymousType0
+  AnonymousType
     ContactName: 'Liz Nixon'
     OrderCount: 4
-  AnonymousType0
+  AnonymousType
     ContactName: 'Liu Wong'
     OrderCount: 3
-  AnonymousType0
+  AnonymousType
     ContactName: 'Karin Josephs'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Miguel Angel Paolino'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Anabela Domingues'
     OrderCount: 6
-  AnonymousType0
+  AnonymousType
     ContactName: 'Helvetius Nagy'
     OrderCount: 3
-  AnonymousType0
+  AnonymousType
     ContactName: 'Palle Ibsen'
     OrderCount: 11
-  AnonymousType0
+  AnonymousType
     ContactName: 'Mary Saveley'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paul Henriot'
     OrderCount: 5
-  AnonymousType0
+  AnonymousType
     ContactName: 'Rita Müller'
     OrderCount: 10
-  AnonymousType0
+  AnonymousType
     ContactName: 'Pirkko Koskitalo'
     OrderCount: 15
-  AnonymousType0
+  AnonymousType
     ContactName: 'Paula Parente'
     OrderCount: 9
-  AnonymousType0
+  AnonymousType
     ContactName: 'Karl Jablonski'
     OrderCount: 14
-  AnonymousType0
+  AnonymousType
     ContactName: 'Matti Karttunen'
     OrderCount: 7
-  AnonymousType0
+  AnonymousType
     ContactName: 'Zbyszek Piestrzeniewicz'
     OrderCount: 7
 }

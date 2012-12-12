@@ -1,30 +1,30 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CategoryID: 8
     CategoryName: 'Seafood'
     ProductName: 'Konbu'
     UnitPrice: 6,0000
-  AnonymousType0
+  AnonymousType
     CategoryID: 1
     CategoryName: 'Beverages'
     ProductName: 'Guaraná Fantástica'
     UnitPrice: 4,5000
-  AnonymousType0
+  AnonymousType
     CategoryID: 4
     CategoryName: 'Dairy Products'
     ProductName: 'Geitost'
     UnitPrice: 2,5000
-  AnonymousType0
+  AnonymousType
     CategoryID: 5
     CategoryName: 'Grains/Cereals'
     ProductName: 'Filo Mix'
     UnitPrice: 7,0000
-  AnonymousType0
+  AnonymousType
     CategoryID: 6
     CategoryName: 'Meat/Poultry'
     ProductName: 'Tourtière'
     UnitPrice: 7,4500
-  AnonymousType0
+  AnonymousType
     CategoryID: 1
     CategoryName: 'Beverages'
     ProductName: 'Rhönbräu Klosterbier'

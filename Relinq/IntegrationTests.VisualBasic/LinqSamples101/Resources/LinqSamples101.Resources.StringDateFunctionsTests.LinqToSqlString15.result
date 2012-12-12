@@ -1,89 +1,89 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Exotic Liquids'
     Country: 'United Kingdom'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'New Orleans Cajun Delights'
     Country: 'United States of America'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Grandma Kelly''s Homestead'
     Country: 'United States of America'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Tokyo Traders'
     Country: 'Japan'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Cooperativa de Quesos ''Las Cabras'''
     Country: 'Spain'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Mayumi''s'
     Country: 'Japan'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Pavlova, Ltd.'
     Country: 'Australia'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Specialty Biscuits, Ltd.'
     Country: 'United Kingdom'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'PB Knäckebröd AB'
     Country: 'Sweden'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Refrescos Americanas LTDA'
     Country: 'Brazil'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Heli Süßwaren GmbH & Co. KG'
     Country: 'Germany'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Plutzer Lebensmittelgroßmärkte AG'
     Country: 'Germany'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Nord-Ost-Fisch Handelsgesellschaft mbH'
     Country: 'Germany'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Formaggi Fortini s.r.l.'
     Country: 'Italy'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Norske Meierier'
     Country: 'Norway'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Bigfoot Breweries'
     Country: 'United States of America'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Svensk Sjöföda AB'
     Country: 'Sweden'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Aux joyeux ecclésiastiques'
     Country: 'France'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'New England Seafood Cannery'
     Country: 'United States of America'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Leka Trading'
     Country: 'Singapore'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Lyngbysild'
     Country: 'Denmark'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Zaanse Snoepfabriek'
     Country: 'Netherlands'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Karkki Oy'
     Country: 'Finland'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'G''day, Mate'
     Country: 'Australia'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Ma Maison'
     Country: 'Canada'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Pasta Buttini s.r.l.'
     Country: 'Italy'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Escargots Nouveaux'
     Country: 'France'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Gai pâturage'
     Country: 'France'
-  AnonymousType0
+  AnonymousType
     CompanyName: 'Forêts d''érables'
     Country: 'Canada'
 }

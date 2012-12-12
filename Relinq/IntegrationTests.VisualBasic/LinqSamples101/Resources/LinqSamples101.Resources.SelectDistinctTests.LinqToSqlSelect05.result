@@ -1,233 +1,233 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Chai'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Chang'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Aniseed Syrup'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Chef Anton''s Cajun Seasoning'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Chef Anton''s Gumbo Mix'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Grandma''s Boysenberry Spread'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Uncle Bob''s Organic Dried Pears'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Northwoods Cranberry Sauce'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Mishi Kobe Niku'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Ikura'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Queso Cabrales'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Queso Manchego La Pastora'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Konbu'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Tofu'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Genen Shouyu'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Pavlova'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Alice Mutton'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Carnarvon Tigers'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Teatime Chocolate Biscuits'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Sir Rodney''s Marmalade'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Sir Rodney''s Scones'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Gustaf''s Knäckebröd'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Tunnbröd'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Guaraná Fantástica'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'NuNuCa Nuß-Nougat-Creme'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Gumbär Gummibärchen'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Schoggi Schokolade'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Rössle Sauerkraut'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Thüringer Rostbratwurst'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Nord-Ost Matjeshering'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Gorgonzola Telino'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Mascarpone Fabioli'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Geitost'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Sasquatch Ale'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Steeleye Stout'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Inlagd Sill'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Gravad lax'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Côte de Blaye'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Chartreuse verte'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Boston Crab Meat'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Jack''s New England Clam Chowder'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Singaporean Hokkien Fried Mee'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Ipoh Coffee'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Gula Malacca'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Rogede sild'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Spegesild'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Zaanse koeken'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Chocolade'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Maxilaku'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Valkoinen suklaa'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Manjimup Dried Apples'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Filo Mix'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Perth Pasties'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Tourtière'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Pâté chinois'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Gnocchi di nonna Alice'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Ravioli Angelo'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Escargots de Bourgogne'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Raclette Courdavault'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Camembert Pierrot'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Sirop d''érable'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Tarte au sucre'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Vegie-spread'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Wimmers gute Semmelknödel'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Louisiana Fiery Hot Pepper Sauce'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Louisiana Hot Spiced Okra'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Laughing Lumberjack Lager'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Scottish Longbreads'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Gudbrandsdalsost'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Outback Lager'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Flotemysost'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Mozzarella di Giovanni'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Röd Kaviar'
-  AnonymousType0
+  AnonymousType
     Availability: 'Out Of Stock'
     ProductName: 'Longlife Tofu'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Rhönbräu Klosterbier'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Lakkalikööri'
-  AnonymousType0
+  AnonymousType
     Availability: 'In Stock'
     ProductName: 'Original Frankfurter grüne Soße'
 }

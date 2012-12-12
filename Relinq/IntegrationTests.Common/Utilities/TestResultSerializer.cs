@@ -199,7 +199,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     private static string MakeAnonymousTypeID (Type type)
     {
-      return "AnonymousType" + type.GetProperties (BindingFlags.Public).Length;
+      return "AnonymousType";
     }
 
     private TestResultSerializer CreateIndentedSerializer ()

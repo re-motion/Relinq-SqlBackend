@@ -1,5 +1,5 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 1
@@ -147,7 +147,7 @@ Enumerable {
         UnitsInStock: 17
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 2
@@ -295,7 +295,7 @@ Enumerable {
         UnitsInStock: 24
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 3
@@ -454,7 +454,7 @@ Enumerable {
         UnitsInStock: 40
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 4
@@ -580,7 +580,7 @@ Enumerable {
         UnitsInStock: 79
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 5
@@ -673,7 +673,7 @@ Enumerable {
         UnitsInStock: 21
         UnitsOnOrder: 10
     }
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 6
@@ -755,7 +755,7 @@ Enumerable {
         UnitsInStock: 0
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 7
@@ -826,7 +826,7 @@ Enumerable {
         UnitsInStock: 20
         UnitsOnOrder: 0
     }
-  AnonymousType0
+  AnonymousType
     CategoryGroup: Enumerable {
       Product
         CategoryID: 8

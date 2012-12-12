@@ -1,275 +1,275 @@
 Enumerable {
-  AnonymousType0
+  AnonymousType
     CustomerID: 'ALFKI'
     Location: 'Berlin, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'ANATR'
     Location: 'México D.F., Mexico'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'ANTON'
     Location: 'México D.F., Mexico'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'AROUT'
     Location: 'London, UK'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'BERGS'
     Location: 'Luleå, Sweden'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'BLAUS'
     Location: 'Mannheim, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'BLONP'
     Location: 'Strasbourg, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'BOLID'
     Location: 'Madrid, Spain'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'BONAP'
     Location: 'Marseille, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'BOTTM'
     Location: 'Tsawassen, Canada'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'BSBEV'
     Location: 'London, UK'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'CACTU'
     Location: 'Buenos Aires, Argentina'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'CENTC'
     Location: 'México D.F., Mexico'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'CHOPS'
     Location: 'Bern, Switzerland'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'COMMI'
     Location: 'Sao Paulo, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'CONSH'
     Location: 'London, UK'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'DRACD'
     Location: 'Aachen, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'DUMON'
     Location: 'Nantes, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'EASTC'
     Location: 'London, UK'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'ERNSH'
     Location: 'Graz, Austria'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FAMIA'
     Location: 'Sao Paulo, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FISSA'
     Location: 'Madrid, Spain'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FOLIG'
     Location: 'Lille, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FOLKO'
     Location: 'Bräcke, Sweden'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FRANK'
     Location: 'München, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FRANR'
     Location: 'Nantes, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FRANS'
     Location: 'Torino, Italy'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'FURIB'
     Location: 'Lisboa, Portugal'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'GALED'
     Location: 'Barcelona, Spain'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'GODOS'
     Location: 'Sevilla, Spain'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'GOURL'
     Location: 'Campinas, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'GREAL'
     Location: 'Eugene, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'GROSR'
     Location: 'Caracas, Venezuela'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'HANAR'
     Location: 'Rio de Janeiro, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'HILAA'
     Location: 'San Cristóbal, Venezuela'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'HUNGC'
     Location: 'Elgin, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'HUNGO'
     Location: 'Cork, Ireland'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'ISLAT'
     Location: 'Cowes, UK'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'KOENE'
     Location: 'Brandenburg, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LACOR'
     Location: 'Versailles, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LAMAI'
     Location: 'Toulouse, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LAUGB'
     Location: 'Vancouver, Canada'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LAZYK'
     Location: 'Walla Walla, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LEHMS'
     Location: 'Frankfurt a.M., Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LETSS'
     Location: 'San Francisco, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LILAS'
     Location: 'Barquisimeto, Venezuela'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LINOD'
     Location: 'I. de Margarita, Venezuela'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'LONEP'
     Location: 'Portland, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'MAGAA'
     Location: 'Bergamo, Italy'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'MAISD'
     Location: 'Bruxelles, Belgium'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'MEREP'
     Location: 'Montréal, Canada'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'MORGK'
     Location: 'Leipzig, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'NORTS'
     Location: 'London, UK'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'OCEAN'
     Location: 'Buenos Aires, Argentina'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'OLDWO'
     Location: 'Anchorage, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'OTTIK'
     Location: 'Köln, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'PARIS'
     Location: 'Paris, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'PERIC'
     Location: 'México D.F., Mexico'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'PICCO'
     Location: 'Salzburg, Austria'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'PRINI'
     Location: 'Lisboa, Portugal'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'QUEDE'
     Location: 'Rio de Janeiro, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'QUEEN'
     Location: 'Sao Paulo, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'QUICK'
     Location: 'Cunewalde, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'RANCH'
     Location: 'Buenos Aires, Argentina'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'RATTC'
     Location: 'Albuquerque, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'REGGC'
     Location: 'Reggio Emilia, Italy'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'RICAR'
     Location: 'Rio de Janeiro, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'RICSU'
     Location: 'Genève, Switzerland'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'ROMEY'
     Location: 'Madrid, Spain'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'SANTG'
     Location: 'Stavern, Norway'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'SAVEA'
     Location: 'Boise, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'SEVES'
     Location: 'London, UK'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'SIMOB'
     Location: 'Kobenhavn, Denmark'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'SPECD'
     Location: 'Paris, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'SPLIR'
     Location: 'Lander, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'SUPRD'
     Location: 'Charleroi, Belgium'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'THEBI'
     Location: 'Portland, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'THECR'
     Location: 'Butte, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'TOMSP'
     Location: 'Münster, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'TORTU'
     Location: 'México D.F., Mexico'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'TRADH'
     Location: 'Sao Paulo, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'TRAIH'
     Location: 'Kirkland, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'VAFFE'
     Location: 'Århus, Denmark'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'VICTE'
     Location: 'Lyon, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'VINET'
     Location: 'Reims, France'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'WANDK'
     Location: 'Stuttgart, Germany'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'WARTH'
     Location: 'Oulu, Finland'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'WELLI'
     Location: 'Resende, Brazil'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'WHITC'
     Location: 'Seattle, USA'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'WILMK'
     Location: 'Helsinki, Finland'
-  AnonymousType0
+  AnonymousType
     CustomerID: 'WOLZA'
     Location: 'Warszawa, Poland'
 }
