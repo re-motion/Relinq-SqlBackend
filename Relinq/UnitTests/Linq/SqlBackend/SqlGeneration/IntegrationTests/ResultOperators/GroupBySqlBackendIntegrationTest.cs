@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests.ResultOperators
 {
   [TestFixture]
   public class GroupBySqlBackendIntegrationTest : SqlBackendIntegrationTestBase
@@ -436,6 +437,44 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
                       + "OR ((([t2].[Name] IS NOT NULL) AND ([q1].[X_key] IS NOT NULL)) AND ([t2].[Name] = [q1].[X_key])))) AS [q3]",
           new CommandParameter ("@1", 3),
           new CommandParameter ("@2", 12));
+    }
+
+    [Test]
+    [Ignore ("TODO 5279")]
+    public void GroupBy_AfterTake ()
+    {
+      CheckQuery (
+          Cooks.Take (10).GroupBy (c => c.Kitchen.ID).Select (g => g.Key),
+          "SELECT [q1].[key] AS [value] "
+          + "FROM (SELECT [t3].[ID] AS [key] "
+          + "FROM (SELECT TOP (@1) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],"
+          + "[t2].[KitchenID] FROM [CookTable] AS [t2]) AS [q0] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON [q0].[KitchenID] = [t3].[ID]"
+          + "GROUP BY [t3].[ID]) AS [q1]",
+          new CommandParameter ("@1", 10));
+    }
+
+    [Test]
+    [Ignore ("TODO 5279")]
+    public void GroupBy_AfterDistinct ()
+    {
+      CheckQuery (
+          Cooks.Distinct().GroupBy (c => c.Kitchen.ID).Select (g => g.Key),
+          "SELECT [q1].[key] AS [value] "
+          + "FROM (SELECT [t3].[ID] AS [key] "
+          + "FROM (SELECT DISTINCT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],"
+          + "[t2].[KitchenID] FROM [CookTable] AS [t2]) AS [q0] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON [q0].[KitchenID] = [t3].[ID]"
+          + "GROUP BY [t3].[ID]) AS [q1]");
+    }
+
+    [Test]
+    [Ignore ("TODO 5279")]
+    public void GroupBy_AfterGroupBy ()
+    {
+      CheckQuery (
+          Cooks.GroupBy (c => c).GroupBy (c => c.Key.Kitchen.ID).Select (g => g.Key),
+          "XXX");
     }
   }
 }
