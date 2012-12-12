@@ -52,7 +52,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
     }
 
     [Test]
-    [Ignore ("TODO 3306")]
+    [Ignore ("TODO 3306 - Support for MemberInitExpressions")]
     public void GroupByAndSelect_WithDynamicProjection ()
     {
       var query = DB.Products
