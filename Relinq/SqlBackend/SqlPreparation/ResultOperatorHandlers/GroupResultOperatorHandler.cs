@@ -28,7 +28,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class GroupResultOperatorHandler : ResultOperatorHandler<GroupResultOperator>
   {
-    public override void HandleResultOperator (GroupResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
+    public override void HandleResultOperator (
+        GroupResultOperator resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
@@ -36,10 +41,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
       EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       var preparedKeySelector = stage.PrepareResultOperatorItemExpression (resultOperator.KeySelector, context);
       preparedKeySelector = HandlePotentialConstantExpression (preparedKeySelector);

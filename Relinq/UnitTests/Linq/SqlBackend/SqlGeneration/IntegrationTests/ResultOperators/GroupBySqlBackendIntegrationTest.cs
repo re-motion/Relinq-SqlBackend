@@ -440,7 +440,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5279")]
     public void GroupBy_AfterTake ()
     {
       CheckQuery (
@@ -454,7 +453,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5279")]
     public void GroupBy_AfterDistinct ()
     {
       CheckQuery (
@@ -468,7 +466,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5279")]
     public void GroupBy_AfterGroupBy ()
     {
       CheckQuery (

@@ -117,6 +117,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       context.AddExpressionMapping (itemExpressionNowInSqlTable, replacement);
     }
 
+    /// <summary>
+    /// Recalculates <see cref="SqlStatementBuilder.DataInfo"/> based on the <paramref name="resultOperator"/> and the 
+    /// previous <paramref name="dataInfo"/>.
+    /// </summary>
     protected void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
     {
       sqlStatementBuilder.DataInfo = resultOperator.GetOutputDataInfo (dataInfo);

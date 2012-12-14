@@ -88,6 +88,7 @@
     <Compile Include="LinqSamples101\SqlMethodsTests.cs" />
     <Compile Include="LinqSamples101\StoredProceduresTests.cs" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.cs" />
+    <Compile Include="MiscTests\GroupByTests.cs" />
     <Compile Include="MiscTests\DynamicLinqTest.cs" />
     <Compile Include="MiscTests\DynamicLinq\Dynamic.cs" />
     <Compile Include="TestBase.cs" />
@@ -116,6 +117,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MiscTests\Resources\DynamicLinqTest.GroupByAndSelect_WithSimpleProjection.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\GroupByTests.GroupBy_AfterDistinct.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\GroupByTests.GroupBy_AfterGroupBy.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\GroupByTests.GroupBy_AfterTake.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

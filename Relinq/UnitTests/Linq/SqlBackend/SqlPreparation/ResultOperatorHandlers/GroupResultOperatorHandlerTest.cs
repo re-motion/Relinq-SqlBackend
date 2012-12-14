@@ -97,9 +97,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       var keySelector = new SqlColumnDefinitionExpression(typeof(string), "c", "Name", false);
       var elementSelector = Expression.Constant ("elementSelector");
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
-      var fakeFromExpressionInfo = new FromExpressionInfo (
-          new SqlTable (new ResolvedSubStatementTableInfo("sc", _sqlStatementBuilder.GetSqlStatement()), JoinSemantics.Inner), new Ordering[0], elementSelector, null);
+      
+      var originalStatement = _sqlStatementBuilder.GetSqlStatement ();
+      var originalDataInfo = _sqlStatementBuilder.DataInfo;
 
+      var fakeFromExpressionInfo = new FromExpressionInfo (
+          new SqlTable (new ResolvedSubStatementTableInfo("sc", originalStatement), JoinSemantics.Inner), new Ordering[0], elementSelector, null);
+      
       _stageMock
           .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
           .Return (keySelector);
@@ -109,17 +113,24 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       _stageMock
           .Expect (
               mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
-          .Return (fakeFromExpressionInfo);
-      _stageMock.Replay ();
-
+          .Return (fakeFromExpressionInfo)
+          .WhenCalled (mi =>
+          {
+            var fromExpression = (Expression) mi.Arguments[0];
+            CheckExpressionMovedIntoSubStatement (fromExpression, originalStatement);
+          });
+      
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
-      Assert.That (subStatement.TopExpression, Is.SameAs (topExpression));
+      Assert.That (_sqlStatementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.SqlTable));
+
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.Not.SameAs (originalDataInfo));
+      Assert.That (
+          _sqlStatementBuilder.DataInfo.DataType,
+          Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (IGrouping<,>).MakeGenericType (typeof (string), typeof (string)))));
     }
 
     [Test]
@@ -133,6 +144,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       var fakeFromExpressionInfo = new FromExpressionInfo (
           new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ()), JoinSemantics.Inner), new Ordering[0], elementSelector, null);
 
+      var originalStatement = _sqlStatementBuilder.GetSqlStatement ();
+      var originalDataInfo = _sqlStatementBuilder.DataInfo;
+
       _stageMock
           .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
           .Return (keySelector);
@@ -142,17 +156,25 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       _stageMock
           .Expect (
               mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
-          .Return (fakeFromExpressionInfo);
-      _stageMock.Replay ();
+          .Return (fakeFromExpressionInfo)
+          .WhenCalled (
+              mi =>
+              {
+                var fromExpression = (Expression) mi.Arguments[0];
+                CheckExpressionMovedIntoSubStatement (fromExpression, originalStatement);
+              });
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
-      Assert.That (subStatement.IsDistinctQuery, Is.True);
+      Assert.That (_sqlStatementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.SqlTable));
+
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.Not.SameAs (originalDataInfo));
+      Assert.That (
+          _sqlStatementBuilder.DataInfo.DataType,
+          Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (IGrouping<,>).MakeGenericType (typeof (string), typeof (string)))));
     }
 
     [Test]
@@ -167,6 +189,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       var fakeFromExpressionInfo = new FromExpressionInfo (
           new SqlTable (new ResolvedSubStatementTableInfo ("sc", _sqlStatementBuilder.GetSqlStatement ()), JoinSemantics.Inner), new Ordering[0], elementSelector, null);
 
+      var originalStatement = _sqlStatementBuilder.GetSqlStatement ();
+      var originalDataInfo = _sqlStatementBuilder.DataInfo;
+
       _stageMock
           .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
           .Return (keySelector);
@@ -176,7 +201,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       _stageMock
           .Expect (
               mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
-          .Return (fakeFromExpressionInfo);
+          .Return (fakeFromExpressionInfo)
+          .WhenCalled (
+              mi =>
+              {
+                var fromExpression = (Expression) mi.Arguments[0];
+                CheckExpressionMovedIntoSubStatement (fromExpression, originalStatement);
+              });
       _stageMock.Replay ();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
@@ -184,9 +215,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       _stageMock.VerifyAllExpectations ();
       Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      var subStatement = ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement;
-      Assert.That (subStatement.GroupByExpression, Is.SameAs(groupByExpression));
+      Assert.That (_sqlStatementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.SqlTable));
+
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.Not.SameAs (originalDataInfo));
+      Assert.That (
+          _sqlStatementBuilder.DataInfo.DataType,
+          Is.EqualTo (typeof (IQueryable<>).MakeGenericType (typeof (IGrouping<,>).MakeGenericType (typeof (string), typeof (string)))));
     }
 
     [Test]
@@ -270,6 +304,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       ExpressionTreeComparer.CheckAreEqualTrees (
           _sqlStatementBuilder.SelectProjection,
           SqlGroupingSelectExpression.CreateWithNames (expectedGroupGyExpression, elementSelector));
+    }
+
+    private void CheckExpressionMovedIntoSubStatement (Expression fromExpression, SqlStatement originalStatement)
+    {
+      Assert.That (fromExpression, Is.TypeOf<SqlSubStatementExpression> ());
+      var subStatement = ((SqlSubStatementExpression) fromExpression).SqlStatement;
+      // The sub-statement should have the same SelectProjection, but wrapped into a NamedExpression with default name.
+      Assert.That (
+          subStatement.SelectProjection,
+          Is.TypeOf<NamedExpression> ().With.Property ("Name").Null.And.Property ("Expression").SameAs (originalStatement.SelectProjection));
+      //  The rest of the sub-statement should be equivalent to the original statement.
+      var expectedSubStatement = new SqlStatementBuilder (originalStatement) { SelectProjection = subStatement.SelectProjection }.GetSqlStatement ();
+      Assert.That (subStatement, Is.EqualTo (expectedSubStatement));
     }
  }
 }
