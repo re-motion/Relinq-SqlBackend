@@ -48,8 +48,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Kitchens.OrderBy (k => k.Name).Take (5).Sum (k => k.RoomNumber),
-          "SELECT SUM([q0].[Key_RoomNumber]) AS [value] FROM (SELECT TOP (5) [t1].[ID] AS [Key_ID],[t1].[CookID] AS [Key_CookID]," 
-          + "[t1].[Name] AS [Key_Name],[t1].[RestaurantID] AS [Key_RestaurantID],[t1].[SubKitchenID] AS [Key_SubKitchenID],"
+          "SELECT SUM([q0].[Key_RoomNumber]) AS [value] FROM (SELECT TOP (5) [t1].[ID] AS [Key_ID]," 
+          + "[t1].[Name] AS [Key_Name],[t1].[RestaurantID] AS [Key_RestaurantID],"
           + "[t1].[LastCleaningDay] AS [Key_LastCleaningDay],[t1].[PassedLastInspection] AS [Key_PassedLastInspection],"
           + "[t1].[LastInspectionScore] AS [Key_LastInspectionScore],[t1].[Name] AS [Value] "
           + "FROM [KitchenTable] AS [t1] ORDER BY [t1].[Name] ASC) AS [q0]");

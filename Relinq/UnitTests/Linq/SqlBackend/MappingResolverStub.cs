@@ -58,6 +58,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 "SubstitutedID",
                 typeof (int),
                 false);
+          case "Substituted":
+            return CreateResolvedJoinInfo (
+                joinInfo.OriginatingEntity,
+                "SubstitutedID",
+                typeof (int),
+                false,
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
+                "ID",
+                typeof (int),
+                true);
           case "Assistants":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
@@ -91,7 +101,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           case "Restaurant":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
-                "RestaurantID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "ID", typeof (int), false);
+                "RestaurantID", typeof (int), false, CreateResolvedTableInfo (joinInfo.ItemType, generator), "ID", typeof (int), true);
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Restaurant))
@@ -166,10 +176,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo.TableAlias, "CookID", false),
                 CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "RestaurantID", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "SubKitchenID", false),
                 CreateColumn (typeof (DateTime?), tableInfo.TableAlias, "LastCleaningDay", false),
                 CreateColumn (typeof (bool?), tableInfo.TableAlias, "PassedLastInspection", false),
                 CreateColumn (typeof (int?), tableInfo.TableAlias, "LastInspectionScore", false),
@@ -185,8 +193,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             new[]
             {
                 primaryKeyColumn,
-                CreateColumn (typeof (int), tableInfo.TableAlias, "CookID", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "CompanyID", false),
             });
       }
       else if (type == typeof (Chef))
@@ -241,6 +248,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           case "SpecificInformation":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
           case "Substitution":
+            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+          case "Substituted":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
           case "Kitchen":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);

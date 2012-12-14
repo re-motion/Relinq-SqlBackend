@@ -31,14 +31,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => (from r in Restaurants orderby r.ID select r).Skip (5),
-          "SELECT [q0].[Key_ID] AS [ID],[q0].[Key_CookID] AS [CookID],[q0].[Key_Name] AS [Name] "+
-          "FROM (SELECT [t0].[ID] AS [Key_ID],[t0].[CookID] AS [Key_CookID],[t0].[Name] AS [Key_Name],"+
+          "SELECT [q0].[Key_ID] AS [ID],[q0].[Key_CompanyID] AS [CompanyID] "+
+          "FROM (SELECT [t0].[ID] AS [Key_ID],[t0].[CompanyID] AS [Key_CompanyID],"+
           "ROW_NUMBER() OVER (ORDER BY [t0].[ID] ASC) AS [Value] FROM [RestaurantTable] AS [t0]) AS [q0] "+
           "WHERE ([q0].[Value] > @1) ORDER BY [q0].[Value] ASC",
            row => (object) row.GetEntity<Restaurant> (
               new ColumnID ("ID", 0),
-              new ColumnID ("CookID", 1),
-              new ColumnID ("Name", 2)),
+              new ColumnID ("CompanyID", 1)),
           new CommandParameter ("@1", 5));
     }
 
@@ -47,8 +46,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => (from r in Restaurants select r).Skip (5),
-          "SELECT [q0].[Key_ID] AS [ID],[q0].[Key_CookID] AS [CookID],[q0].[Key_Name] AS [Name] "+
-          "FROM (SELECT [t0].[ID] AS [Key_ID],[t0].[CookID] AS [Key_CookID],[t0].[Name] AS [Key_Name],"+
+          "SELECT [q0].[Key_ID] AS [ID],[q0].[Key_CompanyID] AS [CompanyID] "+
+          "FROM (SELECT [t0].[ID] AS [Key_ID],[t0].[CompanyID] AS [Key_CompanyID],"+
           "ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] FROM [RestaurantTable] AS [t0]) AS [q0] "+
           "WHERE ([q0].[Value] > @2) ORDER BY [q0].[Value] ASC",
           new CommandParameter("@1", 1),
