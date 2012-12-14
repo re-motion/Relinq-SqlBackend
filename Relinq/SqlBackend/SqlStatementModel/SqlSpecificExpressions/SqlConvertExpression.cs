@@ -45,6 +45,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
                                                               { typeof (Guid), "UNIQUEIDENTIFIER" }
                                                           };
 
+    public static string GetSqlTypeName (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      if (s_sqlTypeMapping.ContainsKey (type))
+        return s_sqlTypeMapping[type];
+
+      var underlyingType = Nullable.GetUnderlyingType (type);
+      if (underlyingType != null)
+        return GetSqlTypeName (underlyingType);
+
+      return null;
+    }
+
     public SqlConvertExpression (Type targetType, Expression source)
         : base (targetType)
     {
@@ -60,18 +74,17 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public string GetSqlTypeName ()
     {
-      if (s_sqlTypeMapping.ContainsKey (Type))
-        return s_sqlTypeMapping[Type];
-      
-      var underlyingType = Nullable.GetUnderlyingType (Type);
-      if (underlyingType != null && s_sqlTypeMapping.ContainsKey (underlyingType))
-        return s_sqlTypeMapping[underlyingType];
-      
-      var message = string.Format (
-          "Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'",
-          Type.Name,
-          FormattingExpressionTreeVisitor.Format (_source));
-      throw new NotSupportedException (message);
+      var typeName = GetSqlTypeName(Type);
+      if (typeName == null)
+      {
+        var message = string.Format (
+            "Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'",
+            Type.Name,
+            FormattingExpressionTreeVisitor.Format (_source));
+        throw new NotSupportedException (message);
+      }
+
+      return typeName;
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)

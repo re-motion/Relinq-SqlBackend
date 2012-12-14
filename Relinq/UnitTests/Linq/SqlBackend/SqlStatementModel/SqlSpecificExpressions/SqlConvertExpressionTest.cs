@@ -37,6 +37,28 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
     }
 
     [Test]
+    public void GetSqlTypeName_ForType ()
+    {
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (string)), Is.EqualTo ("NVARCHAR(MAX)"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (int)), Is.EqualTo ("INT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (int?)), Is.EqualTo ("INT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (bool)), Is.EqualTo ("BIT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (bool?)), Is.EqualTo ("BIT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (long)), Is.EqualTo ("BIGINT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (long?)), Is.EqualTo ("BIGINT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (DateTime)), Is.EqualTo ("DATETIME"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (DateTime?)), Is.EqualTo ("DATETIME"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (decimal)), Is.EqualTo ("DECIMAL"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (decimal?)), Is.EqualTo ("DECIMAL"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (double)), Is.EqualTo ("FLOAT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (double?)), Is.EqualTo ("FLOAT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (short)), Is.EqualTo ("SMALLINT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (short?)), Is.EqualTo ("SMALLINT"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (Guid)), Is.EqualTo ("UNIQUEIDENTIFIER"));
+      Assert.That (SqlConvertExpression.GetSqlTypeName (typeof (Guid?)), Is.EqualTo ("UNIQUEIDENTIFIER"));
+    }
+
+    [Test]
     public void GetSqlTypeName ()
     {
       var result = _convertExpresion.GetSqlTypeName();
