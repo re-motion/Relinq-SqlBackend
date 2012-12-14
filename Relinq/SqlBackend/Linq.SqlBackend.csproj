@@ -106,6 +106,7 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFreetextMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFulltextMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\ConvertMethodCallTransformer.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\DateTimeAddMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EndsWithMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\EqualsMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodCallTransformers\InsertMethodCallTransformer.cs" />
