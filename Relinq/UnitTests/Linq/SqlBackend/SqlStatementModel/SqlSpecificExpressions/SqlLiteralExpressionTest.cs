@@ -45,6 +45,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
       Assert.That (nullableIntExpression.Value, Is.EqualTo (10));
       Assert.That (nullableIntExpression.Type, Is.EqualTo (typeof (int?)));
 
+      var longExpression = new SqlLiteralExpression (10L);
+      Assert.That (longExpression.Value, Is.EqualTo (10L));
+      Assert.That (longExpression.Type, Is.EqualTo (typeof (long)));
+
+      var nullableLongExpression = new SqlLiteralExpression (10L, true);
+      Assert.That (nullableLongExpression.Value, Is.EqualTo (10L));
+      Assert.That (nullableLongExpression.Type, Is.EqualTo (typeof (long?)));
+
       var stringExpression = new SqlLiteralExpression ("a");
       Assert.That (stringExpression.Value, Is.EqualTo ("a"));
       Assert.That (stringExpression.Type, Is.EqualTo (typeof (string)));
