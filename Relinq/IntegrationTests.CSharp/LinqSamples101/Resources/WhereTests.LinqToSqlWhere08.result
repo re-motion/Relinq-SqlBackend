@@ -1,15 +1,15 @@
 Order
   CustomerID: 'VINET'
   EmployeeID: 5
-  Freight: 32,3800
-  OrderDate: 04.07.1996 00:00:00
+  Freight: 32.3800
+  OrderDate: 07/04/1996 00:00:00
   OrderID: 10248
-  RequiredDate: 01.08.1996 00:00:00
+  RequiredDate: 08/01/1996 00:00:00
   ShipAddress: '59 rue de l''Abbaye'
   ShipCity: 'Reims'
   ShipCountry: 'France'
   ShipName: 'Vins et alcools Chevalier'
-  ShippedDate: 16.07.1996 00:00:00
+  ShippedDate: 07/16/1996 00:00:00
   ShipPostalCode: '51100'
   ShipRegion: null
   ShipVia: 3

@@ -7,7 +7,7 @@ Enumerable {
     QuantityPerUnit: '36 boxes'
     ReorderLevel: 0
     SupplierID: 2
-    UnitPrice: 21,3500
+    UnitPrice: 21.3500
     UnitsInStock: 0
     UnitsOnOrder: 0
   Product
@@ -18,7 +18,7 @@ Enumerable {
     QuantityPerUnit: '18 - 500 g pkgs.'
     ReorderLevel: 0
     SupplierID: 4
-    UnitPrice: 97,0000
+    UnitPrice: 97.0000
     UnitsInStock: 29
     UnitsOnOrder: 0
   Product
@@ -29,7 +29,7 @@ Enumerable {
     QuantityPerUnit: '20 - 1 kg tins'
     ReorderLevel: 0
     SupplierID: 7
-    UnitPrice: 39,0000
+    UnitPrice: 39.0000
     UnitsInStock: 0
     UnitsOnOrder: 0
   Product
@@ -40,7 +40,7 @@ Enumerable {
     QuantityPerUnit: '25 - 825 g cans'
     ReorderLevel: 0
     SupplierID: 12
-    UnitPrice: 45,6000
+    UnitPrice: 45.6000
     UnitsInStock: 26
     UnitsOnOrder: 0
   Product
@@ -51,7 +51,7 @@ Enumerable {
     QuantityPerUnit: '50 bags x 30 sausgs.'
     ReorderLevel: 0
     SupplierID: 12
-    UnitPrice: 123,7900
+    UnitPrice: 123.7900
     UnitsInStock: 0
     UnitsOnOrder: 0
   Product
@@ -62,7 +62,7 @@ Enumerable {
     QuantityPerUnit: '32 - 1 kg pkgs.'
     ReorderLevel: 0
     SupplierID: 20
-    UnitPrice: 14,0000
+    UnitPrice: 14.0000
     UnitsInStock: 26
     UnitsOnOrder: 0
   Product
@@ -73,7 +73,7 @@ Enumerable {
     QuantityPerUnit: '48 pieces'
     ReorderLevel: 0
     SupplierID: 24
-    UnitPrice: 32,8000
+    UnitPrice: 32.8000
     UnitsInStock: 0
     UnitsOnOrder: 0
 }

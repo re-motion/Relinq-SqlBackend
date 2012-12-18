@@ -1,233 +1,233 @@
 Enumerable {
   AnonymousType
-    HalfPrice: 9,0000000000000000000
+    HalfPrice: 9.0000000000000000000
     ProductID: 1
   AnonymousType
-    HalfPrice: 9,5000000000000000000
+    HalfPrice: 9.5000000000000000000
     ProductID: 2
   AnonymousType
-    HalfPrice: 5,0000000000000000000
+    HalfPrice: 5.0000000000000000000
     ProductID: 3
   AnonymousType
-    HalfPrice: 11,0000000000000000000
+    HalfPrice: 11.0000000000000000000
     ProductID: 4
   AnonymousType
-    HalfPrice: 10,6750000000000000000
+    HalfPrice: 10.6750000000000000000
     ProductID: 5
   AnonymousType
-    HalfPrice: 12,5000000000000000000
+    HalfPrice: 12.5000000000000000000
     ProductID: 6
   AnonymousType
-    HalfPrice: 15,0000000000000000000
+    HalfPrice: 15.0000000000000000000
     ProductID: 7
   AnonymousType
-    HalfPrice: 20,0000000000000000000
+    HalfPrice: 20.0000000000000000000
     ProductID: 8
   AnonymousType
-    HalfPrice: 48,5000000000000000000
+    HalfPrice: 48.5000000000000000000
     ProductID: 9
   AnonymousType
-    HalfPrice: 15,5000000000000000000
+    HalfPrice: 15.5000000000000000000
     ProductID: 10
   AnonymousType
-    HalfPrice: 10,5000000000000000000
+    HalfPrice: 10.5000000000000000000
     ProductID: 11
   AnonymousType
-    HalfPrice: 19,0000000000000000000
+    HalfPrice: 19.0000000000000000000
     ProductID: 12
   AnonymousType
-    HalfPrice: 3,0000000000000000000
+    HalfPrice: 3.0000000000000000000
     ProductID: 13
   AnonymousType
-    HalfPrice: 11,6250000000000000000
+    HalfPrice: 11.6250000000000000000
     ProductID: 14
   AnonymousType
-    HalfPrice: 7,7500000000000000000
+    HalfPrice: 7.7500000000000000000
     ProductID: 15
   AnonymousType
-    HalfPrice: 8,7250000000000000000
+    HalfPrice: 8.7250000000000000000
     ProductID: 16
   AnonymousType
-    HalfPrice: 19,5000000000000000000
+    HalfPrice: 19.5000000000000000000
     ProductID: 17
   AnonymousType
-    HalfPrice: 31,2500000000000000000
+    HalfPrice: 31.2500000000000000000
     ProductID: 18
   AnonymousType
-    HalfPrice: 4,6000000000000000000
+    HalfPrice: 4.6000000000000000000
     ProductID: 19
   AnonymousType
-    HalfPrice: 40,5000000000000000000
+    HalfPrice: 40.5000000000000000000
     ProductID: 20
   AnonymousType
-    HalfPrice: 5,0000000000000000000
+    HalfPrice: 5.0000000000000000000
     ProductID: 21
   AnonymousType
-    HalfPrice: 10,5000000000000000000
+    HalfPrice: 10.5000000000000000000
     ProductID: 22
   AnonymousType
-    HalfPrice: 4,5000000000000000000
+    HalfPrice: 4.5000000000000000000
     ProductID: 23
   AnonymousType
-    HalfPrice: 2,2500000000000000000
+    HalfPrice: 2.2500000000000000000
     ProductID: 24
   AnonymousType
-    HalfPrice: 7,0000000000000000000
+    HalfPrice: 7.0000000000000000000
     ProductID: 25
   AnonymousType
-    HalfPrice: 15,6150000000000000000
+    HalfPrice: 15.6150000000000000000
     ProductID: 26
   AnonymousType
-    HalfPrice: 21,9500000000000000000
+    HalfPrice: 21.9500000000000000000
     ProductID: 27
   AnonymousType
-    HalfPrice: 22,8000000000000000000
+    HalfPrice: 22.8000000000000000000
     ProductID: 28
   AnonymousType
-    HalfPrice: 61,8950000000000000000
+    HalfPrice: 61.8950000000000000000
     ProductID: 29
   AnonymousType
-    HalfPrice: 12,9450000000000000000
+    HalfPrice: 12.9450000000000000000
     ProductID: 30
   AnonymousType
-    HalfPrice: 6,2500000000000000000
+    HalfPrice: 6.2500000000000000000
     ProductID: 31
   AnonymousType
-    HalfPrice: 16,0000000000000000000
+    HalfPrice: 16.0000000000000000000
     ProductID: 32
   AnonymousType
-    HalfPrice: 1,2500000000000000000
+    HalfPrice: 1.2500000000000000000
     ProductID: 33
   AnonymousType
-    HalfPrice: 7,0000000000000000000
+    HalfPrice: 7.0000000000000000000
     ProductID: 34
   AnonymousType
-    HalfPrice: 9,0000000000000000000
+    HalfPrice: 9.0000000000000000000
     ProductID: 35
   AnonymousType
-    HalfPrice: 9,5000000000000000000
+    HalfPrice: 9.5000000000000000000
     ProductID: 36
   AnonymousType
-    HalfPrice: 13,0000000000000000000
+    HalfPrice: 13.0000000000000000000
     ProductID: 37
   AnonymousType
-    HalfPrice: 131,7500000000000000000
+    HalfPrice: 131.7500000000000000000
     ProductID: 38
   AnonymousType
-    HalfPrice: 9,0000000000000000000
+    HalfPrice: 9.0000000000000000000
     ProductID: 39
   AnonymousType
-    HalfPrice: 9,2000000000000000000
+    HalfPrice: 9.2000000000000000000
     ProductID: 40
   AnonymousType
-    HalfPrice: 4,8250000000000000000
+    HalfPrice: 4.8250000000000000000
     ProductID: 41
   AnonymousType
-    HalfPrice: 7,0000000000000000000
+    HalfPrice: 7.0000000000000000000
     ProductID: 42
   AnonymousType
-    HalfPrice: 23,0000000000000000000
+    HalfPrice: 23.0000000000000000000
     ProductID: 43
   AnonymousType
-    HalfPrice: 9,7250000000000000000
+    HalfPrice: 9.7250000000000000000
     ProductID: 44
   AnonymousType
-    HalfPrice: 4,7500000000000000000
+    HalfPrice: 4.7500000000000000000
     ProductID: 45
   AnonymousType
-    HalfPrice: 6,0000000000000000000
+    HalfPrice: 6.0000000000000000000
     ProductID: 46
   AnonymousType
-    HalfPrice: 4,7500000000000000000
+    HalfPrice: 4.7500000000000000000
     ProductID: 47
   AnonymousType
-    HalfPrice: 6,3750000000000000000
+    HalfPrice: 6.3750000000000000000
     ProductID: 48
   AnonymousType
-    HalfPrice: 10,0000000000000000000
+    HalfPrice: 10.0000000000000000000
     ProductID: 49
   AnonymousType
-    HalfPrice: 8,1250000000000000000
+    HalfPrice: 8.1250000000000000000
     ProductID: 50
   AnonymousType
-    HalfPrice: 26,5000000000000000000
+    HalfPrice: 26.5000000000000000000
     ProductID: 51
   AnonymousType
-    HalfPrice: 3,5000000000000000000
+    HalfPrice: 3.5000000000000000000
     ProductID: 52
   AnonymousType
-    HalfPrice: 16,4000000000000000000
+    HalfPrice: 16.4000000000000000000
     ProductID: 53
   AnonymousType
-    HalfPrice: 3,7250000000000000000
+    HalfPrice: 3.7250000000000000000
     ProductID: 54
   AnonymousType
-    HalfPrice: 12,0000000000000000000
+    HalfPrice: 12.0000000000000000000
     ProductID: 55
   AnonymousType
-    HalfPrice: 19,0000000000000000000
+    HalfPrice: 19.0000000000000000000
     ProductID: 56
   AnonymousType
-    HalfPrice: 9,7500000000000000000
+    HalfPrice: 9.7500000000000000000
     ProductID: 57
   AnonymousType
-    HalfPrice: 6,6250000000000000000
+    HalfPrice: 6.6250000000000000000
     ProductID: 58
   AnonymousType
-    HalfPrice: 27,5000000000000000000
+    HalfPrice: 27.5000000000000000000
     ProductID: 59
   AnonymousType
-    HalfPrice: 17,0000000000000000000
+    HalfPrice: 17.0000000000000000000
     ProductID: 60
   AnonymousType
-    HalfPrice: 14,2500000000000000000
+    HalfPrice: 14.2500000000000000000
     ProductID: 61
   AnonymousType
-    HalfPrice: 24,6500000000000000000
+    HalfPrice: 24.6500000000000000000
     ProductID: 62
   AnonymousType
-    HalfPrice: 21,9500000000000000000
+    HalfPrice: 21.9500000000000000000
     ProductID: 63
   AnonymousType
-    HalfPrice: 16,6250000000000000000
+    HalfPrice: 16.6250000000000000000
     ProductID: 64
   AnonymousType
-    HalfPrice: 10,5250000000000000000
+    HalfPrice: 10.5250000000000000000
     ProductID: 65
   AnonymousType
-    HalfPrice: 8,5000000000000000000
+    HalfPrice: 8.5000000000000000000
     ProductID: 66
   AnonymousType
-    HalfPrice: 7,0000000000000000000
+    HalfPrice: 7.0000000000000000000
     ProductID: 67
   AnonymousType
-    HalfPrice: 6,2500000000000000000
+    HalfPrice: 6.2500000000000000000
     ProductID: 68
   AnonymousType
-    HalfPrice: 18,0000000000000000000
+    HalfPrice: 18.0000000000000000000
     ProductID: 69
   AnonymousType
-    HalfPrice: 7,5000000000000000000
+    HalfPrice: 7.5000000000000000000
     ProductID: 70
   AnonymousType
-    HalfPrice: 10,7500000000000000000
+    HalfPrice: 10.7500000000000000000
     ProductID: 71
   AnonymousType
-    HalfPrice: 17,4000000000000000000
+    HalfPrice: 17.4000000000000000000
     ProductID: 72
   AnonymousType
-    HalfPrice: 7,5000000000000000000
+    HalfPrice: 7.5000000000000000000
     ProductID: 73
   AnonymousType
-    HalfPrice: 5,0000000000000000000
+    HalfPrice: 5.0000000000000000000
     ProductID: 74
   AnonymousType
-    HalfPrice: 3,8750000000000000000
+    HalfPrice: 3.8750000000000000000
     ProductID: 75
   AnonymousType
-    HalfPrice: 9,0000000000000000000
+    HalfPrice: 9.0000000000000000000
     ProductID: 76
   AnonymousType
-    HalfPrice: 6,5000000000000000000
+    HalfPrice: 6.5000000000000000000
     ProductID: 77
 }

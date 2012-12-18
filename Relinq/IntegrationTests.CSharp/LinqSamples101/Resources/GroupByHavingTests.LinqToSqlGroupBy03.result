@@ -1,26 +1,26 @@
 Enumerable {
   AnonymousType
     Key: 1
-    MinPrice: 4,5000
+    MinPrice: 4.5000
   AnonymousType
     Key: 2
-    MinPrice: 10,0000
+    MinPrice: 10.0000
   AnonymousType
     Key: 3
-    MinPrice: 9,2000
+    MinPrice: 9.2000
   AnonymousType
     Key: 4
-    MinPrice: 2,5000
+    MinPrice: 2.5000
   AnonymousType
     Key: 5
-    MinPrice: 7,0000
+    MinPrice: 7.0000
   AnonymousType
     Key: 6
-    MinPrice: 7,4500
+    MinPrice: 7.4500
   AnonymousType
     Key: 7
-    MinPrice: 10,0000
+    MinPrice: 10.0000
   AnonymousType
     Key: 8
-    MinPrice: 6,0000
+    MinPrice: 6.0000
 }

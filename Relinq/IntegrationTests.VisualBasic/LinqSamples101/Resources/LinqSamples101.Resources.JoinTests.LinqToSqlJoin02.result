@@ -7,7 +7,7 @@ Enumerable {
     QuantityPerUnit: '36 boxes'
     ReorderLevel: 0
     SupplierID: 2
-    UnitPrice: 21,3500
+    UnitPrice: 21.3500
     UnitsInStock: 0
     UnitsOnOrder: 0
 }
