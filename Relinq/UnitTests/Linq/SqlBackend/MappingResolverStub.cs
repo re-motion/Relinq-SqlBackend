@@ -224,7 +224,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             primaryKeyColumn,
             new[]
             {
-                primaryKeyColumn
+                primaryKeyColumn,
+                CreateColumn (typeof (DateTime), tableInfo.TableAlias, "DateOfIncorporation", false)
             });
       }
       throw new UnmappedItemException (string.Format ("Type '{0}' is not supported by the MappingResolverStub.", type.Name));
@@ -305,6 +306,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
         {
           case "ID":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
+          case "DateOfIncorporation":
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
         }
       }
 

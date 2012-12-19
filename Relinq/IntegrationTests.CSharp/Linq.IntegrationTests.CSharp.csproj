@@ -89,6 +89,7 @@
     <Compile Include="LinqSamples101\StoredProceduresTests.cs" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.cs" />
     <Compile Include="MiscTests\GroupByTests.cs" />
+    <Compile Include="MiscTests\DateTimeAddTests.cs" />
     <Compile Include="MiscTests\DynamicLinqTest.cs" />
     <Compile Include="MiscTests\DynamicLinq\Dynamic.cs" />
     <Compile Include="TestBase.cs" />
@@ -126,6 +127,33 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MiscTests\Resources\GroupByTests.GroupBy_AfterTake.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddDays.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddHours.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddMilliseconds.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddMinutes.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddMonths.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddSeconds.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddTicks.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.AddYears.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DateTimeAddTests.Add_TimeSpan.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

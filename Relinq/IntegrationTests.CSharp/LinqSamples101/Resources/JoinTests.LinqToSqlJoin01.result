@@ -2,690 +2,690 @@ Enumerable {
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 7
-    Freight: 22,7700
-    OrderDate: 26.08.1996 00:00:00
+    Freight: 22.7700
+    OrderDate: 08/26/1996 00:00:00
     OrderID: 10289
-    RequiredDate: 23.09.1996 00:00:00
+    RequiredDate: 09/23/1996 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 28.08.1996 00:00:00
+    ShippedDate: 08/28/1996 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'AROUT'
     EmployeeID: 6
-    Freight: 41,9500
-    OrderDate: 15.11.1996 00:00:00
+    Freight: 41.9500
+    OrderDate: 11/15/1996 00:00:00
     OrderID: 10355
-    RequiredDate: 13.12.1996 00:00:00
+    RequiredDate: 12/13/1996 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 20.11.1996 00:00:00
+    ShippedDate: 11/20/1996 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 1
   Order
     CustomerID: 'SEVES'
     EmployeeID: 5
-    Freight: 288,4300
-    OrderDate: 21.11.1996 00:00:00
+    Freight: 288.4300
+    OrderDate: 11/21/1996 00:00:00
     OrderID: 10359
-    RequiredDate: 19.12.1996 00:00:00
+    RequiredDate: 12/19/1996 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 26.11.1996 00:00:00
+    ShippedDate: 11/26/1996 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'EASTC'
     EmployeeID: 1
-    Freight: 71,9700
-    OrderDate: 26.11.1996 00:00:00
+    Freight: 71.9700
+    OrderDate: 11/26/1996 00:00:00
     OrderID: 10364
-    RequiredDate: 07.01.1997 00:00:00
+    RequiredDate: 01/07/1997 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 04.12.1996 00:00:00
+    ShippedDate: 12/04/1996 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'SEVES'
     EmployeeID: 1
-    Freight: 22,2100
-    OrderDate: 09.12.1996 00:00:00
+    Freight: 22.2100
+    OrderDate: 12/09/1996 00:00:00
     OrderID: 10377
-    RequiredDate: 06.01.1997 00:00:00
+    RequiredDate: 01/06/1997 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 13.12.1996 00:00:00
+    ShippedDate: 12/13/1996 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'AROUT'
     EmployeeID: 8
-    Freight: 34,2400
-    OrderDate: 16.12.1996 00:00:00
+    Freight: 34.2400
+    OrderDate: 12/16/1996 00:00:00
     OrderID: 10383
-    RequiredDate: 13.01.1997 00:00:00
+    RequiredDate: 01/13/1997 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 18.12.1996 00:00:00
+    ShippedDate: 12/18/1996 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 3
   Order
     CustomerID: 'SEVES'
     EmployeeID: 2
-    Freight: 34,8600
-    OrderDate: 19.12.1996 00:00:00
+    Freight: 34.8600
+    OrderDate: 12/19/1996 00:00:00
     OrderID: 10388
-    RequiredDate: 16.01.1997 00:00:00
+    RequiredDate: 01/16/1997 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 20.12.1996 00:00:00
+    ShippedDate: 12/20/1996 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'EASTC'
     EmployeeID: 1
-    Freight: 83,9300
-    OrderDate: 01.01.1997 00:00:00
+    Freight: 83.9300
+    OrderDate: 01/01/1997 00:00:00
     OrderID: 10400
-    RequiredDate: 29.01.1997 00:00:00
+    RequiredDate: 01/29/1997 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 16.01.1997 00:00:00
+    ShippedDate: 01/16/1997 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'CONSH'
     EmployeeID: 8
-    Freight: 9,2100
-    OrderDate: 04.02.1997 00:00:00
+    Freight: 9.2100
+    OrderDate: 02/04/1997 00:00:00
     OrderID: 10435
-    RequiredDate: 18.03.1997 00:00:00
+    RequiredDate: 03/18/1997 00:00:00
     ShipAddress: 'Berkeley Gardens 12  Brewery'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Consolidated Holdings'
-    ShippedDate: 07.02.1997 00:00:00
+    ShippedDate: 02/07/1997 00:00:00
     ShipPostalCode: 'WX1 6LT'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'AROUT'
     EmployeeID: 1
-    Freight: 25,3600
-    OrderDate: 21.02.1997 00:00:00
+    Freight: 25.3600
+    OrderDate: 02/21/1997 00:00:00
     OrderID: 10453
-    RequiredDate: 21.03.1997 00:00:00
+    RequiredDate: 03/21/1997 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 26.02.1997 00:00:00
+    ShippedDate: 02/26/1997 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'CONSH'
     EmployeeID: 2
-    Freight: 6,1700
-    OrderDate: 03.03.1997 00:00:00
+    Freight: 6.1700
+    OrderDate: 03/03/1997 00:00:00
     OrderID: 10462
-    RequiredDate: 31.03.1997 00:00:00
+    RequiredDate: 03/31/1997 00:00:00
     ShipAddress: 'Berkeley Gardens 12  Brewery'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Consolidated Holdings'
-    ShippedDate: 18.03.1997 00:00:00
+    ShippedDate: 03/18/1997 00:00:00
     ShipPostalCode: 'WX1 6LT'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 2
-    Freight: 45,5900
-    OrderDate: 11.03.1997 00:00:00
+    Freight: 45.5900
+    OrderDate: 03/11/1997 00:00:00
     OrderID: 10471
-    RequiredDate: 08.04.1997 00:00:00
+    RequiredDate: 04/08/1997 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 18.03.1997 00:00:00
+    ShippedDate: 03/18/1997 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'SEVES'
     EmployeeID: 8
-    Freight: 4,2000
-    OrderDate: 12.03.1997 00:00:00
+    Freight: 4.2000
+    OrderDate: 03/12/1997 00:00:00
     OrderID: 10472
-    RequiredDate: 09.04.1997 00:00:00
+    RequiredDate: 04/09/1997 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 19.03.1997 00:00:00
+    ShippedDate: 03/19/1997 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 3
-    Freight: 6,8800
-    OrderDate: 24.03.1997 00:00:00
+    Freight: 6.8800
+    OrderDate: 03/24/1997 00:00:00
     OrderID: 10484
-    RequiredDate: 21.04.1997 00:00:00
+    RequiredDate: 04/21/1997 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 01.04.1997 00:00:00
+    ShippedDate: 04/01/1997 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'NORTS'
     EmployeeID: 3
-    Freight: 32,0700
-    OrderDate: 24.04.1997 00:00:00
+    Freight: 32.0700
+    OrderDate: 04/24/1997 00:00:00
     OrderID: 10517
-    RequiredDate: 22.05.1997 00:00:00
+    RequiredDate: 05/22/1997 00:00:00
     ShipAddress: 'South House 300 Queensbridge'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'North/South'
-    ShippedDate: 29.04.1997 00:00:00
+    ShippedDate: 04/29/1997 00:00:00
     ShipPostalCode: 'SW7 1RZ'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'SEVES'
     EmployeeID: 7
-    Freight: 77,6300
-    OrderDate: 01.05.1997 00:00:00
+    Freight: 77.6300
+    OrderDate: 05/01/1997 00:00:00
     OrderID: 10523
-    RequiredDate: 29.05.1997 00:00:00
+    RequiredDate: 05/29/1997 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 30.05.1997 00:00:00
+    ShippedDate: 05/30/1997 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'EASTC'
     EmployeeID: 7
-    Freight: 74,4600
-    OrderDate: 09.05.1997 00:00:00
+    Freight: 74.4600
+    OrderDate: 05/09/1997 00:00:00
     OrderID: 10532
-    RequiredDate: 06.06.1997 00:00:00
+    RequiredDate: 06/06/1997 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 12.05.1997 00:00:00
+    ShippedDate: 05/12/1997 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 9
-    Freight: 4,8700
-    OrderDate: 15.05.1997 00:00:00
+    Freight: 4.8700
+    OrderDate: 05/15/1997 00:00:00
     OrderID: 10538
-    RequiredDate: 12.06.1997 00:00:00
+    RequiredDate: 06/12/1997 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 16.05.1997 00:00:00
+    ShippedDate: 05/16/1997 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 6
-    Freight: 12,3600
-    OrderDate: 16.05.1997 00:00:00
+    Freight: 12.3600
+    OrderDate: 05/16/1997 00:00:00
     OrderID: 10539
-    RequiredDate: 13.06.1997 00:00:00
+    RequiredDate: 06/13/1997 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 23.05.1997 00:00:00
+    ShippedDate: 05/23/1997 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'SEVES'
     EmployeeID: 3
-    Freight: 178,4300
-    OrderDate: 23.05.1997 00:00:00
+    Freight: 178.4300
+    OrderDate: 05/23/1997 00:00:00
     OrderID: 10547
-    RequiredDate: 20.06.1997 00:00:00
+    RequiredDate: 06/20/1997 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 02.06.1997 00:00:00
+    ShippedDate: 06/02/1997 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'AROUT'
     EmployeeID: 1
-    Freight: 72,9700
-    OrderDate: 04.06.1997 00:00:00
+    Freight: 72.9700
+    OrderDate: 06/04/1997 00:00:00
     OrderID: 10558
-    RequiredDate: 02.07.1997 00:00:00
+    RequiredDate: 07/02/1997 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 10.06.1997 00:00:00
+    ShippedDate: 06/10/1997 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 4
-    Freight: 29,6000
-    OrderDate: 24.06.1997 00:00:00
+    Freight: 29.6000
+    OrderDate: 06/24/1997 00:00:00
     OrderID: 10578
-    RequiredDate: 22.07.1997 00:00:00
+    RequiredDate: 07/22/1997 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 25.07.1997 00:00:00
+    ShippedDate: 07/25/1997 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 6
-    Freight: 29,9800
-    OrderDate: 15.07.1997 00:00:00
+    Freight: 29.9800
+    OrderDate: 07/15/1997 00:00:00
     OrderID: 10599
-    RequiredDate: 26.08.1997 00:00:00
+    RequiredDate: 08/26/1997 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 21.07.1997 00:00:00
+    ShippedDate: 07/21/1997 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'AROUT'
     EmployeeID: 4
-    Freight: 21,7400
-    OrderDate: 16.10.1997 00:00:00
+    Freight: 21.7400
+    OrderDate: 10/16/1997 00:00:00
     OrderID: 10707
-    RequiredDate: 30.10.1997 00:00:00
+    RequiredDate: 10/30/1997 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 23.10.1997 00:00:00
+    ShippedDate: 10/23/1997 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 3
   Order
     CustomerID: 'EASTC'
     EmployeeID: 4
-    Freight: 16,5600
-    OrderDate: 03.11.1997 00:00:00
+    Freight: 16.5600
+    OrderDate: 11/03/1997 00:00:00
     OrderID: 10726
-    RequiredDate: 17.11.1997 00:00:00
+    RequiredDate: 11/17/1997 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 05.12.1997 00:00:00
+    ShippedDate: 12/05/1997 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'AROUT'
     EmployeeID: 4
-    Freight: 10,9600
-    OrderDate: 14.11.1997 00:00:00
+    Freight: 10.9600
+    OrderDate: 11/14/1997 00:00:00
     OrderID: 10741
-    RequiredDate: 28.11.1997 00:00:00
+    RequiredDate: 11/28/1997 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 18.11.1997 00:00:00
+    ShippedDate: 11/18/1997 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 3
   Order
     CustomerID: 'AROUT'
     EmployeeID: 1
-    Freight: 23,7200
-    OrderDate: 17.11.1997 00:00:00
+    Freight: 23.7200
+    OrderDate: 11/17/1997 00:00:00
     OrderID: 10743
-    RequiredDate: 15.12.1997 00:00:00
+    RequiredDate: 12/15/1997 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 21.11.1997 00:00:00
+    ShippedDate: 11/21/1997 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'NORTS'
     EmployeeID: 2
-    Freight: 1,3900
-    OrderDate: 24.11.1997 00:00:00
+    Freight: 1.3900
+    OrderDate: 11/24/1997 00:00:00
     OrderID: 10752
-    RequiredDate: 22.12.1997 00:00:00
+    RequiredDate: 12/22/1997 00:00:00
     ShipAddress: 'South House 300 Queensbridge'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'North/South'
-    ShippedDate: 28.11.1997 00:00:00
+    ShippedDate: 11/28/1997 00:00:00
     ShipPostalCode: 'SW7 1RZ'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'AROUT'
     EmployeeID: 3
-    Freight: 146,3200
-    OrderDate: 08.12.1997 00:00:00
+    Freight: 146.3200
+    OrderDate: 12/08/1997 00:00:00
     OrderID: 10768
-    RequiredDate: 05.01.1998 00:00:00
+    RequiredDate: 01/05/1998 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 15.12.1997 00:00:00
+    ShippedDate: 12/15/1997 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'AROUT'
     EmployeeID: 3
-    Freight: 4,5200
-    OrderDate: 24.12.1997 00:00:00
+    Freight: 4.5200
+    OrderDate: 12/24/1997 00:00:00
     OrderID: 10793
-    RequiredDate: 21.01.1998 00:00:00
+    RequiredDate: 01/21/1998 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 08.01.1998 00:00:00
+    ShippedDate: 01/08/1998 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 3
   Order
     CustomerID: 'SEVES'
     EmployeeID: 1
-    Freight: 137,4400
-    OrderDate: 26.12.1997 00:00:00
+    Freight: 137.4400
+    OrderDate: 12/26/1997 00:00:00
     OrderID: 10800
-    RequiredDate: 23.01.1998 00:00:00
+    RequiredDate: 01/23/1998 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 05.01.1998 00:00:00
+    ShippedDate: 01/05/1998 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'SEVES'
     EmployeeID: 6
-    Freight: 27,3300
-    OrderDate: 30.12.1997 00:00:00
+    Freight: 27.3300
+    OrderDate: 12/30/1997 00:00:00
     OrderID: 10804
-    RequiredDate: 27.01.1998 00:00:00
+    RequiredDate: 01/27/1998 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 07.01.1998 00:00:00
+    ShippedDate: 01/07/1998 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'CONSH'
     EmployeeID: 7
-    Freight: 38,2400
-    OrderDate: 23.01.1998 00:00:00
+    Freight: 38.2400
+    OrderDate: 01/23/1998 00:00:00
     OrderID: 10848
-    RequiredDate: 20.02.1998 00:00:00
+    RequiredDate: 02/20/1998 00:00:00
     ShipAddress: 'Berkeley Gardens 12  Brewery'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Consolidated Holdings'
-    ShippedDate: 29.01.1998 00:00:00
+    ShippedDate: 01/29/1998 00:00:00
     ShipPostalCode: 'WX1 6LT'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'AROUT'
     EmployeeID: 4
-    Freight: 3,0400
-    OrderDate: 02.02.1998 00:00:00
+    Freight: 3.0400
+    OrderDate: 02/02/1998 00:00:00
     OrderID: 10864
-    RequiredDate: 02.03.1998 00:00:00
+    RequiredDate: 03/02/1998 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 09.02.1998 00:00:00
+    ShippedDate: 02/09/1998 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'SEVES'
     EmployeeID: 5
-    Freight: 143,2800
-    OrderDate: 04.02.1998 00:00:00
+    Freight: 143.2800
+    OrderDate: 02/04/1998 00:00:00
     OrderID: 10869
-    RequiredDate: 04.03.1998 00:00:00
+    RequiredDate: 03/04/1998 00:00:00
     ShipAddress: '90 Wadhurst Rd.'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Seven Seas Imports'
-    ShippedDate: 09.02.1998 00:00:00
+    ShippedDate: 02/09/1998 00:00:00
     ShipPostalCode: 'OX15 4NB'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'AROUT'
     EmployeeID: 4
-    Freight: 29,6100
-    OrderDate: 03.03.1998 00:00:00
+    Freight: 29.6100
+    OrderDate: 03/03/1998 00:00:00
     OrderID: 10920
-    RequiredDate: 31.03.1998 00:00:00
+    RequiredDate: 03/31/1998 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 09.03.1998 00:00:00
+    ShippedDate: 03/09/1998 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 4
-    Freight: 2,1700
-    OrderDate: 11.03.1998 00:00:00
+    Freight: 2.1700
+    OrderDate: 03/11/1998 00:00:00
     OrderID: 10943
-    RequiredDate: 08.04.1998 00:00:00
+    RequiredDate: 04/08/1998 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 19.03.1998 00:00:00
+    ShippedDate: 03/19/1998 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 3
-    Freight: 3,2600
-    OrderDate: 13.03.1998 00:00:00
+    Freight: 3.2600
+    OrderDate: 03/13/1998 00:00:00
     OrderID: 10947
-    RequiredDate: 10.04.1998 00:00:00
+    RequiredDate: 04/10/1998 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 16.03.1998 00:00:00
+    ShippedDate: 03/16/1998 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'AROUT'
     EmployeeID: 9
-    Freight: 23,7200
-    OrderDate: 16.03.1998 00:00:00
+    Freight: 23.7200
+    OrderDate: 03/16/1998 00:00:00
     OrderID: 10953
-    RequiredDate: 30.03.1998 00:00:00
+    RequiredDate: 03/30/1998 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 25.03.1998 00:00:00
+    ShippedDate: 03/25/1998 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'EASTC'
     EmployeeID: 8
-    Freight: 185,4800
-    OrderDate: 31.03.1998 00:00:00
+    Freight: 185.4800
+    OrderDate: 03/31/1998 00:00:00
     OrderID: 10987
-    RequiredDate: 28.04.1998 00:00:00
+    RequiredDate: 04/28/1998 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 06.04.1998 00:00:00
+    ShippedDate: 04/06/1998 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'AROUT'
     EmployeeID: 9
-    Freight: 33,8000
-    OrderDate: 10.04.1998 00:00:00
+    Freight: 33.8000
+    OrderDate: 04/10/1998 00:00:00
     OrderID: 11016
-    RequiredDate: 08.05.1998 00:00:00
+    RequiredDate: 05/08/1998 00:00:00
     ShipAddress: 'Brook Farm Stratford St. Mary'
     ShipCity: 'Colchester'
     ShipCountry: 'UK'
     ShipName: 'Around the Horn'
-    ShippedDate: 13.04.1998 00:00:00
+    ShippedDate: 04/13/1998 00:00:00
     ShipPostalCode: 'CO7 6JX'
     ShipRegion: 'Essex'
     ShipVia: 2
   Order
     CustomerID: 'BSBEV'
     EmployeeID: 1
-    Freight: 123,8300
-    OrderDate: 14.04.1998 00:00:00
+    Freight: 123.8300
+    OrderDate: 04/14/1998 00:00:00
     OrderID: 11023
-    RequiredDate: 28.04.1998 00:00:00
+    RequiredDate: 04/28/1998 00:00:00
     ShipAddress: 'Fauntleroy Circus'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'B''s Beverages'
-    ShippedDate: 24.04.1998 00:00:00
+    ShippedDate: 04/24/1998 00:00:00
     ShipPostalCode: 'EC2 5NT'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'EASTC'
     EmployeeID: 4
-    Freight: 74,3600
-    OrderDate: 15.04.1998 00:00:00
+    Freight: 74.3600
+    OrderDate: 04/15/1998 00:00:00
     OrderID: 11024
-    RequiredDate: 13.05.1998 00:00:00
+    RequiredDate: 05/13/1998 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 20.04.1998 00:00:00
+    ShippedDate: 04/20/1998 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 1
   Order
     CustomerID: 'EASTC'
     EmployeeID: 7
-    Freight: 46,6200
-    OrderDate: 24.04.1998 00:00:00
+    Freight: 46.6200
+    OrderDate: 04/24/1998 00:00:00
     OrderID: 11047
-    RequiredDate: 22.05.1998 00:00:00
+    RequiredDate: 05/22/1998 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 01.05.1998 00:00:00
+    ShippedDate: 05/01/1998 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 3
   Order
     CustomerID: 'EASTC'
     EmployeeID: 8
-    Freight: 278,9600
-    OrderDate: 28.04.1998 00:00:00
+    Freight: 278.9600
+    OrderDate: 04/28/1998 00:00:00
     OrderID: 11056
-    RequiredDate: 12.05.1998 00:00:00
+    RequiredDate: 05/12/1998 00:00:00
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 01.05.1998 00:00:00
+    ShippedDate: 05/01/1998 00:00:00
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 2
   Order
     CustomerID: 'NORTS'
     EmployeeID: 3
-    Freight: 4,1300
-    OrderDate: 29.04.1998 00:00:00
+    Freight: 4.1300
+    OrderDate: 04/29/1998 00:00:00
     OrderID: 11057
-    RequiredDate: 27.05.1998 00:00:00
+    RequiredDate: 05/27/1998 00:00:00
     ShipAddress: 'South House 300 Queensbridge'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'North/South'
-    ShippedDate: 01.05.1998 00:00:00
+    ShippedDate: 05/01/1998 00:00:00
     ShipPostalCode: 'SW7 1RZ'
     ShipRegion: null
     ShipVia: 3

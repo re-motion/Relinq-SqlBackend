@@ -32,6 +32,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
     }
 
+    public SqlLiteralExpression (long value, bool nullable = false)
+      : this (value, nullable ? typeof (long?) : typeof (long))
+    {
+    }
+
     public SqlLiteralExpression (string value)
       : this (ArgumentUtility.CheckNotNull ("value", value), typeof (string))
     {

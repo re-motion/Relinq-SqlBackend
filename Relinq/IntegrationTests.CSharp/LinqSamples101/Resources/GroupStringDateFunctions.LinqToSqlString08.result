@@ -2,13 +2,13 @@ Enumerable {
   Employee
     Address: '507 - 20th Ave. E.
 Apt. 2A'
-    BirthDate: 08.12.1948 00:00:00
+    BirthDate: 12/08/1948 00:00:00
     City: 'Seattle'
     Country: 'USA'
     EmployeeID: 1
     Extension: '5467'
     FirstName: 'Nancy'
-    HireDate: 01.05.1992 00:00:00
+    HireDate: 05/01/1992 00:00:00
     HomePhone: '(206) 555-9857'
     LastName: 'Davolio'
     Notes: 'Education includes a BA in psychology from Colorado State University in 1970.  She also completed "The Art of the Cold Call."  Nancy is a member of Toastmasters International.'
@@ -22,13 +22,13 @@ Apt. 2A'
     TitleOfCourtesy: 'Ms.'
   Employee
     Address: '908 W. Capital Way'
-    BirthDate: 19.02.1952 00:00:00
+    BirthDate: 02/19/1952 00:00:00
     City: 'Tacoma'
     Country: 'USA'
     EmployeeID: 2
     Extension: '3457'
     FirstName: 'Andrew'
-    HireDate: 14.08.1992 00:00:00
+    HireDate: 08/14/1992 00:00:00
     HomePhone: '(206) 555-9482'
     LastName: 'Fuller'
     Notes: 'Andrew received his BTS commercial in 1974 and a Ph.D. in international marketing from the University of Dallas in 1981.  He is fluent in French and Italian and reads German.  He joined the company as a sales representative, was promoted to sales manager in January 1992 and to vice president of sales in March 1993.  Andrew is a member of the Sales Management Roundtable, the Seattle Chamber of Commerce, and the Pacific Rim Importers Association.'
@@ -42,13 +42,13 @@ Apt. 2A'
     TitleOfCourtesy: 'Dr.'
   Employee
     Address: '722 Moss Bay Blvd.'
-    BirthDate: 30.08.1963 00:00:00
+    BirthDate: 08/30/1963 00:00:00
     City: 'Kirkland'
     Country: 'USA'
     EmployeeID: 3
     Extension: '3355'
     FirstName: 'Janet'
-    HireDate: 01.04.1992 00:00:00
+    HireDate: 04/01/1992 00:00:00
     HomePhone: '(206) 555-3412'
     LastName: 'Leverling'
     Notes: 'Janet has a BS degree in chemistry from Boston College (1984).  She has also completed a certificate program in food retailing management.  Janet was hired as a sales associate in 1991 and promoted to sales representative in February 1992.'
@@ -62,13 +62,13 @@ Apt. 2A'
     TitleOfCourtesy: 'Ms.'
   Employee
     Address: '4110 Old Redmond Rd.'
-    BirthDate: 19.09.1937 00:00:00
+    BirthDate: 09/19/1937 00:00:00
     City: 'Redmond'
     Country: 'USA'
     EmployeeID: 4
     Extension: '5176'
     FirstName: 'Margaret'
-    HireDate: 03.05.1993 00:00:00
+    HireDate: 05/03/1993 00:00:00
     HomePhone: '(206) 555-8122'
     LastName: 'Peacock'
     Notes: 'Margaret holds a BA in English literature from Concordia College (1958) and an MA from the American Institute of Culinary Arts (1966).  She was assigned to the London office temporarily from July through November 1992.'
@@ -82,13 +82,13 @@ Apt. 2A'
     TitleOfCourtesy: 'Mrs.'
   Employee
     Address: '4726 - 11th Ave. N.E.'
-    BirthDate: 09.01.1958 00:00:00
+    BirthDate: 01/09/1958 00:00:00
     City: 'Seattle'
     Country: 'USA'
     EmployeeID: 8
     Extension: '2344'
     FirstName: 'Laura'
-    HireDate: 05.03.1994 00:00:00
+    HireDate: 03/05/1994 00:00:00
     HomePhone: '(206) 555-1189'
     LastName: 'Callahan'
     Notes: 'Laura received a BA in psychology from the University of Washington.  She has also completed a course in business French.  She reads and writes French.'

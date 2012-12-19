@@ -1,26 +1,26 @@
 Enumerable {
   AnonymousType
     Key: 1
-    TotalPrice: 455,7500
+    TotalPrice: 455.7500
   AnonymousType
     Key: 2
-    TotalPrice: 276,7500
+    TotalPrice: 276.7500
   AnonymousType
     Key: 3
-    TotalPrice: 327,0800
+    TotalPrice: 327.0800
   AnonymousType
     Key: 4
-    TotalPrice: 287,3000
+    TotalPrice: 287.3000
   AnonymousType
     Key: 5
-    TotalPrice: 141,7500
+    TotalPrice: 141.7500
   AnonymousType
     Key: 6
-    TotalPrice: 324,0400
+    TotalPrice: 324.0400
   AnonymousType
     Key: 7
-    TotalPrice: 161,8500
+    TotalPrice: 161.8500
   AnonymousType
     Key: 8
-    TotalPrice: 248,1900
+    TotalPrice: 248.1900
 }

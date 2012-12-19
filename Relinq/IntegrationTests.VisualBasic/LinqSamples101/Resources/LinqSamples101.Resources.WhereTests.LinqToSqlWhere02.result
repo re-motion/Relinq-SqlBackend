@@ -2,13 +2,13 @@ Enumerable {
   Employee
     Address: 'Edgeham Hollow
 Winchester Way'
-    BirthDate: 29.05.1960 00:00:00
+    BirthDate: 05/29/1960 00:00:00
     City: 'London'
     Country: 'UK'
     EmployeeID: 7
     Extension: '465'
     FirstName: 'Robert'
-    HireDate: 02.01.1994 00:00:00
+    HireDate: 01/02/1994 00:00:00
     HomePhone: '(71) 555-5598'
     LastName: 'King'
     Notes: 'Robert King served in the Peace Corps and traveled extensively before completing his degree in English at the University of Michigan in 1992, the year he joined the company.  After completing a course entitled "Selling in Europe," he was transferred to the London office in March 1993.'
@@ -22,13 +22,13 @@ Winchester Way'
     TitleOfCourtesy: 'Mr.'
   Employee
     Address: '4726 - 11th Ave. N.E.'
-    BirthDate: 09.01.1958 00:00:00
+    BirthDate: 01/09/1958 00:00:00
     City: 'Seattle'
     Country: 'USA'
     EmployeeID: 8
     Extension: '2344'
     FirstName: 'Laura'
-    HireDate: 05.03.1994 00:00:00
+    HireDate: 03/05/1994 00:00:00
     HomePhone: '(206) 555-1189'
     LastName: 'Callahan'
     Notes: 'Laura received a BA in psychology from the University of Washington.  She has also completed a course in business French.  She reads and writes French.'
@@ -42,13 +42,13 @@ Winchester Way'
     TitleOfCourtesy: 'Ms.'
   Employee
     Address: '7 Houndstooth Rd.'
-    BirthDate: 27.01.1966 00:00:00
+    BirthDate: 01/27/1966 00:00:00
     City: 'London'
     Country: 'UK'
     EmployeeID: 9
     Extension: '452'
     FirstName: 'Anne'
-    HireDate: 15.11.1994 00:00:00
+    HireDate: 11/15/1994 00:00:00
     HomePhone: '(71) 555-4444'
     LastName: 'Dodsworth'
     Notes: 'Anne has a BA degree in English from St. Lawrence College.  She is fluent in French and German.'

@@ -1,22 +1,22 @@
 Enumerable {
   AnonymousType
     CategoryID: 1
-    TotalUnitPrice: 455,7500
+    TotalUnitPrice: 455.7500
   AnonymousType
     CategoryID: 2
-    TotalUnitPrice: 276,7500
+    TotalUnitPrice: 276.7500
   AnonymousType
     CategoryID: 3
-    TotalUnitPrice: 327,0800
+    TotalUnitPrice: 327.0800
   AnonymousType
     CategoryID: 4
-    TotalUnitPrice: 287,3000
+    TotalUnitPrice: 287.3000
   AnonymousType
     CategoryID: 5
-    TotalUnitPrice: 141,7500
+    TotalUnitPrice: 141.7500
   AnonymousType
     CategoryID: 6
-    TotalUnitPrice: 324,0400
+    TotalUnitPrice: 324.0400
   AnonymousType
     CategoryID: 10
     TotalUnitPrice: null
@@ -49,8 +49,8 @@ Enumerable {
     TotalUnitPrice: null
   AnonymousType
     CategoryID: 7
-    TotalUnitPrice: 161,8500
+    TotalUnitPrice: 161.8500
   AnonymousType
     CategoryID: 8
-    TotalUnitPrice: 248,1900
+    TotalUnitPrice: 248.1900
 }

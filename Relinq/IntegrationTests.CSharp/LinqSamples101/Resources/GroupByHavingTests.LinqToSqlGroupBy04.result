@@ -1,26 +1,26 @@
 Enumerable {
   AnonymousType
-    AveragePrice: 37,9791
+    AveragePrice: 37.9791
     Key: 1
   AnonymousType
-    AveragePrice: 23,0625
+    AveragePrice: 23.0625
     Key: 2
   AnonymousType
-    AveragePrice: 25,1600
+    AveragePrice: 25.1600
     Key: 3
   AnonymousType
-    AveragePrice: 28,7300
+    AveragePrice: 28.7300
     Key: 4
   AnonymousType
-    AveragePrice: 20,2500
+    AveragePrice: 20.2500
     Key: 5
   AnonymousType
-    AveragePrice: 54,0066
+    AveragePrice: 54.0066
     Key: 6
   AnonymousType
-    AveragePrice: 32,3700
+    AveragePrice: 32.3700
     Key: 7
   AnonymousType
-    AveragePrice: 20,6825
+    AveragePrice: 20.6825
     Key: 8
 }
