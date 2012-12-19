@@ -55,7 +55,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void Transform_Add_TimeSpan ()
     {
-      var value = Expression.Constant (new TimeSpan (123456789));
+      var value = Expression.Constant (new TimeSpan (123456789L));
       var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.Add (new TimeSpan()));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
@@ -65,8 +65,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           typeof (DateTime),
           "DATEADD",
           new SqlCustomTextExpression ("millisecond", typeof (string)),
-          new SqlConvertExpression (typeof (long), Expression.Constant (12345.6789)),
-          _dateTimeInstance);
+          Expression.Modulo (
+              Expression.Divide (Expression.Constant (123456789L), new SqlLiteralExpression (10000L)), new SqlLiteralExpression (86400000L)),
+          new SqlFunctionExpression (
+              typeof (DateTime),
+              "DATEADD",
+              new SqlCustomTextExpression ("day", typeof (string)),
+              Expression.Divide (
+                  Expression.Divide (Expression.Constant (123456789L), new SqlLiteralExpression (10000L)), new SqlLiteralExpression (86400000L)),
+              _dateTimeInstance));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -97,8 +104,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           typeof (DateTime),
           "DATEADD",
           new SqlCustomTextExpression ("millisecond", typeof (string)),
-          new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (86400000.0))),
-          _dateTimeInstance);
+          Expression.Modulo (
+              new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (86400000.0))),
+              new SqlLiteralExpression (86400000L)),
+          new SqlFunctionExpression
+              (
+              typeof (DateTime),
+              "DATEADD",
+              new SqlCustomTextExpression ("day", typeof (string)),
+              Expression.Divide (
+                  new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (86400000.0))),
+                  new SqlLiteralExpression (86400000L)),
+              _dateTimeInstance));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -115,8 +132,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           typeof (DateTime),
           "DATEADD",
           new SqlCustomTextExpression ("millisecond", typeof (string)),
-          new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (3600000.0))),
-          _dateTimeInstance);
+          Expression.Modulo (
+              new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (3600000.0))),
+              new SqlLiteralExpression (86400000L)),
+          new SqlFunctionExpression
+              (
+              typeof (DateTime),
+              "DATEADD",
+              new SqlCustomTextExpression ("day", typeof (string)),
+              Expression.Divide (
+                  new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (3600000.0))),
+                  new SqlLiteralExpression (86400000L)),
+              _dateTimeInstance));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -133,8 +160,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           typeof (DateTime),
           "DATEADD",
           new SqlCustomTextExpression ("millisecond", typeof (string)),
-          new SqlConvertExpression (typeof (long), value),
-          _dateTimeInstance);
+          Expression.Modulo (
+              new SqlConvertExpression (typeof (long), value),
+              new SqlLiteralExpression (86400000L)),
+          new SqlFunctionExpression (
+              typeof (DateTime),
+              "DATEADD",
+              new SqlCustomTextExpression ("day", typeof (string)),
+              Expression.Divide (
+                  new SqlConvertExpression (typeof (long), value),
+                  new SqlLiteralExpression (86400000L)),
+              _dateTimeInstance));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -151,8 +187,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           typeof (DateTime),
           "DATEADD",
           new SqlCustomTextExpression ("millisecond", typeof (string)),
-          new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (60000.0))),
-          _dateTimeInstance);
+          Expression.Modulo (
+              new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (60000.0))),
+              new SqlLiteralExpression (86400000L)),
+          new SqlFunctionExpression
+              (
+              typeof (DateTime),
+              "DATEADD",
+              new SqlCustomTextExpression ("day", typeof (string)),
+              Expression.Divide (
+                  new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (60000.0))),
+                  new SqlLiteralExpression (86400000L)),
+              _dateTimeInstance));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -187,8 +233,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           typeof (DateTime),
           "DATEADD",
           new SqlCustomTextExpression ("millisecond", typeof (string)),
-          new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (1000.0))),
-          _dateTimeInstance);
+          Expression.Modulo (
+              new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (1000.0))),
+              new SqlLiteralExpression (86400000L)),
+          new SqlFunctionExpression
+              (
+              typeof (DateTime),
+              "DATEADD",
+              new SqlCustomTextExpression ("day", typeof (string)),
+              Expression.Divide (
+                  new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (1000.0))),
+                  new SqlLiteralExpression (86400000L)),
+              _dateTimeInstance));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -205,8 +261,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           typeof (DateTime),
           "DATEADD",
           new SqlCustomTextExpression ("millisecond", typeof (string)),
-          Expression.Divide (value, new SqlLiteralExpression (10000L)),
-          _dateTimeInstance);
+          Expression.Modulo (
+              Expression.Divide (value, new SqlLiteralExpression (10000L)), new SqlLiteralExpression (86400000L)),
+          new SqlFunctionExpression (
+              typeof (DateTime),
+              "DATEADD",
+              new SqlCustomTextExpression ("day", typeof (string)),
+              Expression.Divide (
+                  Expression.Divide (value, new SqlLiteralExpression (10000L)), new SqlLiteralExpression (86400000L)),
+              _dateTimeInstance));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

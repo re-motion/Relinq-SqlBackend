@@ -65,7 +65,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Companies where c.DateOfIncorporation.AddDays (12.13) <= _referenceDate select c.ID,
           "SELECT [t0].[ID] AS [value] "
           + "FROM [CompanyTable] AS [t0] "
-          + "WHERE (DATEADD(millisecond, CONVERT(BIGINT, (@1 * 86400000)), [t0].[DateOfIncorporation]) <= @2)",
+          + "WHERE (DATEADD(millisecond, (CONVERT(BIGINT, (@1 * 86400000)) % 86400000), "
+          + "DATEADD(day, (CONVERT(BIGINT, (@1 * 86400000)) / 86400000), [t0].[DateOfIncorporation])) <= @2)",
           new CommandParameter ("@1", 12.13),
           new CommandParameter ("@2", _referenceDate));
     }
@@ -77,7 +78,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Companies where c.DateOfIncorporation.AddHours (12.13) <= _referenceDate select c.ID,
           "SELECT [t0].[ID] AS [value] "
           + "FROM [CompanyTable] AS [t0] "
-          + "WHERE (DATEADD(millisecond, CONVERT(BIGINT, (@1 * 3600000)), [t0].[DateOfIncorporation]) <= @2)",
+          + "WHERE (DATEADD(millisecond, (CONVERT(BIGINT, (@1 * 3600000)) % 86400000), "
+          + "DATEADD(day, (CONVERT(BIGINT, (@1 * 3600000)) / 86400000), [t0].[DateOfIncorporation])) <= @2)",
           new CommandParameter ("@1", 12.13),
           new CommandParameter ("@2", _referenceDate));
     }
@@ -89,7 +91,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Companies where c.DateOfIncorporation.AddMinutes (12.13) <= _referenceDate select c.ID,
           "SELECT [t0].[ID] AS [value] "
           + "FROM [CompanyTable] AS [t0] "
-          + "WHERE (DATEADD(millisecond, CONVERT(BIGINT, (@1 * 60000)), [t0].[DateOfIncorporation]) <= @2)",
+          + "WHERE (DATEADD(millisecond, (CONVERT(BIGINT, (@1 * 60000)) % 86400000), "
+          + "DATEADD(day, (CONVERT(BIGINT, (@1 * 60000)) / 86400000), [t0].[DateOfIncorporation])) <= @2)",
           new CommandParameter ("@1", 12.13),
           new CommandParameter ("@2", _referenceDate));
     }
@@ -101,7 +104,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Companies where c.DateOfIncorporation.AddSeconds (12.13) <= _referenceDate select c.ID,
           "SELECT [t0].[ID] AS [value] "
           + "FROM [CompanyTable] AS [t0] "
-          + "WHERE (DATEADD(millisecond, CONVERT(BIGINT, (@1 * 1000)), [t0].[DateOfIncorporation]) <= @2)",
+          + "WHERE (DATEADD(millisecond, (CONVERT(BIGINT, (@1 * 1000)) % 86400000), "
+          + "DATEADD(day, (CONVERT(BIGINT, (@1 * 1000)) / 86400000), [t0].[DateOfIncorporation])) <= @2)",
           new CommandParameter ("@1", 12.13),
           new CommandParameter ("@2", _referenceDate));
     }
@@ -113,7 +117,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Companies where c.DateOfIncorporation.AddMilliseconds (12.13) <= _referenceDate select c.ID,
           "SELECT [t0].[ID] AS [value] "
           + "FROM [CompanyTable] AS [t0] "
-          + "WHERE (DATEADD(millisecond, CONVERT(BIGINT, @1), [t0].[DateOfIncorporation]) <= @2)",
+          + "WHERE (DATEADD(millisecond, (CONVERT(BIGINT, @1) % 86400000), "
+          + "DATEADD(day, (CONVERT(BIGINT, @1) / 86400000), [t0].[DateOfIncorporation])) <= @2)",
           new CommandParameter ("@1", 12.13),
           new CommandParameter ("@2", _referenceDate));
     }
@@ -125,7 +130,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Companies where c.DateOfIncorporation.AddTicks (12) <= _referenceDate select c.ID,
           "SELECT [t0].[ID] AS [value] "
           + "FROM [CompanyTable] AS [t0] "
-          + "WHERE (DATEADD(millisecond, (@1 / 10000), [t0].[DateOfIncorporation]) <= @2)",
+          + "WHERE (DATEADD(millisecond, ((@1 / 10000) % 86400000), "
+          + "DATEADD(day, ((@1 / 10000) / 86400000), [t0].[DateOfIncorporation])) <= @2)",
           new CommandParameter ("@1", 12L),
           new CommandParameter ("@2", _referenceDate));
     }
@@ -133,13 +139,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void Add_TimesSpan ()
     {
-      var timespan = TimeSpan.FromDays (24.1703);
+      var timespan = TimeSpan.FromTicks (24);
       CheckQuery (
           from c in Companies where c.DateOfIncorporation.Add (timespan) <= _referenceDate select c.ID,
           "SELECT [t0].[ID] AS [value] "
           + "FROM [CompanyTable] AS [t0] "
-          + "WHERE (DATEADD(millisecond, CONVERT(BIGINT, @1), [t0].[DateOfIncorporation]) <= @2)",
-          new CommandParameter ("@1", timespan.TotalMilliseconds),
+          + "WHERE (DATEADD(millisecond, ((@1 / 10000) % 86400000), "
+          + "DATEADD(day, ((@1 / 10000) / 86400000), [t0].[DateOfIncorporation])) <= @2)",
+          new CommandParameter ("@1", 24L),
           new CommandParameter ("@2", _referenceDate));
     }
   }

@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
           return AddWithConversion (
               methodCallExpression.Arguments[0], TimeSpan.TicksPerHour / TimeSpan.TicksPerMillisecond, methodCallExpression.Object);
         case "AddMilliseconds":
-          return AddWithConversion (methodCallExpression.Arguments[0], methodCallExpression.Object);
+          return AddMilliseconds (methodCallExpression.Arguments[0], methodCallExpression.Object);
         case "AddMinutes":
           return AddWithConversion (
               methodCallExpression.Arguments[0], TimeSpan.TicksPerMinute / TimeSpan.TicksPerMillisecond, methodCallExpression.Object);
@@ -93,9 +93,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
           return AddWithConversion (
               methodCallExpression.Arguments[0], TimeSpan.TicksPerSecond / TimeSpan.TicksPerMillisecond, methodCallExpression.Object);
         case "AddTicks":
-          return AddMilliseconds (
-              Expression.Divide (methodCallExpression.Arguments[0], new SqlLiteralExpression (TimeSpan.TicksPerMillisecond)),
-              methodCallExpression.Object);
+          return AddTicks (methodCallExpression.Arguments[0], methodCallExpression.Object);
         case "AddYears":
           return AddUnits (methodCallExpression.Arguments[0], "year", methodCallExpression.Object);
         default:
@@ -107,21 +105,41 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     private Expression AddWithConversion (Expression value, double factorToMilliseconds, Expression dateTime)
     {
-      return AddWithConversion (Expression.Multiply (value, new SqlLiteralExpression (factorToMilliseconds)), dateTime);
+      // Convert the value to milliseconds first, then add as milliseconds.
+      var milliseconds = Expression.Multiply (value, new SqlLiteralExpression (factorToMilliseconds));
+      return AddMilliseconds (milliseconds, dateTime);
     }
 
-    private Expression AddWithConversion (Expression value, Expression dateTime)
+    private Expression AddTimeSpan (TimeSpan timeSpan, Expression dateTime)
     {
-      var sqlConvertExpression = new SqlConvertExpression (typeof (long), value);
-      return AddMilliseconds(sqlConvertExpression, dateTime);
+      // Add a timespan constant by using its ticks value as a long constant.
+      var ticks = Expression.Constant (timeSpan.Ticks, typeof (long));
+      return AddTicks (ticks, dateTime);
     }
 
-    private static Expression AddMilliseconds (Expression value, Expression dateTime)
+    private Expression AddTicks (Expression ticks, Expression dateTime)
     {
-      return AddUnits (value, "millisecond", dateTime);
+      // Add ticks by converting them to milliseconds (truncating divide by 10000).
+      var milliseconds = Expression.Divide (ticks, new SqlLiteralExpression (TimeSpan.TicksPerMillisecond));
+      return AddMilliseconds (milliseconds, dateTime);
     }
 
-    private static Expression AddUnits (Expression value, string unit, Expression dateTime)
+    private Expression AddMilliseconds (Expression milliseconds, Expression dateTime)
+    {
+      // Convert milliseconds value to long first (truncating).
+      if (milliseconds.Type != typeof (long))
+        milliseconds = new SqlConvertExpression (typeof (long), milliseconds);
+
+      // Add milliseconds in two steps: extract the days and add them as a "day" value, then add the remaining milliseconds as a "milliseconds" value.
+      // This two-step part is required because SQL Server can only add 32-bit INTs using DATEADD, no BIGINTs. The milliseconds in a day (86,400,000) 
+      // fit into an INT. The second INT for days can express up to +/- 2^31 (or so) days, which equals about five million years. This is much
+      // more than a SQL DATETIME can hold.
+      var days = Expression.Divide (milliseconds, new SqlLiteralExpression (TimeSpan.TicksPerDay / TimeSpan.TicksPerMillisecond));
+      var remainingMilliseconds = Expression.Modulo (milliseconds, new SqlLiteralExpression (TimeSpan.TicksPerDay / TimeSpan.TicksPerMillisecond));
+      return AddUnits (remainingMilliseconds, "millisecond", AddUnits (days, "day", dateTime));
+    }
+
+    private Expression AddUnits (Expression value, string unit, Expression dateTime)
     {
       return new SqlFunctionExpression (
           typeof (DateTime),
@@ -131,14 +149,5 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
           dateTime);
     }
 
-    private static Expression AddTimeSpan (TimeSpan value, Expression dateTime)
-    {
-      return new SqlFunctionExpression (
-          typeof (DateTime),
-          "DATEADD",
-          new SqlCustomTextExpression ("millisecond", typeof (string)),
-          new SqlConvertExpression (typeof (long), Expression.Constant (value.TotalMilliseconds, typeof (double))),
-          dateTime);
-    }
   }
 }

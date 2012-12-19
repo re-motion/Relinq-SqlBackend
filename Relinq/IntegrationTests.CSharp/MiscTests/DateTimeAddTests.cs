@@ -39,7 +39,6 @@ using NUnit.Framework;
 namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
 {
   [TestFixture]
-  [Ignore ("TODO 5242")]
   public class DateTimeAddTests : TestBase
   {
     [Test]
