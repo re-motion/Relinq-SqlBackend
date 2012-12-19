@@ -491,8 +491,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlLiteralExpression_Int ()
     {
       var expression = new SqlLiteralExpression (1000000000);
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          expression, _commandBuilder, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("1000000000"));
     }
@@ -501,8 +500,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitSqlLiteralExpression_Double ()
     {
       var expression = new SqlLiteralExpression (1.1);
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          expression, _commandBuilder, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("1.1"));
+    }
+
+    [Test]
+    [SetCulture ("de-DE")]
+    public void VisitSqlLiteralExpression_Double_CultureAgnostic ()
+    {
+      var expression = new SqlLiteralExpression (1.1);
+      Assert.That (expression.Value.ToString(), Is.Not.EqualTo ("1.1"));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("1.1"));
     }
