@@ -47,7 +47,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void GetTransformer_AttributedMethod ()
     {
-      var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression<Cook, string> (c => c.GetFullName());
+      var methodCallExpression = (MethodCallExpression) ExpressionHelper.MakeExpression<Cook, string> (c => c.GetFullName_SqlTransformed());
 
       var result = _provider.GetTransformer (methodCallExpression);
 
@@ -58,7 +58,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void GetTransformer_AttributedMethod_Inherited ()
     {
-      var methodCallExpression = Expression.Call (Expression.Constant (null, typeof (Chef)), typeof (Chef).GetMethod ("GetFullName"));
+      var methodCallExpression = Expression.Call (Expression.Constant (null, typeof (Chef)), typeof (Chef).GetMethod ("GetFullName_SqlTransformed"));
 
       var result = _provider.GetTransformer (methodCallExpression);
 

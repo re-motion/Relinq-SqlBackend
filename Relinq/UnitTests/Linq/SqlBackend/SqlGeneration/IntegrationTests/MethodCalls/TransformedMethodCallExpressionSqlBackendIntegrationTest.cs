@@ -28,7 +28,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void AttributeBasedTransformer_OnMethod ()
     {
       CheckQuery (
-          from c in Cooks select c.GetFullName (),
+          from c in Cooks select c.GetFullName_SqlTransformed (),
           "SELECT (([t0].[FirstName] + ' ') + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]");
     }
 
@@ -36,7 +36,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void AttributeBasedTransformer_OnProperty ()
     {
       CheckQuery (
-          from c in Cooks select c.WeightInLbs,
+          from c in Cooks select c.WeightInLbs_SqlTransformed,
           "SELECT ([t0].[Weight] * 2.20462262) AS [value] FROM [CookTable] AS [t0]");
     }
 
@@ -44,7 +44,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void AttributeBasedTransformer_WithSubQuery ()
     {
       CheckQuery (
-          from c in Cooks select c.GetAssistantCount (),
+          from c in Cooks select c.GetAssistantCount_SqlTransformed (),
           "SELECT (SELECT COUNT(*) AS [value] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [value] FROM [CookTable] AS [t0]");
     }
 
@@ -52,7 +52,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void AttributeBasedTransformer_OverridesName ()
     {
       CheckQuery (
-          from c in Cooks where c.Equals (c.Substitution) select c.ID,
+          from c in Cooks where c.Equals_SqlTransformed (c.Substitution) select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
           + "WHERE ((([t0].[FirstName] + ' ') + [t0].[Name]) = (([t1].[FirstName] + ' ') + [t1].[Name]))");
     }
