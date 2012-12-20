@@ -28,11 +28,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void GetTransformer ()
     {
-      var attribute = new MethodCallTransformerAttribute (typeof (Cook.FullNameTransformer));
+      var attribute = new MethodCallTransformerAttribute (typeof (Cook.FullNameSqlTransformer));
       var result = attribute.GetTransformer ();
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (Cook.FullNameTransformer)));
+      Assert.That (result, Is.TypeOf (typeof (Cook.FullNameSqlTransformer)));
     }
 
     [Test]

@@ -52,7 +52,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = _provider.GetTransformer (methodCallExpression);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (Cook.FullNameTransformer)));
+      Assert.That (result, Is.TypeOf (typeof (Cook.FullNameSqlTransformer)));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var result = _provider.GetTransformer (methodCallExpression);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (Cook.FullNameTransformer)));
+      Assert.That (result, Is.TypeOf (typeof (Cook.FullNameSqlTransformer)));
     }
 
     [Test]
@@ -89,8 +89,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       _provider.GetTransformer (methodCallExpression);
     }
 
-    [MethodCallTransformer (typeof (Cook.FullNameTransformer))]
-    [MethodCallTransformer2 (typeof (Cook.FullNameTransformer))]
+    [MethodCallTransformer (typeof (Cook.FullNameSqlTransformer))]
+    [MethodCallTransformer2 (typeof (Cook.FullNameSqlTransformer))]
     private string TooManyAttributes ()
     {
       throw new NotImplementedException();
