@@ -78,7 +78,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processor);
       _queryParser = new QueryParser (expressionTreeParser);
 
-      _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerProvider, true);
+      _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerProvider, false);
     }
 
     public IQueryable<Product> Products
