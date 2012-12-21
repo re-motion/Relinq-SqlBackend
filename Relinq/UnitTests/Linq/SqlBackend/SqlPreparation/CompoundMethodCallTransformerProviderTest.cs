@@ -31,10 +31,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var registry = CompoundMethodCallTransformerProvider.CreateDefault();
 
-      Assert.That (registry.Providers.Length, Is.EqualTo (3));
+      Assert.That (registry.Providers.Length, Is.EqualTo (2));
       Assert.That (registry.Providers[0], Is.TypeOf (typeof (MethodInfoBasedMethodCallTransformerRegistry)));
-      Assert.That (registry.Providers[1], Is.TypeOf (typeof (AttributeBasedMethodCallTransformerProvider)));
-      Assert.That (registry.Providers[2], Is.TypeOf (typeof (NameBasedMethodCallTransformerRegistry)));
+      Assert.That (registry.Providers[1], Is.TypeOf (typeof (NameBasedMethodCallTransformerRegistry)));
     }
 
     [Test]

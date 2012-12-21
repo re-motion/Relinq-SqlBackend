@@ -18,7 +18,8 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
+using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation.PredefinedTransformations;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -287,15 +288,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           new CommandParameter ("@1", 10));
     }
 
-    [MethodCallTransformer (typeof (GetNamedItemTransformer))]
+    [MethodCallExpressionTransformer (typeof (GetNamedItemTransformer))]
     private T GetNamedItem<T> (T o)
     {
       Dev.Null = o;
       throw new NotImplementedException ();
     }
 
-    private class GetNamedItemTransformer : IMethodCallTransformer
+    private class GetNamedItemTransformer : IExpressionTransformer<MethodCallExpression>
     {
+      public ExpressionType[] SupportedExpressionTypes
+      {
+        get { throw new NotImplementedException(); }
+      }
+
       public Expression Transform (MethodCallExpression methodCallExpression)
       {
         return new NamedExpression ("dummy", methodCallExpression.Arguments[0]);

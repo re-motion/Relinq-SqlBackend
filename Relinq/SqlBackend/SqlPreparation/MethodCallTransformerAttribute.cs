@@ -15,64 +15,12 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
-  /// <summary>
-  /// When applied to a method (or property get accessor), defines that the SQL backend should use the specified <see cref="IMethodCallTransformer"/>
-  /// to handle that method (or property). The attribute is evaluated only if there isn't already a <see cref="IMethodCallTransformer"/> registered
-  /// by <see cref="MethodInfo"/>, but it is evaluated before a transformer is searched by name.
-  /// </summary>
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-  public class MethodCallTransformerAttribute : Attribute, IMethodCallTransformerAttribute
+  [Obsolete ("This attribute has been replaced by MethodCallExpressionTransformerAttribute. (1.13.180.0", true)]
+  public class MethodCallTransformerAttribute : Attribute
   {
-    private readonly Type _transformerType;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MethodCallTransformerAttribute"/> class.
-    /// </summary>
-    /// <param name="transformerType">
-    /// The type of <see cref="IMethodCallTransformer"/> to use for handling the method this attribute is applied to. This type must have a public
-    /// default constructor.
-    /// </param>
-    public MethodCallTransformerAttribute (Type transformerType)
-    {
-      ArgumentUtility.CheckNotNull ("transformerType", transformerType);
-
-      if (!typeof (IMethodCallTransformer).IsAssignableFrom (transformerType))
-        throw new ArgumentException ("The argument must be a Type implementing IMethodCallTransformer.", "transformerType");
-
-      _transformerType = transformerType;
-    }
-
-    /// <summary>
-    /// Gets the type of <see cref="IMethodCallTransformer"/> to use for handling the method this attribute is applied to.
-    /// </summary>
-    /// <value>The type of <see cref="IMethodCallTransformer"/> to use.</value>
-    public Type TransformerType
-    {
-      get { return _transformerType; }
-    }
-
-    /// <summary>
-    /// Gets the transformer identified by this <see cref="MethodCallTransformerAttribute"/>.
-    /// </summary>
-    /// <returns>An instance of the <see cref="TransformerType"/>.</returns>
-    public IMethodCallTransformer GetTransformer ()
-    {
-      try
-      {
-        return (IMethodCallTransformer) Activator.CreateInstance (TransformerType);
-      }
-      catch (MissingMethodException ex)
-      {
-        var message = string.Format (
-            "The method call transformer '{0}' has no public default constructor and therefore cannot be used with the MethodCallTransformerAttribute.", 
-            TransformerType);
-        throw new InvalidOperationException (message, ex);
-      }
-    }
   }
 }

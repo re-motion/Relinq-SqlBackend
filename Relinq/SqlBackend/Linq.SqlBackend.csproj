@@ -90,7 +90,6 @@
     <Compile Include="SqlGeneration\IDatabaseResultRow.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingOuterSelectExpressionVisitor.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingSelectExpressionVisitor.cs" />
-    <Compile Include="SqlPreparation\AttributeBasedMethodCallTransformerProvider.cs" />
     <Compile Include="SqlPreparation\FromExpressionInfo.cs" />
     <Compile Include="SqlPreparation\IMethodCallTransformer.cs" />
     <Compile Include="SqlGeneration\ISqlCommandBuilder.cs" />

@@ -18,22 +18,8 @@ using System;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
-  /// <summary>
-  /// Defines an interface for custom attributes that, when applied to a method (or property get accessor), defines that the SQL backend should use 
-  /// a specific <see cref="IMethodCallTransformer"/> to handle that method (or property). The attribute is evaluated by 
-  /// <see cref="AttributeBasedMethodCallTransformerProvider"/>, and there must only be one attribute implementing 
-  /// <see cref="IMethodCallTransformerAttribute"/> on any method.
-  /// </summary>
+  [Obsolete ("This attribute has been replaced by AttributeEvaluatingExpressionTransformer.IMethodCallExpressionTransformerAttribute. (1.13.180.0", true)]
   public interface IMethodCallTransformerAttribute
   {
-    /// <summary>
-    /// Gets the transformer identified by this <see cref="IMethodCallTransformerAttribute"/>.
-    /// </summary>
-    /// <returns>An instance of the <see cref="MethodCallTransformerAttribute.TransformerType"/>.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// There was an error when instantiating the transformer. The exception message describes the problem. The 
-    /// <see cref="AttributeBasedMethodCallTransformerProvider"/> wraps this exception.
-    /// </exception>
-    IMethodCallTransformer GetTransformer ();
   }
 }
