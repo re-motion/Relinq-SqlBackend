@@ -54,7 +54,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       var value = rowWrapper.GetValue<string> (columnID);
 
       _readerMock.VerifyAllExpectations();
-      Assert.AreEqual (value, "Peter");
+      Assert.That ("Peter", Is.EqualTo (value));
     }
 
     [Test]
@@ -82,9 +82,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
 
       _readerMock.VerifyAllExpectations();
-      Assert.AreEqual (
-          instance,
-          new PersonTestClass ("Peter", 21));
+      Assert.That (new PersonTestClass ("Peter", 21), Is.EqualTo (instance));
     }
 
     [Test]
@@ -182,7 +180,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       _readerMock.VerifyAllExpectations();
       _reverseMappingResolverMock.VerifyAllExpectations();
 
-      Assert.IsTrue (contact.Equals (expectedContact));
+      Assert.That (contact.Equals (expectedContact), Is.True);
     }
 
     [Test]
@@ -233,7 +231,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       _readerMock.VerifyAllExpectations();
       _reverseMappingResolverMock.VerifyAllExpectations();
 
-      Assert.IsTrue (contact.Equals (expectedContact));
+      Assert.That (contact.Equals (expectedContact), Is.True);
     }
   }
 }

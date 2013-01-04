@@ -30,12 +30,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string) })));
-      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "IndexOf", new[] { typeof (char)})));
-      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string), typeof (int)})));
-      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "IndexOf", new[] { typeof (char), typeof (int)})));
-      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string), typeof (int), typeof (int)})));
-      Assert.IsTrue (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (char), typeof (int), typeof (int)})));
+      Assert.That (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string) })), Is.True);
+      Assert.That (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "IndexOf", new[] { typeof (char)})), Is.True);
+      Assert.That (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string), typeof (int)})), Is.True);
+      Assert.That (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "IndexOf", new[] { typeof (char), typeof (int)})), Is.True);
+      Assert.That (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (string), typeof (int), typeof (int)})), Is.True);
+      Assert.That (IndexOfMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("IndexOf", new[] { typeof (char), typeof (int), typeof (int)})), Is.True);
     }
 
     [Test]

@@ -58,9 +58,9 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       var resolvedTableInfo = (ResolvedSimpleTableInfo) _mappingResolver.ResolveTableInfo (unresolvedTableInfo, _generator);
 
-      Assert.AreEqual (typeof (DataContextTestClass.Customer), resolvedTableInfo.ItemType);
-      Assert.AreEqual ("t0", resolvedTableInfo.TableAlias);
-      Assert.AreEqual ("Customers", resolvedTableInfo.TableName);
+      Assert.That (resolvedTableInfo.ItemType, Is.EqualTo (typeof (DataContextTestClass.Customer)));
+      Assert.That (resolvedTableInfo.TableAlias, Is.EqualTo ("t0"));
+      Assert.That (resolvedTableInfo.TableName, Is.EqualTo ("Customers"));
     }
 
     [Test]
@@ -87,10 +87,10 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       ExpressionTreeComparer.CheckAreEqualTrees (customerPrimaryKey, resolvedJoinInfo.LeftKey);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedOrderForeignKey, resolvedJoinInfo.RightKey);
-      
-      Assert.AreEqual (expectedOrderTableInfo.ItemType, resolvedJoinInfo.ItemType);
-      Assert.AreEqual (expectedOrderTableInfo.ItemType, resolvedJoinInfo.ForeignTableInfo.ItemType);
-      Assert.AreEqual (expectedOrderTableInfo.TableAlias, resolvedJoinInfo.ForeignTableInfo.TableAlias);
+
+      Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (expectedOrderTableInfo.ItemType));
+      Assert.That (resolvedJoinInfo.ForeignTableInfo.ItemType, Is.EqualTo (expectedOrderTableInfo.ItemType));
+      Assert.That (resolvedJoinInfo.ForeignTableInfo.TableAlias, Is.EqualTo (expectedOrderTableInfo.TableAlias));
     }
 
     [Test]
@@ -113,9 +113,9 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       ExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, resolvedJoinInfo.LeftKey);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedCustomerPrimaryKey, resolvedJoinInfo.RightKey);
 
-      Assert.AreEqual (expectedCustomerTableInfo.ItemType, resolvedJoinInfo.ItemType);
-      Assert.AreEqual (expectedCustomerTableInfo.ItemType, resolvedJoinInfo.ForeignTableInfo.ItemType);
-      Assert.AreEqual (expectedCustomerTableInfo.TableAlias, resolvedJoinInfo.ForeignTableInfo.TableAlias);
+      Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));
+      Assert.That (resolvedJoinInfo.ForeignTableInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));
+      Assert.That (resolvedJoinInfo.ForeignTableInfo.TableAlias, Is.EqualTo (expectedCustomerTableInfo.TableAlias));
     }
 
     [Test]

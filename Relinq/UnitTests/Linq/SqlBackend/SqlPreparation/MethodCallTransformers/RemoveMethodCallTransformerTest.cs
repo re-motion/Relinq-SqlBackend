@@ -30,8 +30,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Remove", new[] { typeof (int)})));
-      Assert.IsTrue (RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Remove", new[] { typeof (int), typeof (int)})));
+      Assert.That (RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Remove", new[] { typeof (int)})), Is.True);
+      Assert.That (RemoveMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("Remove", new[] { typeof (int), typeof (int)})), Is.True);
     }
 
     [Test]

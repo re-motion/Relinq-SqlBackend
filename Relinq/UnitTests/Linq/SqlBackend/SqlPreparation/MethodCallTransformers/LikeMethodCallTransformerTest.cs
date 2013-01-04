@@ -32,7 +32,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (LikeMethodCallTransformer.SupportedMethods.Contains (typeof (StringExtensions).GetMethod("SqlLike", new[] { typeof (string), typeof (string)})));
+      Assert.That (LikeMethodCallTransformer.SupportedMethods.Contains (typeof (StringExtensions).GetMethod("SqlLike", new[] { typeof (string), typeof (string)})), Is.True);
     }
 
     [Test]

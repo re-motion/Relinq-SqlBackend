@@ -47,7 +47,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       var value = scalarRowWrapper.GetValue<string> (columnID);
 
       _readerMock.VerifyAllExpectations();
-      Assert.AreEqual (value, "Peter");
+      Assert.That ("Peter", Is.EqualTo (value));
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
 
       var value = scalarRowWrapper.GetEntity<string> (columnID);
-      Assert.AreEqual (value, "Peter");
+      Assert.That ("Peter", Is.EqualTo (value));
     }
 
     [Test]

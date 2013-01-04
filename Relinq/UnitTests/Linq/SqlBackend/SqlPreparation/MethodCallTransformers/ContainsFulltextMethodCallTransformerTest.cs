@@ -33,12 +33,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (
-          ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
-              typeof (StringExtensions).GetMethod("SqlContainsFulltext", new[] { typeof (string), typeof (string)})));
-      Assert.IsTrue (
-          ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
-              typeof (StringExtensions).GetMethod("SqlContainsFulltext", new[] { typeof (string), typeof (string), typeof (string)})));
+      Assert.That (ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
+          typeof (StringExtensions).GetMethod("SqlContainsFulltext", new[] { typeof (string), typeof (string)})), Is.True);
+      Assert.That (ContainsFulltextMethodCallTransformer.SupportedMethods.Contains (
+          typeof (StringExtensions).GetMethod("SqlContainsFulltext", new[] { typeof (string), typeof (string), typeof (string)})), Is.True);
     }
 
     [Test]

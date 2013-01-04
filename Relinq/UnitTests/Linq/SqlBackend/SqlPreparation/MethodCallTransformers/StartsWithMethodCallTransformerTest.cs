@@ -32,7 +32,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (StartsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "StartsWith", new[] { typeof (string)})));
+      Assert.That (StartsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod( "StartsWith", new[] { typeof (string)})), Is.True);
     }
 
     [Test]

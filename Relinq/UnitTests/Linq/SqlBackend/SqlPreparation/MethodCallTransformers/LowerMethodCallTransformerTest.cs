@@ -29,7 +29,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (LowerMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("ToLower", new Type[0])));
+      Assert.That (LowerMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod("ToLower", new Type[0])), Is.True);
     }
 
     [Test]

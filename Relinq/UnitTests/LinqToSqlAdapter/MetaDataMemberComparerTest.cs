@@ -37,7 +37,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       var comparer = new MetaDataMemberComparer();
 
-      Assert.IsTrue (comparer.Equals (metaDataMember1, metaDataMember2));
+      Assert.That (comparer.Equals (metaDataMember1, metaDataMember2), Is.True);
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       var comparer = new MetaDataMemberComparer();
 
-      Assert.IsFalse (comparer.Equals (metaDataMember1, metaDataMember2));
+      Assert.That (comparer.Equals (metaDataMember1, metaDataMember2), Is.False);
     }
   }
 }

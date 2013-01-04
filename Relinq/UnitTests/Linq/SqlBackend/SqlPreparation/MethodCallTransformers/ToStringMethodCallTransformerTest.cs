@@ -30,7 +30,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (ToStringMethodCallTransformer.SupportedMethods.Contains (typeof (object).GetMethod("ToString")));
+      Assert.That (ToStringMethodCallTransformer.SupportedMethods.Contains (typeof (object).GetMethod("ToString")), Is.True);
     }
 
     [Test]

@@ -30,7 +30,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      Assert.IsTrue (TrimMethodCallTransformer.SupportedMethods.Contains (typeof(string).GetMethod("Trim", new Type[0])));
+      Assert.That (TrimMethodCallTransformer.SupportedMethods.Contains (typeof(string).GetMethod("Trim", new Type[0])), Is.True);
     }
 
     [Test]

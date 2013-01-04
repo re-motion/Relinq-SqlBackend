@@ -307,7 +307,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       _stageMock.VerifyAllExpectations();
 
-      Assert.IsNotNull (_visitor.FromExpressionInfo);
+      Assert.That (_visitor.FromExpressionInfo, Is.Not.Null);
       var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
 
       ExpressionTreeComparer.CheckAreEqualTrees (

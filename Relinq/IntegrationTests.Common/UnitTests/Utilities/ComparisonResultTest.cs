@@ -56,7 +56,7 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
 
       string expectedDiffSet = MakeDiffSet (new[] { "(0002) line not same", "line is not the same" });
 
-      Assert.AreEqual (expectedDiffSet, comparisonResult.GetDiffSet());
+      Assert.That (comparisonResult.GetDiffSet(), Is.EqualTo (expectedDiffSet));
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
           ,
           new[] { "(0002) ", "there is one line more here" });
 
-      Assert.AreEqual (expectedDiffSet, comparisonResult.GetDiffSet());
+      Assert.That (comparisonResult.GetDiffSet(), Is.EqualTo (expectedDiffSet));
     }
 
     [Test]
@@ -90,7 +90,7 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
           ,
           new[] { "(0002) there is one line more here", string.Empty });
 
-      Assert.AreEqual (expectedDiffSet, comparisonResult.GetDiffSet());
+      Assert.That (comparisonResult.GetDiffSet(), Is.EqualTo (expectedDiffSet));
     }
 
     [Test]
@@ -103,7 +103,7 @@ namespace Remotion.Linq.IntegrationTests.Common.UnitTests.Utilities
 
       string expectedDiffSet = MakeDiffSet (new[]{"(0001) long line test","long line test"});
 
-      Assert.AreEqual (expectedDiffSet, comparisonResult.GetDiffSet());
+      Assert.That (comparisonResult.GetDiffSet(), Is.EqualTo (expectedDiffSet));
     }
   }
 }
