@@ -18,6 +18,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using Remotion.Linq.IntegrationTests.Common.Database;
 using Remotion.Linq.LinqToSqlAdapter;
 
 namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
@@ -35,13 +36,14 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       return conn;
     }
 
-    public string GetConnectionString()
+    public string GetConnectionString ()
     {
       ConnectionStringSettings connectionSettings = ConfigurationManager.ConnectionStrings["Northwind"];
+
       if (connectionSettings == null)
         throw new ArgumentNullException ("Connection configuration not found");
 
-      return connectionSettings.ConnectionString;
+      return DatabaseConfiguration.ReplaceDatasource(connectionSettings.ConnectionString);
     }
   }
 }

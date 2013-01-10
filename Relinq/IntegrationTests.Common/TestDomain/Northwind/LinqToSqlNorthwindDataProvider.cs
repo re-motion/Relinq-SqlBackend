@@ -17,6 +17,7 @@
 using System.Configuration;
 using System.Data.Linq;
 using System.Linq;
+using Remotion.Linq.IntegrationTests.Common.Database;
 
 namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 {
@@ -25,7 +26,13 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
   /// </summary>
   internal class LinqToSqlNorthwindDataProvider : INorthwindDataProvider
   {
-    private readonly NorthwindDataContext _dataContext = new NorthwindDataContext (ConfigurationManager.ConnectionStrings["Northwind"].ConnectionString);
+    private readonly NorthwindDataContext _dataContext;
+
+    public LinqToSqlNorthwindDataProvider ()
+    {
+      var connectionString = DatabaseConfiguration.ReplaceDatasource (ConfigurationManager.ConnectionStrings["Northwind"].ConnectionString);
+      _dataContext = new NorthwindDataContext (connectionString);
+    }
 
     public IQueryable<Product> Products
     {

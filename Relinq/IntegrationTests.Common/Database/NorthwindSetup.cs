@@ -32,10 +32,11 @@ namespace Remotion.Linq.IntegrationTests.Common.Database
       if (connectionSettings == null)
         throw new InvalidOperationException ("Master connection configuration not found. Cannot set up database.");
 
-      var connectionString = connectionSettings.ConnectionString;
+      var connectionString = DatabaseConfiguration.ReplaceDatasource( connectionSettings.ConnectionString);
       var databaseAgent = new DatabaseAgent (connectionString);
 
       var commandBatch = File.ReadAllText ("Database/Northwnd.sql");
+      commandBatch = commandBatch.Replace ("C:\\Databases", DatabaseConfiguration.DatabaseDirectory);
 
       databaseAgent.ExecuteBatchString (commandBatch, false);
     }
