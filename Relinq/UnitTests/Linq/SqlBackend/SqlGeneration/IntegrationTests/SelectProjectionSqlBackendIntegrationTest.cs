@@ -182,13 +182,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
             "[t1].[IsStarredCook] AS [A_IsStarredCook],[t1].[IsFullTimeCook] AS [A_IsFullTimeCook],"+
             "[t1].[SubstitutedID] AS [A_SubstitutedID],[t1].[KitchenID] AS [A_KitchenID],[t1].[ID] AS [B] "+
             "FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[B] <> @1)",
-            row => (object) row.GetEntity<Cook> (new ColumnID ("ID", 0), 
-                                                 new ColumnID ("FirstName", 1),
-                                                 new ColumnID ("Name", 2),
-                                                 new ColumnID ("IsStarredCook", 3),
-                                                 new ColumnID ("IsFullTimeCook", 4),
-                                                 new ColumnID ("SubstitutedID", 5),
-                                                 new ColumnID ("KitchenID", 6)),
+            row => (object) row.GetEntity<Cook> (GetColumnIDsForCook ("")),
             new CommandParameter ("@1", 0)
           );
     }
@@ -397,6 +391,60 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
         new CommandParameter ("@1", 100.0),
         new CommandParameter ("@2", "Long-time cook"),
         new CommandParameter ("@3", "New cook"));
+    }
+
+    [Test]
+    [Ignore ("TODO 3307")]
+    public void LocallyEvaluatedMethod ()
+    {
+      CheckQuery (
+          from c in Cooks select CustomMethodWithEntity (c),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]",
+          row => CustomMethodWithEntity (row.GetEntity<Cook> (GetColumnIDsForCook (""))));
+      CheckQuery (
+          from c in Cooks select CustomMethodWithValue (c.ID),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0]",
+          row => CustomMethodWithValue (row.GetValue<int> (new ColumnID ("value", 0))));
+    }
+
+    [Test]
+    [Ignore ("TODO 3307")]
+    public void LocallyEvaluatedMethod_InNestedProjection ()
+    {
+      var columnIDsForCook = GetColumnIDsForCook ("A_");
+      CheckQuery (
+          from c in Cooks select new { A = CustomMethodWithEntity (c), B = CustomMethodWithValue (c.ID) },
+          "SELECT [t0].[ID] AS [A_ID],[t0].[FirstName] AS [A_FirstName],[t0].[Name] AS [A_Name],"+
+          "[t0].[IsStarredCook] AS [A_IsStarredCook],[t0].[IsFullTimeCook] AS [A_IsFullTimeCook],"+
+          "[t0].[SubstitutedID] AS [A_SubstitutedID],[t0].[KitchenID] AS [A_KitchenID],[t0].[ID] AS [B] "+
+          "FROM [CookTable] AS [t0]",
+          row =>
+          new
+          {
+              A = CustomMethodWithEntity (row.GetEntity<Cook> (columnIDsForCook)),
+              B = CustomMethodWithValue (row.GetValue<int> (new ColumnID ("B", columnIDsForCook.Length + 1)))
+          });
+    }
+
+    private static string CustomMethodWithEntity (Cook cook)
+    {
+      throw new NotImplementedException ();
+    }
+
+    private static string CustomMethodWithValue (int i)
+    {
+      throw new NotImplementedException ();
+    }
+
+    private static ColumnID[] GetColumnIDsForCook (string prefix)
+    {
+      return new[] {new ColumnID (prefix + "ID", 0), 
+                    new ColumnID (prefix + "FirstName", 1),
+                    new ColumnID (prefix + "Name", 2),
+                    new ColumnID (prefix + "IsStarredCook", 3),
+                    new ColumnID (prefix + "IsFullTimeCook", 4),
+                    new ColumnID (prefix + "SubstitutedID", 5),
+                    new ColumnID (prefix + "KitchenID", 6)};
     }
   }
 }
