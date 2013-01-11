@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -334,8 +336,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (Kitchens));
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
+      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
+      Trace.Assert (constructorInfo != null);
       var newExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }),
+          constructorInfo,
           new[] { MemberExpression.MakeMemberAccess (querySourceReferenceExpression, typeof (Kitchen).GetProperty ("ID")),
                   MemberExpression.MakeMemberAccess (querySourceReferenceExpression, typeof (Kitchen).GetProperty ("RoomNumber")) },
           new MemberInfo[] { typeof (TypeForNewExpression).GetProperty ("A"), typeof (TypeForNewExpression).GetProperty ("B") });
@@ -405,6 +409,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Cooks select CustomMethodWithValue (c.ID),
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0]",
           row => CustomMethodWithValue (row.GetValue<int> (new ColumnID ("value", 0))));
+      CheckQuery (
+          from c in Cooks select CustomMethodWithBoolResult (c.ID),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0]",
+          row => CustomMethodWithBoolResult (row.GetValue<int> (new ColumnID ("value", 0))));
     }
 
     [Test]
@@ -426,12 +434,31 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           });
     }
 
-    private static string CustomMethodWithEntity (Cook cook)
+    [Test]
+    [Ignore ("TODO 3307")]
+    public void LocallyEvaluatedProperty ()
+    {
+      CheckQuery (
+          from c in Cooks select c.NonDBStringProperty,
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]",
+          row => row.GetEntity<Cook> (GetColumnIDsForCook ("")).NonDBStringProperty);
+      CheckQuery (
+          from c in Cooks select c.NonDBBoolProperty,
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]",
+          row => row.GetEntity<Cook> (GetColumnIDsForCook ("")).NonDBBoolProperty);
+    }
+
+    private static string CustomMethodWithEntity ([UsedImplicitly] Cook cook)
     {
       throw new NotImplementedException ();
     }
 
-    private static string CustomMethodWithValue (int i)
+    private static string CustomMethodWithValue ([UsedImplicitly]int i)
+    {
+      throw new NotImplementedException ();
+    }
+
+    private static string CustomMethodWithBoolResult ([UsedImplicitly]int i)
     {
       throw new NotImplementedException ();
     }
