@@ -213,7 +213,6 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a Local Method Call to 'PhoneNumberConverter' to convert Phone number to an international format.
     /// </summary>
     [Test]
-    [Ignore ("RM-3307: Support for local method calls")]
     public void LinqToSqlLocalMethodCall01 ()
     {
       var q = from c in DB.Customers
@@ -227,7 +226,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses a Local Method Call to convert phone numbers to an international format and create XDocument.
     /// </summary>
     [Test]
-    [Ignore ("RM-3307: Support for local method calls")]
+    [Ignore ("RM-5348: Support for NewArrayExpression")]
     public void LinqToSqlLocalMethodCall02 ()
     {
       var doc = new XDocument (

@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -416,12 +417,22 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot generate SQL for unary expression '(\"1\" As String)'.")]
     public void VisitUnaryExpression_NotSupported ()
     {
       var unaryExpression = Expression.TypeAs (Expression.Constant ("1"), typeof (string));
       SqlGeneratingExpressionVisitor.GenerateSql (
           unaryExpression, _commandBuilder, _stageMock);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "The method 'System.Linq.Queryable.Count' is not supported by this code generator, and no custom transformer has been registered. "
+        + "Expression: 'TestQueryable<Cook>().Count()'")]
+    public void VisitMethodCallExpression_NotSupported ()
+    {
+      var methodCallExpression = ExpressionHelper.CreateMethodCallExpression();
+      SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, _stageMock);
     }
 
     [Test]

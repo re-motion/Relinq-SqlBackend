@@ -114,6 +114,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (queryable.Expression, expectedStatement, expectedInMemoryProjection, expectedParameters);
     }
 
+    protected void CheckQuery<T> (
+        IQueryable<T> queryable,
+        string expectedStatement,
+        Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
+        bool simplifyInMemoryProjection,
+        params CommandParameter[] expectedParameters)
+    {
+      CheckQuery (queryable.Expression, expectedStatement, expectedInMemoryProjection, simplifyInMemoryProjection, expectedParameters);
+    }
+
     protected void CheckQuery<T> (Expression<Func<T>> queryLambda, string expectedStatement, params CommandParameter[] expectedParameters)
     {
       CheckQuery (queryLambda, expectedStatement, null, expectedParameters);
@@ -138,6 +148,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (queryModel, expectedStatement, expectedInMemoryProjection, expectedParameters);
     }
 
+    protected void CheckQuery (
+        Expression queryExpression,
+        string expectedStatement,
+        Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
+        bool simplify,
+        params CommandParameter[] expectedParameters)
+    {
+      var queryModel = ExpressionHelper.ParseQuery (queryExpression);
+      CheckQuery (queryModel, expectedStatement, expectedInMemoryProjection, simplify, expectedParameters);
+    }
+
     protected void CheckQuery (QueryModel queryModel, string expectedStatement, params CommandParameter[] expectedParameters)
     {
       CheckQuery (queryModel, expectedStatement, null, expectedParameters);
@@ -149,6 +170,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
         Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
         params CommandParameter[] expectedParameters)
     {
+      CheckQuery (queryModel, expectedStatement, expectedInMemoryProjection, true, expectedParameters);
+    }
+
+    protected void CheckQuery (
+        QueryModel queryModel,
+        string expectedStatement,
+        Expression<Func<IDatabaseResultRow, object>> expectedInMemoryProjection,
+        bool simplifyInMemoryProjection,
+        params CommandParameter[] expectedParameters)
+    {
       var result = GenerateSql (queryModel);
 
       Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
@@ -156,9 +187,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 
       if (expectedInMemoryProjection != null)
       {
-        var simplifiedExpectedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection);
-        simplifiedExpectedInMemoryProjection = ReplaceConvertExpressionMarker (simplifiedExpectedInMemoryProjection);
-        ExpressionTreeComparer.CheckAreEqualTrees (simplifiedExpectedInMemoryProjection, result.GetInMemoryProjection<object>());
+        Expression checkedInMemoryProjection = expectedInMemoryProjection;
+        if (simplifyInMemoryProjection)
+        {
+          checkedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
+          checkedInMemoryProjection = ReplaceConvertExpressionMarker (checkedInMemoryProjection);
+        }
+        ExpressionTreeComparer.CheckAreEqualTrees (checkedInMemoryProjection, result.GetInMemoryProjection<object> ());
       }
     }
 

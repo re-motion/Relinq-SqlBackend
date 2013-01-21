@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -32,11 +33,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   public class NamedExpressionCombinerTest
   {
     private IMappingResolutionContext _context;
+    private ConstructorInfo _typeForNewExpressionConstructor;
 
     [SetUp]
     public void SetUp ()
     {
       _context = new MappingResolutionContext();
+      _typeForNewExpressionConstructor = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) });
     }
 
     [Test]
@@ -103,7 +106,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ProcessNames_NewExpression ()
     {
       var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          _typeForNewExpressionConstructor,
           new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       var namedExpression = new NamedExpression ("test", expression);
@@ -121,7 +124,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ProcessNames_NewExpression_NamedExpressionsInsideConstructorArgumentsCombined ()
     {
       var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          _typeForNewExpressionConstructor,
           new[] { new NamedExpression ("inner", Expression.Constant (0)) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       var namedExpression = new NamedExpression ("outer", expression);
@@ -136,7 +139,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ProcessNames_NewExpression_NoMembers ()
     {
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { Expression.Constant (0) });
+      var expression = Expression.New (_typeForNewExpressionConstructor, new[] { Expression.Constant (0) });
       var namedExpression = new NamedExpression ("test", expression);
 
       var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
@@ -145,6 +148,68 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NewExpression) result).Members, Is.Null);
+    }
+
+    [Test]
+    public void ProcessNames_MethodCallExpression ()
+    {
+      var instance = ExpressionHelper.CreateExpression (typeof (int));
+      var argument = ExpressionHelper.CreateExpression (typeof (string));
+      var expression = Expression.Call (instance, ReflectionUtility.GetMethod (() => 5.ToString ("arg")), argument);
+      var namedExpression = new NamedExpression ("test", expression);
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+
+      Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
+      Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((MethodCallExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Arguments[0]).Name, Is.EqualTo ("test"));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Arguments[0]).Expression, Is.SameAs (argument));
+
+      Assert.That (((MethodCallExpression) result).Object, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Object).Name, Is.EqualTo ("test"));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Object).Expression, Is.SameAs (instance));
+    }
+
+    [Test]
+    public void ProcessNames_MethodCallExpression_NamedExpressionsInsideArgumentsCombined ()
+    {
+      var instance = ExpressionHelper.CreateExpression (typeof (int));
+      var argument = ExpressionHelper.CreateExpression (typeof (string));
+      var expression = Expression.Call (
+          new NamedExpression ("inner", instance),
+          ReflectionUtility.GetMethod (() => 5.ToString ("arg")),
+          new NamedExpression ("inner", argument));
+      var namedExpression = new NamedExpression ("outer", expression);
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+
+      Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
+      Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
+      
+      Assert.That (((MethodCallExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Arguments[0]).Name, Is.EqualTo ("outer_inner"));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Arguments[0]).Expression, Is.SameAs (argument));
+ 
+      Assert.That (((MethodCallExpression) result).Object, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Object).Name, Is.EqualTo ("outer_inner"));
+      Assert.That (((NamedExpression) ((MethodCallExpression) result).Object).Expression, Is.SameAs (instance));
+    }
+
+    [Test]
+    public void ProcessNames_MethodCallExpression_NoObject ()
+    {
+      var argument = ExpressionHelper.CreateExpression (typeof (string));
+      var expression = Expression.Call (
+          ReflectionUtility.GetMethod (() => int.Parse ("arg")),
+          argument);
+      var namedExpression = new NamedExpression ("test", expression);
+
+      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+
+      Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
+      Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
+      Assert.That (((MethodCallExpression) result).Object, Is.Null);
     }
 
     [Test]

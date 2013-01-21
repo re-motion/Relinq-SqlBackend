@@ -317,6 +317,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    {
+      string message = string.Format (
+          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered. Expression: '{2}'",
+          expression.Method.DeclaringType,
+          expression.Method.Name,
+          FormattingExpressionTreeVisitor.Format (expression));
+      throw new NotSupportedException (message);
+    }
+
     protected override Exception CreateUnhandledItemException<T> (T unhandledItem, string visitMethod)
     {
       var message = string.Format (

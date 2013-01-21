@@ -585,16 +585,37 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The method 'System.Object.GetHashCode' is not supported by this code "
-                                                                          + "generator, and no custom transformer has been registered. "
-                                                                          + "Expression: '\"Test\".GetHashCode()'")]
-    public void VisitMethodCallExpression_TransformerNotRegistered_ThrowsException ()
+    public void VisitMethodCallExpression_TransformerNotRegistered_WrapsArgumentsIntoNamedExpressions ()
     {
-      var method = typeof (object).GetMethod ("GetHashCode");
-      var constantExpression = Expression.Constant ("Test");
-      var methodCallExpression = Expression.Call (constantExpression, method);
+      var methodCallExpression = Expression.Call (
+          Expression.Constant (0), 
+          ReflectionUtility.GetMethod (() => 0.ToString ("", null)), 
+          Expression.Constant (""),
+          Expression.Constant (null, typeof (IFormatProvider)));
 
-      SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _methodCallTransformerProvider);
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _methodCallTransformerProvider);
+
+      var expected = Expression.Call (
+          new NamedExpression ("Object", Expression.Constant (0)), 
+          ReflectionUtility.GetMethod (() => 0.ToString ("", null)), 
+          new NamedExpression ("Arg0", Expression.Constant ("")),
+          new NamedExpression ("Arg1", Expression.Constant (null, typeof (IFormatProvider))));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_TransformerNotRegistered_NoObject_WrapsArgumentsIntoNamedExpressions ()
+    {
+      var methodCallExpression = Expression.Call (
+          ReflectionUtility.GetMethod (() => int.Parse ("")),
+          Expression.Constant (""));
+      
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _methodCallTransformerProvider);
+
+      var expected = Expression.Call (
+          ReflectionUtility.GetMethod (() => int.Parse ("")),
+          new NamedExpression ("Arg0", Expression.Constant ("")));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -672,6 +693,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NewExpression) result).Members, Is.Null);
       Assert.That (((NamedExpression) ((NewExpression) result).Arguments[0]).Name, Is.EqualTo ("m0"));
+    }
+
+    [Test]
+    public void VisitPartialEvaluationExceptionExpression_StripsExceptionAndVisitsInnerExpression ()
+    {
+      var evaluatedExpression = Expression.Property (Expression.Constant (""), "Length");
+      var exception = new InvalidOperationException ("What?");
+      var expression = new PartialEvaluationExceptionExpression (exception, evaluatedExpression);
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
+
+      var expectedExpression = new SqlLengthExpression (evaluatedExpression.Expression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     private static MemberExpression CreateMemberExpressionWithInnerSqlCaseExpression<TMemberType> (Expression when, Expression then, Expression elseCase)

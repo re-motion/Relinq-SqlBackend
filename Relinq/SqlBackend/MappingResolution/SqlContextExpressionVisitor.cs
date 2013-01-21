@@ -304,13 +304,30 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var expressions = expression.Arguments.Select (ApplyValueContext);
-// ReSharper disable ConditionIsAlwaysTrueOrFalse
-      if (expression.Members != null && expression.Members.Count > 0)
-        return Expression.New (expression.Constructor, expressions, expression.Members);
-      else
-        return Expression.New (expression.Constructor, expressions);
-// ReSharper restore ConditionIsAlwaysTrueOrFalse
+      var newArguments = expression.Arguments.Select (ApplyValueContext).ToArray ();
+      if (!newArguments.SequenceEqual (expression.Arguments))
+      {
+        // ReSharper disable ConditionIsAlwaysTrueOrFalse
+        if (expression.Members != null && expression.Members.Count > 0)
+          return Expression.New (expression.Constructor, newArguments, expression.Members);
+        else
+          return Expression.New (expression.Constructor, newArguments);
+        // ReSharper restore ConditionIsAlwaysTrueOrFalse
+      }
+
+      return expression;
+    }
+
+    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    {
+      // Method arguments and target instance are always values
+
+      var newInstance = expression.Object != null ? ApplyValueContext (expression.Object) : null;
+      var newArguments = expression.Arguments.Select (ApplyValueContext).ToArray();
+      if (newInstance != expression.Object || !newArguments.SequenceEqual (expression.Arguments))
+        return Expression.Call (newInstance, expression.Method, newArguments);
+
+      return expression;
     }
 
     public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
@@ -451,6 +468,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       var newExpression = base.VisitExpression (expression);
       if (newExpression is SqlConvertedBooleanExpression)
+        return newExpression;
+
+      // We don't adjust the results of local method calls, every value is a supported value here. This is a workaround, better solution in RM-5348.
+      if (newExpression is MethodCallExpression)
         return newExpression;
 
       if (BooleanUtility.IsBooleanType (newExpression.Type))

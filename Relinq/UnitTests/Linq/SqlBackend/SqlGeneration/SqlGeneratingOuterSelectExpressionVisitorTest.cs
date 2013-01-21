@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.SqlBackend;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -32,11 +31,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
   [TestFixture]
   public class SqlGeneratingOuterSelectExpressionVisitorTest
   {
-    private NamedExpression _namedExpression;
+    private NamedExpression _namedIntExpression;
     private SqlEntityDefinitionExpression _entityExpression;
     private TestableSqlGeneratingOuterSelectExpressionVisitor _visitor;
     private ISqlGenerationStage _stageMock;
     private SqlCommandBuilder _commandBuilder;
+    private SqlColumnDefinitionExpression _nameColumnExpression;
 
     [SetUp]
     public void SetUp ()
@@ -45,14 +45,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _commandBuilder = new SqlCommandBuilder ();
       _visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock);
 
-      _namedExpression = new NamedExpression ("test", Expression.Constant (0));
+      _namedIntExpression = new NamedExpression ("test", Expression.Constant (0));
+      _nameColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
       _entityExpression = new SqlEntityDefinitionExpression (
           typeof (Cook),
           "c",
           "test",
           new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true),
           new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true),
-          new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false),
+          _nameColumnExpression,
           new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
           );
     }
@@ -70,7 +71,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_CreatesFullInMemoryProjectionLambda ()
     {
-       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedExpression, _commandBuilder, _stageMock);
+       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedIntExpression, _commandBuilder, _stageMock);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
@@ -82,7 +83,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
 
-      _visitor.VisitNamedExpression (_namedExpression);
+      _visitor.VisitNamedExpression (_namedIntExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
@@ -130,13 +131,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       var newExpression = Expression.New (
           typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof(int), typeof (Cook)}), 
-          new Expression[] { _namedExpression, _entityExpression });
+          new Expression[] { _namedIntExpression, _entityExpression });
       _visitor.VisitNewExpression (newExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (4));
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
+      // Constants are directly used within the in-memory projection, whereas entities are taken from the SQL result
+      var expectedProjectionForNamedExpression = Expression.Constant (0);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
       
       var expectedProjectionForNewExpression = Expression.New (
@@ -145,7 +147,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (
           _commandBuilder.GetCommandText (), 
-          Is.EqualTo ("@1 AS [test],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
+          Is.EqualTo ("NULL AS [test],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
@@ -155,14 +157,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var keyValueType = typeof (KeyValuePair<int, Cook>);
       var newExpression = Expression.New (
           keyValueType.GetConstructor (new[] { typeof (int), typeof (Cook) }),
-          new Expression[] { _namedExpression, _entityExpression },
+          new Expression[] { _namedIntExpression, _entityExpression },
           keyValueType.GetProperty("Key"),
           keyValueType.GetProperty("Value"));
 
       _visitor.VisitNewExpression (newExpression);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
+      // Constants are directly used within the in-memory projection, whereas entities are taken from the SQL result
+      var expectedProjectionForNamedExpression = Expression.Constant (0);
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
       
       var expectedProjectionForNewExpression = Expression.New (
@@ -171,6 +174,80 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           keyValueType.GetProperty ("Key"), keyValueType.GetProperty ("Value"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
+    }
+
+    [Test]
+    public void VisitMethodCallExpression ()
+    {
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
+      var namedStringExpression = new NamedExpression ("Name", _nameColumnExpression);
+
+      var methodCallExpression = Expression.Call (
+          _namedIntExpression,
+          ReflectionUtility.GetMethod (() => 0.ToString ("")),
+          new Expression[] { namedStringExpression });
+      _visitor.VisitMethodCallExpression (methodCallExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (2));
+
+      var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
+      // Constants are used as is in the projection, whereas columns are taken from the SQL result
+      var expectedProjectionForInstanceExpression = Expression.Constant (0);
+      var expectedProjectionForArgumentExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "Name", 1, typeof (string));
+
+      var expectedProjection = Expression.Call (
+          expectedProjectionForInstanceExpression,
+          methodCallExpression.Method,
+          new Expression[] { expectedProjectionForArgumentExpression });
+
+      Assert.That (
+          _commandBuilder.GetCommandText (),
+          Is.EqualTo ("NULL AS [test],[c].[Name] AS [Name]"));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_WithoutObject ()
+    {
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
+      var namedStringExpression = new NamedExpression ("Name", _nameColumnExpression);
+
+      var methodCallExpression = Expression.Call (
+          ReflectionUtility.GetMethod (() => int.Parse ("")),
+          new Expression[] { namedStringExpression });
+      _visitor.VisitMethodCallExpression (methodCallExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+
+      var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
+      var expectedProjectionForArgumentExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "Name", 0, typeof (string));
+
+      var expectedProjection = Expression.Call (
+          methodCallExpression.Method,
+          new Expression[] { expectedProjectionForArgumentExpression });
+
+      Assert.That (
+          _commandBuilder.GetCommandText (),
+          Is.EqualTo ("[c].[Name] AS [Name]"));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_NoObjectsOrArguments ()
+    {
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
+      var methodCallExpression = Expression.Call (ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments()));
+      _visitor.VisitMethodCallExpression (methodCallExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+
+      var expectedProjection = Expression.Call (methodCallExpression.Method);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("NULL"));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -187,7 +264,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitUnaryExpression_Convert_ProjectionExpressonIsNotNull ()
     {
       var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
-      var expression = Expression.Convert (_namedExpression, typeof (double), methodInfo);
+      var expression = Expression.Convert (_namedIntExpression, typeof (double), methodInfo);
 
       _visitor.VisitUnaryExpression (expression);
 
@@ -212,7 +289,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitUnaryExpression_ConvertChecked_ProjectionExpressonIsNotNull ()
     {
       var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
-      var expression = Expression.ConvertChecked (_namedExpression, typeof (double), methodInfo);
+      var expression = Expression.ConvertChecked (_namedIntExpression, typeof (double), methodInfo);
 
       _visitor.VisitUnaryExpression (expression);
 
@@ -255,6 +332,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           rowParameter,
           typeof (IDatabaseResultRow).GetMethod ("GetValue").MakeGenericMethod (expressionType),
           Expression.Constant (new ColumnID (name ?? "value", columnPosoitionStart)));
+    }
+
+    private static int StaticMethodWithoutArguments ()
+    {
+      throw new NotImplementedException();
     }
   }
 }

@@ -50,6 +50,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         else
           return Expression.New (newExpression.Constructor, preparedArguments);
       }
+      else if (outerExpression.Expression is MethodCallExpression)
+      {
+        var methodCallExpression = (MethodCallExpression) outerExpression.Expression;
+        var namedInstance = methodCallExpression.Object != null ? new NamedExpression (outerExpression.Name, methodCallExpression.Object) : null;
+        var namedArguments = methodCallExpression.Arguments.Select ((a, i) => new NamedExpression (outerExpression.Name, a));
+        return Expression.Call (
+            namedInstance != null ? ProcessNames (mappingResolutionContext, namedInstance) : null,
+            methodCallExpression.Method,
+            namedArguments.Select (a => ProcessNames (mappingResolutionContext, a)));
+      }
       else if (outerExpression.Expression is SqlEntityExpression)
       {
         var entityExpression = (SqlEntityExpression) outerExpression.Expression;

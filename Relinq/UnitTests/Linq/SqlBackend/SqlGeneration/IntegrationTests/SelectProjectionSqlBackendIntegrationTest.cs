@@ -398,70 +398,168 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3307")]
     public void LocallyEvaluatedMethod ()
     {
       CheckQuery (
-          from c in Cooks select CustomMethodWithEntity (c),
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]",
-          row => CustomMethodWithEntity (row.GetEntity<Cook> (GetColumnIDsForCook (""))));
+          from c in Cooks select CustomStaticMethodWithEntity (c),
+          "SELECT [t0].[ID] AS [Arg0_ID],[t0].[FirstName] AS [Arg0_FirstName],[t0].[Name] AS [Arg0_Name],[t0].[IsStarredCook] AS [Arg0_IsStarredCook],"
+          + "[t0].[IsFullTimeCook] AS [Arg0_IsFullTimeCook],[t0].[SubstitutedID] AS [Arg0_SubstitutedID],[t0].[KitchenID] AS [Arg0_KitchenID] "
+          + "FROM [CookTable] AS [t0]",
+          row => (object) CustomStaticMethodWithEntity (row.GetEntity<Cook> (GetColumnIDsForCook ("Arg0_"))));
       CheckQuery (
-          from c in Cooks select CustomMethodWithValue (c.ID),
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0]",
-          row => CustomMethodWithValue (row.GetValue<int> (new ColumnID ("value", 0))));
+          from c in Cooks select CustomStaticMethodWithValue (c.ID),
+          "SELECT [t0].[ID] AS [Arg0] FROM [CookTable] AS [t0]",
+          row => (object) CustomStaticMethodWithValue (row.GetValue<int> (new ColumnID ("Arg0", 0))));
       CheckQuery (
-          from c in Cooks select CustomMethodWithBoolResult (c.ID),
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0]",
-          row => CustomMethodWithBoolResult (row.GetValue<int> (new ColumnID ("value", 0))));
+          from c in Cooks select CustomStaticMethodWithBoolResult (c.ID),
+          "SELECT [t0].[ID] AS [Arg0] FROM [CookTable] AS [t0]",
+          row => (object) CustomStaticMethodWithBoolResult (row.GetValue<int> (new ColumnID ("Arg0", 0))));
+      CheckQuery (
+          from c in Cooks select CustomStaticMethodWithBoolParameter (c.IsFullTimeCook),
+          "SELECT [t0].[IsFullTimeCook] AS [Arg0] FROM [CookTable] AS [t0]",
+          row =>
+          (object) CustomStaticMethodWithBoolParameter (ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("Arg0", 0))))));
+      CheckQuery (
+          from c in Cooks select c.ID.GetTypeCode(),
+          "SELECT [t0].[ID] AS [Object] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("Object", 0)).GetTypeCode ());
+      CheckQuery (
+          from c in Cooks select CustomInstanceMethodWithValue (c.ID),
+          "SELECT NULL AS [Object],[t0].[ID] AS [Arg0] FROM [CookTable] AS [t0]",
+          row => (object) CustomInstanceMethodWithValue (row.GetValue<int> (new ColumnID ("Arg0", 1))));
+      var o = new object();
+      CheckQuery (
+          from c in Cooks select CustomStaticMethodWithValues (c.ID, o, c.FirstName),
+          "SELECT [t0].[ID] AS [Arg0],NULL AS [Arg1],[t0].[FirstName] AS [Arg2] FROM [CookTable] AS [t0]",
+          row => (object) CustomStaticMethodWithValues (row.GetValue<int> (new ColumnID ("Arg0", 0)), o, row.GetValue<string> (new ColumnID ("Arg2", 2))));
     }
 
     [Test]
-    [Ignore ("TODO 3307")]
+    public void LocallyEvaluatedMethod_WithoutArguments ()
+    {
+      CheckQuery (
+          from c in Cooks select CustomStaticMethodWithoutArguments (),
+          "SELECT @1 AS [value] "
+          + "FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "precalculated value!"));
+
+      CheckQuery (
+          from c in Cooks select CustomStaticThrowingMethodWithoutArguments(),
+          "SELECT NULL FROM [CookTable] AS [t0]",
+          row => (object) CustomStaticThrowingMethodWithoutArguments(),
+          false);
+    }
+
+    [Test]
+    public void LocallyEvaluatedMethod_WithConstantArguments ()
+    {
+      CheckQuery (
+          from c in Cooks select CustomStaticMethodWithValues (42, null, "test"),
+          "SELECT @1 AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "precalculated value!"));
+
+      CheckQuery (
+          from c in Cooks select CustomStaticMethodWithValues (42, null, c.FirstName),
+          "SELECT NULL AS [Arg0],NULL AS [Arg1],[t0].[FirstName] AS [Arg2] FROM [CookTable] AS [t0]",
+          row => (object) CustomStaticMethodWithValues (42, null, row.GetValue<string> (new ColumnID ("Arg2", 2))));
+
+      CheckQuery (
+          from c in Cooks select CustomStaticThrowingMethodWithValue (42),
+          "SELECT NULL AS [Arg0] FROM [CookTable] AS [t0]",
+          row => (object) CustomStaticThrowingMethodWithValue (42),
+          false);
+    }
+
+    [Test]
     public void LocallyEvaluatedMethod_InNestedProjection ()
     {
-      var columnIDsForCook = GetColumnIDsForCook ("A_");
+      var columnIDsForCook = GetColumnIDsForCook ("A_Arg0_");
       CheckQuery (
-          from c in Cooks select new { A = CustomMethodWithEntity (c), B = CustomMethodWithValue (c.ID) },
-          "SELECT [t0].[ID] AS [A_ID],[t0].[FirstName] AS [A_FirstName],[t0].[Name] AS [A_Name],"+
-          "[t0].[IsStarredCook] AS [A_IsStarredCook],[t0].[IsFullTimeCook] AS [A_IsFullTimeCook],"+
-          "[t0].[SubstitutedID] AS [A_SubstitutedID],[t0].[KitchenID] AS [A_KitchenID],[t0].[ID] AS [B] "+
+          from c in Cooks select new { A = CustomStaticMethodWithEntity (c), B = CustomStaticMethodWithValue (c.ID) },
+          "SELECT [t0].[ID] AS [A_Arg0_ID],[t0].[FirstName] AS [A_Arg0_FirstName],[t0].[Name] AS [A_Arg0_Name],"
+          + "[t0].[IsStarredCook] AS [A_Arg0_IsStarredCook],[t0].[IsFullTimeCook] AS [A_Arg0_IsFullTimeCook],"
+          + "[t0].[SubstitutedID] AS [A_Arg0_SubstitutedID],[t0].[KitchenID] AS [A_Arg0_KitchenID],[t0].[ID] AS [B_Arg0] " +
           "FROM [CookTable] AS [t0]",
           row =>
-          new
+          (object) new
           {
-              A = CustomMethodWithEntity (row.GetEntity<Cook> (columnIDsForCook)),
-              B = CustomMethodWithValue (row.GetValue<int> (new ColumnID ("B", columnIDsForCook.Length + 1)))
+              A = CustomStaticMethodWithEntity (row.GetEntity<Cook> (columnIDsForCook)),
+              B = CustomStaticMethodWithValue (row.GetValue<int> (new ColumnID ("B_Arg0", columnIDsForCook.Length)))
           });
+
+      CheckQuery (
+          from c in Cooks select new { A = CustomStaticMethodWithBoolResult (c.ID) },
+          "SELECT [t0].[ID] AS [A_Arg0] " +
+          "FROM [CookTable] AS [t0]",
+          row =>
+          (object) new { A = CustomStaticMethodWithBoolResult (row.GetValue<int> (new ColumnID ("A_Arg0", 0))) });
     }
 
     [Test]
-    [Ignore ("TODO 3307")]
-    public void LocallyEvaluatedProperty ()
+    [Ignore ("TODO 5348")]
+    public void LocallyEvaluatedMethod_InsideNonLocalExpression_ShouldThrowException_OrBeExecutedInMemory ()
     {
-      CheckQuery (
-          from c in Cooks select c.NonDBStringProperty,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]",
-          row => row.GetEntity<Cook> (GetColumnIDsForCook ("")).NonDBStringProperty);
-      CheckQuery (
-          from c in Cooks select c.NonDBBoolProperty,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] FROM [CookTable] AS [t0]",
-          row => row.GetEntity<Cook> (GetColumnIDsForCook ("")).NonDBBoolProperty);
+      Assert.That (
+          () => (from c in Cooks select CustomStaticMethodWithValue (c.ID)).Count(),
+          Throws.TypeOf<NotSupportedException>().With.Message.EqualTo ("..."));
+
+      Assert.That (
+          () => from c in Cooks select CustomStaticMethodWithValue (c.ID) == "test",
+          Throws.TypeOf<NotSupportedException>().With.Message.EqualTo ("..."));
+
+      Assert.That (
+          () => (from c in Cooks select CustomStaticMethodWithValue (c.ID)).Distinct(),
+          Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo ("..."));
+
     }
 
-    private static string CustomMethodWithEntity ([UsedImplicitly] Cook cook)
+    private static string CustomStaticMethodWithEntity ([UsedImplicitly] Cook cook)
     {
       throw new NotImplementedException ();
     }
 
-    private static string CustomMethodWithValue ([UsedImplicitly]int i)
+    private static string CustomStaticThrowingMethodWithoutArguments()
+    {
+      throw new NotImplementedException ("This is a custom exception.");
+    }
+
+    private static string CustomStaticMethodWithoutArguments ()
+    {
+      return "precalculated value!";
+    }
+
+    private static string CustomStaticMethodWithValue ([UsedImplicitly]int i)
     {
       throw new NotImplementedException ();
     }
 
-    private static string CustomMethodWithBoolResult ([UsedImplicitly]int i)
+    private static string CustomStaticThrowingMethodWithValue ([UsedImplicitly]int i)
+    {
+      throw new NotImplementedException ("This is a custom exception.");
+    }
+
+    private static string CustomStaticMethodWithValues ([UsedImplicitly]int i, [UsedImplicitly]object o, [UsedImplicitly]string s)
+    {
+      return "precalculated value!";
+    }
+
+    private static bool CustomStaticMethodWithBoolResult ([UsedImplicitly]int i)
     {
       throw new NotImplementedException ();
     }
+
+    private static string CustomStaticMethodWithBoolParameter ([UsedImplicitly]bool b)
+    {
+      throw new NotImplementedException ();
+    }
+
+    private string CustomInstanceMethodWithValue ([UsedImplicitly]int i)
+    {
+      throw new NotImplementedException ();
+    }
+
 
     private static ColumnID[] GetColumnIDsForCook (string prefix)
     {

@@ -33,7 +33,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   /// <see cref="SqlPreparationExpressionVisitor"/> transforms the expressions stored by <see cref="SqlStatement"/> to a SQL-specific
   /// format.
   /// </summary>
-  public class SqlPreparationExpressionVisitor : ExpressionTreeVisitor, ISqlSubStatementVisitor
+  public class SqlPreparationExpressionVisitor : ExpressionTreeVisitor, ISqlSubStatementVisitor, IPartialEvaluationExceptionExpressionVisitor
   {
     private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
@@ -235,12 +235,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         return VisitExpression (transformedExpression);
       }
 
-      string message = string.Format (
-          "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered. Expression: '{2}'",
-          expression.Method.DeclaringType.FullName,
-          expression.Method.Name,
-          FormattingExpressionTreeVisitor.Format(expression));
-      throw new NotSupportedException (message);
+      var namedInstance = expression.Object != null ? NamedExpression.CreateFromMemberName ("Object", VisitExpression (expression.Object)) : null;
+      var namedArguments = expression.Arguments.Select ((a, i) => (Expression) NamedExpression.CreateFromMemberName ("Arg" + i, VisitExpression (a)));
+      return Expression.Call (namedInstance, expression.Method, namedArguments);
     }
 
     protected override Expression VisitConditionalExpression (ConditionalExpression expression)
@@ -267,6 +264,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           return true;
       }
       return false;
+    }
+
+    public Expression VisitPartialEvaluationExceptionExpression (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
+    {
+      return VisitExpression (partialEvaluationExceptionExpression.EvaluatedExpression);
     }
   }
 }

@@ -95,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var projectionExpressions = new List<Expression>();
-      CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add (VisitArgumentExpression (expr)));
+      CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add (VisitArgumentOfLocalEvaluation (expr)));
 
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
       // ReSharper disable HeuristicUnreachableCode
@@ -105,6 +105,31 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         CommandBuilder.SetInMemoryProjectionBody (Expression.New (expression.Constructor, projectionExpressions, expression.Members));
       // ReSharper restore HeuristicUnreachableCode
       // ReSharper restore ConditionIsAlwaysTrueOrFalse
+
+      return expression;
+    }
+
+    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var allItems = expression.Object != null ? new[] { expression.Object }.Concat (expression.Arguments) : expression.Arguments;
+      var projectionItems = new List<Expression>();
+      CommandBuilder.AppendSeparated (",", allItems, (cb, expr) => projectionItems.Add (VisitArgumentOfLocalEvaluation (expr)));
+
+      var instance = expression.Object != null ? projectionItems.First() : null;
+      var arguments = expression.Object != null ? projectionItems.Skip (1) : projectionItems;
+
+      var newInMemoryProjection = Expression.Call (instance, expression.Method, arguments);
+      CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjection);
+
+      // If there are no projection items, we need to emit a NULL constant for the MethodCallExpression to avoid producing an empty SELECT list
+      if (projectionItems.Count == 0)
+      {
+        VisitExpression (Expression.Constant (null));
+        // Don't forget to increment the column position!
+        GetNextColumnID ("");
+      }
 
       return expression;
     }
@@ -148,10 +173,21 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return new ColumnID (columnName, ColumnPosition++);
     }
 
-    private Expression VisitArgumentExpression (Expression argumentExpression)
+    private Expression VisitArgumentOfLocalEvaluation (Expression argumentExpression)
     {
-      VisitExpression (argumentExpression);
-      
+      var namedExpression = argumentExpression as NamedExpression;
+      if (namedExpression != null && namedExpression.Expression is ConstantExpression)
+      {
+        // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory projection.
+        // This enables us to use complex, local-only constants within a local expression.
+        VisitExpression (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
+        CommandBuilder.SetInMemoryProjectionBody (namedExpression.Expression);
+      }
+      else
+      {
+        VisitExpression (argumentExpression);
+      }
+
       var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
       Debug.Assert (argumentInMemoryProjectionBody != null);
       CommandBuilder.SetInMemoryProjectionBody (null);

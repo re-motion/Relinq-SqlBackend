@@ -191,7 +191,6 @@ Namespace LinqSamples101
     'PhoneNumberConverter' to convert Phone number
     'to an international format.
     <Test()> _
-    <Ignore("RM-3307: Support for local method calls")> _
     Public Sub LinqToSqlLocalMethodCall01()
 
       Dim q = From c In DB.Customers _
@@ -207,7 +206,7 @@ Namespace LinqSamples101
     'and create XDocument.>
     'TODO need to fix SavingTestExecutor to properly handle result ?
     <Test()> _
-    <Ignore("RM-3307: Support for local method calls")> _
+    <Ignore("RM-5348: Support for NewArrayExpression")> _
     Public Sub LinqToSqlLocalMethodCall02()
 
       Dim doc = <Customers>

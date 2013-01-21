@@ -17,7 +17,9 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -171,6 +173,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _valueRequiredVisitor.VisitExpression (convertedBooleanExpression);
 
       Assert.That (result, Is.SameAs (convertedBooleanExpression));
+    }
+
+    [Test]
+    public void VisitExpression_ValueSemantics_LeavesMethodCallExpression ()
+    {
+      var methodWithBoolResultExpression = Expression.Call (ReflectionUtility.GetMethod (() => MethodWithBoolResult()));
+
+      var result = _valueRequiredVisitor.VisitExpression (methodWithBoolResultExpression);
+
+      Assert.That (result, Is.SameAs (methodWithBoolResultExpression));
     }
 
     [Test]
@@ -562,7 +574,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitBinaryExpression_BinaryBoolExpression_PassesMethod ()
     {
-      var operatorMethod = typeof (SqlContextExpressionVisitorTest).GetMethod ("FakeAndOperator");
+      var operatorMethod = ReflectionUtility.GetMethod (() => FakeAndOperator(false, false));
       var expression = Expression.And (Expression.Constant (true), Expression.Constant (false), operatorMethod);
       Assert.That (expression.Method, Is.Not.Null);
 
@@ -991,36 +1003,81 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitNewExpression ()
+    public void VisitNewExpression_KeepsValueSemantics ()
+    {
+      var argument = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var expression = Expression.New (
+          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (Cook) }),
+          new[] { argument },
+          (MemberInfo) typeof (TypeForNewExpression).GetProperty ("D"));
+
+      var result = _singleValueRequiredVisitor.VisitNewExpression (expression);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void VisitNewExpression_VisitsChildExpressions ()
     {
       var expression = Expression.New (
           typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
-          new[] { Expression.Constant (0) },
+          new[] { new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0))) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
       var result = _singleValueRequiredVisitor.VisitNewExpression (expression);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
-      Assert.That (result, Is.Not.SameAs (expression));
-      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((NewExpression) result).Members[0].Name, Is.EqualTo ("A"));
-      Assert.That (((NewExpression) result).Members.Count, Is.EqualTo (1));
+      var expected = Expression.New (
+          expression.Constructor, new[] { new NamedExpression ("test_test2", Expression.Constant (0)) }, expression.Members);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
     public void VisitNewExpression_NoMembers ()
     {
       var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { Expression.Constant (0) });
+
       var result = _singleValueRequiredVisitor.VisitNewExpression (expression);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (NewExpression)));
-      Assert.That (result, Is.Not.SameAs (expression));
-      Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
-      Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((NewExpression) result).Members, Is.Null);
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_KeepsValueSemantics ()
+    {
+      var instance = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var argument = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Restaurant));
+      var expression = Expression.Call (instance, ReflectionUtility.GetMethod (() => ((Cook) null).GetSubKitchenCook (null)), argument);
+
+      var result = _singleValueRequiredVisitor.VisitMethodCallExpression (expression);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_VisitsChildExpressions ()
+    {
+      var instance = ExpressionHelper.CreateExpression (typeof (int));
+      var argument = ExpressionHelper.CreateExpression (typeof (string));
+      var expression = Expression.Call (
+          new NamedExpression ("test", new NamedExpression ("test2", instance)),
+          ReflectionUtility.GetMethod (() => 5.ToString("arg")),
+          new NamedExpression ("test", new NamedExpression ("test2", argument)));
+
+      var result = _predicateRequiredVisitor.VisitMethodCallExpression (expression);
+
+      var expected = Expression.Call (new NamedExpression ("test_test2", instance), expression.Method, new NamedExpression ("test_test2", argument));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_NoObject ()
+    {
+      var argument = ExpressionHelper.CreateExpression (typeof (string));
+      var expression = Expression.Call (ReflectionUtility.GetMethod (() => int.Parse ("arg")), argument);
+
+      var result = _predicateRequiredVisitor.VisitMethodCallExpression (expression);
+
+      Assert.That (result, Is.SameAs (expression));
     }
 
     [Test]
@@ -1034,7 +1091,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       _mappingResolutionContext.AddGroupReferenceMapping (expression, sqlTable);
 
-      var result = _valueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
+      var result = _singleValueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
 
       Assert.That (result, Is.SameAs (expression));
       Assert.That (_mappingResolutionContext.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
@@ -1051,7 +1108,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       _mappingResolutionContext.AddGroupReferenceMapping (expression, sqlTable);
 
-      var result = (SqlGroupingSelectExpression) _valueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
+      var result = (SqlGroupingSelectExpression) _singleValueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
 
       Assert.That (result, Is.Not.SameAs (expression));
 
@@ -1222,7 +1279,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
               "LambdaExpressions are not supported in the SQL backend. Expression: '() => 0'."));
     }
 
-    public static bool FakeAndOperator (bool operand1, bool operand2)
+    private static bool FakeAndOperator ([UsedImplicitly] bool operand1, [UsedImplicitly] bool operand2)
     {
       throw new NotImplementedException();
     }
@@ -1235,6 +1292,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private static SqlCaseExpression GetNullablePredicateAsValueExpression (Expression expression)
     {
       return SqlCaseExpression.CreateIfThenElseNull (typeof (int?), expression, new SqlLiteralExpression (1), new SqlLiteralExpression (0));
+    }
+
+    private static bool MethodWithBoolResult ()
+    {
+      throw new NotImplementedException();
     }
   }
 }
