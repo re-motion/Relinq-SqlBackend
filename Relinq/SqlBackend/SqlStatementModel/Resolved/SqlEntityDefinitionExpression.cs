@@ -48,6 +48,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
+      // TODO 4878: Shouldn't this visit the PrimaryKeyColumn, too? Otherwise it can't be transformed.
       var newColumns = visitor.VisitAndConvert (Columns, "VisitChildren");
       if (newColumns != Columns)
         return new SqlEntityDefinitionExpression (Type, TableAlias, null, PrimaryKeyColumn, newColumns.ToArray ());

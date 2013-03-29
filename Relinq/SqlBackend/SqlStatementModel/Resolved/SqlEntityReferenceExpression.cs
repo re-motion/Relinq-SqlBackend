@@ -41,6 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
       _referencedEntity = referencedEntity;
       _columns = Array.AsReadOnly (referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
+      // TODO 4878: Need to visit PrimaryKeyColumn since columns might be buried within a complex value.
       _primaryKeyColumn = GetColumn (referencedEntity.PrimaryKeyColumn.Type, referencedEntity.PrimaryKeyColumn.ColumnName, true);
     }
 

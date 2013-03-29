@@ -132,6 +132,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       var newBinaryExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
 
+      // TODO 4878: This should be moved into SqlContextExpressionVisitor. Then, consider trying to optimize this using the mapping resolver.
       // NewExpressions are compared by comparing them member-wise
       var leftExpressionAsNewExpression = newBinaryExpression.Left as NewExpression;
       var rightExpressionAsNewExpression = newBinaryExpression.Right as NewExpression;

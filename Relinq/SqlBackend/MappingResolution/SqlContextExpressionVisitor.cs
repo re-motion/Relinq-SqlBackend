@@ -141,6 +141,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
+        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKeyColumn to obtain a single value.
         return expression.PrimaryKeyColumn;
       else
         return expression; // rely on VisitExpression to apply correct semantics
@@ -244,6 +245,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
+        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKeyColumn to obtain a single value.
         return expression.PrimaryKeyExpression;
       else
         return expression; // rely on VisitExpression to apply correct semantics
@@ -270,10 +272,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         case SqlExpressionContext.ValueRequired:
           return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context);
         case SqlExpressionContext.SingleValueRequired:
+          // TODO 4878: Temporarily disable this optimization. With RM-3315, we should get it back because the MappingResolver will replace the 
+          // SqlEntityRefMemberExpression if it isn't required.
           var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
           if (columnExpression != null && columnExpression.IsPrimaryKey)
             return resolvedJoinInfo.LeftKey;
           else
+            // TODO 4878: Revisit PrimaryKeyColumn, this could be a compound value.
             return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKeyColumn;
       }
       
@@ -303,6 +308,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // TODO 4878: In single value context, ask the mapping resolver to resolve the NewExpression into a single value. If this is not possible, 
+      // throw (compound value cannot be used where a single value is required).
 
       var newArguments = expression.Arguments.Select (ApplyValueContext).ToArray ();
       if (!newArguments.SequenceEqual (expression.Arguments))
@@ -348,6 +356,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
+      // TODO 4878: Has no children.
       return VisitChildrenWithSingleValueSemantics (expression);
     }
 
@@ -363,6 +372,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
+      // TODO 4878: Shouldn't this be Value semantics? EXISTS can deal with multi-column substatements.
       return VisitChildrenWithSingleValueSemantics (expression);
     }
 
@@ -401,9 +411,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
+      // TODO 4878: Has no children.
       return VisitChildrenWithSingleValueSemantics (expression);
     }
 
+    // TODO 4878: Rename expression to SqlInExpression
     public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
       return VisitChildrenWithSingleValueSemantics (expression);

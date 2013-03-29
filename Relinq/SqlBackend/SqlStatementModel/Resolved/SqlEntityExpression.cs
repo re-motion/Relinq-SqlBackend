@@ -42,6 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       _name = entityName;
     }
 
+    // TODO 4878: Change to be Expression PrimaryKeyExpression.
     public abstract SqlColumnExpression PrimaryKeyColumn { get; }
     public abstract ReadOnlyCollection<SqlColumnExpression> Columns { get; }
 
