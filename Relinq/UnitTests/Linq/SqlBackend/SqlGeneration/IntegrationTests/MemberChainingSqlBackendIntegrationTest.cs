@@ -44,7 +44,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens select k.Cook,
-          "SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] "
+          "SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID] "
           + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]",
            row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
@@ -53,7 +54,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
               new ColumnID ("IsStarredCook", 3),
               new ColumnID ("IsFullTimeCook", 4),
               new ColumnID ("SubstitutedID", 5),
-              new ColumnID ("KitchenID", 6)));
+              new ColumnID ("KitchenID", 6),
+              new ColumnID ("KnifeID", 7),
+              new ColumnID ("KnifeClassID", 8)));
     }
 
     [Test]
@@ -77,7 +80,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens select k.Restaurant.SubKitchen.Cook,
-          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
+          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
+          + "[t3].[KnifeID],[t3].[KnifeClassID] "
           + "FROM [KitchenTable] AS [t0] "
           + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
           + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
@@ -88,8 +92,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void ChainedPropertySelectAndWhere_SamePathTwice ()
     {
       CheckQuery (
-          from k in Kitchens where k.Restaurant.SubKitchen.Cook != null select k.Restaurant.SubKitchen.Cook,
-          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
+          from k in Kitchens where k.Restaurant.SubKitchen.Cook != null select k.Restaurant.SubKitchen.Cook.ID,
+          "SELECT [t3].[ID] AS [value] "
           + "FROM [KitchenTable] AS [t0] "
           + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
           + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
@@ -101,22 +105,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void ChainedPropertySelectAndWhere_PartialPathTwice ()
     {
       CheckQuery (
-          from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.ID == 0 select k.Restaurant.SubKitchen.Cook,
-          "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "+
-          "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] LEFT OUTER JOIN "+
-          "[KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "+
-          "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON [t2].[RestaurantID] = [t4].[ID] WHERE ([t4].[ID] = @1)",
+          from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.ID == 0 select k.Restaurant.SubKitchen.Cook.ID,
+          "SELECT [t3].[ID] AS [value] " 
+          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] LEFT OUTER JOIN " 
+          + "[KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] " 
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON [t2].[RestaurantID] = [t4].[ID] WHERE ([t4].[ID] = @1)",
           new CommandParameter ("@1", 0));
-    }
-
-    [Test]
-    public void PropertySelectsClassID ()
-    {
-      CheckQuery (
-          from c in Cooks select c.MetaID.ClassID,
-          "SELECT [t0].[ClassID] AS [value] FROM [CookTable] AS [t0]",
-          row => (object) row.GetValue<string> (new ColumnID ("value", 0))
-          );
     }
 
     [Test]
@@ -132,10 +126,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void MemberAccess_OnSubQuery_WithColumns ()
     {
-      var query = Cooks.Select (c => (from a in c.Assistants select a.MetaID).First ().ClassID);
+      var query = Cooks.Select (c => (from a in c.Assistants select a.KnifeID).First ().ClassID);
       CheckQuery (query,
         "SELECT [q2].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
-        "[t1].[ClassID] AS [value] FROM [CookTable] AS [t1] " +
+        "[t1].[KnifeClassID] AS [value] FROM [CookTable] AS [t1] " +
         "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q2]");
     }
 

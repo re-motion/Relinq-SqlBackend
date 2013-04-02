@@ -15,8 +15,10 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -31,6 +33,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
       switch (tableInfo.ItemType.Name)
       {
         case "Cook":
+        case "Knife":
         case "Kitchen":
         case "Restaurant":
         case "Company":
@@ -82,6 +85,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
                 "KitchenID",
+                typeof (int),
+                false,
+                CreateResolvedTableInfo (joinInfo.ItemType, generator),
+                "ID",
+                typeof (int),
+                true);
+          case "Knife":
+            var joinedTableInfo = CreateResolvedTableInfo (joinInfo.ItemType, generator);
+            var leftKey = ResolveMemberExpression (joinInfo.OriginatingEntity, joinInfo.MemberInfo);
+            var rightKey = ResolveSimpleTableInfo (joinedTableInfo, generator).PrimaryKeyColumn;
+            return new ResolvedJoinInfo (joinedTableInfo, leftKey, rightKey);
+          case "KnifeWithOptimizedJoin":
+            return CreateResolvedJoinInfo (
+                joinInfo.OriginatingEntity,
+                "KnifeID",
                 typeof (int),
                 false,
                 CreateResolvedTableInfo (joinInfo.ItemType, generator),
@@ -163,7 +181,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
                 CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false)
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeID", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "KnifeClassID", false),
             });
       }
       else if (type == typeof (Kitchen))
@@ -212,6 +232,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeClassID", false),
                 CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
             });
       }
@@ -227,6 +249,29 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 primaryKeyColumn,
                 CreateColumn (typeof (DateTime), tableInfo.TableAlias, "DateOfIncorporation", false)
             });
+      }
+      else if (type == typeof (Knife))
+      {
+        var primaryKeyColumn1 = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
+        var primaryKeyColumn2 = CreateColumn (typeof (string), tableInfo.TableAlias, "ClassID", true);
+        var primaryKey = CreateMetaIDExpression (primaryKeyColumn1, primaryKeyColumn2);
+        throw new NotImplementedException ("TODO 4878 - enable entities to hold compound key expressions.");
+        //return new SqlEntityDefinitionExpression (
+        //    tableInfo.ItemType,
+        //    tableInfo.TableAlias, null,
+        //    primaryKey,
+        //    new[]
+        //    {
+        //        primaryKeyColumn1,
+        //        primaryKeyColumn2,
+        //        CreateColumn (typeof (string), tableInfo.TableAlias, "FirstName", false),
+        //        CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
+        //        CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
+        //        CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
+        //        CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
+        //        CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
+        //        CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
+        //    });
       }
       throw new UnmappedItemException (string.Format ("Type '{0}' is not supported by the MappingResolverStub.", type.Name));
     }
@@ -245,14 +290,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           case "IsFullTimeCook":
           case "IsStarredCook":
           case "Weight":
-          case "MetaID":
           case "SpecificInformation":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
+          case "KnifeID":
+            return CreateMetaIDExpression (
+                originatingEntity.GetColumn (typeof (int), "KnifeID", false), 
+                originatingEntity.GetColumn (typeof (string), "KnifeClassID", false));
           case "Substitution":
-            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
           case "Substituted":
-            return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
           case "Kitchen":
+          case "Knife":
+          case "KnifeWithOptimizedJoin":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
         }
       }
@@ -310,18 +358,30 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
         }
       }
+      else if (memberInfo.DeclaringType == typeof (Knife))
+      {
+        switch (memberInfo.Name)
+        {
+          case "ID":
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
+          case "ClassID":
+          case "Sharpness":
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
+        }
+      }
 
       throw new UnmappedItemException ("Cannot resolve member: " + memberInfo);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
-      if (memberInfo.DeclaringType == typeof (MetaID))
-      {
-        if (memberInfo.Name == "ClassID")
-          return new SqlColumnDefinitionExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
-      }
-      throw new UnmappedItemException ("Cannot resolve member for: " + memberInfo.Name);
+      throw new NotImplementedException ("TODO 4878: Should no longer be called.");
+      //if (memberInfo.DeclaringType == typeof (MetaID))
+      //{
+      //  if (memberInfo.Name == "ClassID")
+      //    return new SqlColumnDefinitionExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
+      //}
+      //throw new UnmappedItemException ("Cannot resolve member for: " + memberInfo.Name);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
@@ -330,6 +390,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
         return new SqlEntityConstantExpression (typeof (Cook), constantExpression.Value, Expression.Constant (((Cook) constantExpression.Value).ID, typeof (int)));
       else if (constantExpression.Value is Company)
         return new SqlEntityConstantExpression (typeof (Company), constantExpression.Value, Expression.Constant (((Company) constantExpression.Value).ID, typeof (int)));
+      else if (constantExpression.Value is Knife)
+        return new SqlEntityConstantExpression (typeof (Knife), constantExpression.Value, Expression.Constant (((Knife) constantExpression.Value).ID, typeof (MetaID)));
       else
         return constantExpression;
     }
@@ -361,5 +423,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
 
       return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
     }
+
+    private static Expression CreateMetaIDExpression (Expression valueExpression, Expression classIDColumn)
+    {
+      var metaIDCtor = typeof (MetaID).GetConstructor (new[] { typeof (int), typeof (string) });
+      Trace.Assert (metaIDCtor != null);
+      var newExpression = Expression.New (metaIDCtor, new[] { valueExpression, classIDColumn }, new[] { typeof (MetaID).GetProperty ("Value"), typeof (MetaID).GetProperty ("ClassID") });
+      // TODO 4878: Change this API for better usability. (What's the second parameter good for?)
+      return NamedExpression.CreateNewExpressionWithNamedArguments (newExpression, newExpression.Arguments);
+    }
+
   }
 }

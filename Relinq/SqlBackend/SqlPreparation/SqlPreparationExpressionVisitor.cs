@@ -248,6 +248,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           expression.Type, VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
     }
 
+    // TODO 4878: Move to ResolvingExpressionVisitor
     protected override Expression VisitNewExpression (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

@@ -31,7 +31,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           (from s in Cooks select s).Cast<Chef> (),
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] "
           + "FROM [CookTable] AS [t0]",
            row => (object) (Chef) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
@@ -40,7 +41,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
               new ColumnID ("IsStarredCook", 3),
               new ColumnID ("IsFullTimeCook", 4),
               new ColumnID ("SubstitutedID", 5),
-              new ColumnID ("KitchenID", 6)));
+              new ColumnID ("KitchenID", 6),
+              new ColumnID ("KnifeID", 7),
+              new ColumnID ("KnifeClassID", 8)));
     }
 
     [Test]
