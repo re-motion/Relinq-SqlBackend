@@ -104,12 +104,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSubStatementReferenceExpression_CreatesEntityReference_ForEntities ()
     {
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityDefinitionExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {
-                             SelectProjection =
-                                 entityDefinitionExpression,
+                             SelectProjection = entityDefinitionExpression,
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
@@ -120,8 +118,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
       Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
 
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference (
-        "q0", tableInfo.SqlStatement.SelectProjection.Type);
+      var expectedResult = entityDefinitionExpression.CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

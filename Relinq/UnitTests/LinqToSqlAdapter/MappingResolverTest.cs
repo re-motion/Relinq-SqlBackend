@@ -75,7 +75,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     {
       var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
       var customerPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
-      var customerEntity = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, customerPrimaryKey);
+      var customerEntity = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
 
       var ordersMember = customerTableInfo.ItemType.GetProperty ("Orders");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (customerEntity, ordersMember, JoinCardinality.Many);
@@ -98,9 +98,9 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     {
       var orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t1");
       var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
-      var orderPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "OrderID", true);
 
-      var orderEntity = new SqlEntityDefinitionExpression (orderTableInfo.ItemType, orderTableInfo.TableAlias, null, orderPrimaryKey);
+      var orderEntity = new SqlEntityDefinitionExpression (
+          orderTableInfo.ItemType, orderTableInfo.TableAlias, null, e => e.GetColumn (typeof (string), "OrderID", true));
 
       var customerMember = orderTableInfo.ItemType.GetProperty ("Customer");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (orderEntity, customerMember, JoinCardinality.One);
@@ -124,11 +124,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     {
       var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
 
-      var customerPrimaryKey = new SqlColumnDefinitionExpression (
-          typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
-
-      var customerDefinition = new SqlEntityDefinitionExpression (
-          _unmappedType, customerTableInfo.TableAlias, null, customerPrimaryKey);
+      var customerDefinition = new SqlEntityDefinitionExpression (_unmappedType, customerTableInfo.TableAlias, null, e => e);
       PropertyInfo customerOrders = customerTableInfo.ItemType.GetProperty ("Orders");
       var joinInfo = new UnresolvedJoinInfo (customerDefinition, customerOrders, JoinCardinality.One);
 
@@ -141,11 +137,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     {
       var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
 
-      var customerPrimaryKey = new SqlColumnDefinitionExpression (
-          typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
-
-      var customerDefinition = new SqlEntityDefinitionExpression (
-          customerTableInfo.ItemType, customerTableInfo.TableAlias, null, customerPrimaryKey);
+      var customerDefinition = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
 
       var joinInfo = new UnresolvedJoinInfo (customerDefinition, _unmappedInfo, JoinCardinality.One);
 
@@ -162,9 +154,14 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       SqlColumnExpression expectedPrimaryColumn = new SqlColumnDefinitionExpression (typeof (int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression expectedDescriptionColumn =
           new SqlColumnDefinitionExpression (typeof (string), simpleTableInfo.TableAlias, "RegionDescription", false);
-      var expectedExpr = new SqlEntityDefinitionExpression (
-          simpleTableInfo.ItemType, simpleTableInfo.TableAlias, null, expectedPrimaryColumn, expectedPrimaryColumn, expectedDescriptionColumn);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, resolvedExpr);
+
+      Assert.That (resolvedExpr.Type, Is.SameAs (typeof (DataContextTestClass.Region)));
+      Assert.That (resolvedExpr.TableAlias, Is.EqualTo ("t0"));
+      Assert.That (resolvedExpr.Name, Is.Null);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedPrimaryColumn, resolvedExpr.GetIdentityExpression());
+      Assert.That (resolvedExpr.Columns, Has.Count.EqualTo (2));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedPrimaryColumn, resolvedExpr.Columns[0]);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedDescriptionColumn, resolvedExpr.Columns[1]);
     }
 
     [Test]
@@ -192,8 +189,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void ResolveMemberExpression()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, primaryKeyColumn);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
       var memberInfo = typeof (PersonTestClass).GetProperty ("First");
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
@@ -205,20 +201,19 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void ResolveMemberExpression_PrimaryKey()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, primaryKeyColumn);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, e => e);
 
       var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CustomerID");
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (primaryKeyColumn, result);
+      var expectedExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
     public void ResolveMemberExpression_NonPrimaryKey()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, primaryKeyColumn);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, e => e);
 
       var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CompanyName");
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
@@ -230,8 +225,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void ResolveMemberExpression_Association()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
-      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, primaryKeyColumn);
+      var referencedSqlExpression = new SqlEntityDefinitionExpression (typeof (DataContextTestClass.Customer), "c", null, e => e);
 
       var sqlEntityExpression = new SqlEntityReferenceExpression (typeof (DataContextTestClass.Order), "o", null, referencedSqlExpression);
 
@@ -239,7 +233,6 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       var result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
       var expectedExpression = new SqlEntityRefMemberExpression (sqlEntityExpression, memberInfo);
-
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
@@ -247,8 +240,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
     public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForType()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, primaryKeyColumn);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
       var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
       memberInfoStub
@@ -263,8 +255,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
         ExpectedMessage = "Cannot resolve member: Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain.PersonTestClass.stub is not a mapped member")]
     public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForMember()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, primaryKeyColumn);
+      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
       var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
       memberInfoStub

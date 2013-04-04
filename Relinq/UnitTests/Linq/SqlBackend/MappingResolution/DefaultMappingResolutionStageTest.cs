@@ -18,10 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -151,8 +149,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveGroupByExpression_EntityRetained ()
     {
       var expression = Expression.Constant (true);
-      var sqlColumnDefinitionExpression = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true);
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", sqlColumnDefinitionExpression);
+      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression();
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (expression))
@@ -252,12 +249,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveJoinInfo ()
     {
-      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
-      var join = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
-      var joinInfo = (UnresolvedJoinInfo) join.JoinInfo;
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
@@ -277,19 +269,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
       var tableReferenceExpression = new SqlTableReferenceExpression (new SqlTable (_fakeResolvedSimpleTableInfo, JoinSemantics.Inner));
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          tableReferenceExpression,
-          new[] { sqlTable },
-          null,
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement(tableReferenceExpression, new[] { sqlTable});
+      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
           .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))
@@ -310,8 +291,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveTableReferenceExpression ()
     {
       var expression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook)));
-      var fakeResult = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
           .Expect (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
@@ -328,7 +308,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var constantExpression = Expression.Constant (new Cook());
       var expression = Expression.MakeMemberAccess (constantExpression, typeof (Cook).GetProperty ("FirstName"));
       var sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
-      var fakeResult = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, sqlColumnExpression);
+      var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
           .Expect (mock => mock.ResolveConstantExpression (constantExpression))
@@ -349,15 +329,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveEntityRefMemberExpression ()
     {
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, kitchenCookMember);
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
-      var fakeJoinInfo = new ResolvedJoinInfo (
-          new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),
-          new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true),
-          new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false));
-      _mappingResolutionContext.AddSqlEntityMapping (entityExpression, new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner));
+      var unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
+      var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
+      _mappingResolutionContext.AddSqlEntityMapping (entityExpression, SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
 
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 

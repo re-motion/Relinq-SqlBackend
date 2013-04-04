@@ -28,37 +28,28 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlEntityDefinitionExpression : SqlEntityExpression
   {
-    private readonly Expression _primaryKey;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
 
     public SqlEntityDefinitionExpression (
         Type entityType, 
         string tableAlias, 
         string entityName, 
-        Expression primaryKey, 
+        Func<SqlEntityExpression, Expression> identityExpressionGenerator, 
         params SqlColumnExpression[] projectionColumns)
-        : base (entityType, tableAlias, entityName)
+      : base (entityType, tableAlias, entityName, identityExpressionGenerator)
     {
-      ArgumentUtility.CheckNotNull ("primaryKey", primaryKey);
       ArgumentUtility.CheckNotNull ("projectionColumns", projectionColumns);
 
       _columns = Array.AsReadOnly (projectionColumns);
-      _primaryKey = primaryKey;
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      // TODO 4878: Shouldn't this visit the PrimaryKey, too? Otherwise it can't be transformed.
       var newColumns = visitor.VisitAndConvert (Columns, "VisitChildren");
       if (newColumns != Columns)
-        return new SqlEntityDefinitionExpression (Type, TableAlias, null, PrimaryKey, newColumns.ToArray ());
+        return new SqlEntityDefinitionExpression (Type, TableAlias, null, IdentityExpressionGenerator, newColumns.ToArray ());
       else
         return this;
-    }
-
-    public override Expression PrimaryKey
-    {
-      get { return _primaryKey;  }
     }
 
     public override ReadOnlyCollection<SqlColumnExpression> Columns
@@ -73,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression Update (Type itemType, string tableAlias, string entityName)
     {
-      return new SqlEntityDefinitionExpression (itemType, tableAlias, entityName, PrimaryKey, Columns.ToArray ());
+      return new SqlEntityDefinitionExpression (itemType, tableAlias, entityName, IdentityExpressionGenerator, Columns.ToArray ());
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)

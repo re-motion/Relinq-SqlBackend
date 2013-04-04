@@ -15,7 +15,6 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -34,7 +33,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     [SetUp]
     public void SetUp ()
     {
-      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      _entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
     }
 
     [Test]
@@ -55,8 +54,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void ItemType_CardinalityMany ()
     {
-      _entityExpression = new SqlEntityDefinitionExpression (typeof (Restaurant), "r", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var joinInfo = new UnresolvedJoinInfo (_entityExpression, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Restaurant));
+      var joinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Restaurant).GetProperty ("Cooks"), JoinCardinality.Many);
       Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
     }
 

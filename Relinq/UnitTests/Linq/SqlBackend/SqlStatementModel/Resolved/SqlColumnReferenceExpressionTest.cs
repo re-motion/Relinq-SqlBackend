@@ -32,9 +32,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     [SetUp]
     public void SetUp ()
     {
-      _entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
-      
+      _entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression();
       _columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, _entityExpression);
     }
 

@@ -113,7 +113,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
 
-      Assert.That (result, Is.SameAs (entityExpression.PrimaryKey));
+      ExpressionTreeComparer.CheckAreEqualTrees (entityExpression.GetIdentityExpression(), result);
     }
 
     [Test]
@@ -496,8 +496,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result1 = _singleValueRequiredVisitor.VisitSqlEntityExpression (entityExpression);
       var result2 = _singleValuePreferredVisitor.VisitSqlEntityExpression (entityExpression);
 
-      Assert.That (result1, Is.SameAs (entityExpression.PrimaryKey));
-      Assert.That (result2, Is.SameAs (entityExpression.PrimaryKey));
+      ExpressionTreeComparer.CheckAreEqualTrees (entityExpression.GetIdentityExpression(), result1);
+      ExpressionTreeComparer.CheckAreEqualTrees (entityExpression.GetIdentityExpression(), result2);
     }
 
     [Test]
@@ -746,7 +746,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _predicateRequiredVisitor.VisitBinaryExpression (binary);
 
-      var expectedExpression = BinaryExpression.Equal (Expression.Convert (left.PrimaryKey, typeof (int?)), right.PrimaryKey);
+      var expectedExpression = BinaryExpression.Equal (Expression.Convert (left.GetIdentityExpression(), typeof (int?)), right.GetIdentityExpression());
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
     
@@ -769,13 +769,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitUnaryExpression_ConvertExpression_OperandChanged_WithDifferentType ()
     {
-      var entity = new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var unaryExpression = Expression.Convert (entity, typeof (object));
 
       var result = _singleValueRequiredVisitor.VisitUnaryExpression (unaryExpression);
 
       Assert.That (result, Is.Not.SameAs (unaryExpression));
-      Assert.That (result, Is.SameAs (entity.PrimaryKey));
+      ExpressionTreeComparer.CheckAreEqualTrees (entity.GetIdentityExpression(), result);
     }
 
     [Test]
@@ -793,10 +793,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitUnaryExpression_ConvertExpression_SameOperand ()
     {
-      var unaryExpression =
-          Expression.Convert (
-              new SqlEntityDefinitionExpression (typeof (Cook), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)),
-              typeof (object));
+      var unaryExpression = Expression.Convert (SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook)), typeof (object));
 
       var result = _valueRequiredVisitor.VisitUnaryExpression (unaryExpression);
 
@@ -864,7 +861,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (resultWithValue, Is.SameAs (sqlIsNullExpressionWithValue));
       Assert.That (resultWithEntity, Is.Not.SameAs (sqlIsNullExpressionWithValue));
 
-      var expectedResultWithEntity = new SqlIsNullExpression (entityExpression.PrimaryKey);
+      var expectedResultWithEntity = new SqlIsNullExpression (entityExpression.GetIdentityExpression());
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResultWithEntity, resultWithEntity);
     }
 
@@ -881,7 +878,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (resultWithValue, Is.SameAs (sqlIsNotNullExpressionWithValue));
       Assert.That (resultWithEntity, Is.Not.SameAs (sqlIsNotNullExpressionWithValue));
 
-      var expectedResultWithEntity = new SqlIsNotNullExpression (entityExpression.PrimaryKey);
+      var expectedResultWithEntity = new SqlIsNotNullExpression (entityExpression.GetIdentityExpression());
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResultWithEntity, resultWithEntity);
     }
 
@@ -929,21 +926,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitSqlEntityRefMemberExpression_ValueSemantic ()
     {
-      var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
-      var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, primaryKeyColumn, primaryKeyColumn);
+
+      var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
+      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _stageMock
           .Expect (
               mock =>
               mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Cook)),
+                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Kitchen)),
                   Arg<IMappingResolutionContext>.Matches (c => c == _mappingResolutionContext)))
           .Return (fakeJoinInfo);
       _stageMock
@@ -958,65 +952,65 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlEntityRefMemberExpression_SingleValueRequired_PrimaryKeyColumnOnLeftSide ()
+    public void VisitSqlEntityRefMemberExpression_SingleValueRequired_NoPrimaryKeyColumnOnRightSide ()
     {
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+      
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, primaryKeyColumn, primaryKeyColumn);
+      var fakeJoinInfoWithPrimaryKeyColumnOnLeftSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
+      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _stageMock
           .Expect (
               mock =>
               mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Cook)),
+                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Kitchen)),
                   Arg<IMappingResolutionContext>.Matches (c => c == _mappingResolutionContext)))
-          .Return (fakeJoinInfo);
+          .Return (fakeJoinInfoWithPrimaryKeyColumnOnLeftSide);
       _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfo, _mappingResolutionContext))
+          .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfoWithPrimaryKeyColumnOnLeftSide, _mappingResolutionContext))
           .Return (fakeEntityExpression);
       _stageMock.Replay();
 
       var result = _singleValueRequiredVisitor.VisitSqlEntityRefMemberExpression (entityRefMemberExpression);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (primaryKeyColumn));
+      ExpressionTreeComparer.CheckAreEqualTrees (fakeEntityExpression.GetIdentityExpression(), result);
     }
 
     [Test]
-    public void VisitSqlEntityRefMemberExpression_SingleValuePreferred_PrimaryKeyColumnOnLeftSide ()
+    public void VisitSqlEntityRefMemberExpression_SingleValuePreferred_NoPrimaryKeyColumnOnRightSide ()
     {
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, primaryKeyColumn, primaryKeyColumn);
+      var fakeJoinInfoWithPrimaryKeyColumnOnLeftSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryKeyColumn, foreignKeyColumn);
+      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _stageMock
           .Expect (
               mock =>
               mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Cook)),
+                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Kitchen)),
                   Arg<IMappingResolutionContext>.Matches (c => c == _mappingResolutionContext)))
-          .Return (fakeJoinInfo);
+          .Return (fakeJoinInfoWithPrimaryKeyColumnOnLeftSide);
       _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfo, _mappingResolutionContext))
+          .Expect (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, fakeJoinInfoWithPrimaryKeyColumnOnLeftSide, _mappingResolutionContext))
           .Return (fakeEntityExpression);
       _stageMock.Replay ();
 
       var result = _singleValuePreferredVisitor.VisitSqlEntityRefMemberExpression (entityRefMemberExpression);
 
       _stageMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (primaryKeyColumn));
+      ExpressionTreeComparer.CheckAreEqualTrees (fakeEntityExpression.GetIdentityExpression(), result);
     }
 
     [Test]
@@ -1024,20 +1018,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
+      var fakeJoinInfoWithPrimaryKeyOnRightSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
 
       _stageMock
           .Expect (
               mock =>
               mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Cook)),
+                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Kitchen)),
                   Arg<IMappingResolutionContext>.Matches (c => c == _mappingResolutionContext)))
-          .Return (fakeJoinInfo);
+          .Return (fakeJoinInfoWithPrimaryKeyOnRightSide);
       _stageMock.Replay();
 
       var result = _singleValueRequiredVisitor.VisitSqlEntityRefMemberExpression (entityRefMemberExpression);
@@ -1051,20 +1045,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
       var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
-      var fakeJoinInfo = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
+      var fakeJoinInfoWithPrimaryKeyOnRightSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, foreignKeyColumn, primaryKeyColumn);
 
       _stageMock
           .Expect (
               mock =>
               mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Cook)),
+                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Kitchen)),
                   Arg<IMappingResolutionContext>.Matches (c => c == _mappingResolutionContext)))
-          .Return (fakeJoinInfo);
+          .Return (fakeJoinInfoWithPrimaryKeyOnRightSide);
       _stageMock.Replay ();
 
       var result = _singleValuePreferredVisitor.VisitSqlEntityRefMemberExpression (entityRefMemberExpression);
@@ -1075,10 +1069,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void VisitSqlEntityRefMemberExpression_PredicateSemantic ()
+    public void VisitSqlEntityRefMemberExpression_PredicateRequired_Throws ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var memberInfo = typeof (Cook).GetProperty ("ID");
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
@@ -1133,7 +1126,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = predicateRequiredVisitor.VisitNamedExpression (expression);
 
-      var expectedResult = new NamedExpression ("test_test2", innermostExpression.PrimaryKey);
+      var expectedResult = new NamedExpression ("test_test2", innermostExpression.GetIdentityExpression());
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -1335,7 +1328,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var entityDefinitionExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var expression = new SqlExistsExpression (entityDefinitionExpression);
-      var expectedExpression = new SqlExistsExpression (entityDefinitionExpression.PrimaryKey);
+      var expectedExpression = new SqlExistsExpression (entityDefinitionExpression.GetIdentityExpression());
 
       var result = _predicateRequiredVisitor.VisitSqlExistsExpression (expression);
 

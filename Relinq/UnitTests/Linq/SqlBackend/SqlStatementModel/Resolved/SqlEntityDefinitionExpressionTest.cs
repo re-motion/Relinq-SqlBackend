@@ -16,9 +16,7 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -32,7 +30,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   public class SqlEntityDefinitionExpressionTest
   {
     private SqlEntityExpression _entityExpression;
-    private Expression _primaryKeyExpression;
     private SqlColumnExpression _columnExpression1;
     private SqlColumnExpression _columnExpression2;
     private SqlColumnExpression _columnExpression3;
@@ -42,12 +39,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     [SetUp]
     public void SetUp ()
     {
-      _primaryKeyExpression = ExpressionHelper.CreateExpression();
-      _columnExpression1 = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", false);
+      _columnExpression1 = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true);
       _columnExpression2 = new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false);
       _columnExpression3 = new SqlColumnDefinitionExpression (typeof (int), "t", "City", false);
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
-      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "t", null, _primaryKeyExpression, _orginalColumns);
+      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "t", null, e => e.GetColumn (typeof (int), "ID", true), _orginalColumns);
       _originalColumnsReadonly = _entityExpression.Columns;
     }
 
@@ -116,15 +112,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
                        new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
                    };
 
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
-
-      var expectedResult = new SqlEntityReferenceExpression (
-          typeof (Cook),
-          "c1", null,
-          entityExpression);
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, e => e.GetColumn (typeof (int), "ID", true), columns);
 
       var result = entityExpression.CreateReference("c1", typeof(Cook));
 
+      var expectedResult = new SqlEntityReferenceExpression (typeof (Cook), "c1", null, entityExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -137,13 +129,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
                        new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
                    };
 
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
-
-      var expectedResult = new SqlEntityDefinitionExpression (
-          typeof (Kitchen), "f", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, e => e.GetColumn (typeof (int), "ID", true), columns);
 
       var result = entityExpression.Update (typeof (Kitchen), "f", null);
 
+      var expectedResult = new SqlEntityDefinitionExpression (typeof (Kitchen), "f", null, entityExpression.IdentityExpressionGenerator, columns);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

@@ -158,7 +158,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static SqlJoinedTable CreateSqlJoinedTable_WithUnresolvedJoinInfo ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Cook));
       var joinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
       return new SqlJoinedTable (joinInfo, JoinSemantics.Left);
     }
@@ -175,8 +175,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
     public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       return new UnresolvedJoinInfo (entityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+    }
+
+    public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenRestaurant ()
+    {
+      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
+      return new UnresolvedJoinInfo (entityExpression, typeof (Kitchen).GetProperty ("Restaurant"), JoinCardinality.One);
+    }
+
+    public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_CookSubstitution ()
+    {
+      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Cook));
+      return new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
     }
 
     public static UnresolvedCollectionJoinInfo CreateUnresolvedCollectionJoinInfo_RestaurantCooks ()
@@ -207,27 +219,31 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 
-    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type)
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type = null)
     {
-      return CreateSqlEntityDefinitionExpression(type, null);
+      return CreateSqlEntityDefinitionExpression(type ?? typeof (Cook), null);
     }
 
     public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name)
     {
-      return CreateSqlEntityDefinitionExpression(type, name, "t", typeof (int));
+      return CreateSqlEntityDefinitionExpression (type, name, "t");
+    }
+
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name, string owningTableAlias)
+    {
+      return CreateSqlEntityDefinitionExpression (type, name, owningTableAlias, typeof (int));
     }
 
     public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name, string owningTableAlias, Type primaryKeyType)
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (primaryKeyType, owningTableAlias, "ID", true);
       return new SqlEntityDefinitionExpression (
           type,
           owningTableAlias, 
           name,
-          primaryKeyColumn,
+          e => e.GetColumn (primaryKeyType, "ID", true),
           new[]
           {
-              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (primaryKeyType, owningTableAlias, "ID", true),
               new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "Name", false),
               new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "City", false)
           });

@@ -32,19 +32,19 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   {
     private readonly string _tableAlias;
     private readonly string _name;
+    private readonly Func<SqlEntityExpression, Expression> _identityExpressionGenerator;
 
-    protected SqlEntityExpression (Type entityType, string tableAlias, string entityName)
+    protected SqlEntityExpression (Type entityType, string tableAlias, string entityName, Func<SqlEntityExpression, Expression> identityExpressionGenerator)
       : base (ArgumentUtility.CheckNotNull ("entityType", entityType))
     {
       ArgumentUtility.CheckNotNull ("tableAlias", tableAlias);
+      ArgumentUtility.CheckNotNull ("identityExpressionGenerator", identityExpressionGenerator);
       
       _tableAlias = tableAlias;
       _name = entityName;
+      _identityExpressionGenerator = identityExpressionGenerator;
     }
 
-    // TODO 4878: Rename to ID or something like this, it's not really got to be the primary key.
-    // TODO 4878: Consider refactoring this to be a Func<SqlEntityExpression, Expression> - this would avoid needing to visit in SqlEntityReferenceExpression or the need to visit it as a child expression.
-    public abstract Expression PrimaryKey { get; }
     public abstract ReadOnlyCollection<SqlColumnExpression> Columns { get; }
 
     public string TableAlias
@@ -57,12 +57,24 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _name; }
     }
 
+    public Func<SqlEntityExpression, Expression> IdentityExpressionGenerator
+    {
+      get { return _identityExpressionGenerator; }
+    }
+
+
+
     public abstract SqlColumnExpression GetColumn (Type type, string columnName, bool isPrimaryKeyColumn);
     public abstract SqlEntityExpression CreateReference (string newTableAlias, Type newType);
     
     // TODO: Remove itemType parameter
     public abstract SqlEntityExpression Update (Type itemType, string tableAlias, string entityName);
-    
+
+    public Expression GetIdentityExpression()
+    {
+      return _identityExpressionGenerator (this);
+    }
+
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;

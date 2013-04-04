@@ -143,7 +143,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       if (_currentContext == SqlExpressionContext.SingleValueRequired || _currentContext == SqlExpressionContext.SingleValuePreferred)
         // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKey to obtain a single value.
-        return expression.PrimaryKey;
+        return expression.GetIdentityExpression();
       else
         return expression; // rely on VisitExpression to apply correct semantics
     }
@@ -274,14 +274,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context);
         case SqlExpressionContext.SingleValueRequired:
         case SqlExpressionContext.SingleValuePreferred:
-          // TODO 4878: Temporarily disable this optimization. With RM-3315, we should get it back because the MappingResolver will replace the 
-          // SqlEntityRefMemberExpression if it isn't required.
+          // TODO 3315: Consider simplifying this so that it can be handled by the ID optimization in MappingResolver.
           var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
           if (columnExpression != null && columnExpression.IsPrimaryKey)
             return resolvedJoinInfo.LeftKey;
           else
             // TODO 4878: Revisit PrimaryKey, this could be a compound value.
-            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKey;
+            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).GetIdentityExpression();
       }
       
       var message = string.Format (

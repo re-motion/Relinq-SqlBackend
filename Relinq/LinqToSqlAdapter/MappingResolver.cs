@@ -74,12 +74,16 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       Type type = tableInfo.ItemType;
       var primaryKeyMember = GetPrimaryKeyMember(GetMetaType (type));
-      var primaryKeyColumn = CreateSqlColumnExpression (tableInfo, primaryKeyMember);
 
       var columnMembers = GetMetaDataMembers (tableInfo.ItemType);
 
       var columns = columnMembers.Select (metaDataMember => CreateSqlColumnExpression (tableInfo, metaDataMember)).ToArray();
-      return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableInfo.TableAlias, null, primaryKeyColumn, columns);
+      return new SqlEntityDefinitionExpression (
+          tableInfo.ItemType,
+          tableInfo.TableAlias,
+          null,
+          e => e.GetColumn (primaryKeyMember.Type, primaryKeyMember.MappedName, primaryKeyMember.IsPrimaryKey),
+          columns);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)

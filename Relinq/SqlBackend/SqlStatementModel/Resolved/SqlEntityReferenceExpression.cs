@@ -30,49 +30,21 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlEntityReferenceExpression : SqlEntityExpression
   {
-    private class ColumnReplacingExpressionVisitor : ExpressionTreeVisitor, IResolvedSqlExpressionVisitor
-    {
-      private readonly SqlEntityReferenceExpression _entityReferenceExpression;
-
-      public ColumnReplacingExpressionVisitor (SqlEntityReferenceExpression entityReferenceExpression)
-      {
-        ArgumentUtility.CheckNotNull ("entityReferenceExpression", entityReferenceExpression);
-        _entityReferenceExpression = entityReferenceExpression;
-      }
-
-      Expression IResolvedSqlExpressionVisitor.VisitSqlEntityExpression (SqlEntityExpression expression)
-      {
-        return base.VisitExtensionExpression (expression);
-      }
-
-      Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
-      {
-        return _entityReferenceExpression.GetColumn (expression.Type, expression.ColumnName, expression.IsPrimaryKey);
-      }
-    }
-
-    private readonly Expression _primaryKey;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
     private readonly SqlEntityExpression _referencedEntity;
 
     public SqlEntityReferenceExpression (Type itemType, string tableAlias, string entityName, SqlEntityExpression referencedEntity)
-        : base(itemType, tableAlias, entityName)
+        : base(itemType, tableAlias, entityName, referencedEntity.IdentityExpressionGenerator)
     {
       ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
 
       _referencedEntity = referencedEntity;
       _columns = Array.AsReadOnly (referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
-      _primaryKey = new ColumnReplacingExpressionVisitor (this).VisitExpression (referencedEntity.PrimaryKey);
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
-    }
-
-    public override Expression PrimaryKey
-    {
-      get { return _primaryKey; }
     }
 
     public override ReadOnlyCollection<SqlColumnExpression> Columns

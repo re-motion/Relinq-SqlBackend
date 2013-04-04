@@ -308,8 +308,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitSqlEntityRefMemberExpression ()
     {
       var memberInfo = typeof (Cook).GetProperty ("ID");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var entityRefmemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
       var result = ResolvingExpressionVisitor.ResolveExpression (

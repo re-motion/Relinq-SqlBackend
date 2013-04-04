@@ -49,7 +49,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitMemberExpression_OnEntity ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
+      var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
@@ -69,7 +69,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitMemberExpression_OnEntity_WithCollectionMember ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Courses");
-      var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
+      var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "c");
 
       MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
     }
@@ -78,10 +78,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitMemberExpression_OnEntityRefMemberExpression ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
 
-      var fakeEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       _stageMock
           .Expect (
               mock =>
