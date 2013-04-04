@@ -37,7 +37,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
       var exptecedPrimaryColumn = new SqlColumnReferenceExpression (typeof (int), "t", "ID", true, entityDefinitionExpression);
       var exppectedColumn = new SqlColumnReferenceExpression (typeof (string), "t", "Name", false, entityDefinitionExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (exptecedPrimaryColumn, entityReferenceExpression.PrimaryKeyColumn);
+      ExpressionTreeComparer.CheckAreEqualTrees (exptecedPrimaryColumn, entityReferenceExpression.PrimaryKey);
       ExpressionTreeComparer.CheckAreEqualTrees (exppectedColumn, entityReferenceExpression.Columns[0]);
     }
 

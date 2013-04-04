@@ -128,7 +128,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_sqlEntityExpression))
           .WhenCalled (mi => _commandBuilder.Append ("[c].[ID]"))
-          .Return (((SqlEntityExpression) _sqlEntityExpression).PrimaryKeyColumn);
+          .Return (((SqlEntityExpression) _sqlEntityExpression).PrimaryKey);
 
       _generator = new BinaryExpressionTextGenerator (_commandBuilder, _expressionVisitorMock);
     }

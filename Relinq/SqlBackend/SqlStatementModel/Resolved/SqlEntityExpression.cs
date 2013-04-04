@@ -42,8 +42,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       _name = entityName;
     }
 
-    // TODO 4878: Change to be Expression PrimaryKeyExpression.
-    public abstract SqlColumnExpression PrimaryKeyColumn { get; }
+    // TODO 4878: Rename to ID or something like this, it's not really got to be the primary key.
+    // TODO 4878: Consider refactoring this to be a Func<SqlEntityExpression, Expression> - this would avoid needing to visit in SqlEntityReferenceExpression or the need to visit it as a child expression.
+    public abstract Expression PrimaryKey { get; }
     public abstract ReadOnlyCollection<SqlColumnExpression> Columns { get; }
 
     public string TableAlias

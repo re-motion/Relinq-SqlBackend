@@ -18,6 +18,7 @@ using System.Linq.Expressions;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
+  // TODO 4878: Split this interface into two visitor interfaces.
   /// <summary>
   /// <see cref="IResolvedSqlExpressionVisitor"/> provides methods to resolve expressions and returns sql specific text.
   /// </summary>

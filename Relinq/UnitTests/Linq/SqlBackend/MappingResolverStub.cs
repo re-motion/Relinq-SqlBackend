@@ -94,7 +94,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           case "Knife":
             var joinedTableInfo = CreateResolvedTableInfo (joinInfo.ItemType, generator);
             var leftKey = ResolveMemberExpression (joinInfo.OriginatingEntity, joinInfo.MemberInfo);
-            var rightKey = ResolveSimpleTableInfo (joinedTableInfo, generator).PrimaryKeyColumn;
+            var rightKey = ResolveSimpleTableInfo (joinedTableInfo, generator).PrimaryKey;
             return new ResolvedJoinInfo (joinedTableInfo, leftKey, rightKey);
           case "KnifeWithOptimizedJoin":
             return CreateResolvedJoinInfo (
@@ -255,23 +255,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
         var primaryKeyColumn1 = CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true);
         var primaryKeyColumn2 = CreateColumn (typeof (string), tableInfo.TableAlias, "ClassID", true);
         var primaryKey = CreateMetaIDExpression (primaryKeyColumn1, primaryKeyColumn2);
-        throw new NotImplementedException ("TODO 4878 - enable entities to hold compound key expressions.");
-        //return new SqlEntityDefinitionExpression (
-        //    tableInfo.ItemType,
-        //    tableInfo.TableAlias, null,
-        //    primaryKey,
-        //    new[]
-        //    {
-        //        primaryKeyColumn1,
-        //        primaryKeyColumn2,
-        //        CreateColumn (typeof (string), tableInfo.TableAlias, "FirstName", false),
-        //        CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
-        //        CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
-        //        CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
-        //        CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
-        //        CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
-        //        CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
-        //    });
+        return new SqlEntityDefinitionExpression (
+            tableInfo.ItemType,
+            tableInfo.TableAlias, null,
+            primaryKey,
+            new[]
+            {
+                primaryKeyColumn1,
+                primaryKeyColumn2,
+                CreateColumn (typeof (double), tableInfo.TableAlias, "Sharpness", false)
+            });
       }
       throw new UnmappedItemException (string.Format ("Type '{0}' is not supported by the MappingResolverStub.", type.Name));
     }

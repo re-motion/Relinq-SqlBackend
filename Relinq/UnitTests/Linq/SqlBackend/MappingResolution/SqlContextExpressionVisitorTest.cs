@@ -113,7 +113,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
       var result = visitor.VisitExpression (entityExpression);
 
-      Assert.That (result, Is.SameAs (entityExpression.PrimaryKeyColumn));
+      Assert.That (result, Is.SameAs (entityExpression.PrimaryKey));
     }
 
     [Test]
@@ -496,8 +496,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result1 = _singleValueRequiredVisitor.VisitSqlEntityExpression (entityExpression);
       var result2 = _singleValuePreferredVisitor.VisitSqlEntityExpression (entityExpression);
 
-      Assert.That (result1, Is.SameAs (entityExpression.PrimaryKeyColumn));
-      Assert.That (result2, Is.SameAs (entityExpression.PrimaryKeyColumn));
+      Assert.That (result1, Is.SameAs (entityExpression.PrimaryKey));
+      Assert.That (result2, Is.SameAs (entityExpression.PrimaryKey));
     }
 
     [Test]
@@ -746,7 +746,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _predicateRequiredVisitor.VisitBinaryExpression (binary);
 
-      var expectedExpression = BinaryExpression.Equal (Expression.Convert (left.PrimaryKeyColumn, typeof (int?)), right.PrimaryKeyColumn);
+      var expectedExpression = BinaryExpression.Equal (Expression.Convert (left.PrimaryKey, typeof (int?)), right.PrimaryKey);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
     
@@ -775,7 +775,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _singleValueRequiredVisitor.VisitUnaryExpression (unaryExpression);
 
       Assert.That (result, Is.Not.SameAs (unaryExpression));
-      Assert.That (result, Is.SameAs (entity.PrimaryKeyColumn));
+      Assert.That (result, Is.SameAs (entity.PrimaryKey));
     }
 
     [Test]
@@ -864,7 +864,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (resultWithValue, Is.SameAs (sqlIsNullExpressionWithValue));
       Assert.That (resultWithEntity, Is.Not.SameAs (sqlIsNullExpressionWithValue));
 
-      var expectedResultWithEntity = new SqlIsNullExpression (entityExpression.PrimaryKeyColumn);
+      var expectedResultWithEntity = new SqlIsNullExpression (entityExpression.PrimaryKey);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResultWithEntity, resultWithEntity);
     }
 
@@ -881,7 +881,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (resultWithValue, Is.SameAs (sqlIsNotNullExpressionWithValue));
       Assert.That (resultWithEntity, Is.Not.SameAs (sqlIsNotNullExpressionWithValue));
 
-      var expectedResultWithEntity = new SqlIsNotNullExpression (entityExpression.PrimaryKeyColumn);
+      var expectedResultWithEntity = new SqlIsNotNullExpression (entityExpression.PrimaryKey);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResultWithEntity, resultWithEntity);
     }
 
@@ -1133,7 +1133,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = predicateRequiredVisitor.VisitNamedExpression (expression);
 
-      var expectedResult = new NamedExpression ("test_test2", innermostExpression.PrimaryKeyColumn);
+      var expectedResult = new NamedExpression ("test_test2", innermostExpression.PrimaryKey);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -1335,7 +1335,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var entityDefinitionExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var expression = new SqlExistsExpression (entityDefinitionExpression);
-      var expectedExpression = new SqlExistsExpression (entityDefinitionExpression.PrimaryKeyColumn);
+      var expectedExpression = new SqlExistsExpression (entityDefinitionExpression.PrimaryKey);
 
       var result = _predicateRequiredVisitor.VisitSqlExistsExpression (expression);
 

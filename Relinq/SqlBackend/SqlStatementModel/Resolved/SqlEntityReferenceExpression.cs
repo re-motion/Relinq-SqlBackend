@@ -30,7 +30,28 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlEntityReferenceExpression : SqlEntityExpression
   {
-    private readonly SqlColumnExpression _primaryKeyColumn;
+    private class ColumnReplacingExpressionVisitor : ExpressionTreeVisitor, IResolvedSqlExpressionVisitor
+    {
+      private readonly SqlEntityReferenceExpression _entityReferenceExpression;
+
+      public ColumnReplacingExpressionVisitor (SqlEntityReferenceExpression entityReferenceExpression)
+      {
+        ArgumentUtility.CheckNotNull ("entityReferenceExpression", entityReferenceExpression);
+        _entityReferenceExpression = entityReferenceExpression;
+      }
+
+      Expression IResolvedSqlExpressionVisitor.VisitSqlEntityExpression (SqlEntityExpression expression)
+      {
+        return base.VisitExtensionExpression (expression);
+      }
+
+      Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
+      {
+        return _entityReferenceExpression.GetColumn (expression.Type, expression.ColumnName, expression.IsPrimaryKey);
+      }
+    }
+
+    private readonly Expression _primaryKey;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
     private readonly SqlEntityExpression _referencedEntity;
 
@@ -41,8 +62,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
       _referencedEntity = referencedEntity;
       _columns = Array.AsReadOnly (referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
-      // TODO 4878: Need to visit PrimaryKeyColumn since columns might be buried within a complex value.
-      _primaryKeyColumn = GetColumn (referencedEntity.PrimaryKeyColumn.Type, referencedEntity.PrimaryKeyColumn.ColumnName, true);
+      _primaryKey = new ColumnReplacingExpressionVisitor (this).VisitExpression (referencedEntity.PrimaryKey);
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -50,9 +70,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       return this;
     }
 
-    public override SqlColumnExpression PrimaryKeyColumn
+    public override Expression PrimaryKey
     {
-      get { return _primaryKeyColumn; }
+      get { return _primaryKey; }
     }
 
     public override ReadOnlyCollection<SqlColumnExpression> Columns

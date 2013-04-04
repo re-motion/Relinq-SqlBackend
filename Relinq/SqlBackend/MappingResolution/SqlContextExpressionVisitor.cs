@@ -142,8 +142,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
       if (_currentContext == SqlExpressionContext.SingleValueRequired || _currentContext == SqlExpressionContext.SingleValuePreferred)
-        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKeyColumn to obtain a single value.
-        return expression.PrimaryKeyColumn;
+        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKey to obtain a single value.
+        return expression.PrimaryKey;
       else
         return expression; // rely on VisitExpression to apply correct semantics
     }
@@ -246,7 +246,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (_currentContext == SqlExpressionContext.SingleValueRequired || _currentContext == SqlExpressionContext.SingleValuePreferred)
-        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKeyColumn to obtain a single value.
+        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKey to obtain a single value.
         return expression.PrimaryKeyExpression;
       else
         return expression; // rely on VisitExpression to apply correct semantics
@@ -280,8 +280,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           if (columnExpression != null && columnExpression.IsPrimaryKey)
             return resolvedJoinInfo.LeftKey;
           else
-            // TODO 4878: Revisit PrimaryKeyColumn, this could be a compound value.
-            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKeyColumn;
+            // TODO 4878: Revisit PrimaryKey, this could be a compound value.
+            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).PrimaryKey;
       }
       
       var message = string.Format (

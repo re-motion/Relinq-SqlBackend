@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -30,6 +32,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   public class SqlEntityDefinitionExpressionTest
   {
     private SqlEntityExpression _entityExpression;
+    private Expression _primaryKeyExpression;
     private SqlColumnExpression _columnExpression1;
     private SqlColumnExpression _columnExpression2;
     private SqlColumnExpression _columnExpression3;
@@ -39,11 +42,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     [SetUp]
     public void SetUp ()
     {
+      _primaryKeyExpression = ExpressionHelper.CreateExpression();
       _columnExpression1 = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", false);
       _columnExpression2 = new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false);
       _columnExpression3 = new SqlColumnDefinitionExpression (typeof (int), "t", "City", false);
       _orginalColumns = new[] { _columnExpression1, _columnExpression2, _columnExpression3 };
-      _entityExpression = new SqlEntityDefinitionExpression (typeof(Cook), "t", null, _columnExpression1, _orginalColumns);
+      _entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "t", null, _primaryKeyExpression, _orginalColumns);
       _originalColumnsReadonly = _entityExpression.Columns;
     }
 

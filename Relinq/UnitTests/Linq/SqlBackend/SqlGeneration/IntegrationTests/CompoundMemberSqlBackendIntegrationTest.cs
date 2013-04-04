@@ -156,12 +156,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void SelectingEntityWithCompoundID ()
     {
       CheckQuery (
           from k in Knives select k,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [KnifeClassID], [t0].[Sharpness] AS [Sharpness] FROM [KnifeTable] AS [t0]",
+          "SELECT [t0].[ID],[t0].[ClassID],[t0].[Sharpness] FROM [KnifeTable] AS [t0]",
           row => (object) row.GetEntity<Knife> (new ColumnID ("ID", 0), new ColumnID ("ClassID", 1), new ColumnID ("Sharpness", 2)));
     }
 
