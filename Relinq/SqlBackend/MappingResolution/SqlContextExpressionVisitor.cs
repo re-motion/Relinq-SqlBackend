@@ -83,6 +83,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         case SqlExpressionContext.SingleValueRequired:
         case SqlExpressionContext.ValueRequired:
+        case SqlExpressionContext.SingleValuePreferred:
           return HandleValueSemantics (expression);
         case SqlExpressionContext.PredicateRequired:
           return HandlePredicateSemantics (expression);
@@ -140,7 +141,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
-      if (_currentContext == SqlExpressionContext.SingleValueRequired)
+      if (_currentContext == SqlExpressionContext.SingleValueRequired || _currentContext == SqlExpressionContext.SingleValuePreferred)
         // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKeyColumn to obtain a single value.
         return expression.PrimaryKeyColumn;
       else
@@ -244,7 +245,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (_currentContext == SqlExpressionContext.SingleValueRequired)
+      if (_currentContext == SqlExpressionContext.SingleValueRequired || _currentContext == SqlExpressionContext.SingleValuePreferred)
         // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKeyColumn to obtain a single value.
         return expression.PrimaryKeyExpression;
       else
@@ -272,6 +273,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         case SqlExpressionContext.ValueRequired:
           return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context);
         case SqlExpressionContext.SingleValueRequired:
+        case SqlExpressionContext.SingleValuePreferred:
           // TODO 4878: Temporarily disable this optimization. With RM-3315, we should get it back because the MappingResolver will replace the 
           // SqlEntityRefMemberExpression if it isn't required.
           var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
@@ -309,8 +311,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO 4878: In single value context, ask the mapping resolver to resolve the NewExpression into a single value. If this is not possible, 
-      // throw (compound value cannot be used where a single value is required).
+      if (_currentContext == SqlExpressionContext.SingleValueRequired)
+      {
+        string message = string.Format (
+            "Cannot use a complex expression ('{0}') in a place where SQL requires a single value.",
+            FormattingExpressionTreeVisitor.Format (expression));
+        throw new NotSupportedException (message);
+      }
 
       var newArguments = expression.Arguments.Select (ApplyValueContext).ToArray ();
       if (!newArguments.SequenceEqual (expression.Arguments))
@@ -356,39 +363,38 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
-      // TODO 4878: Has no children.
-      return VisitChildrenWithSingleValueSemantics (expression);
+      // This expression has no children, so just return it.
+      return expression;
     }
 
     public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
-      return VisitChildrenWithSingleValueSemantics (expression);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
     public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
     {
-      return VisitChildrenWithSingleValueSemantics (expression);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
     public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
-      // TODO 4878: Shouldn't this be Value semantics? EXISTS can deal with multi-column substatements.
-      return VisitChildrenWithSingleValueSemantics (expression);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValuePreferred);
     }
 
     public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
     {
-      return VisitChildrenWithSingleValueSemantics (expression);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
     public Expression VisitSqlLikeExpression (SqlLikeExpression expression)
     {
-      return VisitChildrenWithSingleValueSemantics (expression);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
     public Expression VisitSqlLengthExpression (SqlLengthExpression expression)
     {
-      return VisitChildrenWithSingleValueSemantics (expression);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
     public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
@@ -412,13 +418,26 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
       // TODO 4878: Has no children.
-      return VisitChildrenWithSingleValueSemantics (expression);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
     // TODO 4878: Rename expression to SqlInExpression
     public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
     {
-      return VisitChildrenWithSingleValueSemantics (expression);
+      try
+      {
+        return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
+      }
+      catch (NotSupportedException ex)
+      {
+        var message = string.Format (
+            "The SQL '{0}' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot "
+            + "be translated to SQL: '{1}'. {2}",
+            expression.BinaryOperator,
+            FormattingExpressionTreeVisitor.Format (expression),
+            ex.Message);
+        throw new NotSupportedException (message, ex);
+      }
     }
 
     protected override Expression VisitInvocationExpression (InvocationExpression expression)
@@ -435,9 +454,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       throw new NotSupportedException (message);
     }
 
-    private Expression VisitChildrenWithSingleValueSemantics (ExtensionExpression expression)
+    private Expression VisitChildrenWithGivenSemantics (ExtensionExpression expression, SqlExpressionContext childContext)
     {
-      var visitor = new SqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stage, _context);
+      var visitor = new SqlContextExpressionVisitor (childContext, _stage, _context);
       return visitor.VisitExtensionExpression (expression);
     }
 

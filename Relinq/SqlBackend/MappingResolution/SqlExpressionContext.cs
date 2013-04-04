@@ -33,6 +33,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// </summary>
     SingleValueRequired,
     /// <summary>
+    /// A single SQL value is preferred, but a complex value is acceptable. This is used only for optimizations.
+    /// </summary>
+    SingleValuePreferred,
+    /// <summary>
     /// A predicate is required; non-boolean expressions need to be converted, e.g., by comparing them to the literal value 1.
     /// </summary>
     PredicateRequired,
