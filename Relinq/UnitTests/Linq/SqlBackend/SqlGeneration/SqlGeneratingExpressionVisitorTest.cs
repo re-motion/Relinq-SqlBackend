@@ -200,7 +200,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateSql_VistNewExpression ()
     {
       var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 

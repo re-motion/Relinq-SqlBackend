@@ -355,7 +355,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (Kitchens));
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (mainFromClause);
-      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
+      var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       Trace.Assert (constructorInfo != null);
       var newExpression = Expression.New (
           constructorInfo,

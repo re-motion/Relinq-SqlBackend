@@ -39,7 +39,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _context = new MappingResolutionContext();
-      _typeForNewExpressionConstructor = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) });
+      _typeForNewExpressionConstructor = TypeForNewExpression.GetConstructor (typeof (int));
     }
 
     [Test]

@@ -245,7 +245,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitMemberExpression_OnNewExpression_PropertyInfo ()
     {
-      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
+      var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       var newExpression = Expression.New (
           constructorInfo,
           new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) },
@@ -264,7 +264,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitMemberExpression_OnNewExpression_FieldInfo ()
     {
-      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
+      var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       var newExpression = Expression.New (
           constructorInfo,
           new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) },
@@ -285,7 +285,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       "Expression: 'new TypeForNewExpression(1 AS value, 2 AS value)'")]
     public void VisitMemberExpression_OnNewExpression_NoMembers ()
     {
-      var constructorInfo = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) });
+      var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       var newExpression = Expression.New (
           constructorInfo,
           new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) });

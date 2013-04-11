@@ -84,7 +84,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSubStatementReferenceExpression_CreatesNewExpressionWithReferences_ForNewExpressions_WithoutMembers ()
     {
       var newExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new[] { new NamedExpression ("const", Expression.Constant (0)) });
 
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (newExpression);
