@@ -165,13 +165,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void SelectingID_OfEntityWithCompoundID ()
     {
       CheckQuery (
           from k in Knives select k.ID,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0]",
-          row => (object) new MetaID (row.GetValue<int> (new ColumnID ("ID", 0)), row.GetValue<string> (new ColumnID ("ClassID", 1))));
+          "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0]",
+          AddNewMetaIDMemberDecoration (
+            row => (object) new MetaID (row.GetValue<int> (new ColumnID ("Value", 0)), row.GetValue<string> (new ColumnID ("ClassID", 1)))));
     }
 
     [Test]
@@ -183,7 +183,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from k2 in Knives
           where k1 == k2
           select k1.ID,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] CROSS JOIN [KnifeTable] AS [t1] "
+          "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] CROSS JOIN [KnifeTable] AS [t1] "
           + "WHERE (([t0].[ID] = [t1].[ID]) AND ([t0].[ClassID] = [t1].[ClassID]))");
     }
 
@@ -200,6 +200,25 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "WHERE (([t0].[ID] = @1) AND ([t0].[ClassID] = @2))",
           new CommandParameter ("@1", 0),
           new CommandParameter ("@2", "C0"));
+    }
+
+    [Test]
+    [Ignore ("TODO 4878")]
+    public void ComparingEntitiesWithCompoundID_ToNull ()
+    {
+      CheckQuery (
+          from k in Knives
+          where k == null
+          select k.ID,
+          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [KnifeClassID] FROM [KnifeTable] AS [t0] "
+          + "WHERE (([t0].[ID] IS NULL) AND ([t0].[ClassID] IS NULL))");
+
+      CheckQuery (
+          from k in Knives
+          where k != null
+          select k.ID,
+          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [KnifeClassID] FROM [KnifeTable] AS [t0] "
+          + "WHERE (([t0].[ID] IS NOT NULL) OR ([t0].[ClassID] IS NOT NULL))");
     }
 
     [Test]

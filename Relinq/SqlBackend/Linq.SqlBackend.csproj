@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="BooleanUtility.cs" />
     <Compile Include="ConversionUtility.cs" />
+    <Compile Include="MappingResolution\CompoundExpressionComparisonSplitter.cs" />
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\GroupAggregateSimplifier.cs" />
     <Compile Include="MappingResolution\IMappingResolutionContext.cs" />

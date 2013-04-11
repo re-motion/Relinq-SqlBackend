@@ -348,8 +348,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
         switch (memberInfo.Name)
         {
           case "ID":
-            return originatingEntity.GetColumn (memberType, memberInfo.Name, true);
-          case "ClassID":
+            return CreateMetaIDExpression (
+                originatingEntity.GetColumn (typeof (int), "ID", true), 
+                originatingEntity.GetColumn (typeof (string), "ClassID", true));
           case "Sharpness":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
         }

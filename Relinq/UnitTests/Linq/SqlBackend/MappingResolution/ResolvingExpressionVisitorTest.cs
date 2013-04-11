@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
@@ -334,82 +333,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitBinaryExpression_NoNewExpressions ()
-    {
-      var leftExpression = Expression.Constant (1);
-      var rightExpression = Expression.Constant (1);
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftExpression))
-          .Return (leftExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightExpression))
-          .Return (rightExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (expression));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The results of constructor invocations can only be compared if the same constructors are used for both invocations. Expressions: "
-        + "'new TypeForNewExpression(1)', 'new TypeForNewExpression(1, 2)'")]
-    public void VisitBinaryExpression_NewExpressionsWithDifferentCtors_ThrowsException ()
-    {
-      var leftArgumentExpression = Expression.Constant (1);
-      var rightArgumentExpression1 = Expression.Constant (1);
-      var rightArgumentExpression2 = Expression.Constant (2);
-      var leftExpression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), leftArgumentExpression);
-      var rightExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }), rightArgumentExpression1, rightArgumentExpression2);
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
-          .Return (leftArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression1))
-          .Return (rightArgumentExpression1);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression2))
-          .Return (rightArgumentExpression2);
-      _resolverMock.Replay();
-
-      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionWithOneArgument_ReturnsBinaryExpressionSequence ()
-    {
-      var leftArgumentExpression = Expression.Constant (1);
-      var rightArgumentExpression = Expression.Constant (1);
-      var leftExpression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), leftArgumentExpression);
-      var rightExpression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), rightArgumentExpression);
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
-          .Return (leftArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
-          .Return (rightArgumentExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      _resolverMock.VerifyAllExpectations();
-      var expectedResult = Expression.Equal (leftArgumentExpression, rightArgumentExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionWithTwoArguments_Equal_ReturnsBinaryExpressionSequence ()
+    public void VisitBinaryExpression_SplitsCompoundComparisons ()
     {
       var leftArgumentExpression1 = Expression.Constant (1);
       var leftArgumentExpression2 = Expression.Constant (2);
       var rightArgumentExpression1 = Expression.Constant (1);
       var rightArgumentExpression2 = Expression.Constant (2);
       var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }), leftArgumentExpression1, leftArgumentExpression2);
+          TypeForNewExpression.GetConstructor (typeof (int), typeof (int)), leftArgumentExpression1, leftArgumentExpression2);
       var rightExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }), rightArgumentExpression1, rightArgumentExpression2);
+          TypeForNewExpression.GetConstructor (typeof (int), typeof (int)), rightArgumentExpression1, rightArgumentExpression2);
       var expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression);
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
@@ -430,284 +363,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expectedResult = Expression.AndAlso (expectedLeftSideExpression, expectedRightSideExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionWithTwoArguments_NotEqual_ReturnsBinaryExpressionSequence ()
-    {
-      var leftArgumentExpression1 = Expression.Constant (1);
-      var leftArgumentExpression2 = Expression.Constant (2);
-      var rightArgumentExpression1 = Expression.Constant (1);
-      var rightArgumentExpression2 = Expression.Constant (2);
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }), leftArgumentExpression1, leftArgumentExpression2);
-      var rightExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }), rightArgumentExpression1, rightArgumentExpression2);
-      var expression = Expression.MakeBinary (ExpressionType.NotEqual, leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
-          .Return (leftArgumentExpression1);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression1))
-          .Return (rightArgumentExpression1);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression2))
-          .Return (leftArgumentExpression2);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression2))
-          .Return (rightArgumentExpression2);
-      _resolverMock.Replay ();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      _resolverMock.VerifyAllExpectations ();
-      var expectedLeftSideExpression = Expression.NotEqual (leftArgumentExpression1, rightArgumentExpression1);
-      var expectedRightSideExpression = Expression.NotEqual (leftArgumentExpression2, rightArgumentExpression2);
-      var expectedResult = Expression.OrElse (expectedLeftSideExpression, expectedRightSideExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
-            + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
-    public void VisitBinaryExpression_NewExpressionOnLeftSideWithoutMembers_ThrowsException ()
-    {
-      var leftArgumentExpression = Expression.Constant (1);
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), leftArgumentExpression);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
-      var expression = Expression.Equal (leftExpression, newConstantExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
-          .Return (leftArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
-      _resolverMock.Replay();
-
-      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnLeftSideWithOnePropertyInfoMember ()
-    {
-      var leftArgumentExpression = Expression.Constant (1);
-      var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
-      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
-          .Return (leftArgumentExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      var expectedResult = Expression.Equal (leftArgumentExpression, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("A")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnLeftSideWithTwoPropertyInfoMembers_Equal ()
-    {
-      var leftArgumentExpression1 = Expression.Constant (1);
-      var leftArgumentExpression2 = Expression.Constant (2);
-      var leftArgumentMemberInfo1 = typeof (TypeForNewExpression).GetProperty ("A");
-      var leftArgumentMemberInfo2 = typeof (TypeForNewExpression).GetProperty ("B");
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }),
-          new[] { leftArgumentExpression1, leftArgumentExpression2 },
-          leftArgumentMemberInfo1,
-          leftArgumentMemberInfo2);
-      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
-          .Return (leftArgumentExpression1);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression2))
-          .Return (leftArgumentExpression2);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      var expectedResult =
-          Expression.AndAlso (
-              Expression.Equal (
-                  leftArgumentExpression1, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("A"))),
-              Expression.Equal (
-                  leftArgumentExpression2, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("B"))));
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnLeftSideWithTwoPropertyInfoMembers_NotEqual ()
-    {
-      var leftArgumentExpression1 = Expression.Constant (1);
-      var leftArgumentExpression2 = Expression.Constant (2);
-      var leftArgumentMemberInfo1 = typeof (TypeForNewExpression).GetProperty ("A");
-      var leftArgumentMemberInfo2 = typeof (TypeForNewExpression).GetProperty ("B");
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }),
-          new[] { leftArgumentExpression1, leftArgumentExpression2 },
-          leftArgumentMemberInfo1,
-          leftArgumentMemberInfo2);
-      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
-      var expression = Expression.NotEqual (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
-          .Return (leftArgumentExpression1);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression2))
-          .Return (leftArgumentExpression2);
-      _resolverMock.Replay ();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      var expectedResult =
-          Expression.OrElse (
-              Expression.NotEqual (
-                  leftArgumentExpression1, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("A"))),
-              Expression.NotEqual (
-                  leftArgumentExpression2, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("B"))));
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnLeftSideWithOneFieldInfoMembers ()
-    {
-      var leftArgumentExpression = Expression.Constant (1);
-      var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetField ("C");
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
-      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
-          .Return (leftArgumentExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      var expectedResult = Expression.Equal (
-          leftArgumentExpression, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetField ("C")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnLeftSideWithOneMethodInfoMembers ()
-    {
-      var leftArgumentExpression = Expression.Constant (1);
-      var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetMethod ("get_A");
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
-      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
-          .Return (leftArgumentExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      var expectedResult = Expression.Equal (
-          leftArgumentExpression, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnLeftSideWithTwoMethodInfoMembers ()
-    {
-      var leftArgumentExpression1 = Expression.Constant (1);
-      var leftArgumentExpression2 = Expression.Constant (2);
-      var leftArgumentMemberInfo1 = typeof (TypeForNewExpression).GetMethod ("get_A");
-      var leftArgumentMemberInfo2 = typeof (TypeForNewExpression).GetMethod ("get_B");
-      var leftExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int), typeof (int) }),
-          new[] { leftArgumentExpression1, leftArgumentExpression2 },
-          leftArgumentMemberInfo1,
-          leftArgumentMemberInfo2);
-      var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression1))
-          .Return (leftArgumentExpression1);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression2))
-          .Return (leftArgumentExpression2);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      var expectedResult = Expression.AndAlso (
-          Expression.Equal (
-              leftArgumentExpression1, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A"))),
-          Expression.Equal (leftArgumentExpression2, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_B"))));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
-        + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
-    public void VisitBinaryExpression_NewExpressionOnRightSideWithoutMembers_ThrowsException ()
-    {
-      var rightArgumentExpression = Expression.Constant (1);
-      var rightExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), rightArgumentExpression);
-      var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
-      var expression = Expression.Equal (newConstantExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
-          .Return (rightArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (newConstantExpression))
-          .Return (newConstantExpression);
-      _resolverMock.Replay();
-
-      ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_NewExpressionOnRightSideWithOnePropertyInfoMember ()
-    {
-      var rightArgumentExpression = Expression.Constant (1);
-      var rightArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
-      var rightExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { rightArgumentExpression }, rightArgumentMemberInfo);
-      var leftExpression = new CustomExpression (typeof (TypeForNewExpression));
-      var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
-          .Return (rightArgumentExpression);
-      _resolverMock.Replay();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      var expectedResult = Expression.Equal (rightArgumentExpression, Expression.MakeMemberAccess (leftExpression, typeof (TypeForNewExpression).GetProperty ("A")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
-    }
-
-    [Test]
-    public void VisitBinaryExpression_MethodIsRemoved ()
-    {
-      MethodInfo method = ((Func<int?, int?, bool>) ((i1, i2) => i1 == i2)).Method;
-      var leftArgumentExpression = Expression.Constant (1, typeof (int));
-      var rightArgumentExpression = Expression.Constant (1, typeof (int));
-      var leftExpression = Expression.New (typeof (Nullable<>).MakeGenericType (typeof (int)).GetConstructors ()[0], leftArgumentExpression);
-      var rightExpression = Expression.New (typeof (Nullable<>).MakeGenericType (typeof (int)).GetConstructors ()[0], rightArgumentExpression);
-      BinaryExpression expression = Expression.MakeBinary (ExpressionType.Equal, leftExpression, rightExpression, true, method);
-
-      Assert.That (expression.Method, Is.Not.Null);
-
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (leftArgumentExpression))
-          .Return (leftArgumentExpression);
-      _resolverMock.Expect (mock => mock.ResolveConstantExpression (rightArgumentExpression))
-          .Return (rightArgumentExpression);
-      _resolverMock.Replay ();
-
-      var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
-
-      _resolverMock.VerifyAllExpectations ();
-      Assert.That (((BinaryExpression) result).Method, Is.Null);
-    }
-
+    
     [Test]
     public void VisitJoinConditionExpression ()
     {
@@ -732,8 +388,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var leftArgument = new SqlLiteralExpression (0);
       var rightArgument = new SqlLiteralExpression (1);
-      var leftKey = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), leftArgument);
-      var rightKey = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), rightArgument);
+      var leftKey = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), leftArgument);
+      var rightKey = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), rightArgument);
       var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, leftKey, rightKey);
 
       var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);

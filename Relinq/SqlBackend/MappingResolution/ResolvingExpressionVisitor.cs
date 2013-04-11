@@ -132,27 +132,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       var newBinaryExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
 
-      // TODO 4878: This should be moved into SqlContextExpressionVisitor. Then, consider trying to optimize this using the mapping resolver.
-      // NewExpressions are compared by comparing them member-wise
-      var leftExpressionAsNewExpression = newBinaryExpression.Left as NewExpression;
-      var rightExpressionAsNewExpression = newBinaryExpression.Right as NewExpression;
-
-      if (leftExpressionAsNewExpression != null && rightExpressionAsNewExpression != null)
-      {
-        return CreateCtorArgComparison (
-            expression.NodeType, leftExpressionAsNewExpression, rightExpressionAsNewExpression);
-      }
-
-      // If only one of the expressions is a NewExpression, we'll assume the form "new { Member = Value } == object", and use the members for the 
-      // comparison: "Value == object.Member".
-
-      if (leftExpressionAsNewExpression != null)
-        return CreateMemberAccessComparison (expression.NodeType, leftExpressionAsNewExpression, newBinaryExpression.Right);
-
-      if (rightExpressionAsNewExpression != null)
-        return CreateMemberAccessComparison (expression.NodeType, rightExpressionAsNewExpression, newBinaryExpression.Left);
-
-      return newBinaryExpression;
+      return CompoundExpressionComparisonSplitter.CheckAndSplit (newBinaryExpression);
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)
@@ -199,84 +179,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return VisitExtensionExpression (expression);
-    }
-
-    private Expression CreateCtorArgComparison (ExpressionType expressionType, NewExpression leftNewExpression, NewExpression rightNewExpression)
-    {
-      if (!leftNewExpression.Constructor.Equals (rightNewExpression.Constructor))
-      {
-        var message = string.Format (
-            "The results of constructor invocations can only be compared if the same constructors are used for both invocations. "
-            + "Expressions: '{0}', '{1}'", 
-            FormattingExpressionTreeVisitor.Format (leftNewExpression),
-            FormattingExpressionTreeVisitor.Format (rightNewExpression));
-        throw new NotSupportedException (message);
-      }
-
-      return leftNewExpression.Arguments
-          .Select ((left, i) => (Expression) Expression.MakeBinary (expressionType, left, rightNewExpression.Arguments[i]))
-          .Aggregate ((previous, current) => CombineComparisons (previous, current, expressionType, leftNewExpression, rightNewExpression));
-    }
-
-    private Expression CreateMemberAccessComparison (ExpressionType expressionType, NewExpression newExpression, Expression otherExpression)
-    {
-      // The ReSharper warning is wrong - newExpression.Members can be null
-      // ReSharper disable ConditionIsAlwaysTrueOrFalse
-      if (newExpression.Members == null || newExpression.Members.Count == 0)
-      // ReSharper restore ConditionIsAlwaysTrueOrFalse
-      {
-        var message = string.Format (
-            "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: '{0}', '{1}'",
-            FormattingExpressionTreeVisitor.Format (newExpression),
-            FormattingExpressionTreeVisitor.Format (otherExpression));
-        throw new NotSupportedException (message);
-      }
-
-      var combinedComparison = newExpression.Arguments
-          .Select ((arg, i) => (Expression) Expression.MakeBinary (expressionType, arg, GetMemberExpression (newExpression.Members[i], otherExpression)))
-          .Aggregate ((previous, current) => CombineComparisons (previous, current, expressionType, newExpression, otherExpression));
-      return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (combinedComparison);
-    }
-
-    private Expression GetMemberExpression (MemberInfo memberInfo, Expression instance)
-    {
-      if (memberInfo.MemberType == MemberTypes.Method)
-        return Expression.Call (instance, (MethodInfo) memberInfo);
-      else
-        return Expression.MakeMemberAccess (instance, memberInfo);
-    }
-
-    private Expression CombineComparisons (
-        Expression previousParts,
-        Expression currentPart,
-        ExpressionType comparisonExpressionType,
-        Expression leftCompoundExpression,
-        Expression rightCompoundExpression)
-    {
-      if (previousParts == null)
-      {
-        previousParts = currentPart;
-      }
-      else
-      {
-        switch (comparisonExpressionType)
-        {
-          case ExpressionType.Equal:
-            previousParts = Expression.AndAlso (previousParts, currentPart);
-            break;
-          case ExpressionType.NotEqual:
-            previousParts = Expression.OrElse (previousParts, currentPart);
-            break;
-          default:
-            var message = string.Format (
-                "Compound values can only be compared using 'Equal' and 'NotEqual', not '{0}'. Expressions: {1}, {2}",
-                comparisonExpressionType,
-                FormattingExpressionTreeVisitor.Format (leftCompoundExpression),
-                FormattingExpressionTreeVisitor.Format (rightCompoundExpression));
-            throw new NotSupportedException (message);
-        }
-      }
-      return previousParts;
     }
   }
 }

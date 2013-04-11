@@ -225,6 +225,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // TODO 4878: Handle compounds here.
+
       var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)
         return new SqlIsNullExpression (newExpression);
@@ -234,6 +236,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      // TODO 4878: Handle compounds here.
 
       var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)

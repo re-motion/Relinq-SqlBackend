@@ -1135,7 +1135,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var argument = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var expression = Expression.New (
-          GetTypeForNewExpressionCtor (typeof (Cook)),
+          TypeForNewExpression.GetConstructor (typeof (Cook)),
           new[] { argument },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("D"));
 
@@ -1148,7 +1148,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void VisitNewExpression_VisitsChildExpressions ()
     {
       var expression = Expression.New (
-          GetTypeForNewExpressionCtor (typeof (int)),
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new[] { new NamedExpression ("test", new NamedExpression ("test2", Expression.Constant (0))) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
@@ -1162,7 +1162,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitNewExpression_NoMembers ()
     {
-      var expression = Expression.New (GetTypeForNewExpressionCtor (typeof (int)), new[] { Expression.Constant (0) });
+      var expression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), new[] { Expression.Constant (0) });
 
       var result = _valueRequiredVisitor.VisitNewExpression (expression);
 
@@ -1485,14 +1485,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       throw new NotImplementedException();
     }
 
-    private static ConstructorInfo GetTypeForNewExpressionCtor (params Type[] parameterTypes)
-    {
-      return typeof (TypeForNewExpression).GetConstructor (parameterTypes);
-    }
-
     private static NewExpression CreateNewExpression ()
     {
-      return Expression.New (GetTypeForNewExpressionCtor (typeof (int)), Expression.Constant (0));
+      return Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), Expression.Constant (0));
     }
 
   }
