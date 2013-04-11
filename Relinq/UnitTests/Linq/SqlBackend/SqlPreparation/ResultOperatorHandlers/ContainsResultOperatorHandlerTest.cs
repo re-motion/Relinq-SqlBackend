@@ -72,7 +72,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
       
-      var expectedExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", preparedExpression, new SqlSubStatementExpression (sqlStatement));
+      var expectedExpression = new SqlInExpression (typeof(bool), preparedExpression, new SqlSubStatementExpression (sqlStatement));
       
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, _sqlStatementBuilder.SelectProjection);
     }

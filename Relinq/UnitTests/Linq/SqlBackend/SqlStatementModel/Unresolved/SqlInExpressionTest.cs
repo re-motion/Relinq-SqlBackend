@@ -26,20 +26,19 @@ using Rhino.Mocks;
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
-  public class SqlBinaryOperatorExpressionTest
+  public class SqlInExpressionTest
   {
-    private SqlBinaryOperatorExpression _expression;
+    private SqlInExpression _expression;
     private ConstantExpression _leftExpression;
     private ConstantExpression _rightExpression;
-
-
+    
     [SetUp]
     public void SetUp ()
     {
       _leftExpression = Expression.Constant (1);
       _rightExpression = Expression.Constant (2);
 
-      _expression = new SqlBinaryOperatorExpression (typeof(bool), "Operator", _leftExpression, _rightExpression);
+      _expression = new SqlInExpression (typeof(bool), _leftExpression, _rightExpression);
     }
 
     [Test]
@@ -67,16 +66,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 
       visitorMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (_expression));
-      Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
-      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.SameAs (newRightExpression));
+      Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
+      Assert.That (((SqlInExpression) result).RightExpression, Is.SameAs (newRightExpression));
     }
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlBinaryOperatorExpression, ISqlSpecificExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlInExpression, ISqlSpecificExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlBinaryOperatorExpression(_expression));
+          mock => mock.VisitSqlInExpression(_expression));
     }
 
     [Test]
@@ -90,7 +89,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       var result = _expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("1 Operator 2"));
+      Assert.That (result, Is.EqualTo ("1 IN 2"));
     }
   }
 }

@@ -25,22 +25,19 @@ using Remotion.Linq.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// Represents a SQL "a OPERATOR b" expression.
+  /// Represents a SQL "a IN b" expression.
   /// </summary>
-  public class SqlBinaryOperatorExpression : ExtensionExpression
+  public class SqlInExpression : ExtensionExpression
   {
-    private readonly string _binaryOperator;
     private readonly Expression _leftExpression;
     private readonly Expression _rightExpression;
 
-    public SqlBinaryOperatorExpression (Type type, string binaryOperator, Expression leftExpression, Expression rightExpression)
+    public SqlInExpression (Type type, Expression leftExpression, Expression rightExpression)
         : base(ArgumentUtility.CheckNotNull ("type", type))
     {
-      ArgumentUtility.CheckNotNull ("binaryOperator", binaryOperator);
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
       ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
 
-      _binaryOperator = binaryOperator;
       _leftExpression = leftExpression;
       _rightExpression = rightExpression;
     }
@@ -55,18 +52,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _rightExpression; }
     }
 
-    public string BinaryOperator
-    {
-      get { return _binaryOperator; }
-    }
-
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       var newLeftExpression = visitor.VisitExpression (_leftExpression);
       var newRightExpression = visitor.VisitExpression (_rightExpression);
 
       if(newLeftExpression!=_leftExpression || newRightExpression!=_rightExpression)
-        return new SqlBinaryOperatorExpression (typeof(bool), _binaryOperator, newLeftExpression, newRightExpression);
+        return new SqlInExpression (typeof(bool), newLeftExpression, newRightExpression);
       else
         return this;
     }
@@ -75,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlBinaryOperatorExpression (this);
+        return specificVisitor.VisitSqlInExpression (this);
       else
         return base.Accept (visitor);
     }
@@ -83,9 +75,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
     public override string ToString ()
     {
       return string.Format (
-          "{0} {1} {2}",
+          "{0} IN {1}",
           FormattingExpressionTreeVisitor.Format (_leftExpression),
-          _binaryOperator,
           FormattingExpressionTreeVisitor.Format (_rightExpression));
     }
   }

@@ -424,8 +424,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    // TODO 4878: Rename expression to SqlInExpression
-    public Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
+    public Expression VisitSqlInExpression (SqlInExpression expression)
     {
       try
       {
@@ -434,9 +433,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       catch (NotSupportedException ex)
       {
         var message = string.Format (
-            "The SQL '{0}' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot "
-            + "be translated to SQL: '{1}'. {2}",
-            expression.BinaryOperator,
+            "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot "
+            + "be translated to SQL: '{0}'. {1}",
             FormattingExpressionTreeVisitor.Format (expression),
             ex.Message);
         throw new NotSupportedException (message, ex);

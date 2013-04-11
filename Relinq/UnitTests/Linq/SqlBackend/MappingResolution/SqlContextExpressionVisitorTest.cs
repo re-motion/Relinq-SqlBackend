@@ -1404,25 +1404,25 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SqlBinaryOperatorExpression ()
+    public void SqlInExpression ()
     {
-      var expression = new SqlBinaryOperatorExpression (typeof (bool), "IN", Expression.Constant (true), Expression.Constant (true));
-      var expectedResult = new SqlBinaryOperatorExpression (
-          typeof (bool), "IN", new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
+      var expression = new SqlInExpression (typeof (bool), Expression.Constant (true), Expression.Constant (true));
+      var expectedResult = new SqlInExpression (
+          typeof (bool), new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
 
-      var result = _predicateRequiredVisitor.VisitSqlBinaryOperatorExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlInExpression (expression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
-    public void SqlBinaryOperatorExpression_WithInvalidChildren ()
+    public void SqlInExpression_WithInvalidChildren ()
     {
       var newExpression = CreateNewExpression();
-      var expression = new SqlBinaryOperatorExpression (typeof (bool), "IN", newExpression, Expression.Constant (new[] { 1, 2, 3 }));
+      var expression = new SqlInExpression (typeof (bool), newExpression, Expression.Constant (new[] { 1, 2, 3 }));
 
       Assert.That (
-          () => _predicateRequiredVisitor.VisitSqlBinaryOperatorExpression (expression),
+          () => _predicateRequiredVisitor.VisitSqlInExpression (expression),
           Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
               "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression "
               + "cannot be translated to SQL: 'new TypeForNewExpression(0) IN value(System.Int32[])'. Cannot use a complex expression "

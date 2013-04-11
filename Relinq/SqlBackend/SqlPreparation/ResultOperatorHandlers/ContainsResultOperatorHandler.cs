@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
       var subStatementExpression = sqlSubStatement.CreateExpression();
       
-      sqlStatementBuilder.SelectProjection = new SqlBinaryOperatorExpression (typeof(bool), "IN", preparedItemExpression, subStatementExpression);
+      sqlStatementBuilder.SelectProjection = new SqlInExpression (typeof(bool), preparedItemExpression, subStatementExpression);
       
       UpdateDataInfo (resultOperator, sqlStatementBuilder, dataInfo);
     }

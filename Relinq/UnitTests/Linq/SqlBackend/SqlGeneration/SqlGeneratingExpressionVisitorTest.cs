@@ -256,7 +256,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitConstantExpression_Collection ()
     {
       var collectionExpression = Expression.Constant (new[] { "Hugo", "Maier", "Markart" });
-      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant ("Hubert"), collectionExpression);
+      var sqlInExpression = new SqlInExpression (typeof(bool), Expression.Constant ("Hubert"), collectionExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock);
 
@@ -275,15 +275,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitConstantExpression_EmptyCollection ()
     {
       var collectionExpression = Expression.Constant (new string[] { });
-      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant ("Hubert"), collectionExpression);
+      var sqlInExpression = new SqlInExpression (typeof(bool), Expression.Constant ("Hubert"), collectionExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (SELECT NULL WHERE 1 = 0)"));
     }
-
-
-
+    
     [Test]
     public void VisitLiteralExpression ()
     {
@@ -451,11 +449,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlBinaryOperatorExpression ()
+    public void VisitSqlInExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant (1), sqlSubStatementExpression);
+      var sqlInExpression = new SqlInExpression (typeof(bool), Expression.Constant (1), sqlSubStatementExpression);
 
       _stageMock
           .Expect (
