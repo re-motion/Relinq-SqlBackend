@@ -21,16 +21,19 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
   /// Splits comparisons involving a compound expression, e.g., new { A = 1, B = 2 } == new { A = 3, B = 4 } => 1 == 1 AND 2 == 2.
   /// </summary>
-  public class CompoundExpressionComparisonSplitter
+  public class CompoundExpressionComparisonSplitter : ICompoundExpressionComparisonSplitter
   {
-    public static Expression CheckAndSplit (BinaryExpression potentialCompoundComparison)
+    public Expression SplitPotentialCompoundComparison (BinaryExpression potentialCompoundComparison)
     {
+      ArgumentUtility.CheckNotNull ("potentialCompoundComparison", potentialCompoundComparison);
+
       var left = potentialCompoundComparison.Left;
       var right = potentialCompoundComparison.Right;
       var nodeType = potentialCompoundComparison.NodeType;
@@ -57,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return potentialCompoundComparison;
     }
 
-    private static Expression CreateCtorArgComparison (ExpressionType expressionType, NewExpression leftNewExpression, NewExpression rightNewExpression)
+    private Expression CreateCtorArgComparison (ExpressionType expressionType, NewExpression leftNewExpression, NewExpression rightNewExpression)
     {
       if (!leftNewExpression.Constructor.Equals (rightNewExpression.Constructor))
       {
@@ -74,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           .Aggregate ((previous, current) => CombineComparisons (previous, current, expressionType, leftNewExpression, rightNewExpression));
     }
 
-    private static Expression CreateMemberAccessComparison (ExpressionType expressionType, NewExpression newExpression, Expression otherExpression)
+    private Expression CreateMemberAccessComparison (ExpressionType expressionType, NewExpression newExpression, Expression otherExpression)
     {
       // The ReSharper warning is wrong - newExpression.Members can be null
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -94,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (combinedComparison);
     }
 
-    private static Expression GetMemberExpression (MemberInfo memberInfo, Expression instance)
+    private Expression GetMemberExpression (MemberInfo memberInfo, Expression instance)
     {
       if (memberInfo.MemberType == MemberTypes.Method)
         return Expression.Call (instance, (MethodInfo) memberInfo);
@@ -102,7 +105,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return Expression.MakeMemberAccess (instance, memberInfo);
     }
 
-    private static Expression CombineComparisons (
+    private Expression CombineComparisons (
         Expression previousParts,
         Expression currentPart,
         ExpressionType comparisonExpressionType,

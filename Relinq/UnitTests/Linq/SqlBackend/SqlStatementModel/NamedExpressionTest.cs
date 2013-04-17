@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
@@ -44,21 +45,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void StripSurroundingNames_Unnamed ()
     {
-      var result = NamedExpression.StripSurroundingNames (_wrappedExpression);
+      var result = NamedExpression.StripSurroundingNames (_wrappedExpression, new MappingResolutionContext ());
       Assert.That (result, Is.SameAs (_wrappedExpression));
     }
 
     [Test]
     public void StripSurroundingNames_Named ()
     {
-      var result = NamedExpression.StripSurroundingNames (_namedExpression);
+      var result = NamedExpression.StripSurroundingNames (_namedExpression, new MappingResolutionContext());
       Assert.That (result, Is.SameAs (_wrappedExpression));
     }
 
     [Test]
     public void StripSurroundingNames_DoubleNamed ()
     {
-      var result = NamedExpression.StripSurroundingNames (new NamedExpression ("outer", _namedExpression));
+      var result = NamedExpression.StripSurroundingNames (new NamedExpression ("outer", _namedExpression), new MappingResolutionContext ());
       Assert.That (result, Is.SameAs (_wrappedExpression));
     }
 

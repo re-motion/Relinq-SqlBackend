@@ -1,0 +1,161 @@
+// This file is part of the re-linq project (relinq.codeplex.com)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// re-linq is free software; you can redistribute it and/or modify it under 
+// the terms of the GNU Lesser General Public License as published by the 
+// Free Software Foundation; either version 2.1 of the License, 
+// or (at your option) any later version.
+// 
+// re-linq is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-linq; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using System.Linq.Expressions;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+
+namespace Remotion.Linq.SqlBackend.MappingResolution
+{
+  /// <summary>
+  /// Resolves expressions representing entities (<see cref="SqlEntityExpression"/>, <see cref="SqlEntityRefMemberExpression"/>, 
+  /// <see cref="SqlSubStatementExpression"/> selecting entities) to their respective identity expressions.
+  /// </summary>
+  public class EntityIdentityResolver : IEntityIdentityResolver
+  {
+    private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
+
+    public EntityIdentityResolver (IMappingResolutionStage stage, IMappingResolutionContext context)
+    {
+      _stage = stage;
+      _context = context;
+    }
+
+    public Expression ResolvePotentialEntity (Expression expression)
+    {
+      var entityExpression = expression as SqlEntityExpression;
+      if (entityExpression != null)
+        return entityExpression.GetIdentityExpression ();
+
+      var entityConstantExpression = expression as SqlEntityConstantExpression;
+      if (entityConstantExpression != null)
+        return entityConstantExpression.PrimaryKeyExpression;
+
+      var entityRefMemberExpression = expression as SqlEntityRefMemberExpression;
+      if (entityRefMemberExpression != null)
+        return GetIdentityExpressionForReferencedEntity (entityRefMemberExpression);
+
+      var sqlSubStatementExpression = expression as SqlSubStatementExpression;
+      if (sqlSubStatementExpression != null)
+        return CheckAndSimplifyEntityWithinSubStatement (sqlSubStatementExpression);
+
+      return expression;
+    }
+
+    public BinaryExpression ResolvePotentialEntityComparison (BinaryExpression binaryExpression)
+    {
+      var left = StripConversions (binaryExpression.Left);
+      var right = StripConversions (binaryExpression.Right);
+
+      var newLeft = ResolvePotentialEntity (left);
+      var newRight = ResolvePotentialEntity (right);
+
+      if (newLeft != left || newRight != right)
+      {
+        // Note: Method is stripped because when an entity is reduced to its identity, the method can no longer work.
+        // TODO 4878: IsLiftedToNull should be recalculated, I guess?
+        // TODO 4878: Do we actually need conversion? Or should we just say, it's not supported to have differing types?
+        return ConversionUtility.MakeBinaryWithOperandConversion (
+            binaryExpression.NodeType,
+            newLeft,
+            newRight,
+            binaryExpression.IsLiftedToNull,
+            null);
+      }
+
+      return binaryExpression;
+    }
+
+    public SqlInExpression ResolvePotentialEntityComparison (SqlInExpression inExpression)
+    {
+      var left = StripConversions (inExpression.LeftExpression);
+      var right = StripConversions (inExpression.RightExpression);
+
+      var newLeft = ResolvePotentialEntity (left);
+      var newRight = ResolvePotentialEntity (right);
+
+      if (newLeft != left || newRight != right)
+        return new SqlInExpression (inExpression.Type, newLeft, newRight);
+
+      return inExpression;
+    }
+
+    public SqlIsNullExpression ResolvePotentialEntityComparison (SqlIsNullExpression isNullExpression)
+    {
+      var expression = StripConversions (isNullExpression.Expression);
+      var newExpression = ResolvePotentialEntity (expression);
+
+      if (newExpression != expression)
+        return new SqlIsNullExpression (newExpression);
+
+      return isNullExpression;
+    }
+
+    public SqlIsNotNullExpression ResolvePotentialEntityComparison (SqlIsNotNullExpression isNotNullExpression)
+    {
+      var expression = StripConversions (isNotNullExpression.Expression);
+      var newExpression = ResolvePotentialEntity (expression);
+
+      if (newExpression != expression)
+        return new SqlIsNotNullExpression (newExpression);
+
+      return isNotNullExpression;
+    }
+
+    private Expression GetIdentityExpressionForReferencedEntity (SqlEntityRefMemberExpression expression)
+    {
+      // Create the respective join that "would be created".
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
+      var resolvedJoinInfo = _stage.ResolveJoinInfo (unresolvedJoinInfo, _context);
+
+      // TODO 3315: Can we remove this once we have a general ID member access optimization in IMappingResolver?
+
+      // If the right side of the join is a primary key column, we can just use the left side of the join instead - it should have the same semantics
+      // as the identity expression of the joined table.
+      // TODO 4878: This is no longer correct - a join criterion might be only a part of the identity expression! Find a solution?
+      var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
+      if (columnExpression != null && columnExpression.IsPrimaryKey)
+        return resolvedJoinInfo.LeftKey;
+      else
+        return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).GetIdentityExpression ();
+    }
+
+    private Expression CheckAndSimplifyEntityWithinSubStatement (SqlSubStatementExpression sqlSubStatementExpression)
+    {
+      var newSelectProjection = ResolvePotentialEntity (sqlSubStatementExpression.SqlStatement.SelectProjection);
+      if (newSelectProjection != sqlSubStatementExpression.SqlStatement.SelectProjection)
+      {
+        var newSubStatement = new SqlStatementBuilder (sqlSubStatementExpression.SqlStatement) { SelectProjection = newSelectProjection };
+        newSubStatement.RecalculateDataInfo (sqlSubStatementExpression.SqlStatement.SelectProjection);
+
+        return newSubStatement.GetSqlStatement ().CreateExpression ();
+      }
+
+      return sqlSubStatementExpression;
+    }
+
+    private Expression StripConversions (Expression expression)
+    {
+      while (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked)
+        expression = ((UnaryExpression) expression).Operand;
+      return expression;
+    }
+  }
+}

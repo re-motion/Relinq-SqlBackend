@@ -1,4 +1,4 @@
-// This file is part of the re-linq project (relinq.codeplex.com)
+﻿// This file is part of the re-linq project (relinq.codeplex.com)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // re-linq is free software; you can redistribute it and/or modify it under 
@@ -14,13 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Linq.Expressions;
 
-namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="IUnresolvedSqlExpressionVisitor"/> provides methods to visit expressions that are yet to be resolved.
+  /// Defines an abstraction for <see cref="CompoundExpressionComparisonSplitter"/>, mainly for testing purposes.
   /// </summary>
-  public interface IUnresolvedSqlExpressionVisitor : ISqlTableReferenceExpressionVisitor, ISqlEntityRefMemberExpressionVisitor
+  public interface ICompoundExpressionComparisonSplitter
   {
+    Expression SplitPotentialCompoundComparison (BinaryExpression potentialCompoundComparison);
   }
 }

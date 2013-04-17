@@ -148,7 +148,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     [Test]
     public void ToString_NamedEntity ()
     {
-      var namedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "e1");
+      var namedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "e1", "t");
       var result = namedEntity.ToString ();
 
       Assert.That (result, Is.EqualTo ("[t] AS [e1]"));

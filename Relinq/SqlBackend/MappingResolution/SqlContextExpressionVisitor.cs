@@ -34,20 +34,21 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// </summary>
   /// <remarks>
   /// <see cref="SqlContextExpressionVisitor"/> traverses an expression tree and ensures that the tree fits SQL server requirements for
-  /// boolean expressions. In scenarios where a value is required as per SQL server standards, bool expressions are converted to integers using
+  /// expressions. In scenarios where a value is required as per SQL server standards, boolean expressions are converted to integers using
   /// CASE WHEN expressions. In such situations, <see langword="true" /> and <see langword="false" /> constants are converted to 1 and 0 values,
   /// and boolean columns are interpreted as integer values. In scenarios where a predicate is required, boolean expressions are constructed by 
-  /// comparing those integer values to 1 and 0 literals.
+  /// comparing those integer values to 1 and 0 literals. In scenarios where a single value is required, an exception is thrown where compound 
+  /// values (<see cref="NewExpression"/>) or entities are encountered.
   /// </remarks>
   public class SqlContextExpressionVisitor
       : ExpressionTreeVisitor,
         ISqlSpecificExpressionVisitor,
         IResolvedSqlExpressionVisitor,
-        IUnresolvedSqlExpressionVisitor,
         ISqlSubStatementVisitor,
-        INamedExpressionVisitor,
         ISqlGroupingSelectExpressionVisitor,
-        ISqlConvertedBooleanExpressionVisitor
+        ISqlConvertedBooleanExpressionVisitor,
+        INamedExpressionVisitor,
+        IAggregationExpressionVisitor
   {
     public static Expression ApplySqlExpressionContext (
         Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
@@ -83,7 +84,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         case SqlExpressionContext.SingleValueRequired:
         case SqlExpressionContext.ValueRequired:
-        case SqlExpressionContext.SingleValuePreferred:
           return HandleValueSemantics (expression);
         case SqlExpressionContext.PredicateRequired:
           return HandlePredicateSemantics (expression);
@@ -141,25 +141,29 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
-      if (_currentContext == SqlExpressionContext.SingleValueRequired || _currentContext == SqlExpressionContext.SingleValuePreferred)
-        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKey to obtain a single value.
-        return expression.GetIdentityExpression();
-      else
-        return expression; // rely on VisitExpression to apply correct semantics
+      if (_currentContext == SqlExpressionContext.SingleValueRequired)
+      {
+        string message = string.Format (
+            "Cannot use an entity expression ('{0}' of type '{1}') in a place where SQL requires a single value.",
+            FormattingExpressionTreeVisitor.Format (expression),
+            expression.Type.Name);
+        throw new NotSupportedException (message);
+      }
+
+      return expression; // rely on VisitExpression to apply correct semantics
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (!BooleanUtility.IsBooleanType (expression.Type))
-        return base.VisitBinaryExpression (expression);
-
-      var childContext = GetChildSemanticsForBinaryBoolExpression (expression.NodeType);
+      var childContext = BooleanUtility.IsBooleanType (expression.Type)
+                             ? GetChildSemanticsForBinaryBoolExpression (expression.NodeType)
+                             : SqlExpressionContext.SingleValueRequired;
       var left = ApplySqlExpressionContext (expression.Left, childContext);
       var right = ApplySqlExpressionContext (expression.Right, childContext);
 
-      if (expression.NodeType == ExpressionType.Coalesce)
+      if (BooleanUtility.IsBooleanType (expression.Type) && expression.NodeType == ExpressionType.Coalesce)
       {
         // In predicate context, we can ignore coalesces towards false, treat like a conversion to bool instead. (SQL treats NULL values in a falsey
         // way in predicate contexts.)
@@ -183,7 +187,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
 
       if (left != expression.Left || right != expression.Right)
-        return ConversionUtility.MakeBinaryWithOperandConversion (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
+        return Expression.MakeBinary (expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
 
       return expression;
     }
@@ -199,11 +203,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         if (expression.NodeType == ExpressionType.Convert)
         {
-          // If the operand changes its type due to context application, we must also strip any Convert nodes since they are most likely no longer 
-          // applicable after the context switch.
-          if (expression.Operand.Type != newOperand.Type)
-            return newOperand;
-
           // If this is a convert of a SqlConvertedBooleanExpression to bool? or bool, move the Convert into the SqlConvertedBooleanExpression
           var convertedBooleanExpressionOperand = newOperand as SqlConvertedBooleanExpression;
           if (convertedBooleanExpressionOperand != null)
@@ -225,8 +224,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      // TODO 4878: Handle compounds here.
-
       var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)
         return new SqlIsNullExpression (newExpression);
@@ -236,8 +233,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-
-      // TODO 4878: Handle compounds here.
 
       var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)
@@ -249,11 +244,15 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (_currentContext == SqlExpressionContext.SingleValueRequired || _currentContext == SqlExpressionContext.SingleValuePreferred)
-        // TODO 4878: When primary key can be a compound expression, revisit expression.PrimaryKey to obtain a single value.
-        return expression.PrimaryKeyExpression;
-      else
-        return expression; // rely on VisitExpression to apply correct semantics
+      if (_currentContext == SqlExpressionContext.SingleValueRequired)
+      {
+        string message = string.Format (
+            "Cannot use an entity constant ('{0}' of type '{1}') in a place where SQL requires a single value.",
+            FormattingExpressionTreeVisitor.Format (expression),
+            expression.Type.Name);
+        throw new NotSupportedException (message);
+      }
+      return expression; // rely on VisitExpression to apply correct semantics
     }
 
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
@@ -264,50 +263,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (!ReferenceEquals (expression.SqlStatement, newSqlStatement))
         return new SqlSubStatementExpression (newSqlStatement);
       return expression;
-    }
-
-    public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var resolvedJoinInfo = _stage.ResolveJoinInfo (
-          new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One), _context);
-      switch (_currentContext)
-      {
-        case SqlExpressionContext.ValueRequired:
-          return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context);
-        case SqlExpressionContext.SingleValueRequired:
-        case SqlExpressionContext.SingleValuePreferred:
-          // TODO 3315: Consider simplifying this so that it can be handled by the ID optimization in MappingResolver.
-          var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
-          if (columnExpression != null && columnExpression.IsPrimaryKey)
-            return resolvedJoinInfo.LeftKey;
-          else
-            // TODO 4878: Revisit PrimaryKey, this could be a compound value.
-            return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).GetIdentityExpression();
-      }
-      
-      var message = string.Format (
-          "Context '{0}' is not allowed for members referencing entities: '{1}'.", 
-          _currentContext, 
-          FormattingExpressionTreeVisitor.Format (expression));
-      throw new NotSupportedException (message);
-    }
-
-    public Expression VisitNamedExpression (NamedExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var expressionWithAppliedInnerContext = new NamedExpression (
-          expression.Name,
-          VisitExpression (expression.Expression));
-
-      var result = NamedExpressionCombiner.ProcessNames (_context, expressionWithAppliedInnerContext);
-
-      if (result != expressionWithAppliedInnerContext || expressionWithAppliedInnerContext.Expression != expression.Expression)
-        return result;
-      else
-        return expression;
     }
 
     protected override Expression VisitNewExpression (NewExpression expression)
@@ -348,6 +303,22 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
+    public Expression VisitNamedExpression (NamedExpression expression)
+    {
+      var newInnerExpression = VisitExpression (expression.Expression);
+      if (newInnerExpression is SqlConvertedBooleanExpression)
+      {
+        var convertedBooleanExpression = (SqlConvertedBooleanExpression) newInnerExpression;
+        var innerNamedExpression = new NamedExpression (expression.Name, convertedBooleanExpression.Expression);
+        return VisitExpression (new SqlConvertedBooleanExpression (innerNamedExpression));
+      }
+
+      if (newInnerExpression != expression.Expression)
+        return new NamedExpression (expression.Name, newInnerExpression);
+
+      return expression;
+    }
+
     public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
     {
       var newKeyExpression = ApplyValueContext (expression.KeyExpression);
@@ -364,12 +335,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
-    {
-      // This expression has no children, so just return it.
-      return expression;
-    }
-
     public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
@@ -382,7 +347,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
-      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValuePreferred);
+      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.ValueRequired);
     }
 
     public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
@@ -439,6 +404,20 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             ex.Message);
         throw new NotSupportedException (message, ex);
       }
+    }
+
+    public Expression VisitAggregationExpression (AggregationExpression expression)
+    {
+      Expression newInnerExpression;
+      if (expression.AggregationModifier == AggregationModifier.Count)
+        newInnerExpression = ApplyValueContext (expression.Expression);
+      else
+        newInnerExpression = ApplySingleValueContext (expression.Expression);
+
+      if (newInnerExpression != expression.Expression)
+        return new AggregationExpression (expression.Type, newInnerExpression, expression.AggregationModifier);
+
+      return expression;
     }
 
     protected override Expression VisitInvocationExpression (InvocationExpression expression)

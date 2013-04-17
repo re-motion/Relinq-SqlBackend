@@ -22,6 +22,7 @@ using System.Reflection;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.Utilities;
 
@@ -40,12 +41,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     private readonly string _name;
     private readonly Expression _expression;
 
-    public static Expression StripSurroundingNames (Expression expression)
+    public static Expression StripSurroundingNames (Expression expression, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       while (expression is NamedExpression)
         expression = ((NamedExpression) expression).Expression;
+
+      // TODO 4878: Test. And move to another class - this now depends on the resolution stage.
+      if (expression is SqlEntityExpression)
+      {
+        var sqlEntityExpression = (SqlEntityExpression) expression;
+        expression = mappingResolutionContext.UpdateEntityAndAddMapping (sqlEntityExpression, sqlEntityExpression.Type, sqlEntityExpression.TableAlias, null);
+      }
+
       return expression;
     }
 

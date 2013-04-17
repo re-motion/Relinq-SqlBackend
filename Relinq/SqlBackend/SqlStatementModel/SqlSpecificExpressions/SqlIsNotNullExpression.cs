@@ -54,7 +54,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
+      var specificVisitor = visitor as ISqlNullCheckExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlIsNotNullExpression (this);
       else

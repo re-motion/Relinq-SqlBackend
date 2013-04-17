@@ -75,10 +75,15 @@
     <Compile Include="ConversionUtility.cs" />
     <Compile Include="MappingResolution\CompoundExpressionComparisonSplitter.cs" />
     <Compile Include="MappingResolution\DefaultMappingResolutionStage.cs" />
+    <Compile Include="MappingResolution\EntityIdentityResolver.cs" />
     <Compile Include="MappingResolution\GroupAggregateSimplifier.cs" />
+    <Compile Include="MappingResolution\ICompoundExpressionComparisonSplitter.cs" />
+    <Compile Include="MappingResolution\IEntityIdentityResolver.cs" />
+    <Compile Include="MappingResolution\IGroupAggregateSimplifier.cs" />
     <Compile Include="MappingResolution\IMappingResolutionContext.cs" />
     <Compile Include="MappingResolution\IMappingResolutionStage.cs" />
     <Compile Include="MappingResolution\IMappingResolver.cs" />
+    <Compile Include="MappingResolution\INamedExpressionCombiner.cs" />
     <Compile Include="MappingResolution\MappingResolutionContext.cs" />
     <Compile Include="MappingResolution\MemberAccessResolver.cs" />
     <Compile Include="MappingResolution\NamedExpressionCombiner.cs" />
@@ -150,6 +155,9 @@
     <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactory.cs" />
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlExistsExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlInExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlNullCheckExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpression.cs" />
     <Compile Include="SqlStatementModel\Resolved\SqlConvertedBooleanExpression.cs" />
     <Compile Include="SqlStatementModel\IAggregationExpressionVisitor.cs" />
@@ -220,6 +228,8 @@
     <Compile Include="SqlStatementModel\SqlSubStatementExpression.cs" />
     <Compile Include="SqlStatementModel\SqlTable.cs" />
     <Compile Include="SqlStatementModel\SqlTableBase.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\ISqlEntityRefMemberExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\ISqlTableReferenceExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Unresolved\IUnresolvedSqlExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Unresolved\JoinConditionExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlEntityRefMemberExpression.cs" />

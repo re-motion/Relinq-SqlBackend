@@ -379,33 +379,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }
-
-    [Test]
-    public void ResolveMemberAccess_ResolvedResult ()
-    {
-      var sourceExpression = new SqlColumnDefinitionExpression (typeof (Cook), "c", "Substitution", false);
-      var memberInfo = typeof (Cook).GetProperty ("Name");
-
-      var fakeResolvedExpression = Expression.Constant ("Hugo", typeof (string));
-      _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (sourceExpression, memberInfo))
-          .Return (fakeResolvedExpression);
-
-      var fakeResolvedExpressionAgain = Expression.Constant ("Hugo2", typeof (string));
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResolvedExpression))
-          .Return (fakeResolvedExpressionAgain);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResolvedExpressionAgain))
-          .Return (fakeResolvedExpressionAgain);
-      _resolverMock.Replay();
-
-      var result = _stage.ResolveMemberAccess (sourceExpression, memberInfo, _resolverMock, _mappingResolutionContext);
-
-      _resolverMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (fakeResolvedExpressionAgain));
-    }
-
+    
     [Test]
     public void ApplyContext_Expression ()
     {
@@ -416,18 +390,19 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((SqlLiteralExpression) ((BinaryExpression) result).Right).Value, Is.EqualTo (1));
     }
 
+    // TODO 4878: Move down.
     [Test]
-    public void ApplyContext_SqlStatement ()
+    public void ApplySelectionContext_SqlStatement ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
                          {
-                             SelectProjection = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook))
+                             SelectProjection = Expression.Constant (true)
                          }.GetSqlStatement();
 
       var result = _stage.ApplySelectionContext (sqlStatement, SqlExpressionContext.SingleValueRequired, _mappingResolutionContext);
 
       Assert.That (result, Is.Not.SameAs (sqlStatement));
-      Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (result.SelectProjection, Is.TypeOf (typeof (SqlConvertedBooleanExpression)));
     }
 
     [Test]

@@ -24,6 +24,7 @@ using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
+  // TODO 4878: Move to other namespace.
   /// <summary>
   /// Represents a SQL "a IN b" expression.
   /// </summary>
@@ -32,6 +33,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly Expression _leftExpression;
     private readonly Expression _rightExpression;
 
+    // TODO 4878: type is always bool.
     public SqlInExpression (Type type, Expression leftExpression, Expression rightExpression)
         : base(ArgumentUtility.CheckNotNull ("type", type))
     {
@@ -65,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
+      var specificVisitor = visitor as ISqlInExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlInExpression (this);
       else

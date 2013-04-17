@@ -14,28 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
-
 using System.Linq.Expressions;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// Describes whether predicate or value semantics is required for boolean expressions in the current context.
+  /// Defines an abstraction for <see cref="EntityIdentityResolver"/>, mainly for reasons of testing.
   /// </summary>
-  public enum SqlExpressionContext
+  public interface IEntityIdentityResolver
   {
-    /// <summary>
-    /// A value or an entity is required; boolean expressions need to be converted using CASE WHEN.
-    /// </summary>
-    ValueRequired,
-    /// <summary>
-    /// A single SQL value is required; boolean expressions need to be converted using CASE WHEN. When a compound value (such as an entity or a 
-    /// <see cref="NewExpression"/>) is detected, an exception is thrown.
-    /// </summary>
-    SingleValueRequired,
-    /// <summary>
-    /// A predicate is required; even boolean expressions need to be converted, e.g., by comparing their result to the literal value 1.
-    /// </summary>
-    PredicateRequired,
+    BinaryExpression ResolvePotentialEntityComparison (BinaryExpression binaryExpression);
+    SqlInExpression ResolvePotentialEntityComparison (SqlInExpression inExpression);
+    SqlIsNullExpression ResolvePotentialEntityComparison (SqlIsNullExpression isNullExpression);
+    SqlIsNotNullExpression ResolvePotentialEntityComparison (SqlIsNotNullExpression isNotNullExpression);
+    Expression ResolvePotentialEntity (Expression expression);
   }
 }

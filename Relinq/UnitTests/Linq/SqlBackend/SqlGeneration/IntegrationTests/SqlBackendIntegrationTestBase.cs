@@ -189,7 +189,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var result = GenerateSql (queryModel);
 
-      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
+      try
+      {
+        Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
+      }
+      catch
+      {
+        Console.WriteLine ("Full generated statement: " + result.CommandText);
+        Console.WriteLine ("Full expected statement:  " + expectedStatement);
+        throw;
+      }
+
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
 
       if (expectedInMemoryProjection != null)

@@ -362,12 +362,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
       throw new NotImplementedException ("TODO 4878: Should no longer be called.");
-      //if (memberInfo.DeclaringType == typeof (MetaID))
-      //{
-      //  if (memberInfo.Name == "ClassID")
-      //    return new SqlColumnDefinitionExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
-      //}
-      //throw new UnmappedItemException ("Cannot resolve member for: " + memberInfo.Name);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)

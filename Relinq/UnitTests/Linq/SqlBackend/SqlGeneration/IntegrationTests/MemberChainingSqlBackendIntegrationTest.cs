@@ -148,9 +148,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var query = Cooks.Select (c => (from a in c.Assistants select a.Substitution ?? a).First ().Name);
       CheckQuery (query,
-        "SELECT [q4].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
+        "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
         "CASE WHEN ([t2].[ID] IS NOT NULL) THEN [t2].[Name] ELSE [t1].[Name] END AS [value] FROM [CookTable] AS [t1] " +
-        "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q4]");
+        "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }
 
     [Test]

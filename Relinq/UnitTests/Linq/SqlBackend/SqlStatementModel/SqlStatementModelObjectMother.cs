@@ -219,23 +219,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
     }
 
-    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type = null)
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type = null, string name = null, string owningTableAlias = null, Type primaryKeyType = null)
     {
-      return CreateSqlEntityDefinitionExpression(type ?? typeof (Cook), null);
-    }
+      type = type ?? typeof (Cook);
+      owningTableAlias = owningTableAlias ?? "t0";
+      primaryKeyType = primaryKeyType ?? typeof (int);
 
-    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name)
-    {
-      return CreateSqlEntityDefinitionExpression (type, name, "t");
-    }
-
-    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name, string owningTableAlias)
-    {
-      return CreateSqlEntityDefinitionExpression (type, name, owningTableAlias, typeof (int));
-    }
-
-    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type, string name, string owningTableAlias, Type primaryKeyType)
-    {
       return new SqlEntityDefinitionExpression (
           type,
           owningTableAlias, 
@@ -271,6 +260,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public static ISqlPreparationContext CreateSqlPreparationContext ()
     {
       return new SqlPreparationContext (null, new SqlStatementBuilder());
+    }
+
+    public static SqlEntityRefMemberExpression CreateSqlEntityRefMemberExpression ()
+    {
+      var originatingEntity = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
     }
   }
 }

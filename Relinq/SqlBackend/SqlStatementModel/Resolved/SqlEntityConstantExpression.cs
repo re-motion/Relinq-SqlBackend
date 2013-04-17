@@ -19,7 +19,6 @@ using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -47,6 +46,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _value; }
     }
 
+    // TODO 4878: Rename to IdentityExpression.
     public Expression PrimaryKeyExpression
     {
       get { return _primaryKeyExpression; }
@@ -63,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
+      var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlEntityConstantExpression(this);
       else

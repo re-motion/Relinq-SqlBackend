@@ -45,6 +45,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private IMappingResolutionStage _stageMock;
     private MappingResolutionContext _context;
 
+    private GroupAggregateSimplifier _groupAggregateSimplifier;
+
     [SetUp]
     public void SetUp ()
     {
@@ -85,12 +87,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage> ();
       _context = new MappingResolutionContext();
+
+      _groupAggregateSimplifier = new GroupAggregateSimplifier (_stageMock, _context);
     }
     
     [Test]
     public void IsSimplifiableGroupAggregate_True_WithReferenceToJoinGroupInAggregationExpression ()
     {
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (_simplifiableResolvedSqlStatement), Is.True);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (_simplifiableResolvedSqlStatement), Is.True);
     }
 
     [Test]
@@ -102,7 +106,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           typeof (int), new NamedExpression ("value", _resolvedElementExpressionReference), AggregationModifier.Min)
       }.GetSqlStatement();
       
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.True);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.True);
     }
 
     [Test]
@@ -115,7 +119,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
             new AggregationExpression (typeof (int), _resolvedElementExpressionReference, AggregationModifier.Min))
       }.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.True);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.True);
     }
 
     [Test]
@@ -126,7 +130,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         SelectProjection = new AggregationExpression (typeof (int), Expression.Constant (0), AggregationModifier.Min)
       }.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.True);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.True);
     }
 
     [Test]
@@ -137,7 +141,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         SelectProjection = _resolvedElementExpressionReference
       }.GetSqlStatement ();
       
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -148,7 +152,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         WhereCondition = Expression.Constant (true)
       }.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -159,7 +163,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         Orderings = { new Ordering(Expression.Constant("order"), OrderingDirection.Asc) }
       }.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -170,7 +174,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         GroupByExpression = Expression.Constant(0)
       }.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -180,7 +184,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
       var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -191,7 +195,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable (new ResolvedSimpleTableInfo (typeof (int), "table", "t0")));
       var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -202,7 +206,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         TopExpression = Expression.Constant (0)
       }.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -213,7 +217,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         IsDistinctQuery = true
       }.GetSqlStatement ();
 
-      Assert.That (GroupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
+      Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
     }
 
     [Test]
@@ -223,21 +227,23 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       {
         IsDistinctQuery = true
       }.GetSqlStatement ();
+      var expression = new SqlSubStatementExpression (resolvedSqlStatement);
       
       _stageMock.Replay();
 
-      var result = GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement, _simplifiableUnresolvedProjection, _stageMock, _context);
+      var result = _groupAggregateSimplifier.SimplifyIfPossible (expression, _simplifiableUnresolvedProjection);
 
       _stageMock.VerifyAllExpectations();
 
-      var expected = new SqlSubStatementExpression (resolvedSqlStatement);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      Assert.That (result, Is.SameAs (expression));
     }
 
     [Test]
     public void SimplifyIfPossible_SimplifiableStatement_AddsAggregationAndReturnsReference ()
     {
       Assert.That (_associatedGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (0));
+
+      var expression = new SqlSubStatementExpression (_simplifiableResolvedSqlStatement);
 
       var preparedResolvedAggregate = new AggregationExpression (
           typeof (int), 
@@ -255,7 +261,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           });
       _stageMock.Replay();
 
-      var result = GroupAggregateSimplifier.SimplifyIfPossible (_simplifiableResolvedSqlStatement, _simplifiableUnresolvedProjection, _stageMock, _context);
+      var result = _groupAggregateSimplifier.SimplifyIfPossible (expression, _simplifiableUnresolvedProjection);
 
       _stageMock.VerifyAllExpectations();
 
@@ -272,13 +278,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SimplifyIfPossible_WithNonSimplifiableProjection_ReturnsOriginalStatement ()
     {
       Assert.That (_associatedGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (0));
+      var expression = new SqlSubStatementExpression (_simplifiableResolvedSqlStatement);
 
       _stageMock.Replay ();
 
       var nonSimplifiableProjection = new AggregationExpression (
           typeof (int), 
           new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable ()), AggregationModifier.Count);
-      var result = GroupAggregateSimplifier.SimplifyIfPossible (_simplifiableResolvedSqlStatement, nonSimplifiableProjection, _stageMock, _context);
+      var result = _groupAggregateSimplifier.SimplifyIfPossible (expression, nonSimplifiableProjection);
 
       _stageMock.VerifyAllExpectations ();
 
@@ -293,14 +300,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
         "The unresolved projection doesn't match the resolved statement: it has no aggregation.\r\nParameter name: unresolvedSelectProjection")]
     public void SimplifyIfPossible_WithUnresolvedProjection_NotMatchingResolvedOned_NoAggregation ()
     {
+      var expression = new SqlSubStatementExpression (_simplifiableResolvedSqlStatement);
+
       var nonSimplifiableProjection = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable ());
-      GroupAggregateSimplifier.SimplifyIfPossible (_simplifiableResolvedSqlStatement, nonSimplifiableProjection, _stageMock, _context);
+      _groupAggregateSimplifier.SimplifyIfPossible (expression, nonSimplifiableProjection);
     }
 
     [Test]
     public void VisitExpression_ReferenceToRightTable ()
     {
-      var visitor = new TestableGroupAggregateSimplifier (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
+      var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = new SqlTableReferenceExpression (_resolvedJoinedGroupingTable);
       var result = visitor.VisitExpression (input);
@@ -312,7 +321,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitExpression_ReferenceToRightTable_Nested ()
     {
-      var visitor = new TestableGroupAggregateSimplifier (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
+      var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = Expression.Equal (
           new SqlTableReferenceExpression (_resolvedJoinedGroupingTable), 
@@ -330,7 +339,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitExpression_ReferenceToOtherTable ()
     {
-      var visitor = new TestableGroupAggregateSimplifier (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
+      var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable());
       visitor.VisitExpression (input);
@@ -341,7 +350,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void VisitExpression_AnyOtherExpression ()
     {
-      var visitor = new TestableGroupAggregateSimplifier (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
+      var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = Expression.Constant (0);
       var result = visitor.VisitExpression (input);

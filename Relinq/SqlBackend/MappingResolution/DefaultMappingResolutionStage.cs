@@ -169,8 +169,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedMemberAccess = MemberAccessResolver.ResolveMemberAccess (resolvedSourceExpression, memberInfo, mappingResolver, this, context);
-      return ResolveExpression (resolvedMemberAccess, context);
+      return MemberAccessResolver.ResolveMemberAccess (resolvedSourceExpression, memberInfo, mappingResolver, this, context);
     }
 
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)

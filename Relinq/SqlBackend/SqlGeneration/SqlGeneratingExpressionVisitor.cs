@@ -409,6 +409,12 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return VisitExtensionExpression (expression);
     }
 
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    {
+      // TODO 4878: Integration test selecting a constant entity? (In outer select scenario, we could actually support this by emitting a constant expression. For inner selects, we need to throw.)
+      throw new NotImplementedException ("Not supported");
+    }
+
     protected virtual void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
       column.Accept (this);

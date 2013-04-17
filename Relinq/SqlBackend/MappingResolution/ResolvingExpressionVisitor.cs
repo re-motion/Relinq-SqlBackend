@@ -15,14 +15,11 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 
@@ -31,25 +28,24 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// <see cref="ResolvingExpressionVisitor"/> analyzes a prepared <see cref="Expression"/> for things that need to be analyzed by the 
   /// <see cref="IMappingResolver"/> and resolves member accesses and similar structures. Substatements are recursively resolved.
+  /// Calling <see cref="ResolveExpression"/> will automatically execute two passes in order to optimize away unnecessary left-outer joins.
   /// </summary>
   public class ResolvingExpressionVisitor : 
       ExpressionTreeVisitor, 
       IUnresolvedSqlExpressionVisitor, 
       ISqlSubStatementVisitor, 
-      IJoinConditionExpressionVisitor
+      IJoinConditionExpressionVisitor,
+      INamedExpressionVisitor,
+      ISqlNullCheckExpressionVisitor,
+      ISqlInExpressionVisitor,
+      ISqlExistsExpressionVisitor
   {
-    private readonly IMappingResolver _resolver;
-    private readonly IMappingResolutionStage _stage;
-    private readonly IMappingResolutionContext _context;
-    private readonly UniqueIdentifierGenerator _generator;
-
     public static Expression ResolveExpression (
         Expression expression,
         IMappingResolver resolver,
         IMappingResolutionStage stage,
         IMappingResolutionContext context,
-        UniqueIdentifierGenerator generator
-        )
+        UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
@@ -57,11 +53,32 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var visitor = new ResolvingExpressionVisitor (resolver, stage, context, generator);
-      var result = visitor.VisitExpression (expression);
-      return result;
+      var entityIdentityResolver = new EntityIdentityResolver (stage, context);
+      var comparisonSplitter = new CompoundExpressionComparisonSplitter();
+      var namedExpressionCombiner = new NamedExpressionCombiner (context);
+      var groupAggregateSimplifier = new GroupAggregateSimplifier (stage, context);
+
+      var visitor1 = new ResolvingExpressionVisitor (
+          resolver, stage, context, generator, entityIdentityResolver, comparisonSplitter, namedExpressionCombiner, groupAggregateSimplifier, false);
+      var result1 = visitor1.VisitExpression (expression);
+
+      var visitor2 = new ResolvingExpressionVisitor (
+          resolver, stage, context, generator, entityIdentityResolver, comparisonSplitter, namedExpressionCombiner, groupAggregateSimplifier, true);
+      var result2 = visitor2.VisitExpression (result1);
+      return result2;
     }
 
+    private readonly IMappingResolver _resolver;
+    private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
+    private readonly UniqueIdentifierGenerator _generator;
+    private readonly IEntityIdentityResolver _entityIdentityResolver;
+    private readonly ICompoundExpressionComparisonSplitter _compoundComparisonSplitter;
+    private readonly INamedExpressionCombiner _namedExpressionCombiner;
+    private readonly IGroupAggregateSimplifier _groupAggregateSimplifier;
+
+    private readonly bool _resolveEntityRefMemberExpressions;
+    
     protected IMappingResolver Resolver
     {
       get { return _resolver; }
@@ -82,18 +99,77 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       get { return _generator; }
     }
 
+    protected IEntityIdentityResolver EntityIdentityResolver
+    {
+      get { return _entityIdentityResolver; }
+    }
+
+    protected ICompoundExpressionComparisonSplitter CompoundComparisonSplitter
+    {
+      get { return _compoundComparisonSplitter; }
+    }
+
+    protected INamedExpressionCombiner NamedExpressionCombiner
+    {
+      get { return _namedExpressionCombiner; }
+    }
+
+    public IGroupAggregateSimplifier GroupAggregateSimplifier
+    {
+      get { return _groupAggregateSimplifier; }
+    }
+
+    protected bool ResolveEntityRefMemberExpressions
+    {
+      get { return _resolveEntityRefMemberExpressions; }
+    }
+
     protected ResolvingExpressionVisitor (
-        IMappingResolver resolver, IMappingResolutionStage stage, IMappingResolutionContext context, UniqueIdentifierGenerator generator)
+        IMappingResolver resolver,
+        IMappingResolutionStage stage,
+        IMappingResolutionContext context,
+        UniqueIdentifierGenerator generator,
+        IEntityIdentityResolver entityIdentityResolver,
+        ICompoundExpressionComparisonSplitter compoundComparisonSplitter,
+        INamedExpressionCombiner namedExpressionCombiner,
+        IGroupAggregateSimplifier groupAggregateSimplifier,
+        bool resolveEntityRefMemberExpressions)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("generator", generator);
-
+      ArgumentUtility.CheckNotNull ("entityIdentityResolver", entityIdentityResolver);
+      ArgumentUtility.CheckNotNull ("compoundComparisonSplitter", compoundComparisonSplitter);
+      ArgumentUtility.CheckNotNull ("namedExpressionCombiner", namedExpressionCombiner);
+      ArgumentUtility.CheckNotNull ("groupAggregateSimplifier", groupAggregateSimplifier);
+      
       _resolver = resolver;
       _stage = stage;
       _context = context;
       _generator = generator;
+      _entityIdentityResolver = entityIdentityResolver;
+      _compoundComparisonSplitter = compoundComparisonSplitter;
+      _namedExpressionCombiner = namedExpressionCombiner;
+      _groupAggregateSimplifier = groupAggregateSimplifier;
+
+      _resolveEntityRefMemberExpressions = resolveEntityRefMemberExpressions;
+    }
+
+    private int _i;
+    public override Expression VisitExpression (Expression expression)
+    {
+      ++_i;
+      if (_i > 100)
+        throw new Exception ("Stack overflow!");
+      try
+      {
+        return base.VisitExpression (expression);
+      }
+      finally
+      {
+        --_i;
+      }
     }
 
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
@@ -125,14 +201,23 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       // then newExpression2.FirstName => result (SqlColumn)
 
       var sourceExpression = VisitExpression (expression.Expression);
-      return _stage.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context);
+      var resolved = _stage.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context);
+
+      Debug.Assert (resolved != expression);
+      return VisitExpression (resolved);
     }
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
-      var newBinaryExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
+      var baseVisitedExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
 
-      return CompoundExpressionComparisonSplitter.CheckAndSplit (newBinaryExpression);
+      var binaryExpressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
+      var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (binaryExpressionWithEntityComparisonResolved);
+
+      if (result != baseVisitedExpression)
+        return VisitExpression (result);
+
+      return result;
     }
 
     protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)
@@ -149,9 +234,17 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var resolvedSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
+      var resolvedExpression = Equals (resolvedSqlStatement, expression.SqlStatement)
+                                   ? expression
+                                   : new SqlSubStatementExpression (resolvedSqlStatement);
 
-      return GroupAggregateSimplifier.SimplifyIfPossible (resolvedSqlStatement, expression.SqlStatement.SelectProjection, _stage, _context);
+      return _groupAggregateSimplifier.SimplifyIfPossible (resolvedExpression, expression.SqlStatement.SelectProjection);
     }
+
+      //    if (!Equals (resolvedSqlStatement, expression.SqlStatement))
+      //  expression = new SqlSubStatementExpression (resolvedSqlStatement);
+
+      //return GroupAggregateSimplifier.SimplifyIfPossible (expression, expression.SqlStatement.SelectProjection, _stage, _context);
 
     public virtual Expression VisitJoinConditionExpression (JoinConditionExpression expression)
     {
@@ -167,18 +260,85 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return VisitExpression (whereExpression);
     }
 
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    public Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return VisitExtensionExpression (expression);
+      var baseVisitedExpression =  (NamedExpression) VisitExtensionExpression (expression);
+
+      var result = _namedExpressionCombiner.ProcessNames (baseVisitedExpression);
+
+      if (result != baseVisitedExpression)
+        return VisitExpression (result);
+      
+      return baseVisitedExpression;
     }
 
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
+    {
+      var baseVisitedExpression = (SqlExistsExpression) VisitExtensionExpression (expression);
+
+      // Within an EXISTS query, an entity can be replaced by its IdentityExpression, so try to simplify it.
+      var newInnerExpression = _entityIdentityResolver.ResolvePotentialEntity (baseVisitedExpression.Expression);
+
+      if (newInnerExpression != baseVisitedExpression.Expression)
+        return VisitExpression (new SqlExistsExpression (newInnerExpression));
+
+      return baseVisitedExpression;
+    }
+
+    public Expression VisitSqlInExpression (SqlInExpression expression)
+    {
+      var baseVisitedExpression = (SqlInExpression) VisitExtensionExpression (expression);
+
+      var expressionWithSimplifiedEntities = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
+
+      if (expressionWithSimplifiedEntities != baseVisitedExpression)
+        return VisitExpression (expressionWithSimplifiedEntities);
+
+      return baseVisitedExpression;
+    }
+
+    public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return VisitExtensionExpression (expression);
+      var baseVisitedExpression = (SqlIsNullExpression) base.VisitExtensionExpression (expression);
+      var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
+
+      // TODO 4878: Handle compounds here.
+
+      if (baseVisitedExpression != expressionWithEntityComparisonResolved)
+        return VisitExpression (expressionWithEntityComparisonResolved);
+
+      return baseVisitedExpression;
+    }
+
+    public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var baseVisitedExpression = (SqlIsNotNullExpression) base.VisitExtensionExpression (expression);
+      var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
+
+      // TODO 4878: Handle compounds here.
+
+      if (baseVisitedExpression != expressionWithEntityComparisonResolved)
+        return VisitExpression (expressionWithEntityComparisonResolved);
+
+      return baseVisitedExpression;
+    }
+
+    public virtual Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (!_resolveEntityRefMemberExpressions)
+        return VisitExtensionExpression (expression);
+
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
+      // No revisiting required since this visitor does not handle ISqlEntityExpressions.
+      return _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
     }
   }
 }
