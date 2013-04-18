@@ -385,8 +385,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
     {
-      // TODO 4878: Has no children.
-      return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
+      // No children.
+      return expression;
     }
 
     public Expression VisitSqlInExpression (SqlInExpression expression)
