@@ -217,21 +217,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void ComparingEntitiesWithCompoundID_ToNull ()
     {
       CheckQuery (
           from k in Knives
           where k == null
           select k.ID,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [KnifeClassID] FROM [KnifeTable] AS [t0] "
+          "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] "
           + "WHERE (([t0].[ID] IS NULL) AND ([t0].[ClassID] IS NULL))");
 
       CheckQuery (
           from k in Knives
           where k != null
           select k.ID,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [KnifeClassID] FROM [KnifeTable] AS [t0] "
+          "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] "
           + "WHERE (([t0].[ID] IS NOT NULL) OR ([t0].[ClassID] IS NOT NULL))");
     }
 
@@ -263,11 +262,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 
     [Test]
     [Ignore ("TODO 4878")]
-    public void ImplicitJoin_WithOptimizedCompoundID ()
+    public void ImplicitJoin_WithOptimizedAwayLeftOuterJoin_ForCompoundID ()
     {
       CheckQuery (
           from c in Cooks
-          select c.Knife,
+          where c.Knife.ID == null
+          select c.Knife.ID,
           "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [ClassID],[t0].[Sharpness] AS [Sharpness] "
           + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [KnifeTable] AS [t1] ON ([t0].[KnifeID] = [t1].[ID])");
     }

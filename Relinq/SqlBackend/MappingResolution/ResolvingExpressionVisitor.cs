@@ -156,6 +156,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _resolveEntityRefMemberExpressions = resolveEntityRefMemberExpressions;
     }
 
+    // TODO 4878: Remove diagnostics.
     private int _i;
     public override Expression VisitExpression (Expression expression)
     {
@@ -299,12 +300,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var baseVisitedExpression = (SqlIsNullExpression) base.VisitExtensionExpression (expression);
+
       var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
+      var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (expressionWithEntityComparisonResolved);
 
-      // TODO 4878: Handle compounds here.
-
-      if (baseVisitedExpression != expressionWithEntityComparisonResolved)
-        return VisitExpression (expressionWithEntityComparisonResolved);
+      if (baseVisitedExpression != result)
+        return VisitExpression (result);
 
       return baseVisitedExpression;
     }
@@ -314,12 +315,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var baseVisitedExpression = (SqlIsNotNullExpression) base.VisitExtensionExpression (expression);
+
       var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
+      var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (expressionWithEntityComparisonResolved);
 
-      // TODO 4878: Handle compounds here.
-
-      if (baseVisitedExpression != expressionWithEntityComparisonResolved)
-        return VisitExpression (expressionWithEntityComparisonResolved);
+      if (baseVisitedExpression != result)
+        return VisitExpression (result);
 
       return baseVisitedExpression;
     }

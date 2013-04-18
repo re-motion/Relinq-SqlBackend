@@ -614,16 +614,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolvePotentialEntityComparison (Arg<SqlIsNullExpression>.Matches (e => e.Expression == fakeResolvedInner)))
           .Return (fakeResolvedEntityComparison);
 
-      // TODO 4878: Handle compounds.
-      
+      var fakeSplitCompoundComparison = new SqlIsNullExpression (Expression.Constant (3));
+      _compoundComparisonSplitterMock
+          .Expect (mock => mock.SplitPotentialCompoundComparison (fakeResolvedEntityComparison))
+          .Return (fakeSplitCompoundComparison);
+
       // Result is revisited
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeResolvedEntityComparison.Expression))
-          .Return (fakeResolvedEntityComparison.Expression);
+          .Expect (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitCompoundComparison.Expression))
+          .Return (fakeSplitCompoundComparison.Expression);
       _entityIdentityResolverMock
-          .Expect (mock => mock.ResolvePotentialEntityComparison (fakeResolvedEntityComparison))
-          .Return (fakeResolvedEntityComparison);
-      // TODO 4878: Handle compounds.
+          .Expect (mock => mock.ResolvePotentialEntityComparison (fakeSplitCompoundComparison))
+          .Return (fakeSplitCompoundComparison);
+      _compoundComparisonSplitterMock
+          .Expect (mock => mock.SplitPotentialCompoundComparison (fakeSplitCompoundComparison))
+          .Return (fakeSplitCompoundComparison);
      
       var result = _visitor.VisitExpression (isNullExpression);
 
@@ -631,7 +636,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _entityIdentityResolverMock.VerifyAllExpectations ();
       _compoundComparisonSplitterMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is.SameAs (fakeResolvedEntityComparison));
+      Assert.That (result, Is.SameAs (fakeSplitCompoundComparison));
     }
     
     [Test]
@@ -647,8 +652,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolvePotentialEntityComparison (Arg<SqlIsNullExpression>.Is.Anything))
           .Return (null)
           .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
-
-      // TODO 4878: Handle compounds.
+      _compoundComparisonSplitterMock
+          .Expect (mock => mock.SplitPotentialCompoundComparison (Arg<SqlIsNullExpression>.Is.Anything))
+          .Return (null)
+          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
 
       // No revisiting
 
@@ -676,16 +683,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolvePotentialEntityComparison (Arg<SqlIsNotNullExpression>.Matches (e => e.Expression == fakeResolvedInner)))
           .Return (fakeResolvedEntityComparison);
 
-      // TODO 4878: Handle compounds.
+      var fakeSplitCompoundComparison = new SqlIsNotNullExpression (Expression.Constant (3));
+      _compoundComparisonSplitterMock
+          .Expect (mock => mock.SplitPotentialCompoundComparison (fakeResolvedEntityComparison))
+          .Return (fakeSplitCompoundComparison);
 
       // Result is revisited
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeResolvedEntityComparison.Expression))
-          .Return (fakeResolvedEntityComparison.Expression);
+          .Expect (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitCompoundComparison.Expression))
+          .Return (fakeSplitCompoundComparison.Expression);
       _entityIdentityResolverMock
-          .Expect (mock => mock.ResolvePotentialEntityComparison (fakeResolvedEntityComparison))
-          .Return (fakeResolvedEntityComparison);
-      // TODO 4878: Handle compounds.
+          .Expect (mock => mock.ResolvePotentialEntityComparison (fakeSplitCompoundComparison))
+          .Return (fakeSplitCompoundComparison);
+      _compoundComparisonSplitterMock
+          .Expect (mock => mock.SplitPotentialCompoundComparison (fakeSplitCompoundComparison))
+          .Return (fakeSplitCompoundComparison);
 
       var result = _visitor.VisitExpression (isNotNullExpression);
 
@@ -693,7 +705,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _entityIdentityResolverMock.VerifyAllExpectations ();
       _compoundComparisonSplitterMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is.SameAs (fakeResolvedEntityComparison));
+      Assert.That (result, Is.SameAs (fakeSplitCompoundComparison));
     }
 
     [Test]
@@ -709,8 +721,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           .Expect (mock => mock.ResolvePotentialEntityComparison (Arg<SqlIsNotNullExpression>.Is.Anything))
           .Return (null)
           .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
+      _compoundComparisonSplitterMock
+          .Expect (mock => mock.SplitPotentialCompoundComparison (Arg<SqlIsNotNullExpression>.Is.Anything))
+          .Return (null)
+          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
 
-      // TODO 4878: Handle compounds.
 
       // No revisiting
 

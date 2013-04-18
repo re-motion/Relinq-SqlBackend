@@ -50,6 +50,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         INamedExpressionVisitor,
         IAggregationExpressionVisitor
   {
+    // TODO 4878: When a NotSupportedException is thrown, give information about _why_ a single value was required. (E.g., ORDER BY expression, etc.)
     public static Expression ApplySqlExpressionContext (
         Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
     {

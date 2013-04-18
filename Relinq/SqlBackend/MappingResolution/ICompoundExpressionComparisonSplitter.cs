@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
@@ -25,5 +26,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   public interface ICompoundExpressionComparisonSplitter
   {
     Expression SplitPotentialCompoundComparison (BinaryExpression potentialCompoundComparison);
+    Expression SplitPotentialCompoundComparison (SqlIsNullExpression potentialCompoundComparison);
+    Expression SplitPotentialCompoundComparison (SqlIsNotNullExpression potentialCompoundComparison);
   }
 }

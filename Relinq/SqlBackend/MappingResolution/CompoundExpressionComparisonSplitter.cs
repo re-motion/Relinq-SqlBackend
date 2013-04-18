@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
@@ -56,6 +57,42 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       if (rightExpressionAsNewExpression != null)
         return CreateMemberAccessComparison (nodeType, rightExpressionAsNewExpression, left);
+
+      return potentialCompoundComparison;
+    }
+
+    public Expression SplitPotentialCompoundComparison (SqlIsNullExpression potentialCompoundComparison)
+    {
+      ArgumentUtility.CheckNotNull ("potentialCompoundComparison", potentialCompoundComparison);
+
+      var innerExpressionAsNewExpression = potentialCompoundComparison.Expression as NewExpression;
+      if (innerExpressionAsNewExpression != null)
+      {
+        if (innerExpressionAsNewExpression.Arguments.Count == 0)
+          return Expression.Constant (false);
+
+        return innerExpressionAsNewExpression.Arguments
+            .Select (arg => (Expression) new SqlIsNullExpression (arg))
+            .Aggregate (Expression.AndAlso);
+      }
+
+      return potentialCompoundComparison;
+    }
+
+    public Expression SplitPotentialCompoundComparison (SqlIsNotNullExpression potentialCompoundComparison)
+    {
+      ArgumentUtility.CheckNotNull ("potentialCompoundComparison", potentialCompoundComparison);
+
+      var innerExpressionAsNewExpression = potentialCompoundComparison.Expression as NewExpression;
+      if (innerExpressionAsNewExpression != null)
+      {
+        if (innerExpressionAsNewExpression.Arguments.Count == 0)
+          return Expression.Constant (true);
+
+        return innerExpressionAsNewExpression.Arguments
+            .Select (arg => (Expression) new SqlIsNotNullExpression (arg))
+            .Aggregate (Expression.OrElse);
+      }
 
       return potentialCompoundComparison;
     }

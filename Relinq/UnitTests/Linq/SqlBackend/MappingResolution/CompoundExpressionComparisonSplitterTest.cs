@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 
@@ -36,7 +37,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NoNewExpressions ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NoNewExpressions ()
     {
       var leftExpression = Expression.Constant (1);
       var rightExpression = Expression.Constant (1);
@@ -51,7 +52,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "The results of constructor invocations can only be compared if the same constructors are used for both invocations. Expressions: "
         + "'new TypeForNewExpression(1)', 'new TypeForNewExpression(1, 2)'")]
-    public void SplitPotentialCompoundComparison_NewExpressionsWithDifferentCtors_ThrowsException ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionsWithDifferentCtors_ThrowsException ()
     {
       var leftArgumentExpression = Expression.Constant (1);
       var rightArgumentExpression1 = Expression.Constant (1);
@@ -65,7 +66,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionWithOneArgument_ReturnsBinaryExpressionSequence ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionWithOneArgument_ReturnsBinaryExpressionSequence ()
     {
       var leftArgumentExpression = Expression.Constant (1);
       var rightArgumentExpression = Expression.Constant (1);
@@ -80,7 +81,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionWithTwoArguments_Equal_ReturnsBinaryExpressionSequence ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionWithTwoArguments_Equal_ReturnsBinaryExpressionSequence ()
     {
       var leftArgumentExpression1 = Expression.Constant (1);
       var leftArgumentExpression2 = Expression.Constant (2);
@@ -101,7 +102,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionWithTwoArguments_NotEqual_ReturnsBinaryExpressionSequence ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionWithTwoArguments_NotEqual_ReturnsBinaryExpressionSequence ()
     {
       var leftArgumentExpression1 = Expression.Constant (1);
       var leftArgumentExpression2 = Expression.Constant (2);
@@ -126,7 +127,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
             + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
-    public void SplitPotentialCompoundComparison_NewExpressionOnLeftSideWithoutMembers_ThrowsException ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithoutMembers_ThrowsException ()
     {
       var leftArgumentExpression = Expression.Constant (1);
       var leftExpression = Expression.New (
@@ -138,7 +139,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionOnLeftSideWithOnePropertyInfoMember ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithOnePropertyInfoMember ()
     {
       var leftArgumentExpression = Expression.Constant (1);
       var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
@@ -154,7 +155,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionOnLeftSideWithTwoPropertyInfoMembers_Equal ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithTwoPropertyInfoMembers_Equal ()
     {
       var leftArgumentExpression1 = Expression.Constant (1);
       var leftArgumentExpression2 = Expression.Constant (2);
@@ -181,7 +182,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionOnLeftSideWithTwoPropertyInfoMembers_NotEqual ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithTwoPropertyInfoMembers_NotEqual ()
     {
       var leftArgumentExpression1 = Expression.Constant (1);
       var leftArgumentExpression2 = Expression.Constant (2);
@@ -208,7 +209,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionOnLeftSideWithOneFieldInfoMembers ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithOneFieldInfoMembers ()
     {
       var leftArgumentExpression = Expression.Constant (1);
       var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetField ("C");
@@ -225,7 +226,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionOnLeftSideWithOneMethodInfoMembers ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithOneMethodInfoMembers ()
     {
       var leftArgumentExpression = Expression.Constant (1);
       var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetMethod ("get_A");
@@ -242,7 +243,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionOnLeftSideWithTwoMethodInfoMembers ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithTwoMethodInfoMembers ()
     {
       var leftArgumentExpression1 = Expression.Constant (1);
       var leftArgumentExpression2 = Expression.Constant (2);
@@ -269,7 +270,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
         + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests.TypeForNewExpression)'")]
-    public void SplitPotentialCompoundComparison_NewExpressionOnRightSideWithoutMembers_ThrowsException ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnRightSideWithoutMembers_ThrowsException ()
     {
       var rightArgumentExpression = Expression.Constant (1);
       var rightExpression = Expression.New (
@@ -281,7 +282,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_NewExpressionOnRightSideWithOnePropertyInfoMember ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnRightSideWithOnePropertyInfoMember ()
     {
       var rightArgumentExpression = Expression.Constant (1);
       var rightArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
@@ -297,7 +298,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void SplitPotentialCompoundComparison_MethodIsRemoved ()
+    public void SplitPotentialCompoundComparison_BinaryExpression_MethodIsRemoved ()
     {
       MethodInfo method = ((Func<int?, int?, bool>) ((i1, i2) => i1 == i2)).Method;
       var leftArgumentExpression = Expression.Constant (1, typeof (int));
@@ -311,6 +312,106 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
 
       Assert.That (((BinaryExpression) result).Method, Is.Null);
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNullExpression_ReturnsNonNewExpression_Unchanged ()
+    {
+      var expression = Expression.Constant (1);
+      var sqlIsNullExpression = new SqlIsNullExpression (expression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNullExpression);
+
+      Assert.That (result, Is.SameAs (sqlIsNullExpression));
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNullExpression_ExpandsNewExpression_ByCheckingAllArguments ()
+    {
+      var arg1 = Expression.Constant (1);
+      var arg2 = Expression.Constant (2);
+      var newExpression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int), typeof (int)), new[] { arg1, arg2 });
+      var sqlIsNullExpression = new SqlIsNullExpression (newExpression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNullExpression);
+
+      var expected = Expression.AndAlso (new SqlIsNullExpression (arg1), new SqlIsNullExpression (arg2));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNullExpression_ExpandsNewExpression_ByCheckingAllArguments_OnlyOneArgument ()
+    {
+      var arg1 = Expression.Constant (1);
+      var newExpression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), new[] { arg1 });
+      var sqlIsNullExpression = new SqlIsNullExpression (newExpression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNullExpression);
+
+      var expected = new SqlIsNullExpression (arg1);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNullExpression_ExpandsNewExpression_ByCheckingAllArguments_ZeroArguments ()
+    {
+      var newExpression = Expression.New (TypeForNewExpression.GetConstructor());
+      var sqlIsNullExpression = new SqlIsNullExpression (newExpression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNullExpression);
+
+      var expected = Expression.Constant (false);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNotNullExpression_ReturnsNonNewExpression_Unchanged ()
+    {
+      var expression = Expression.Constant (1);
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (expression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNotNullExpression);
+
+      Assert.That (result, Is.SameAs (sqlIsNotNullExpression));
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNotNullExpression_ExpandsNewExpression_ByCheckingAllArguments ()
+    {
+      var arg1 = Expression.Constant (1);
+      var arg2 = Expression.Constant (2);
+      var newExpression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int), typeof (int)), new[] { arg1, arg2 });
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (newExpression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNotNullExpression);
+
+      var expected = Expression.OrElse (new SqlIsNotNullExpression (arg1), new SqlIsNotNullExpression (arg2));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNotNullExpression_ExpandsNewExpression_ByCheckingAllArguments_OnlyOneArgument ()
+    {
+      var arg1 = Expression.Constant (1);
+      var newExpression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), new[] { arg1 });
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (newExpression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNotNullExpression);
+
+      var expected = new SqlIsNotNullExpression (arg1);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void SplitPotentialCompoundComparison_SqlIsNotNullExpression_ExpandsNewExpression_ByCheckingAllArguments_ZeroArguments ()
+    {
+      var newExpression = Expression.New (TypeForNewExpression.GetConstructor ());
+      var sqlIsNotNullExpression = new SqlIsNotNullExpression (newExpression);
+
+      var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNotNullExpression);
+
+      var expected = Expression.Constant (true);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
 
