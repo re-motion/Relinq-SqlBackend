@@ -361,7 +361,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
-      throw new NotImplementedException ("TODO 4878: Should no longer be called.");
+      throw new NotSupportedException (string.Format ("Member '{0}' applied to column '{1}' is not supported.", memberInfo.Name, sqlColumnExpression));
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
