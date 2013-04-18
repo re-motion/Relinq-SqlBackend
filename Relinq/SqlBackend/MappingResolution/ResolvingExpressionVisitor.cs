@@ -241,11 +241,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _groupAggregateSimplifier.SimplifyIfPossible (resolvedExpression, expression.SqlStatement.SelectProjection);
     }
 
-      //    if (!Equals (resolvedSqlStatement, expression.SqlStatement))
-      //  expression = new SqlSubStatementExpression (resolvedSqlStatement);
-
-      //return GroupAggregateSimplifier.SimplifyIfPossible (expression, expression.SqlStatement.SelectProjection, _stage, _context);
-
     public virtual Expression VisitJoinConditionExpression (JoinConditionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

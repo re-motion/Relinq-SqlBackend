@@ -211,6 +211,5 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, this, context, _uniqueIdentifierGenerator);
     }
-    
   }
 }

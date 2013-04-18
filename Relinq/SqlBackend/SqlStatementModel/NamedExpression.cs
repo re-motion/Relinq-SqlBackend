@@ -67,6 +67,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     private static Expression WrapIntoNamedExpression (string memberName, Expression argumentExpression)
     {
+      // TODO 4878: This check doesn't work for scenarios where CreateFromMemberName strips away "get_".
       var expressionAsNamedExpression = argumentExpression as NamedExpression;
       if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
         return expressionAsNamedExpression;
