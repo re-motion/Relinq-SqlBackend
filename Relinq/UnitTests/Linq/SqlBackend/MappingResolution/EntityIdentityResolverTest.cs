@@ -77,7 +77,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var result = _resolver.ResolvePotentialEntity (_entityConstantExpression);
 
-      Assert.That (result, Is.SameAs (_entityConstantExpression.PrimaryKeyExpression));
+      Assert.That (result, Is.SameAs (_entityConstantExpression.IdentityExpression));
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var result = _resolver.ResolvePotentialEntity (Expression.Convert (_entityConstantExpression, typeof (object)));
 
-      Assert.That (result, Is.SameAs (_entityConstantExpression.PrimaryKeyExpression));
+      Assert.That (result, Is.SameAs (_entityConstantExpression.IdentityExpression));
     }
 
     [Test]
@@ -248,7 +248,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var result = _resolver.ResolvePotentialEntity (new NamedExpression ("X", _entityConstantExpression));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression ("X", _entityConstantExpression.PrimaryKeyExpression), result);
+      ExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression ("X", _entityConstantExpression.IdentityExpression), result);
     }
 
     [Test]
@@ -268,7 +268,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _resolver.ResolvePotentialEntityComparison (binary);
 
-      var expected = Expression.Equal (_entityExpression.GetIdentityExpression(), _entityConstantExpression.PrimaryKeyExpression);
+      var expected = Expression.Equal (_entityExpression.GetIdentityExpression(), _entityConstantExpression.IdentityExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
@@ -306,7 +306,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _resolver.ResolvePotentialEntityComparison (binary);
 
-      var expected = Expression.Equal (_entityExpression.GetIdentityExpression (), _entityConstantExpression.PrimaryKeyExpression);
+      var expected = Expression.Equal (_entityExpression.GetIdentityExpression (), _entityConstantExpression.IdentityExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
@@ -327,7 +327,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
 
-      var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), _entityConstantExpression.PrimaryKeyExpression);
+      var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), _entityConstantExpression.IdentityExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 

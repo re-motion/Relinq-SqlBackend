@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var entityConstantExpression = strippedExpression as SqlEntityConstantExpression;
       if (entityConstantExpression != null)
-        return entityConstantExpression.PrimaryKeyExpression;
+        return entityConstantExpression.IdentityExpression;
 
       var entityRefMemberExpression = strippedExpression as SqlEntityRefMemberExpression;
       if (entityRefMemberExpression != null)
