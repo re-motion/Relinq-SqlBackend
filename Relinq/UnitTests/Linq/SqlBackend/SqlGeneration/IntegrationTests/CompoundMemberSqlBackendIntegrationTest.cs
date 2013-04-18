@@ -235,18 +235,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void Join_OverCompoundColumn_WithCompoundID ()
     {
       CheckQuery (
           from c in Cooks
           join k in Knives on c.KnifeID equals k.ID
           select new { Cook = c.ID, Knife = k.ID },
-          "SELECT [t0].[ID] AS [Cook_ID],[t1].[ID] AS [Knife_ID],[t1].[ClassID] AS [Knife_ClassID] "
+          "SELECT [t0].[ID] AS [Cook],[t1].[ID] AS [Knife_Value],[t1].[ClassID] AS [Knife_ClassID] "
           + "FROM [CookTable] AS [t0] CROSS JOIN [KnifeTable] AS [t1] "
-          + "WHERE (([t0].[KnifeID] = [t1].[ID]) AND ([t0].[KnifeClassID] = [t1].[ClassID]))",
-          new CommandParameter ("@1", 0),
-          new CommandParameter ("@2", "C0"));
+          + "WHERE (([t0].[KnifeID] = [t1].[ID]) AND ([t0].[KnifeClassID] = [t1].[ClassID]))");
     }
 
     [Test]
