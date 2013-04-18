@@ -737,5 +737,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
     }
+
+    [Test]
+    public void VisitSqlEntityConstantExpression ()
+    {
+      var entityConstant = new SqlEntityConstantExpression (typeof (Cook), new Cook(), Expression.Constant (0));
+
+      Assert.That (
+          () => SqlGeneratingExpressionVisitor.GenerateSql (entityConstant, _commandBuilder, _stageMock),
+          Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
+              "It is not supported to use a constant entity object in any other context than to compare it with another entity. "
+              + "Expression: ENTITY(0) (of type: 'Remotion.Linq.UnitTests.Linq.Core.TestDomain.Cook')."));
+    }
   }
 }

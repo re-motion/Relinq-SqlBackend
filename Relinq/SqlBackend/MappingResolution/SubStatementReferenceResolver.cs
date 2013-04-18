@@ -113,13 +113,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
-      throw new InvalidOperationException ("SqlColumnExpression is not valid at this point.");
+      throw new InvalidOperationException ("SqlColumnExpression is not valid at this point. (Must be wrapped within a NamedExpression.)");
     }
 
     public Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
-      // TODO 4878: Should return the same entity constant; integration test missing!
-      throw new NotImplementedException ("TODO 4878");
+      throw new InvalidOperationException ("SqlEntityConstantExpression is not valid at this point. (Must be wrapped within a NamedExpression.)");
     }
   }
 }

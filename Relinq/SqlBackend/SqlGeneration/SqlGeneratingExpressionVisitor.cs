@@ -411,8 +411,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
-      // TODO 4878: Integration test selecting a constant entity? (In outer select scenario, we could actually support this by emitting a constant expression. For inner selects, we need to throw.)
-      throw new NotImplementedException ("Not supported");
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var message = string.Format (
+          "It is not supported to use a constant entity object in any other context than to compare it with another entity. "
+          + "Expression: {0} (of type: '{1}').",
+          FormattingExpressionTreeVisitor.Format (expression),
+          expression.Type);
+      throw new NotSupportedException (message);
     }
 
     protected virtual void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)

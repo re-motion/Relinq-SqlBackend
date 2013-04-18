@@ -388,5 +388,23 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "WHERE ((SELECT TOP (1) @1 AS [value] FROM [KitchenTable] AS [t1]) = [t0].[ID])",
           new CommandParameter ("@1", 1));
     }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "It is not supported to use a constant entity object in any other context than to compare it with another entity. "
+        + "Expression: ENTITY(1) (of type: 'Remotion.Linq.UnitTests.Linq.Core.TestDomain.Cook').")]
+    public void SubQuery_SelectingEntityConstant_FromAdditionalFromClause ()
+    {
+      var cook = new Cook { ID = 1 };
+      CheckQuery (
+          from c in Cooks
+          from x in (from k in Kitchens select cook)
+          where x == c select c.ID,
+          "SELECT [t0].[ID] AS [value] "
+          + "FROM [CookTable] AS [t0] "
+          + "CROSS JOIN (SELECT @1 AS [value] FROM [KitchenTable] AS [t2]) AS [q1] "
+          + "WHERE ([q1].[value] = [c].[ID])",
+          new CommandParameter ("@1", 1));
+    }
   }
 }
