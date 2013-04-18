@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -410,6 +411,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       return fakeResolvedJoinInfo;
     }
 
+    [UsedImplicitly]
     private static bool FakeEqualityOperator (Cook one, Cook two)
     {
       throw new NotImplementedException();
