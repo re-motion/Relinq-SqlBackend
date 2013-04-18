@@ -20,6 +20,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
@@ -40,19 +41,23 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression ResolvePotentialEntity (Expression expression)
     {
-      var entityExpression = expression as SqlEntityExpression;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var strippedExpression = StripConversions (expression);
+
+      var entityExpression = strippedExpression as SqlEntityExpression;
       if (entityExpression != null)
         return entityExpression.GetIdentityExpression ();
 
-      var entityConstantExpression = expression as SqlEntityConstantExpression;
+      var entityConstantExpression = strippedExpression as SqlEntityConstantExpression;
       if (entityConstantExpression != null)
         return entityConstantExpression.PrimaryKeyExpression;
 
-      var entityRefMemberExpression = expression as SqlEntityRefMemberExpression;
+      var entityRefMemberExpression = strippedExpression as SqlEntityRefMemberExpression;
       if (entityRefMemberExpression != null)
         return GetIdentityExpressionForReferencedEntity (entityRefMemberExpression);
 
-      var sqlSubStatementExpression = expression as SqlSubStatementExpression;
+      var sqlSubStatementExpression = strippedExpression as SqlSubStatementExpression;
       if (sqlSubStatementExpression != null)
         return CheckAndSimplifyEntityWithinSubStatement (sqlSubStatementExpression);
 
@@ -61,22 +66,19 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public BinaryExpression ResolvePotentialEntityComparison (BinaryExpression binaryExpression)
     {
-      var left = StripConversions (binaryExpression.Left);
-      var right = StripConversions (binaryExpression.Right);
+      ArgumentUtility.CheckNotNull ("binaryExpression", binaryExpression);
 
-      var newLeft = ResolvePotentialEntity (left);
-      var newRight = ResolvePotentialEntity (right);
+      var newLeft = ResolvePotentialEntity (binaryExpression.Left);
+      var newRight = ResolvePotentialEntity (binaryExpression.Right);
 
-      if (newLeft != left || newRight != right)
+      if (newLeft != binaryExpression.Left || newRight != binaryExpression.Right)
       {
         // Note: Method is stripped because when an entity is reduced to its identity, the method can no longer work.
-        // TODO 4878: IsLiftedToNull should be recalculated, I guess?
-        // TODO 4878: Do we actually need conversion? Or should we just say, it's not supported to have differing types?
         return ConversionUtility.MakeBinaryWithOperandConversion (
             binaryExpression.NodeType,
             newLeft,
             newRight,
-            binaryExpression.IsLiftedToNull,
+            false,
             null);
       }
 
@@ -85,13 +87,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public SqlInExpression ResolvePotentialEntityComparison (SqlInExpression inExpression)
     {
-      var left = StripConversions (inExpression.LeftExpression);
-      var right = StripConversions (inExpression.RightExpression);
+      ArgumentUtility.CheckNotNull ("inExpression", inExpression);
 
-      var newLeft = ResolvePotentialEntity (left);
-      var newRight = ResolvePotentialEntity (right);
+      var newLeft = ResolvePotentialEntity (inExpression.LeftExpression);
+      var newRight = ResolvePotentialEntity (inExpression.RightExpression);
 
-      if (newLeft != left || newRight != right)
+      if (newLeft != inExpression.LeftExpression || newRight != inExpression.RightExpression)
         return new SqlInExpression (inExpression.Type, newLeft, newRight);
 
       return inExpression;
@@ -99,10 +100,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public SqlIsNullExpression ResolvePotentialEntityComparison (SqlIsNullExpression isNullExpression)
     {
-      var expression = StripConversions (isNullExpression.Expression);
-      var newExpression = ResolvePotentialEntity (expression);
+      var newExpression = ResolvePotentialEntity (isNullExpression.Expression);
 
-      if (newExpression != expression)
+      if (newExpression != isNullExpression.Expression)
         return new SqlIsNullExpression (newExpression);
 
       return isNullExpression;
@@ -110,10 +110,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public SqlIsNotNullExpression ResolvePotentialEntityComparison (SqlIsNotNullExpression isNotNullExpression)
     {
-      var expression = StripConversions (isNotNullExpression.Expression);
-      var newExpression = ResolvePotentialEntity (expression);
+      var newExpression = ResolvePotentialEntity (isNotNullExpression.Expression);
 
-      if (newExpression != expression)
+      if (newExpression != isNotNullExpression.Expression)
         return new SqlIsNotNullExpression (newExpression);
 
       return isNotNullExpression;
