@@ -45,6 +45,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var strippedExpression = StripConversions (expression);
 
+      var namedExpression = strippedExpression as NamedExpression;
+      if (namedExpression != null)
+      {
+        var result = ResolvePotentialEntity (namedExpression.Expression);
+        if (result != namedExpression.Expression)
+          return new NamedExpression (namedExpression.Name, result);
+
+        return namedExpression;
+      }
+
       var entityExpression = strippedExpression as SqlEntityExpression;
       if (entityExpression != null)
         return entityExpression.GetIdentityExpression ();

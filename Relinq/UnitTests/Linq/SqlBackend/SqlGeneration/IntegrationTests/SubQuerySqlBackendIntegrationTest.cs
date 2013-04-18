@@ -376,5 +376,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "WHERE [t1].[ID] IN (SELECT [t2].[ID] FROM [CookTable] AS [t2] WHERE (@1 = 1))",
           new CommandParameter ("@1", 1));
     }
+
+    [Test]
+    public void SubQuery_SelectingEntityConstant ()
+    {
+      var cook = new Cook { ID = 1 };
+      CheckQuery (
+          from c in Cooks where (from k in Kitchens select cook).First() == c select c.ID,
+          "SELECT [t0].[ID] AS [value] "
+          + "FROM [CookTable] AS [t0] "
+          + "WHERE ((SELECT TOP (1) @1 AS [value] FROM [KitchenTable] AS [t1]) = [t0].[ID])",
+          new CommandParameter ("@1", 1));
+    }
   }
 }

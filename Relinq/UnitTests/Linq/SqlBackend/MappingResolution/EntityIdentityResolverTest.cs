@@ -65,7 +65,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void ResolvePotentialEntity_Entity_StripsConversions ()
+    public void ResolvePotentialEntity_Entity_StripsConversions_AndNames ()
     {
       var result = _resolver.ResolvePotentialEntity (Expression.Convert (_entityExpression, typeof (object)));
 
@@ -241,6 +241,24 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _resolver.ResolvePotentialEntity (expression);
 
       Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void ResolvePotentialEntity_LooksBehindNames ()
+    {
+      var result = _resolver.ResolvePotentialEntity (new NamedExpression ("X", _entityConstantExpression));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression ("X", _entityConstantExpression.PrimaryKeyExpression), result);
+    }
+
+    [Test]
+    public void ResolvePotentialEntity_NamedExpression_WithNoEntity_IsLeftUnchanged ()
+    {
+      var namedExpression = new NamedExpression ("X", Expression.Constant (0));
+
+      var result = _resolver.ResolvePotentialEntity (namedExpression);
+
+      Assert.That (result, Is.SameAs (namedExpression));
     }
 
     [Test]
