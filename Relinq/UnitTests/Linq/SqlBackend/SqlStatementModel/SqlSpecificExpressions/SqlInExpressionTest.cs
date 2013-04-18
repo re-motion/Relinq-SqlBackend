@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
-namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   [TestFixture]
   public class SqlInExpressionTest
@@ -38,7 +38,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
       _leftExpression = Expression.Constant (1);
       _rightExpression = Expression.Constant (2);
 
-      _expression = new SqlInExpression (typeof(bool), _leftExpression, _rightExpression);
+      _expression = new SqlInExpression (_leftExpression, _rightExpression);
     }
 
     [Test]

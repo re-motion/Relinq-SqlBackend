@@ -93,7 +93,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var newRight = ResolvePotentialEntity (inExpression.RightExpression);
 
       if (newLeft != inExpression.LeftExpression || newRight != inExpression.RightExpression)
-        return new SqlInExpression (inExpression.Type, newLeft, newRight);
+        return new SqlInExpression (newLeft, newRight);
 
       return inExpression;
     }

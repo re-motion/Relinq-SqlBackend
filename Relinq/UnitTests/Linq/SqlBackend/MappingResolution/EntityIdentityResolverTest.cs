@@ -305,40 +305,40 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolvePotentialEntityComparison_SqlInExpression_ResolvesEntitiesToIdentity ()
     {
-      var sqlInExpression = new SqlInExpression (typeof (bool), _entityExpression, _entityConstantExpression);
+      var sqlInExpression = new SqlInExpression (_entityExpression, _entityConstantExpression);
 
       var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
 
-      var expected = new SqlInExpression (typeof (bool), _entityExpression.GetIdentityExpression (), _entityConstantExpression.PrimaryKeyExpression);
+      var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), _entityConstantExpression.PrimaryKeyExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
     public void ResolvePotentialEntityComparison_SqlInExpression_EntitiesAreResolvedToIdentity_LeftOnly ()
     {
-      var sqlInExpression = new SqlInExpression (typeof (bool), _entityExpression, Expression.Constant (null, typeof (Cook)));
+      var sqlInExpression = new SqlInExpression (_entityExpression, Expression.Constant (null, typeof (Cook)));
 
       var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
 
-      var expected = new SqlInExpression (typeof (bool), _entityExpression.GetIdentityExpression (), Expression.Constant (null, typeof (Cook)));
+      var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), Expression.Constant (null, typeof (Cook)));
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
     public void ResolvePotentialEntityComparison_SqlInExpression_EntitiesAreResolvedToIdentity_RightOnly ()
     {
-      var sqlInExpression = new SqlInExpression (typeof (bool), Expression.Constant (null, typeof (Cook)), _entityExpression);
+      var sqlInExpression = new SqlInExpression (Expression.Constant (null, typeof (Cook)), _entityExpression);
 
       var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
 
-      var expected = new SqlInExpression (typeof (bool), Expression.Constant (null, typeof (Cook)), _entityExpression.GetIdentityExpression ());
+      var expected = new SqlInExpression (Expression.Constant (null, typeof (Cook)), _entityExpression.GetIdentityExpression ());
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
     public void ResolvePotentialEntityComparison_SqlInExpression_NonEntities_ReturnsSameExpression ()
     {
-      var sqlInExpression = new SqlInExpression (typeof (bool), Expression.Constant (0), Expression.Constant (0));
+      var sqlInExpression = new SqlInExpression (Expression.Constant (0), Expression.Constant (0));
 
       var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
 

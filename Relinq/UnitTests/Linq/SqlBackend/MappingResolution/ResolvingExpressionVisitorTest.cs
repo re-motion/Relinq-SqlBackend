@@ -538,14 +538,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var left = Expression.Constant (0);
       var right = Expression.Constant (1);
-      var inExpression = new SqlInExpression (typeof (bool), left, right);
+      var inExpression = new SqlInExpression (left, right);
 
       var fakeResolvedLeft = new SqlLiteralExpression (2);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (left)).Return (fakeResolvedLeft);
       var fakeResolvedRight = new SqlLiteralExpression (3);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (right)).Return (fakeResolvedRight);
 
-      var fakeResolvedInExpression = new SqlInExpression (typeof (bool), Expression.Constant (4), Expression.Constant (5));
+      var fakeResolvedInExpression = new SqlInExpression (Expression.Constant (4), Expression.Constant (5));
       _entityIdentityResolverMock
           .Expect (
               mock => mock.ResolvePotentialEntityComparison (
@@ -576,7 +576,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var left = Expression.Constant (0);
       var right = Expression.Constant (1);
-      var inExpression = new SqlInExpression (typeof (bool), left, right);
+      var inExpression = new SqlInExpression (left, right);
 
       var fakeResolvedLeft = new SqlLiteralExpression (2);
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (left)).Return (fakeResolvedLeft);

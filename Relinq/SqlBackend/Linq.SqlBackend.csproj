@@ -217,6 +217,7 @@
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlExistsExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlFunctionExpression.cs" />
     <Compile Include="SqlStatementModel\SqlGroupingSelectExpression.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlInExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNotNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNullExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLengthExpression.cs" />
@@ -233,7 +234,6 @@
     <Compile Include="SqlStatementModel\Unresolved\IUnresolvedSqlExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\Unresolved\JoinConditionExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlEntityRefMemberExpression.cs" />
-    <Compile Include="SqlStatementModel\Unresolved\SqlInExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\SqlTableReferenceExpression.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedCollectionJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedGroupReferenceTableInfo.cs" />

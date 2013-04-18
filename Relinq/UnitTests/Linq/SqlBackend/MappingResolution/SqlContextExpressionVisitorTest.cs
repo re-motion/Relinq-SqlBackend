@@ -1141,9 +1141,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void SqlInExpression ()
     {
-      var expression = new SqlInExpression (typeof (bool), Expression.Constant (true), Expression.Constant (true));
-      var expectedResult = new SqlInExpression (
-          typeof (bool), new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
+      var expression = new SqlInExpression (Expression.Constant (true), Expression.Constant (true));
+      var expectedResult = new SqlInExpression (new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
 
       var result = _predicateRequiredVisitor.VisitSqlInExpression (expression);
 
@@ -1154,7 +1153,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SqlInExpression_WithInvalidChildren ()
     {
       var newExpression = CreateNewExpression();
-      var expression = new SqlInExpression (typeof (bool), newExpression, Expression.Constant (new[] { 1, 2, 3 }));
+      var expression = new SqlInExpression (newExpression, Expression.Constant (new[] { 1, 2, 3 }));
 
       Assert.That (
           () => _predicateRequiredVisitor.VisitSqlInExpression (expression),

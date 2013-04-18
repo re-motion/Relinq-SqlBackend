@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.Utilities;
 
-namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
-  // TODO 4878: Move to other namespace.
   /// <summary>
   /// Represents a SQL "a IN b" expression.
   /// </summary>
@@ -33,9 +32,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
     private readonly Expression _leftExpression;
     private readonly Expression _rightExpression;
 
-    // TODO 4878: type is always bool.
-    public SqlInExpression (Type type, Expression leftExpression, Expression rightExpression)
-        : base(ArgumentUtility.CheckNotNull ("type", type))
+    public SqlInExpression (Expression leftExpression, Expression rightExpression)
+      : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
       ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
@@ -60,7 +58,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       var newRightExpression = visitor.VisitExpression (_rightExpression);
 
       if(newLeftExpression!=_leftExpression || newRightExpression!=_rightExpression)
-        return new SqlInExpression (typeof(bool), newLeftExpression, newRightExpression);
+        return new SqlInExpression (newLeftExpression, newRightExpression);
       else
         return this;
     }
