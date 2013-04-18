@@ -390,7 +390,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (((SqlLiteralExpression) ((BinaryExpression) result).Right).Value, Is.EqualTo (1));
     }
 
-    // TODO 4878: Move down.
     [Test]
     public void ApplySelectionContext_SqlStatement ()
     {
