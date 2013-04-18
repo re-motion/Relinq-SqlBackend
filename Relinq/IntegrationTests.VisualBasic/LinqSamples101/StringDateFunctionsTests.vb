@@ -56,7 +56,7 @@ Namespace LinqSamples101
 
       TestExecutor.Execute(custQuery, MethodBase.GetCurrentMethod())
     End Sub
-
+    https://svn.re-motion.org/svn/Remotion/branches/Net4.5
     'This sample uses the Length property to find all Products whose
     'name is shorter than 10 characters.
     <Test()> _
