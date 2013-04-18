@@ -175,7 +175,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void ComparingEntitiesWithCompoundID ()
     {
       CheckQuery (
@@ -185,10 +184,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           select k1.ID,
           "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] CROSS JOIN [KnifeTable] AS [t1] "
           + "WHERE (([t0].[ID] = [t1].[ID]) AND ([t0].[ClassID] = [t1].[ClassID]))");
+
+      CheckQuery (
+          from k1 in Knives
+          from k2 in Knives
+          where k1 != k2
+          select k1.ID,
+          "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] CROSS JOIN [KnifeTable] AS [t1] "
+          + "WHERE (([t0].[ID] <> [t1].[ID]) OR ([t0].[ClassID] <> [t1].[ClassID]))");
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void ComparingEntitiesWithCompoundID_ToConstant ()
     {
       var someEntity = new Knife { ID = new MetaID (0, "C0") };
@@ -196,8 +202,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from k in Knives
           where k == someEntity
           select k.ID,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [KnifeClassID] FROM [KnifeTable] AS [t0] CROSS JOIN [KnifeTable] AS [t1] "
+          "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] "
           + "WHERE (([t0].[ID] = @1) AND ([t0].[ClassID] = @2))",
+          new CommandParameter ("@1", 0),
+          new CommandParameter ("@2", "C0"));
+      CheckQuery (
+          from k in Knives
+          where k != someEntity
+          select k.ID,
+          "SELECT [t0].[ID] AS [Value],[t0].[ClassID] AS [ClassID] FROM [KnifeTable] AS [t0] "
+          + "WHERE (([t0].[ID] <> @1) OR ([t0].[ClassID] <> @2))",
           new CommandParameter ("@1", 0),
           new CommandParameter ("@2", "C0"));
     }
