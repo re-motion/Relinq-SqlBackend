@@ -146,7 +146,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         if (result != null)
         {
           // remove name if any - the name is only required at the definition, not at the reference
-          return NamedExpression.StripSurroundingNames (result.AssociatedExpression, _context);
+          return _context.RemoveNamesAndUpdateMapping (result.AssociatedExpression);
         }
       }
 
@@ -204,7 +204,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       // No problem, just use the KeyExpression (without a name, we don't care about the original name of the expression when we resolve members).
 
-      return NamedExpression.StripSurroundingNames (expression.KeyExpression, _context);
+      return _context.RemoveNamesAndUpdateMapping (expression.KeyExpression);
     }
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
