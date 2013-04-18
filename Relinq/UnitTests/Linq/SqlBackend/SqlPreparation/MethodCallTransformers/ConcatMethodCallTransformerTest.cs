@@ -41,7 +41,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     [Test]
     public void SupportedMethods ()
     {
-      var concatMethods = typeof (string).GetMethods ().Where (mi => mi.Name == "Concat").ToArray();
+      // Exclude the Concat (object, object, object, object, __arglist) overload.
+      var concatMethods =
+          typeof (string).GetMethods()
+                         .Where (mi => mi.Name == "Concat" && mi.CallingConvention != CallingConventions.VarArgs)
+                         .ToArray();
       Assert.That (ConcatMethodCallTransformer.SupportedMethods, Is.EquivalentTo (concatMethods));
     }
 

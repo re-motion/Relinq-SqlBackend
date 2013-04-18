@@ -42,12 +42,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object), typeof (object)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object), typeof (object), typeof (object)),
-        MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object), typeof (object), typeof (object), typeof (object)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string), typeof (string)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string), typeof (string), typeof (string)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string), typeof (string), typeof (string), typeof (string)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object[])),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string[])),
+        MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (IEnumerable<string>)),
+        typeof (string).GetMethods().Single (mi => mi.Name == "Concat" && mi.IsGenericMethod && mi.GetGenericArguments().Length == 1)
       };
 
     private static readonly MethodInfo s_standardConcatMethodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });

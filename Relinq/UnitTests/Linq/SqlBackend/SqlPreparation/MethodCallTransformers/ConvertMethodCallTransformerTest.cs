@@ -90,7 +90,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
       var method = typeof (Convert).GetMethod ("ToInt32", new[] { typeof (string) });
       var argument = Expression.Constant ("1");
 
-      var expression = Expression.Call (Expression.Constant ("1"), method, argument);
+      var expression = Expression.Call (method, argument);
       var transformer = new ConvertMethodCallTransformer();
       var result = transformer.Transform (expression);
 

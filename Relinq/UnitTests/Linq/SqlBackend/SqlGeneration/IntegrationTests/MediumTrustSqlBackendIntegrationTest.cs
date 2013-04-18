@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using System.Security.Permissions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Sandboxing;
 
@@ -27,7 +28,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [Test]
     public void MediumTrust ()
     {
-      var permissions = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
+      var permissions = PermissionSets
+          .GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName)
+          .Concat (new[] { new ReflectionPermission (ReflectionPermissionFlag.MemberAccess) })
+          .ToArray();
 
       var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
                    where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 

@@ -300,7 +300,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot resolve member 'LetterOfRecommendation' applied to expression '([c].[ID] & [c].[ID])'; the expression type 'BinaryExpression' is not "
+        "Cannot resolve member 'LetterOfRecommendation' applied to expression '([c].[ID] & [c].[ID])'; the expression type 'SimpleBinaryExpression' is not "
         + "supported in member expressions.")]
     public void VisitMemberExpression_OnUnsupportedExpression ()
     {

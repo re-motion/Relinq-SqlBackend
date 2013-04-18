@@ -610,7 +610,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = ResolvingExpressionVisitor.ResolveExpression (expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       var expectedResult = Expression.Equal (
-          leftArgumentExpression, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A")));
+          leftArgumentExpression, Expression.Property (rightExpression, "A"));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -639,8 +639,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var expectedResult = Expression.AndAlso (
           Expression.Equal (
-              leftArgumentExpression1, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A"))),
-          Expression.Equal (leftArgumentExpression2, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_B"))));
+              leftArgumentExpression1, Expression.Property (rightExpression, "A")),
+          Expression.Equal (leftArgumentExpression2, Expression.Property (rightExpression, "B")));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

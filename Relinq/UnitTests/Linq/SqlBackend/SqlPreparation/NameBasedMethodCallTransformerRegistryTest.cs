@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Rhino.Mocks;
@@ -27,6 +28,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
   public class NameBasedMethodCallTransformerRegistryTest
   {
     private string _methodName;
+    private MethodInfo _methodInfo;
     private NameBasedMethodCallTransformerRegistry _methodCallTransformerRegistry;
     private IMethodCallTransformer _transformerStub;
 
@@ -34,6 +36,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void SetUp ()
     {
       _methodName = "Concat";
+      _methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       _methodCallTransformerRegistry = new NameBasedMethodCallTransformerRegistry ();
       _transformerStub = MockRepository.GenerateStub<IMethodCallTransformer> ();
     }
@@ -106,8 +109,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTransformer ()
     {
       _methodCallTransformerRegistry.Register (_methodName, _transformerStub);
-      var _methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
-      var methodCallExpression = Expression.Call (Expression.Constant ("test"), _methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
+      var methodCallExpression = Expression.Call (_methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
 
       var result = _methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 

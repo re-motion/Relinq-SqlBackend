@@ -51,7 +51,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
           null);
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("es");
-      var expression = Expression.Call (objectExpression, method, objectExpression, argument1);
+      var expression = Expression.Call (method, objectExpression, argument1);
       var transformer = new ContainsFulltextMethodCallTransformer();
 
       var result = transformer.Transform (expression);
@@ -75,7 +75,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
       var objectExpression = Expression.Constant ("Test");
       var argument1 = Expression.Constant ("es");
       var language = Expression.Constant ("language");
-      var expression = Expression.Call (objectExpression, method, objectExpression, argument1, language);
+      var expression = Expression.Call (method, objectExpression, argument1, language);
       var transformer = new ContainsFulltextMethodCallTransformer();
 
       var result = transformer.Transform (expression);

@@ -99,7 +99,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void GetTransformer_DontFindGenerator_ReturnsNull ()
     {
       var methodCallSqlGeneratorRegistry = new MethodInfoBasedMethodCallTransformerRegistry ();
-      var methodCallExpression = Expression.Call (Expression.Constant ("test"), _methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
+      var methodCallExpression = Expression.Call (_methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
 
       var result = methodCallSqlGeneratorRegistry.GetTransformer (methodCallExpression);
 
@@ -121,7 +121,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var methodCallSqlGeneratorRegistry = new MethodInfoBasedMethodCallTransformerRegistry ();
       methodCallSqlGeneratorRegistry.Register (_methodInfo, _transformerStub);
-      var methodCallExpression = Expression.Call (Expression.Constant ("test"), _methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
+      var methodCallExpression = Expression.Call (_methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
 
       var result = methodCallSqlGeneratorRegistry.GetTransformer (methodCallExpression);
 
@@ -146,7 +146,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
                                      where m.Name == "Distinct" && m.GetParameters ().Length == 1
                                      select m).Single ();
       var closedGenericMethod = genericMethodDefinition.MakeGenericMethod (typeof (Cook));
-      var methodCallExpression = Expression.Call (Expression.Constant (new Cook ()), closedGenericMethod, Expression.Constant (null, typeof (IQueryable<>).MakeGenericType (typeof (Cook))));
+      var methodCallExpression = Expression.Call (closedGenericMethod, Expression.Constant (null, typeof (IQueryable<>).MakeGenericType (typeof (Cook))));
 
       _methodCallTransformerRegistry.Register (genericMethodDefinition, _transformerStub);
 
