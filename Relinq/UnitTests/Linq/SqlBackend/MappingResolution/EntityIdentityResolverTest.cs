@@ -106,14 +106,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
       _stageMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResolvedJoinInfo.LeftKey));
+      Assert.That (result, Is.SameAs (((BinaryExpression) fakeResolvedJoinInfo.JoinCondition).Left));
     }
 
     [Test]
-    public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_NoPrimaryKeyOnRightSide_ResolvesToJoinAndIdentity ()
+    public void ResolvePotentialEntity_EntityRefMember_Optimizable_WithConverts_ResolvesToLeftKey ()
     {
       var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
-      var fakeResolvedJoinInfo = CreateJoinInfoWithKeyOnLeftSide (someTableInfo);
+      var fakeResolvedJoinInfo = CreateJoinInfoWithConvertedKeyOnRightSide (someTableInfo);
       _stageMock
           .Expect (
               mock => mock.ResolveJoinInfo (
@@ -124,10 +124,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                   Arg.Is (_context)))
           .Return (fakeResolvedJoinInfo);
 
-      var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression();
-      _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression (_entityRefMemberExpression, fakeResolvedJoinInfo, _context))
-          .Return (fakeResolvedEntity);
+      var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (((BinaryExpression) fakeResolvedJoinInfo.JoinCondition).Left));
+    }
+
+    [Test]
+    public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_NoPrimaryKeyOnRightSide_ResolvesToJoinAndIdentity ()
+    {
+      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
+      var fakeResolvedJoinInfo = CreateJoinInfoWithKeyOnLeftSide (someTableInfo);
+      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
 
       var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
@@ -140,20 +148,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
       var fakeResolvedJoinInfo = CreateJoinInfoWithConstantOnRightSide (someTableInfo);
-      _stageMock
-          .Expect (
-              mock => mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (
-                      e =>
-                      e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity && e.MemberInfo == _entityRefMemberExpression.MemberInfo
-                      && e.Cardinality == JoinCardinality.One),
-                  Arg.Is (_context)))
-          .Return (fakeResolvedJoinInfo);
+      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
 
-      var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
-      _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression (_entityRefMemberExpression, fakeResolvedJoinInfo, _context))
-          .Return (fakeResolvedEntity);
+      var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
+
+      _stageMock.VerifyAllExpectations ();
+      ExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression (), result);
+    }
+
+    [Test]
+    public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_NoEqualityComparison_ResolvesToJoinAndIdentity ()
+    {
+      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
+      var fakeResolvedJoinInfo = CreateJoinInfoWithNoEqualityComparison (someTableInfo);
+      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
 
       var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
@@ -166,14 +174,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
       var fakeResolvedJoinInfo = CreateJoinInfoWithConstantOnRightSide (someTableInfo);
-      _stageMock
-          .Expect (mock => mock.ResolveJoinInfo (Arg<UnresolvedJoinInfo>.Is.Anything, Arg.Is (_context)))
-          .Return (fakeResolvedJoinInfo);
-
-      var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
-      _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression (_entityRefMemberExpression, fakeResolvedJoinInfo, _context))
-          .Return (fakeResolvedEntity);
+      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
 
       var result = _resolver.ResolvePotentialEntity (Expression.Convert (_entityRefMemberExpression, typeof (object)));
 
@@ -409,7 +410,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var leftKey = Expression.Constant (0);
       var rightKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true);
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, leftKey, rightKey);
+      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
+      return fakeResolvedJoinInfo;
+    }
+
+    private static ResolvedJoinInfo CreateJoinInfoWithConvertedKeyOnRightSide (ResolvedSimpleTableInfo someTableInfo)
+    {
+      var leftKey = Expression.Constant (0, typeof (int?));
+      var rightKey = Expression.Convert (new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true), typeof (int?));
+      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
       return fakeResolvedJoinInfo;
     }
 
@@ -417,7 +426,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var leftKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true);
       var rightKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", false);
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, leftKey, rightKey);
+      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
       return fakeResolvedJoinInfo;
     }
 
@@ -425,8 +434,34 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var leftKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true);
       var rightKey = Expression.Constant (0);
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, leftKey, rightKey);
+      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
       return fakeResolvedJoinInfo;
+    }
+
+    private static ResolvedJoinInfo CreateJoinInfoWithNoEqualityComparison (ResolvedSimpleTableInfo someTableInfo)
+    {
+      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Constant (true));
+      return fakeResolvedJoinInfo;
+    }
+
+    private SqlEntityDefinitionExpression ExpectResolutionToJoin (ResolvedJoinInfo fakeResolvedJoinInfo)
+    {
+      _stageMock
+          .Expect (
+              mock => mock.ResolveJoinInfo (
+                  Arg<UnresolvedJoinInfo>.Matches (
+                      e =>
+                      e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity 
+                      && e.MemberInfo == _entityRefMemberExpression.MemberInfo
+                      && e.Cardinality == JoinCardinality.One),
+                  Arg.Is (_context)))
+          .Return (fakeResolvedJoinInfo);
+
+      var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
+      _stageMock
+          .Expect (mock => mock.ResolveEntityRefMemberExpression (_entityRefMemberExpression, fakeResolvedJoinInfo, _context))
+          .Return (fakeResolvedEntity);
+      return fakeResolvedEntity;
     }
 
     [UsedImplicitly]

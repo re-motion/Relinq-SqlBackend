@@ -27,18 +27,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   public class ResolvedJoinInfo : IJoinInfo
   {
     private readonly IResolvedTableInfo _foreignTableInfo;
-    private readonly Expression _leftKey;
-    private readonly Expression _rightKey;
+    private readonly Expression _joinCondition;
 
-    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, Expression leftKey, Expression rightKey)
+    public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, Expression joinCondition)
     {
       ArgumentUtility.CheckNotNull ("foreignTableInfo", foreignTableInfo);
-      ArgumentUtility.CheckNotNull ("leftKey", leftKey);
-      ArgumentUtility.CheckNotNull ("rightKey", rightKey);
+      ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
+
+      if (!BooleanUtility.IsBooleanType (joinCondition.Type))
+        throw new ArgumentException ("The join condition must have boolean (or nullable boolean) type.", "joinCondition");
       
       _foreignTableInfo = foreignTableInfo;
-      _leftKey = leftKey;
-      _rightKey = rightKey;
+      _joinCondition = joinCondition;
     }
 
     public virtual Type ItemType
@@ -51,14 +51,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _foreignTableInfo; }
     }
 
-    public Expression LeftKey
+    public Expression JoinCondition
     {
-      get { return _leftKey; }
-    }
-
-    public Expression RightKey
-    {
-      get { return _rightKey; }
+      get { return _joinCondition; }
     }
 
     public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)
@@ -75,10 +70,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     public override string ToString ()
     {
       return string.Format (
-          "{0} ON {1} = {2}", 
+          "{0} ON {1}", 
           ForeignTableInfo, 
-          FormattingExpressionTreeVisitor.Format (LeftKey), 
-          FormattingExpressionTreeVisitor.Format (RightKey));
+          FormattingExpressionTreeVisitor.Format (JoinCondition));
     }
   }
 }

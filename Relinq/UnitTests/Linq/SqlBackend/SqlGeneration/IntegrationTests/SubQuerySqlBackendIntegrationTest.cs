@@ -82,7 +82,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "CROSS APPLY ("
           + "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
           + "[t3].[KnifeID],[t3].[KnifeClassID] "
-          + "FROM [CookTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[SubstitutedID]) AS [q0] "
+          + "FROM [CookTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[SubstitutedID])) AS [q0] "
           + "CROSS JOIN [CookTable] AS [t4] WHERE ([q0].[ID] = [t4].[AssistedID])");
     }
 
@@ -177,7 +177,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks where (from k in Cooks select k.Substitution).Contains (c) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] "
-          + "WHERE [t0].[ID] IN (SELECT [t2].[ID] FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID])");
+          + "WHERE [t0].[ID] IN (SELECT [t2].[ID] FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[SubstitutedID]))");
     }
 
     [Test]
@@ -372,7 +372,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           query2,
           "SELECT [t0].[ID] AS [value] "
-          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
+          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[KitchenID]) "
           + "WHERE [t1].[ID] IN (SELECT [t2].[ID] FROM [CookTable] AS [t2] WHERE (@1 = 1))",
           new CommandParameter ("@1", 1));
     }

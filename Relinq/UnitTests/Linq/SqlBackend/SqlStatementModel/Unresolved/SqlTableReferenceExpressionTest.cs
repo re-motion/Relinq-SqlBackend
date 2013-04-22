@@ -84,7 +84,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
       var sqlTable =
           new SqlJoinedTable (
               new ResolvedJoinInfo (
-                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), Expression.Constant ("leftKey"), Expression.Constant ("rightKey")),
+                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), Expression.Constant (true)),
               JoinSemantics.Left);
       var expression = new SqlTableReferenceExpression (sqlTable);
       var result = expression.ToString();

@@ -62,7 +62,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
               + "[t2].[IsStarredCook] AS [key_IsStarredCook],[t2].[IsFullTimeCook] AS [key_IsFullTimeCook],"
               + "[t2].[SubstitutedID] AS [key_SubstitutedID],[t2].[KitchenID] AS [key_KitchenID],"
               + "[t2].[KnifeID] AS [key_KnifeID],[t2].[KnifeClassID] AS [key_KnifeClassID] "
-              + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
+              + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[SubstitutedID]) "
               + "GROUP BY [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
               + "[t2].[KnifeID],[t2].[KnifeClassID]"
               + ") AS [q0] "
@@ -312,7 +312,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
                 + "CROSS JOIN [CookTable] AS [t2] "
                 + "WHERE ([t1].[ID] = [t2].[RestaurantID]) "
                 + "GROUP BY [t1].[ID],[t1].[CompanyID]) AS [q0] "
-           + "LEFT OUTER JOIN [KitchenTable] AS [t4] ON [q0].[key_ID] = [t4].[RestaurantID] "
+           + "LEFT OUTER JOIN [KitchenTable] AS [t4] ON ([q0].[key_ID] = [t4].[RestaurantID]) "
            + "CROSS APPLY ("
              + "SELECT [t2].[ID] AS [element] "
              + "FROM [RestaurantTable] AS [t1] "
@@ -455,7 +455,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "FROM (SELECT TOP (10) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],"
           + "[t2].[KitchenID],[t2].[KnifeID],[t2].[KnifeClassID] "
           + "FROM [CookTable] AS [t2]) AS [q0] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON [q0].[KitchenID] = [t3].[ID] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([q0].[KitchenID] = [t3].[ID]) "
           + "GROUP BY [t3].[ID]) AS [q1]");
     }
 
@@ -470,7 +470,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "[t2].[KitchenID],"
           + "[t2].[KnifeID],[t2].[KnifeClassID] "
           + "FROM [CookTable] AS [t2]) AS [q0] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON [q0].[KitchenID] = [t3].[ID] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([q0].[KitchenID] = [t3].[ID]) "
           + "GROUP BY [t3].[ID]) AS [q1]");
     }
 
@@ -487,7 +487,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "FROM [CookTable] AS [t2] "
           + "GROUP BY [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
           + "[t2].[KnifeID],[t2].[KnifeClassID]) AS [q0] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON [q0].[key_KitchenID] = [t3].[ID] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([q0].[key_KitchenID] = [t3].[ID]) "
           + "GROUP BY [t3].[ID]) AS [q1]");
     }
   }

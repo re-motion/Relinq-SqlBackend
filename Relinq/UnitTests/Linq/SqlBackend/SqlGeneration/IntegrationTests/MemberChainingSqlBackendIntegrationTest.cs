@@ -46,7 +46,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from k in Kitchens select k.Cook,
           "SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
           + "[t1].[KnifeID],[t1].[KnifeClassID] "
-          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]",
+          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[KitchenID])",
            row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
               new ColumnID ("FirstName", 1),
@@ -64,7 +64,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens select k.Cook.FirstName,
-          "SELECT [t1].[FirstName] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID]");
+          "SELECT [t1].[FirstName] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[KitchenID])");
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks select c.Substitution.FirstName,
-          "SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
+          "SELECT [t1].[FirstName] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[SubstitutedID])");
     }
 
     [Test]
@@ -83,9 +83,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
           + "[t3].[KnifeID],[t3].[KnifeClassID] "
           + "FROM [KitchenTable] AS [t0] "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
-          + "LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID]");
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID])");
     }
 
     [Test]
@@ -95,9 +95,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from k in Kitchens where k.Restaurant.SubKitchen.Cook != null select k.Restaurant.SubKitchen.Cook.ID,
           "SELECT [t3].[ID] AS [value] "
           + "FROM [KitchenTable] AS [t0] "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "
-          + "LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) "
           + "WHERE ([t3].[ID] IS NOT NULL)");
     }
 
@@ -107,9 +107,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.ID == 0 select k.Restaurant.SubKitchen.Cook.ID,
           "SELECT [t3].[ID] AS [value] " 
-          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] LEFT OUTER JOIN " 
-          + "[KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] LEFT OUTER JOIN [CookTable] AS [t3] ON [t2].[ID] = [t3].[KitchenID] " 
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON [t2].[RestaurantID] = [t4].[ID] WHERE ([t4].[ID] = @1)",
+          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) LEFT OUTER JOIN " 
+          + "[KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) " 
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON ([t2].[RestaurantID] = [t4].[ID]) WHERE ([t4].[ID] = @1)",
           new CommandParameter ("@1", 0));
     }
 
@@ -120,7 +120,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (query,
         "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
         "[t2].[Name] AS [value] FROM [CookTable] AS [t1] " +
-        "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
+        "LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[SubstitutedID]) WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }
 
     [Test]
@@ -150,7 +150,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (query,
         "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] CROSS APPLY (SELECT TOP (1) " +
         "CASE WHEN ([t2].[ID] IS NOT NULL) THEN [t2].[Name] ELSE [t1].[Name] END AS [value] FROM [CookTable] AS [t1] " +
-        "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
+        "LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[SubstitutedID]) WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }
 
     [Test]
@@ -161,7 +161,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
         "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t0] "
         + "CROSS APPLY (SELECT TOP (1) CASE WHEN ([t2].[Name] IS NOT NULL) THEN (LEN(([t2].[Name] + '#')) - 1) "
         + "ELSE (LEN(([t1].[Name] + '#')) - 1) END AS [value] "
-        + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] "
+        + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[SubstitutedID]) "
         + "WHERE ([t0].[ID] = [t1].[AssistedID])) AS [q3]");
     }
 
@@ -171,7 +171,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var query = Cooks.Where (c => (from a in c.Assistants select a.Substitution ?? a).First ().Name == "Hugo").Select (c => c.Name);
       CheckQuery (query, "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT TOP (1) "
         + "CASE WHEN ([t2].[ID] IS NOT NULL) THEN [t2].[Name] ELSE [t1].[Name] END AS [value] FROM [CookTable] AS [t1] "
-        + "LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[SubstitutedID] WHERE ([t0].[ID] = [t1].[AssistedID])) = @1)",
+        + "LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[SubstitutedID]) WHERE ([t0].[ID] = [t1].[AssistedID])) = @1)",
         new CommandParameter ("@1", "Hugo"));
     }
 
@@ -190,7 +190,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Cooks
           select (c.Substitution ?? c).Name,
           "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
-            + "LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
+            + "LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[SubstitutedID])");
     }
 
     [Test]
@@ -210,7 +210,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           select (c.Substitution != null ? c.Substitution : c).Name,
         // ReSharper restore ConvertConditionalTernaryToNullCoalescing
           "SELECT CASE WHEN ([t1].[ID] IS NOT NULL) THEN [t1].[Name] ELSE [t0].[Name] END AS [value] FROM [CookTable] AS [t0] "
-            + "LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]");
+            + "LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[SubstitutedID])");
     }
 
     [Test]

@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Linq.SqlBackend;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -93,9 +94,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 true);
           case "Knife":
             var joinedTableInfo = CreateResolvedTableInfo (joinInfo.ItemType, generator);
-            var leftKey = ResolveMemberExpression (joinInfo.OriginatingEntity, joinInfo.MemberInfo);
+            var leftKey = ResolveMemberExpression (joinInfo.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
             var rightKey = ResolveSimpleTableInfo (joinedTableInfo, generator).GetIdentityExpression();
-            return new ResolvedJoinInfo (joinedTableInfo, leftKey, rightKey);
+            return new ResolvedJoinInfo (joinedTableInfo, Expression.Equal (leftKey, rightKey));
           case "KnifeWithOptimizedJoin":
             return CreateResolvedJoinInfo (
                 joinInfo.OriginatingEntity,
@@ -182,7 +183,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeID", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "KnifeClassID", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "KnifeClassID", false)
             });
       }
       else if (type == typeof (Kitchen))
@@ -198,7 +199,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
                 CreateColumn (typeof (int), tableInfo.TableAlias, "RestaurantID", false),
                 CreateColumn (typeof (DateTime?), tableInfo.TableAlias, "LastCleaningDay", false),
                 CreateColumn (typeof (bool?), tableInfo.TableAlias, "PassedLastInspection", false),
-                CreateColumn (typeof (int?), tableInfo.TableAlias, "LastInspectionScore", false),
+                CreateColumn (typeof (int?), tableInfo.TableAlias, "LastInspectionScore", false)
             });
       }
       else if (type == typeof (Restaurant))
@@ -210,7 +211,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             new[]
             {
                 CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "CompanyID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "CompanyID", false)
             });
       }
       else if (type == typeof (Chef))
@@ -396,12 +397,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
       return new ResolvedSimpleTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier ("t"));
     }
 
-    private ResolvedJoinInfo CreateResolvedJoinInfo (SqlEntityExpression originatingEntity, string leftColumnName, Type leftColumnType, bool leftColumnIsPrimaryKey, IResolvedTableInfo joinedTableInfo, string rightColumnName, Type rightColumnType, bool rightColumnIsPrimaryKey)
+    private ResolvedJoinInfo CreateResolvedJoinInfo (
+        SqlEntityExpression originatingEntity,
+        string leftColumnName,
+        Type leftColumnType,
+        bool leftColumnIsPrimaryKey,
+        IResolvedTableInfo joinedTableInfo,
+        string rightColumnName,
+        Type rightColumnType,
+        bool rightColumnIsPrimaryKey)
     {
       var leftColumn = originatingEntity.GetColumn (leftColumnType, leftColumnName, leftColumnIsPrimaryKey);
       var rightColumn = CreateColumn (rightColumnType, joinedTableInfo.TableAlias, rightColumnName, rightColumnIsPrimaryKey);
 
-      return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
+      return new ResolvedJoinInfo (
+          joinedTableInfo, ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null));
     }
 
     private static Expression CreateMetaIDExpression (Expression valueExpression, Expression classIDColumn)

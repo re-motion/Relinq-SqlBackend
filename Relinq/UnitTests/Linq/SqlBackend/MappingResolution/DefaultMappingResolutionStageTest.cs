@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Clauses.StreamedData;
@@ -265,6 +266,28 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    [Ignore ("TODO 4878")]
+    public void ResolveJoinCondition_ResolvesExpression_AndAppliesPredicateContext ()
+    {
+      var expression = Expression.Constant (true);
+      var fakeResult = Expression.Constant (false);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (expression))
+          .Return (fakeResult);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
+          .Return (fakeResult);
+
+      var result = _stage.ResolveJoinCondition (expression, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+
+      var expected = Expression.Equal (new SqlConvertedBooleanExpression (Expression.Constant (0)), new SqlLiteralExpression (1));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
     public void ResolveSqlStatement ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
@@ -433,7 +456,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
-      var joinInfo = new ResolvedJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var joinInfo = new ResolvedJoinInfo (tableInfo, Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)));
 
       var result = _stage.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired, _mappingResolutionContext);
 

@@ -232,7 +232,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "[t1].[SubstitutedID] AS [A_SubstitutedID],[t1].[KitchenID] AS [A_KitchenID],"
           + "[t1].[KnifeID] AS [A_KnifeID],[t1].[KnifeClassID] AS [A_KnifeClassID],[t1].[ID] AS [B] "
           + "FROM [CookTable] AS [t1]) AS [q0] "
-          + "LEFT OUTER JOIN [CookTable] AS [t2] ON [q0].[A_ID] = [t2].[SubstitutedID]",
+          + "LEFT OUTER JOIN [CookTable] AS [t2] ON ([q0].[A_ID] = [t2].[SubstitutedID])",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
 

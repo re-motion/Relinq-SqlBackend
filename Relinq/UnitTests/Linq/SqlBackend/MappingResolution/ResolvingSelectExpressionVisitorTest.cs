@@ -195,7 +195,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
-      var fakeJoinInfoWithPrimaryKeyOnRightSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, optimizedIdentity, primaryKeyColumn);
+      var fakeJoinInfoWithPrimaryKeyOnRightSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, Expression.Equal (optimizedIdentity, primaryKeyColumn));
 
       _stageMock
           .Stub (

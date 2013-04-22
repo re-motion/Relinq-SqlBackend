@@ -84,9 +84,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       var expectedOrderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t0");
       var expectedOrderForeignKey = new SqlColumnDefinitionExpression (typeof (string), expectedOrderTableInfo.TableAlias, "CustomerID", false);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (customerPrimaryKey, resolvedJoinInfo.LeftKey);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedOrderForeignKey, resolvedJoinInfo.RightKey);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (customerPrimaryKey, expectedOrderForeignKey), resolvedJoinInfo.JoinCondition);
 
       Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (expectedOrderTableInfo.ItemType));
       Assert.That (resolvedJoinInfo.ForeignTableInfo.ItemType, Is.EqualTo (expectedOrderTableInfo.ItemType));
@@ -109,9 +107,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       var expectedCustomerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t0");
       var expectedCustomerPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), expectedCustomerTableInfo.TableAlias, "CustomerID", true);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, resolvedJoinInfo.LeftKey);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedCustomerPrimaryKey, resolvedJoinInfo.RightKey);
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (orderForeignKey, expectedCustomerPrimaryKey), resolvedJoinInfo.JoinCondition);
 
       Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));
       Assert.That (resolvedJoinInfo.ForeignTableInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));

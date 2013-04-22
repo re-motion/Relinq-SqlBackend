@@ -247,13 +247,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var resolvedLeftJoinInfo = expression.JoinedTable.JoinInfo.GetResolvedJoinInfo();
-      var whereExpression = ConversionUtility.MakeBinaryWithOperandConversion (
-          ExpressionType.Equal,
-          resolvedLeftJoinInfo.LeftKey,
-          resolvedLeftJoinInfo.RightKey,
-          false,
-          null);
-      return VisitExpression (whereExpression);
+      return VisitExpression (resolvedLeftJoinInfo.JoinCondition);
     }
 
     public Expression VisitNamedExpression (NamedExpression expression)

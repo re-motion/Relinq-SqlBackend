@@ -370,20 +370,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
       var leftKey = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
       var rightKey = new SqlColumnDefinitionExpression (typeof (Cook), "a", "FK", false);
-      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, leftKey, rightKey);
+      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, Expression.Equal (leftKey, rightKey));
       var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
       var joinConditionExpression = new JoinConditionExpression (sqlTable);
 
       _entityIdentityResolverMock
           .Expect (
               mock => mock.ResolvePotentialEntityComparison (
-                  Arg<BinaryExpression>.Matches (b => b.Left == joinInfo.LeftKey && b.Right == joinInfo.RightKey)))
+                  Arg<BinaryExpression>.Matches (b => b.Left == leftKey && b.Right == rightKey)))
           .Return (null)
           .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
       _compoundComparisonSplitterMock
           .Expect (
               mock => mock.SplitPotentialCompoundComparison (
-                  Arg<BinaryExpression>.Matches (b => b.Left == joinInfo.LeftKey && b.Right == joinInfo.RightKey)))
+                  Arg<BinaryExpression>.Matches (b => b.Left == leftKey && b.Right == rightKey)))
           .Return (null)
           .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
 
@@ -392,36 +392,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _entityIdentityResolverMock.VerifyAllExpectations();
       _compoundComparisonSplitterMock.VerifyAllExpectations();
 
-      var expectedExpression = Expression.Equal (joinInfo.LeftKey, joinInfo.RightKey);
+      var expectedExpression = Expression.Equal (leftKey, rightKey);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
     
-    [Test]
-    public void VisitJoinConditionExpression_LiftsOperandsIfNecessary ()
-    {
-      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var leftKey = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
-      var rightKey = new SqlColumnDefinitionExpression (typeof (int?), "a", "FK", false);
-      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, leftKey, rightKey);
-
-      var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-      var joinConditionExpression = new JoinConditionExpression (sqlTable);
-
-      _entityIdentityResolverMock
-          .Stub (mock => mock.ResolvePotentialEntityComparison (Arg<BinaryExpression>.Is.Anything))
-          .Return (null)
-          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
-      _compoundComparisonSplitterMock
-          .Stub (mock => mock.SplitPotentialCompoundComparison (Arg<BinaryExpression>.Is.Anything))
-          .Return (null)
-          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
-
-      var result = _visitor.VisitExpression (joinConditionExpression);
-
-      var expectedExpression = Expression.Equal (Expression.Convert (leftKey, typeof (int?)), rightKey);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
-    }
-
     [Test]
     public void VisitNamedExpression ()
     {
@@ -821,7 +795,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
-      var fakeJoinInfoWithPrimaryKeyOnRightSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, optimizedIdentity, primaryKeyColumn);
+      var fakeJoinInfoWithPrimaryKeyOnRightSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, Expression.Equal (optimizedIdentity, primaryKeyColumn));
 
       _stageMock
           .Stub (

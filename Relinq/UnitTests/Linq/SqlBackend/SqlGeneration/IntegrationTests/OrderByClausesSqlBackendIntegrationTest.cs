@@ -89,7 +89,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook==c select k).Count(),
-          "SELECT (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] "+
+          "SELECT (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[KitchenID]) "+
           "WHERE ([t2].[ID] = [t0].[ID])) AS [value] FROM [CookTable] AS [t0]");
     }
 
@@ -103,7 +103,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "CROSS APPLY "
           + "(SELECT TOP (1) [t1].[ID],[t1].[Name],[t1].[RestaurantID],[t1].[LastCleaningDay],[t1].[PassedLastInspection],[t1].[LastInspectionScore] "
           + "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN "
-          +"[CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] WHERE ([t2].[ID] = [t0].[ID]) ORDER BY [t1].[Name] ASC) AS [q3]");
+          +"[CookTable] AS [t2] ON ([t1].[ID] = [t2].[KitchenID]) WHERE ([t2].[ID] = [t0].[ID]) ORDER BY [t1].[Name] ASC) AS [q3]");
     }
 
     [Test]

@@ -75,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
-    public virtual void GenerateTextForJoinKeyExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    public virtual void GenerateTextForJoinCondition (ISqlCommandBuilder commandBuilder, Expression expression)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);

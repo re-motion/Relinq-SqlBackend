@@ -253,8 +253,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks
           select c.Knife,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [ClassID],[t0].[Sharpness] AS [Sharpness] "
-          + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [KnifeTable] AS [t1] ON (([t0].[KnifeID] = [t1].[ID]) AND ([t0].[KnifeClassID] = [t1].[ClassID))");
+          "SELECT [t1].[ID],[t1].[ClassID],[t1].[Sharpness] "
+          + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [KnifeTable] AS [t1] ON ([t0].[KnifeID] = [t1].[ID]) AND ([t0].[KnifeClassID] = [t1].[ClassID)");
     }
 
     [Test]

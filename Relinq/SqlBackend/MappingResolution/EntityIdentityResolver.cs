@@ -139,11 +139,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       // If the right side of the join is a primary key column, we can just use the left side of the join instead - it should have the same semantics
       // as the identity expression of the joined table.
       // TODO 4878: This is no longer correct - a join criterion might be only a part of the identity expression! Find a solution?
-      var columnExpression = resolvedJoinInfo.RightKey as SqlColumnExpression;
-      if (columnExpression != null && columnExpression.IsPrimaryKey)
-        return resolvedJoinInfo.LeftKey;
-      else
-        return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).GetIdentityExpression ();
+
+      if (resolvedJoinInfo.JoinCondition.NodeType == ExpressionType.Equal)
+      {
+        var joinCondition = (BinaryExpression) resolvedJoinInfo.JoinCondition;
+        var columnExpression = StripConversions (joinCondition.Right) as SqlColumnExpression;
+        if (columnExpression != null && columnExpression.IsPrimaryKey)
+          return joinCondition.Left;
+      }
+
+      return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).GetIdentityExpression ();
     }
 
     private Expression CheckAndSimplifyEntityWithinSubStatement (SqlSubStatementExpression sqlSubStatementExpression)

@@ -68,7 +68,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks where c.Equals (c.Substitution) select c.ID,
-          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID] "
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[SubstitutedID]) "
           + "WHERE ((([t0].[FirstName] + @1) + [t0].[Name]) = (([t1].[FirstName] + @2) + [t1].[Name]))",
           new CommandParameter ("@1", " "),
           new CommandParameter ("@2", " "));

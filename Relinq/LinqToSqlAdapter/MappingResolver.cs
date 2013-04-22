@@ -246,7 +246,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
         otherKey.MappedName,
         otherKey.IsPrimaryKey);
 
-      return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
+      return new ResolvedJoinInfo (joinedTableInfo, Expression.Equal (leftColumn, rightColumn));
     }
 
     private static SqlColumnExpression CreateSqlColumnExpression (IResolvedTableInfo tableInfo, MetaDataMember metaDataMember)

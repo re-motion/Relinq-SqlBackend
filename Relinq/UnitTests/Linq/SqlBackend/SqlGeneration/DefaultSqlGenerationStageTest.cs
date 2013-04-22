@@ -205,7 +205,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay();
 
-      _stageMock.GenerateTextForJoinKeyExpression (_commandBuilder, expression);
+      _stageMock.GenerateTextForJoinCondition (_commandBuilder, expression);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));

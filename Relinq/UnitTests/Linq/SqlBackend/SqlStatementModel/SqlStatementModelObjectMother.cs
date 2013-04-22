@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlPreparation;
@@ -216,7 +215,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
       var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
       var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
-      return new ResolvedJoinInfo (foreignTableInfo, primaryColumn, foreignColumn);
+      return new ResolvedJoinInfo (foreignTableInfo, Expression.Equal (primaryColumn, foreignColumn));
     }
 
     public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type = null, string name = null, string owningTableAlias = null, Type primaryKeyType = null)

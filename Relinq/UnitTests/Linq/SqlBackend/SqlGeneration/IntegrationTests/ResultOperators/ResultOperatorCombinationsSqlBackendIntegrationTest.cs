@@ -174,7 +174,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT CASE WHEN NOT EXISTS((SELECT [q0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN (SELECT [t1].[ID],[t1].[FirstName],"
           + "[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
           + "[t1].[KnifeID],[t1].[KnifeClassID] "
-          + "FROM [CookTable] AS [t1]) AS [q0] ON 1 = 1 "
+          + "FROM [CookTable] AS [t1]) AS [q0] ON (1 = 1) "
           + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]");
     }
 

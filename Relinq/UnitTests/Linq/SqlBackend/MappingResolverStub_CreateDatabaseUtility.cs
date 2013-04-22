@@ -168,8 +168,9 @@ LOG ON (
           mappingResolver.ResolveJoinInfo (
               new UnresolvedJoinInfo (memberRefExpression.OriginatingEntity, memberRefExpression.MemberInfo, JoinCardinality.One),
               new UniqueIdentifierGenerator());
-      var leftKey = ((SqlColumnExpression) resolvedJoin.LeftKey);
-
+      
+      // TODO 4878: This won't work with Cook.Knife, change it.
+      var leftKey = ((SqlColumnExpression) ((BinaryExpression) resolvedJoin.JoinCondition).Left);
       if (leftKey.IsPrimaryKey)
         return null;
 
