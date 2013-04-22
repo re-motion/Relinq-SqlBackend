@@ -138,7 +138,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t0].[ID] = [t2].[KitchenID]) "
       + "CROSS JOIN [CookTable] AS [t1] WHERE (([t2].[ID] = [t1].[ID]) AND ([t0].[Name] = (SELECT TOP (1) [t4].[Name] AS [value] "
       + "FROM [KitchenTable] AS [t3] CROSS JOIN [CookTable] AS [t4] WHERE (([t2].[ID] = [t4].[ID]) AND ([t3].[Name] = "
-      + "(SELECT TOP (1) [t4].[Name] AS [value] FROM [KitchenTable] AS [t6] CROSS JOIN [CookTable] AS [t7] WHERE ([t2].[ID] = [t7].[ID])))))))");
+      + "(SELECT TOP (1) [t4].[Name] AS [value] FROM [KitchenTable] AS [t5] CROSS JOIN [CookTable] AS [t6] WHERE ([t2].[ID] = [t6].[ID])))))))");
     }
 
 

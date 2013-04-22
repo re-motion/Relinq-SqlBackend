@@ -250,7 +250,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5120")]
     public void EntityComparison_WithOptimizableImplicitJoin ()
     {
       CheckQuery (
@@ -260,11 +259,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           select k.Name,
           "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] WHERE ([t0].[KitchenID] = [t1].[ID])"
           );
+    }
 
+    [Test]
+    [Ignore ("TODO 5120")]
+    public void EntityComparison_WithOptimizableImplicitJoin_BidirectionalRelationDetection ()
+    {
       CheckQuery (
           from c in Cooks
-          from k in Kitchens 
-          where k.Cook == c 
+          from k in Kitchens
+          where k.Cook == c
           select k.Name,
           "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t0] CROSS JOIN [KitchenTable] AS [t1] WHERE ([t1].[ID] = [t0].[KitchenID])"
           );

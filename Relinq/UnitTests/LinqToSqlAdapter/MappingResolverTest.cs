@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -394,6 +395,12 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
           Expression.Constant ("Customer")
           );
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+    }
+
+    [Test]
+    public void TryGetOptimizedIdentity_ReturnsNull ()
+    {
+      Assert.That (_mappingResolver.TryGetOptimizedIdentity (SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ()), Is.Null);
     }
 
     [Test]

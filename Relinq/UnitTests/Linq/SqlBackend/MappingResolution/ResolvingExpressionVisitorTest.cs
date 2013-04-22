@@ -754,7 +754,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var fakeOptimizedRefIdentity = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
-      var entityRefMemberExpression = CreateEntityRefMemberExpressionAndStubOptimizedIdentity (entityExpression, memberInfo, fakeOptimizedRefIdentity);
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+      _resolverMock
+          .Stub (stub => stub.TryGetOptimizedIdentity (entityRefMemberExpression))
+          .Return (fakeOptimizedRefIdentity);
+
       var entity = CreateEntityExpressionWithIdentity (typeof (Cook), typeof (int));
       var binary = Expression.Equal (entityRefMemberExpression, entity);
 
@@ -786,24 +790,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           entityRefMemberExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator);
 
       Assert.That (result, Is.SameAs (fakeResult));
-    }
-
-    private SqlEntityRefMemberExpression CreateEntityRefMemberExpressionAndStubOptimizedIdentity (
-        SqlEntityExpression originatingEntity, PropertyInfo memberInfo, Expression optimizedIdentity)
-    {
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
-
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", true);
-      var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "KitchenTable", "k");
-      var fakeJoinInfoWithPrimaryKeyOnRightSide = new ResolvedJoinInfo (resolvedSimpleTableInfo, Expression.Equal (optimizedIdentity, primaryKeyColumn));
-
-      _stageMock
-          .Stub (
-              mock => mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (ji => ji.MemberInfo == memberInfo && ji.OriginatingEntity.Type == typeof (Kitchen)),
-                  Arg<IMappingResolutionContext>.Matches (c => c == _mappingResolutionContext)))
-          .Return (fakeJoinInfoWithPrimaryKeyOnRightSide);
-      return entityRefMemberExpression;
     }
 
     private SqlEntityExpression CreateEntityExpressionWithIdentity (Type entityType, Type identityType)

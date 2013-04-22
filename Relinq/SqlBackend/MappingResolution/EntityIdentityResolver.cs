@@ -31,11 +31,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   public class EntityIdentityResolver : IEntityIdentityResolver
   {
     private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolver _resolver;
     private readonly IMappingResolutionContext _context;
 
-    public EntityIdentityResolver (IMappingResolutionStage stage, IMappingResolutionContext context)
+    public EntityIdentityResolver (IMappingResolutionStage stage, IMappingResolver resolver, IMappingResolutionContext context)
     {
       _stage = stage;
+      _resolver = resolver;
       _context = context;
     }
 
@@ -130,25 +132,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private Expression GetIdentityExpressionForReferencedEntity (SqlEntityRefMemberExpression expression)
     {
-      // Create the respective join that "would be created".
+      var optimizedIdentity = _resolver.TryGetOptimizedIdentity (expression);
+      if (optimizedIdentity != null)
+        return optimizedIdentity;
+
       var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
-      var resolvedJoinInfo = _stage.ResolveJoinInfo (unresolvedJoinInfo, _context);
-
-      // TODO 3315: Can we remove this once we have a general ID member access optimization in IMappingResolver?
-
-      // If the right side of the join is a primary key column, we can just use the left side of the join instead - it should have the same semantics
-      // as the identity expression of the joined table.
-      // TODO 4878: This is no longer correct - a join criterion might be only a part of the identity expression! Find a solution?
-
-      if (resolvedJoinInfo.JoinCondition.NodeType == ExpressionType.Equal)
-      {
-        var joinCondition = (BinaryExpression) resolvedJoinInfo.JoinCondition;
-        var columnExpression = StripConversions (joinCondition.Right) as SqlColumnExpression;
-        if (columnExpression != null && columnExpression.IsPrimaryKey)
-          return joinCondition.Left;
-      }
-
-      return _stage.ResolveEntityRefMemberExpression (expression, resolvedJoinInfo, _context).GetIdentityExpression ();
+      return _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context).GetIdentityExpression ();
     }
 
     private Expression CheckAndSimplifyEntityWithinSubStatement (SqlSubStatementExpression sqlSubStatementExpression)

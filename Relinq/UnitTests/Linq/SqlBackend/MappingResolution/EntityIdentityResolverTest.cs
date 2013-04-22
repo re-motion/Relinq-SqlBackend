@@ -24,6 +24,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -35,8 +36,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   public class EntityIdentityResolverTest
   {
     private IMappingResolutionStage _stageMock;
+    private IMappingResolver _resolverMock;
     private MappingResolutionContext _context;
-    private EntityIdentityResolver _resolver;
+    private EntityIdentityResolver _entityIdentityResolver;
 
     private SqlEntityExpression _entityExpression;
     private SqlEntityConstantExpression _entityConstantExpression;
@@ -46,8 +48,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage>();
+      _resolverMock = MockRepository.GenerateStrictMock<IMappingResolver>();
       _context = new MappingResolutionContext();
-      _resolver = new EntityIdentityResolver (_stageMock, _context);
+
+      _entityIdentityResolver = new EntityIdentityResolver (_stageMock, _resolverMock, _context);
 
       _entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), primaryKeyType: typeof (int));
       _entityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), new Cook (), Expression.Constant (0));
@@ -59,7 +63,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolvePotentialEntity_Entity_ResolvesToIdentity ()
     {
-      var result = _resolver.ResolvePotentialEntity (_entityExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (_entityExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (_entityExpression.GetIdentityExpression(), result);
     }
@@ -67,7 +71,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolvePotentialEntity_Entity_StripsConversions_AndNames ()
     {
-      var result = _resolver.ResolvePotentialEntity (Expression.Convert (_entityExpression, typeof (object)));
+      var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (_entityExpression, typeof (object)));
 
       ExpressionTreeComparer.CheckAreEqualTrees (_entityExpression.GetIdentityExpression (), result);
     }
@@ -75,7 +79,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolvePotentialEntity_EntityConstant_ResolvesToIdentity ()
     {
-      var result = _resolver.ResolvePotentialEntity (_entityConstantExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (_entityConstantExpression);
 
       Assert.That (result, Is.SameAs (_entityConstantExpression.IdentityExpression));
     }
@@ -83,103 +87,62 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolvePotentialEntity_EntityConstant_StripsConversions ()
     {
-      var result = _resolver.ResolvePotentialEntity (Expression.Convert (_entityConstantExpression, typeof (object)));
+      var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (_entityConstantExpression, typeof (object)));
 
       Assert.That (result, Is.SameAs (_entityConstantExpression.IdentityExpression));
     }
 
     [Test]
-    public void ResolvePotentialEntity_EntityRefMember_Optimizable_ResolvesToLeftKey ()
+    public void ResolvePotentialEntity_EntityRefMember_OptimizesReferenceViaResolver ()
     {
-      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
-      var fakeResolvedJoinInfo = CreateJoinInfoWithKeyOnRightSide (someTableInfo);
-      _stageMock
-          .Expect (
-              mock => mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (
-                      e =>
-                      e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity && e.MemberInfo == _entityRefMemberExpression.MemberInfo
-                      && e.Cardinality == JoinCardinality.One),
-                  Arg.Is (_context)))
-          .Return (fakeResolvedJoinInfo);
+      var fakeOptimizedIdentity = ExpressionHelper.CreateExpression();
+      _resolverMock
+          .Expect (mock => mock.TryGetOptimizedIdentity (_entityRefMemberExpression))
+          .Return (fakeOptimizedIdentity);
+      
+      var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
-      var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
-
-      _stageMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (((BinaryExpression) fakeResolvedJoinInfo.JoinCondition).Left));
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeOptimizedIdentity));
     }
 
     [Test]
-    public void ResolvePotentialEntity_EntityRefMember_Optimizable_WithConverts_ResolvesToLeftKey ()
+    public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_ResolvesToJoinAndIdentity ()
     {
-      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
-      var fakeResolvedJoinInfo = CreateJoinInfoWithConvertedKeyOnRightSide (someTableInfo);
+      _resolverMock
+        .Expect (mock => mock.TryGetOptimizedIdentity (_entityRefMemberExpression))
+        .Return (null);
+      
+      var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
       _stageMock
           .Expect (
-              mock => mock.ResolveJoinInfo (
+              mock => mock.ResolveEntityRefMemberExpression (
+                  Arg.Is (_entityRefMemberExpression),
                   Arg<UnresolvedJoinInfo>.Matches (
-                      e =>
-                      e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity && e.MemberInfo == _entityRefMemberExpression.MemberInfo
+                      e => e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity
+                      && e.MemberInfo == _entityRefMemberExpression.MemberInfo
                       && e.Cardinality == JoinCardinality.One),
                   Arg.Is (_context)))
-          .Return (fakeResolvedJoinInfo);
+          .Return (fakeResolvedEntity);
 
-      var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
-
-      _stageMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (((BinaryExpression) fakeResolvedJoinInfo.JoinCondition).Left));
-    }
-
-    [Test]
-    public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_NoPrimaryKeyOnRightSide_ResolvesToJoinAndIdentity ()
-    {
-      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
-      var fakeResolvedJoinInfo = CreateJoinInfoWithKeyOnLeftSide (someTableInfo);
-      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
-
-      var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
       _stageMock.VerifyAllExpectations();
       ExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression(), result);
     }
 
     [Test]
-    public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_NoColumnOnRightSide_ResolvesToJoinAndIdentity ()
-    {
-      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
-      var fakeResolvedJoinInfo = CreateJoinInfoWithConstantOnRightSide (someTableInfo);
-      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
-
-      var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
-
-      _stageMock.VerifyAllExpectations ();
-      ExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression (), result);
-    }
-
-    [Test]
-    public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_NoEqualityComparison_ResolvesToJoinAndIdentity ()
-    {
-      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
-      var fakeResolvedJoinInfo = CreateJoinInfoWithNoEqualityComparison (someTableInfo);
-      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
-
-      var result = _resolver.ResolvePotentialEntity (_entityRefMemberExpression);
-
-      _stageMock.VerifyAllExpectations ();
-      ExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression (), result);
-    }
-
-    [Test]
     public void ResolvePotentialEntity_EntityRefMember_StripsConversions ()
     {
-      var someTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
-      var fakeResolvedJoinInfo = CreateJoinInfoWithConstantOnRightSide (someTableInfo);
-      var fakeResolvedEntity = ExpectResolutionToJoin (fakeResolvedJoinInfo);
+      var fakeOptimizedIdentity = ExpressionHelper.CreateExpression ();
+      _resolverMock
+          .Expect (mock => mock.TryGetOptimizedIdentity (_entityRefMemberExpression))
+          .Return (fakeOptimizedIdentity);
 
-      var result = _resolver.ResolvePotentialEntity (Expression.Convert (_entityRefMemberExpression, typeof (object)));
+      var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (_entityRefMemberExpression, typeof (object)));
 
-      _stageMock.VerifyAllExpectations ();
-      ExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression (), result);
+      _resolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeOptimizedIdentity));
     }
 
     [Test]
@@ -188,7 +151,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var subStatement = SqlStatementModelObjectMother.CreateSqlStatement (_entityExpression, SqlStatementModelObjectMother.CreateSqlTable());
       var subStatementExpression = new SqlSubStatementExpression (subStatement);
 
-      var result = _resolver.ResolvePotentialEntity (subStatementExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (subStatementExpression);
 
       Assert.That (result, Is.TypeOf<SqlSubStatementExpression>());
       var expectedSelectProjection = _entityExpression.GetIdentityExpression();
@@ -203,7 +166,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var subStatement = SqlStatementModelObjectMother.CreateSqlStatement (_entityExpression);
       var subStatementExpression = new SqlSubStatementExpression (subStatement);
 
-      var result = _resolver.ResolvePotentialEntity (subStatementExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (subStatementExpression);
 
       var expectedSelectProjection = _entityExpression.GetIdentityExpression ();
       ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, result);
@@ -215,7 +178,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var subStatement = SqlStatementModelObjectMother.CreateSqlStatement (Expression.Constant (0));
       var subStatementExpression = new SqlSubStatementExpression (subStatement);
 
-      var result = _resolver.ResolvePotentialEntity (subStatementExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (subStatementExpression);
 
       Assert.That (result, Is.SameAs (subStatementExpression));
     }
@@ -226,7 +189,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var subStatement = SqlStatementModelObjectMother.CreateSqlStatement (Expression.Convert (_entityExpression, typeof (object)), SqlStatementModelObjectMother.CreateSqlTable ());
       var subStatementExpression = new SqlSubStatementExpression (subStatement);
 
-      var result = _resolver.ResolvePotentialEntity (Expression.Convert (subStatementExpression, typeof (object)));
+      var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (subStatementExpression, typeof (object)));
 
       Assert.That (result, Is.TypeOf<SqlSubStatementExpression> ());
       var expectedSelectProjection = _entityExpression.GetIdentityExpression ();
@@ -239,7 +202,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var expression = Expression.Convert (Expression.Constant (0), typeof (double));
 
-      var result = _resolver.ResolvePotentialEntity (expression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -247,7 +210,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolvePotentialEntity_LooksBehindNames ()
     {
-      var result = _resolver.ResolvePotentialEntity (new NamedExpression ("X", _entityConstantExpression));
+      var result = _entityIdentityResolver.ResolvePotentialEntity (new NamedExpression ("X", _entityConstantExpression));
 
       ExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression ("X", _entityConstantExpression.IdentityExpression), result);
     }
@@ -257,7 +220,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var namedExpression = new NamedExpression ("X", Expression.Constant (0));
 
-      var result = _resolver.ResolvePotentialEntity (namedExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntity (namedExpression);
 
       Assert.That (result, Is.SameAs (namedExpression));
     }
@@ -267,7 +230,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var binary = Expression.Equal (_entityExpression, _entityConstantExpression);
 
-      var result = _resolver.ResolvePotentialEntityComparison (binary);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
       var expected = Expression.Equal (_entityExpression.GetIdentityExpression(), _entityConstantExpression.IdentityExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -278,7 +241,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var binary = Expression.Equal (_entityExpression, Expression.Constant (null, typeof (Cook)));
 
-      var result = _resolver.ResolvePotentialEntityComparison (binary);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
       var expected = Expression.Equal (
           Expression.Convert (_entityExpression.GetIdentityExpression(), typeof (object)),
@@ -291,7 +254,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var binary = Expression.Equal (Expression.Constant (null, typeof (Cook)), _entityExpression);
 
-      var result = _resolver.ResolvePotentialEntityComparison (binary);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
       var expected = Expression.Equal (
           Expression.Convert (Expression.Constant (null, typeof (Cook)), typeof (object)),
@@ -305,7 +268,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var binary = Expression.Equal (
           _entityExpression, _entityConstantExpression, false, ReflectionUtility.GetMethod (() => FakeEqualityOperator (null, null)));
 
-      var result = _resolver.ResolvePotentialEntityComparison (binary);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
       var expected = Expression.Equal (_entityExpression.GetIdentityExpression (), _entityConstantExpression.IdentityExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -316,7 +279,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var binary = Expression.Equal (Expression.Constant (0), Expression.Constant (0));
 
-      var result = _resolver.ResolvePotentialEntityComparison (binary);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
       Assert.That (result, Is.SameAs (binary));
     }
@@ -326,7 +289,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlInExpression = new SqlInExpression (_entityExpression, _entityConstantExpression);
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlInExpression);
 
       var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), _entityConstantExpression.IdentityExpression);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -337,7 +300,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlInExpression = new SqlInExpression (_entityExpression, Expression.Constant (null, typeof (Cook)));
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlInExpression);
 
       var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), Expression.Constant (null, typeof (Cook)));
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -348,7 +311,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlInExpression = new SqlInExpression (Expression.Constant (null, typeof (Cook)), _entityExpression);
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlInExpression);
 
       var expected = new SqlInExpression (Expression.Constant (null, typeof (Cook)), _entityExpression.GetIdentityExpression ());
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -359,7 +322,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlInExpression = new SqlInExpression (Expression.Constant (0), Expression.Constant (0));
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlInExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlInExpression);
 
       Assert.That (result, Is.SameAs (sqlInExpression));
     }
@@ -369,7 +332,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlIsNullExpression = new SqlIsNullExpression (_entityExpression);
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlIsNullExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlIsNullExpression);
 
       var expected = new SqlIsNullExpression (_entityExpression.GetIdentityExpression ());
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -380,7 +343,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlIsNullExpression = new SqlIsNullExpression (Expression.Constant (0));
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlIsNullExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlIsNullExpression);
 
       Assert.That (result, Is.SameAs (sqlIsNullExpression));
     }
@@ -390,7 +353,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (_entityExpression);
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlIsNotNullExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlIsNotNullExpression);
 
       var expected = new SqlIsNotNullExpression (_entityExpression.GetIdentityExpression ());
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -401,67 +364,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlIsNotNullExpression = new SqlIsNotNullExpression (Expression.Constant (0));
 
-      var result = _resolver.ResolvePotentialEntityComparison (sqlIsNotNullExpression);
+      var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlIsNotNullExpression);
 
       Assert.That (result, Is.SameAs (sqlIsNotNullExpression));
-    }
-
-    private static ResolvedJoinInfo CreateJoinInfoWithKeyOnRightSide (ResolvedSimpleTableInfo someTableInfo)
-    {
-      var leftKey = Expression.Constant (0);
-      var rightKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true);
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
-      return fakeResolvedJoinInfo;
-    }
-
-    private static ResolvedJoinInfo CreateJoinInfoWithConvertedKeyOnRightSide (ResolvedSimpleTableInfo someTableInfo)
-    {
-      var leftKey = Expression.Constant (0, typeof (int?));
-      var rightKey = Expression.Convert (new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true), typeof (int?));
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
-      return fakeResolvedJoinInfo;
-    }
-
-    private static ResolvedJoinInfo CreateJoinInfoWithKeyOnLeftSide (ResolvedSimpleTableInfo someTableInfo)
-    {
-      var leftKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true);
-      var rightKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", false);
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
-      return fakeResolvedJoinInfo;
-    }
-
-    private static ResolvedJoinInfo CreateJoinInfoWithConstantOnRightSide (ResolvedSimpleTableInfo someTableInfo)
-    {
-      var leftKey = new SqlColumnDefinitionExpression (typeof (int), "t0", "ID", true);
-      var rightKey = Expression.Constant (0);
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Equal (leftKey, rightKey));
-      return fakeResolvedJoinInfo;
-    }
-
-    private static ResolvedJoinInfo CreateJoinInfoWithNoEqualityComparison (ResolvedSimpleTableInfo someTableInfo)
-    {
-      var fakeResolvedJoinInfo = new ResolvedJoinInfo (someTableInfo, Expression.Constant (true));
-      return fakeResolvedJoinInfo;
-    }
-
-    private SqlEntityDefinitionExpression ExpectResolutionToJoin (ResolvedJoinInfo fakeResolvedJoinInfo)
-    {
-      _stageMock
-          .Expect (
-              mock => mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (
-                      e =>
-                      e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity 
-                      && e.MemberInfo == _entityRefMemberExpression.MemberInfo
-                      && e.Cardinality == JoinCardinality.One),
-                  Arg.Is (_context)))
-          .Return (fakeResolvedJoinInfo);
-
-      var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
-      _stageMock
-          .Expect (mock => mock.ResolveEntityRefMemberExpression (_entityRefMemberExpression, fakeResolvedJoinInfo, _context))
-          .Return (fakeResolvedEntity);
-      return fakeResolvedEntity;
     }
 
     [UsedImplicitly]

@@ -154,6 +154,12 @@ namespace Remotion.Linq.LinqToSqlAdapter
       // ReSharper restore PossibleNullReferenceException
     }
 
+    public Expression TryGetOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
+    {
+      // Not implemented for now.
+      return null;
+    }
+
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
       ArgumentUtility.CheckNotNull ("entityType", entityType);

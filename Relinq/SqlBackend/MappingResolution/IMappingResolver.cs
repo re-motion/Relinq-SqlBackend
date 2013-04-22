@@ -103,5 +103,17 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// This method can return a partial result that itself again needs to be resolved.</returns>
     /// <exception cref="UnmappedItemException">The given type check cannot be resolved because no database-level check can be constructed for it.</exception>
     Expression ResolveTypeCheck (Expression expression, Type desiredType);
+
+    /// <summary>
+    /// Analyzes the given <see cref="SqlEntityRefMemberExpression"/> and returns an expression that represents the optimized identity expression
+    /// of the referenced entity if possible. The expression must be equivalent to the identity of the joined entity 
+    /// (<see cref="SqlEntityExpression.GetIdentityExpression"/>). The purpose of this method is to avoid creating a join if the identity of the
+    /// referenced entity can be inferred from the <see cref="SqlEntityRefMemberExpression.OriginatingEntity"/> (e.g., by analyzing a foreign key).
+    /// </summary>
+    /// <param name="entityRefMemberExpression">The <see cref="SqlEntityRefMemberExpression"/> representing the referenced entity whose identity
+    /// is to be returned.</param>
+    /// <returns>An expression equivalent to the identity of the references entity that can be deduced without creating a join, or 
+    /// <see langword="null" /> if the identity cannot be deduced without a join.</returns>
+    Expression TryGetOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression);
   }
 }

@@ -387,6 +387,26 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
          throw new UnmappedItemException ("Cannot resolve type for checkedExpression: " + checkedExpression.Type.Name);
     }
 
+    public Expression TryGetOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
+    {
+      if (entityRefMemberExpression.MemberInfo.Equals (typeof (Cook).GetProperty ("Knife")))
+        return ResolveMemberExpression (entityRefMemberExpression.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
+
+      var joinInfo =
+          ResolveJoinInfo (
+              new UnresolvedJoinInfo (entityRefMemberExpression.OriginatingEntity, entityRefMemberExpression.MemberInfo, JoinCardinality.One),
+              new UniqueIdentifierGenerator());
+
+      var rightKey = ((BinaryExpression) joinInfo.JoinCondition).Right;
+      while (rightKey.NodeType == ExpressionType.Convert)
+        rightKey = ((UnaryExpression) rightKey).Operand;
+
+      if (((SqlColumnExpression) rightKey).IsPrimaryKey)
+        return ((BinaryExpression) joinInfo.JoinCondition).Left;
+
+      return null;
+    }
+
     private SqlColumnExpression CreateColumn (Type columnType, string tableAlias, string columnName, bool isPriamryKey)
     {
       return new SqlColumnDefinitionExpression (columnType, tableAlias, columnName, isPriamryKey);

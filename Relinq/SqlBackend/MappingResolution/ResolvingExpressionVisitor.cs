@@ -53,7 +53,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var entityIdentityResolver = new EntityIdentityResolver (stage, context);
+      var entityIdentityResolver = new EntityIdentityResolver (stage, resolver, context);
       var comparisonSplitter = new CompoundExpressionComparisonSplitter();
       var namedExpressionCombiner = new NamedExpressionCombiner (context);
       var groupAggregateSimplifier = new GroupAggregateSimplifier (stage, context);

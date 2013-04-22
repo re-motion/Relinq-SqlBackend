@@ -251,15 +251,26 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks
-          select c.Knife,
-          "SELECT [t1].[ID],[t1].[ClassID],[t1].[Sharpness] "
+          select c.Knife.Sharpness,
+          "SELECT [t1].[Sharpness] AS [value] "
           + "FROM [CookTable] AS [t0] "
           + "LEFT OUTER JOIN [KnifeTable] AS [t1] ON (([t0].[KnifeID] = [t1].[ID]) AND ([t0].[KnifeClassID] = [t1].[ClassID]))");
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void ImplicitJoin_WithOptimizedAwayLeftOuterJoin_ForCompoundID ()
+    {
+      CheckQuery (
+          from c in Cooks
+          where c.Knife == null
+          select c.ID,
+          "SELECT [t0].[ID] AS [value] "
+          + "FROM [CookTable] AS [t0] WHERE (([t0].[KnifeID] IS NULL) AND ([t0].[KnifeClassID] IS NULL))");
+    }
+
+    [Test]
+    [Ignore ("TODO 3315")]
+    public void ImplicitJoin_WithOptimizedAwayLeftOuterJoin_ForCompoundID_IDMember ()
     {
       CheckQuery (
           from c in Cooks
