@@ -95,7 +95,6 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     public void ResolveJoinInfo_ForeignKeyOnTheLeft()
     {
       var orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t1");
-      var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
 
       var orderEntity = new SqlEntityDefinitionExpression (
           orderTableInfo.ItemType, orderTableInfo.TableAlias, null, e => e.GetColumn (typeof (string), "OrderID", true));
@@ -105,6 +104,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
       var resolvedJoinInfo = _mappingResolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
 
+      var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
       var expectedCustomerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t0");
       var expectedCustomerPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), expectedCustomerTableInfo.TableAlias, "CustomerID", true);
       ExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (orderForeignKey, expectedCustomerPrimaryKey), resolvedJoinInfo.JoinCondition);
@@ -112,6 +112,26 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
       Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));
       Assert.That (resolvedJoinInfo.ForeignTableInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));
       Assert.That (resolvedJoinInfo.ForeignTableInfo.TableAlias, Is.EqualTo (expectedCustomerTableInfo.TableAlias));
+    }
+
+    [Test]
+    public void ResolveJoinInfo_OneNullableColumn_TheOtherNot_LeadsToConversion ()
+    {
+      var regionTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Region), "dbo.Regions", "t1");
+      var regionEntity = new SqlEntityDefinitionExpression (regionTableInfo.ItemType, regionTableInfo.TableAlias, null, e => e);
+
+      var territoriesMember = regionTableInfo.ItemType.GetProperty ("Territories");
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (regionEntity, territoriesMember, JoinCardinality.Many);
+
+      var resolvedJoinInfo = _mappingResolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
+
+      var regionPrimaryKey = new SqlColumnDefinitionExpression (typeof (int), regionTableInfo.TableAlias, "RegionID", true);
+      var expectedTerritoryTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Territory), "dbo.Territories", "t0");
+      var expectedTerritoryForeignKey = new SqlColumnDefinitionExpression (typeof (int?), expectedTerritoryTableInfo.TableAlias, "RegionID", false);
+      ExpressionTreeComparer.CheckAreEqualTrees (
+          Expression.Equal (
+            Expression.Convert (regionPrimaryKey, typeof (int?)), 
+            expectedTerritoryForeignKey), resolvedJoinInfo.JoinCondition);
     }
 
     [Test]
