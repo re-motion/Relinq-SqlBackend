@@ -127,7 +127,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext)
     {
-      throw new NotImplementedException ("TODO 4878");
+      ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+
+      var resolvedJoinCondition = ResolveExpression (joinCondition, mappingResolutionContext);
+      return ApplyContext (resolvedJoinCondition, SqlExpressionContext.PredicateRequired, mappingResolutionContext);
     }
 
     public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)

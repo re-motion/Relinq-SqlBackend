@@ -247,14 +247,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void ImplicitJoin_WithCompoundID ()
     {
       CheckQuery (
           from c in Cooks
           select c.Knife,
           "SELECT [t1].[ID],[t1].[ClassID],[t1].[Sharpness] "
-          + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [KnifeTable] AS [t1] ON ([t0].[KnifeID] = [t1].[ID]) AND ([t0].[KnifeClassID] = [t1].[ClassID)");
+          + "FROM [CookTable] AS [t0] "
+          + "LEFT OUTER JOIN [KnifeTable] AS [t1] ON (([t0].[KnifeID] = [t1].[ID]) AND ([t0].[KnifeClassID] = [t1].[ClassID]))");
     }
 
     [Test]

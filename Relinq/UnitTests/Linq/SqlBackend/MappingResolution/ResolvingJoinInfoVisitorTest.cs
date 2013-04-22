@@ -28,7 +28,6 @@ using Rhino.Mocks;
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 {
   [TestFixture]
-  [Ignore ("TODO 4878")]
   public class ResolvingJoinInfoVisitorTest
   {
     private IMappingResolver _resolverMock;

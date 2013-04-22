@@ -266,7 +266,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    [Ignore ("TODO 4878")]
     public void ResolveJoinCondition_ResolvesExpression_AndAppliesPredicateContext ()
     {
       var expression = Expression.Constant (true);
@@ -283,7 +282,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       _resolverMock.VerifyAllExpectations ();
 
-      var expected = Expression.Equal (new SqlConvertedBooleanExpression (Expression.Constant (0)), new SqlLiteralExpression (1));
+      var expected = Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1));
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
