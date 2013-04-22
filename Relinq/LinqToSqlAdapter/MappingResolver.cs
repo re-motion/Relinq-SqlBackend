@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Linq.SqlBackend;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -246,7 +247,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
         otherKey.MappedName,
         otherKey.IsPrimaryKey);
 
-      return new ResolvedJoinInfo (joinedTableInfo, Expression.Equal (leftColumn, rightColumn));
+      var joinCondition = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null);
+      return new ResolvedJoinInfo (joinedTableInfo, joinCondition);
     }
 
     private static SqlColumnExpression CreateSqlColumnExpression (IResolvedTableInfo tableInfo, MetaDataMember metaDataMember)
