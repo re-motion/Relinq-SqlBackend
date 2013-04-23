@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
@@ -57,6 +58,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as column aliases.</param>
     /// <returns>A <see cref="SqlEntityDefinitionExpression"/> which contains all the columns of the referenced <paramref name="tableInfo"/> item type.
     ///</returns>
+    /// <remarks>
+    /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express compound entity identity. 
+    /// Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
+    /// expression.
+    /// </remarks>
     SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
     /// <summary>
@@ -70,6 +76,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <see cref="SqlEntityRefMemberExpression"/>  if the member references another entity.
     /// This method can return a partial result that itself again needs to be resolved.</returns>
     /// <exception cref="UnmappedItemException">The given <see cref="MemberInfo"/> cannot be resolved to a mapped database item.</exception>
+    /// <remarks>
+    /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express a compound member. 
+    /// Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
+    /// expression.
+    /// </remarks>
     Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo);
 
     /// <summary>
@@ -81,6 +92,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <param name="memberInfo">The <see cref="MemberInfo"/> which is needed to identify a mapped property.</param>
     /// <returns>Returns a modified Expression which is usually a <see cref="SqlColumnExpression"/>.</returns>
     /// <exception cref="UnmappedItemException">The given <see cref="MemberInfo"/> cannot be resolved.</exception>
+    /// <remarks>
+    /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express a compound member. 
+    /// Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
+    /// expression.
+    /// </remarks>
     Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo);
 
     /// <summary>
@@ -91,6 +107,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <returns>A resolved version of <paramref name="constantExpression"/>, usually a <see cref="SqlEntityConstantExpression"/>, or the
     /// <paramref name="constantExpression"/> itself.</returns>
     /// <exception cref="UnmappedItemException">The given <see cref="MemberInfo"/> cannot be resolved.</exception>
+    /// <remarks>
+    /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express compound entity identity. 
+    /// Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
+    /// expression.
+    /// </remarks>
     Expression ResolveConstantExpression (ConstantExpression constantExpression);
 
     /// <summary>
@@ -116,6 +137,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <see langword="null" /> if the identity cannot be deduced without a join.</returns>
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.
     /// (Implementations can also return <see langword="null" /> instead.)</exception>
+    /// <remarks>
+    /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express compound entity identity. 
+    /// Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
+    /// expression.
+    /// </remarks>
     Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression);
   }
 }
