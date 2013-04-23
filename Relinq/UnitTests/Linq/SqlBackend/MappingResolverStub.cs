@@ -389,7 +389,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
 
     public Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
     {
-      if (entityRefMemberExpression.MemberInfo.Equals (typeof (Cook).GetProperty ("Knife")))
+      if (entityRefMemberExpression.MemberInfo.DeclaringType == typeof (Cook) && entityRefMemberExpression.MemberInfo.Name == "Knife")
         return ResolveMemberExpression (entityRefMemberExpression.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
 
       var joinInfo =
