@@ -398,9 +398,9 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    public void TryGetOptimizedIdentity_ReturnsNull ()
+    public void TryResolveOptimizedIdentity_ReturnsNull ()
     {
-      Assert.That (_mappingResolver.TryGetOptimizedIdentity (SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ()), Is.Null);
+      Assert.That (_mappingResolver.TryResolveOptimizedIdentity (SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ()), Is.Null);
     }
 
     [Test]

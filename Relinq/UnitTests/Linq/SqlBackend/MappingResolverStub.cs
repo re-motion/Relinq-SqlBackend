@@ -387,7 +387,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
          throw new UnmappedItemException ("Cannot resolve type for checkedExpression: " + checkedExpression.Type.Name);
     }
 
-    public Expression TryGetOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
+    public Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
     {
       if (entityRefMemberExpression.MemberInfo.Equals (typeof (Cook).GetProperty ("Knife")))
         return ResolveMemberExpression (entityRefMemberExpression.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));

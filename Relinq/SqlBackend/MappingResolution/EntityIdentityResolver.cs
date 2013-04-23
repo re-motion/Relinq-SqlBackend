@@ -132,7 +132,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private Expression GetIdentityExpressionForReferencedEntity (SqlEntityRefMemberExpression expression)
     {
-      var optimizedIdentity = _resolver.TryGetOptimizedIdentity (expression);
+      var optimizedIdentity = _resolver.TryResolveOptimizedIdentity (expression);
       if (optimizedIdentity != null)
         return optimizedIdentity;
 

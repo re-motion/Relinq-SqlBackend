@@ -154,7 +154,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       // ReSharper restore PossibleNullReferenceException
     }
 
-    public Expression TryGetOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
+    public Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
     {
       // Not implemented for now.
       return null;

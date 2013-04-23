@@ -756,7 +756,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var fakeOptimizedRefIdentity = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
       _resolverMock
-          .Stub (stub => stub.TryGetOptimizedIdentity (entityRefMemberExpression))
+          .Stub (stub => stub.TryResolveOptimizedIdentity (entityRefMemberExpression))
           .Return (fakeOptimizedRefIdentity);
 
       var entity = CreateEntityExpressionWithIdentity (typeof (Cook), typeof (int));

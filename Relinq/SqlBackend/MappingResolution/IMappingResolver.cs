@@ -114,6 +114,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// is to be returned.</param>
     /// <returns>An expression equivalent to the identity of the references entity that can be deduced without creating a join, or 
     /// <see langword="null" /> if the identity cannot be deduced without a join.</returns>
-    Expression TryGetOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression);
+    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.
+    /// (Implementations can also return <see langword="null" /> instead.)</exception>
+    Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression);
   }
 }
