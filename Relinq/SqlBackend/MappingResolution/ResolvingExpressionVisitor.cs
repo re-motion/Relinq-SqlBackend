@@ -156,23 +156,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _resolveEntityRefMemberExpressions = resolveEntityRefMemberExpressions;
     }
 
-    // TODO 4878: Remove diagnostics.
-    private int _i;
-    public override Expression VisitExpression (Expression expression)
-    {
-      ++_i;
-      if (_i > 100)
-        throw new Exception ("Stack overflow!");
-      try
-      {
-        return base.VisitExpression (expression);
-      }
-      finally
-      {
-        --_i;
-      }
-    }
-
     public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
