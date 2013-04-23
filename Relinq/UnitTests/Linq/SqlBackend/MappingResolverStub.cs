@@ -440,13 +440,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
       Trace.Assert (metaIDCtor != null);
       var newExpression = Expression.New (metaIDCtor, new[] { valueExpression, classIDColumn }, new[] { typeof (MetaID).GetProperty ("Value"), typeof (MetaID).GetProperty ("ClassID") });
       
-      // TODO 4878: Change this API for better usability. (What's the second parameter good for?)
-      // - Ideally, we'd like the ResolvingExpressionVisitor to put the names into the NewExpression for us.
-      // - However, ResolvingExpressionVisitor needs its members to be idempotent - it runs more than once per expression.
-      // => Make naming of NewExpressionArguments idempotent. For example, insert a MARKER expression? MemberAccessResolver would have to remove it (in the same place where it strips names.)
-      // => Or, leave the naming responsibility with the MappingResolver and just add a better-named overload to NamedExpression.CreateNewExpressionWithNamedArguments.
-
-      return NamedExpression.CreateNewExpressionWithNamedArguments (newExpression, newExpression.Arguments);
+      return NamedExpression.CreateNewExpressionWithNamedArguments (newExpression);
     }
 
   }

@@ -48,6 +48,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return new NamedExpression (memberName, innerExpression);
     }
 
+    public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      
+      return CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+    }
+
     public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression, IEnumerable<Expression> processedArguments)
     {
       var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray ();
