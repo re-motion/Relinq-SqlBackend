@@ -54,30 +54,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    public void CreateFromMemberName_NameStartsWith_get_ ()
-    {
-      var memberInfo = typeof (MemberTest).GetProperty ("get_A");
-      var innerExpression = Expression.Constant ("inner");
-
-      var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
-
-      Assert.That (result.Name, Is.EqualTo ("A"));
-      Assert.That (result.Expression, Is.SameAs (innerExpression));
-    }
-
-    [Test]
-    public void CreateFromMemberName_NameIs_get_ ()
-    {
-      var memberInfo = typeof (MemberTest).GetProperty ("get_");
-      var innerExpression = Expression.Constant ("inner");
-
-      var result = NamedExpression.CreateFromMemberName (memberInfo.Name, innerExpression);
-
-      Assert.That (result.Name, Is.SameAs (memberInfo.Name));
-      Assert.That (result.Expression, Is.SameAs (innerExpression));
-    }
-
-    [Test]
     public void Initialization ()
     {
       Assert.That (_namedExpression.Type, Is.EqualTo (typeof (int)));
@@ -159,6 +135,42 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
+    public void CreateNewExpressionWithNamedArguments_WithGetter ()
+    {
+      var innerExpression = Expression.Constant (0);
+      var memberInfo = (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A").GetGetMethod();
+      var expression = Expression.New (
+          TypeForNewExpression.GetConstructor (typeof (int)),
+          new[] { innerExpression },
+          memberInfo);
+
+      var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+
+      var expectedResult = Expression.New (
+          TypeForNewExpression.GetConstructor (typeof (int)), new[] { new NamedExpression ("A", innerExpression) }, memberInfo);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void CreateNewExpressionWithNamedArguments_WithPropertyCalledGet ()
+    {
+      var innerExpression = Expression.Constant (0);
+      var memberInfo = (MemberInfo) typeof (TypeForNewExpression).GetProperty ("get_");
+      var expression = Expression.New (
+          TypeForNewExpression.GetConstructor (typeof (int)),
+          new[] { innerExpression },
+          memberInfo);
+
+      var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+
+      var expectedResult = Expression.New (
+          TypeForNewExpression.GetConstructor (typeof (int)), new[] { new NamedExpression ("get_", innerExpression) }, memberInfo);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
     public void CreateNewExpressionWithNamedArguments_ArgumentsAlreadyNamedCorrectly ()
     {
       var innerExpression = new NamedExpression("m0", Expression.Constant (0));
@@ -189,6 +201,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var innerExpression = new NamedExpression ("A", Expression.Constant (0));
       var memberInfo = (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A");
+      var expression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), new[] { innerExpression }, memberInfo);
+
+      var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
+    public void CreateNewExpressionWithNamedArguments_ArgumentsAlreadyNamedCorrectly_WithGetters ()
+    {
+      var innerExpression = new NamedExpression ("A", Expression.Constant (0));
+      var memberInfo = (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A").GetGetMethod();
       var expression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), new[] { innerExpression }, memberInfo);
 
       var result = NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments);

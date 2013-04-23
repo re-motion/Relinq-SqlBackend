@@ -45,9 +45,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("memberName", memberName);
       ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
 
-      if (memberName.StartsWith ("get_") && memberName.Length > 4)
-        memberName = memberName.Substring (4);
-
       return new NamedExpression (memberName, innerExpression);
     }
 
@@ -56,10 +53,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray ();
       if (!newArguments.SequenceEqual (expression.Arguments))
       {
+        // ReSharper disable ConditionIsAlwaysTrueOrFalse - ReSharper is wrong, expression.Members can be null
+        // ReSharper disable HeuristicUnreachableCode
         if (expression.Members != null)
-          return Expression.New (expression.Constructor, newArguments, expression.Members);
+          return New (expression.Constructor, newArguments, expression.Members);
         else
-          return Expression.New (expression.Constructor, newArguments);
+          return New (expression.Constructor, newArguments);
+        // ReSharper restore HeuristicUnreachableCode
+        // ReSharper restore ConditionIsAlwaysTrueOrFalse
       }
 
       return expression;
@@ -67,7 +68,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     private static Expression WrapIntoNamedExpression (string memberName, Expression argumentExpression)
     {
-      // TODO 4878: This check doesn't work for scenarios where CreateFromMemberName strips away "get_".
       var expressionAsNamedExpression = argumentExpression as NamedExpression;
       if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
         return expressionAsNamedExpression;
@@ -79,7 +79,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       if (members == null || members.Count <= index)
         return "m" + index;
-      return members[index].Name;
+      return StripGetPrefix (members[index].Name);
+    }
+
+    private static string StripGetPrefix (string memberName)
+    {
+      if (memberName.StartsWith ("get_") && memberName.Length > 4)
+        memberName = memberName.Substring (4);
+      return memberName;
     }
 
     public NamedExpression (string name, Expression expression)
