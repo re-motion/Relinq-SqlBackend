@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -398,9 +397,34 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    public void TryResolveOptimizedIdentity_ReturnsNull ()
+    public void TryResolveOptimizedIdentity_ForeignKeyOnTheRight ()
     {
-      Assert.That (_mappingResolver.TryResolveOptimizedIdentity (SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ()), Is.Null);
+      var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
+      var customerEntity = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
+
+      var ordersMember = customerTableInfo.ItemType.GetProperty ("Orders");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (customerEntity, ordersMember);
+
+      var result = _mappingResolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void TryResolveOptimizedIdentity_ForeignKeyOnTheLeft ()
+    {
+      var orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t1");
+
+      var orderEntity = new SqlEntityDefinitionExpression (
+          orderTableInfo.ItemType, orderTableInfo.TableAlias, null, e => e.GetColumn (typeof (string), "OrderID", true));
+
+      var customerMember = orderTableInfo.ItemType.GetProperty ("Customer");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (orderEntity, customerMember);
+
+      var result = _mappingResolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
+
+      var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
+      ExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, result);
     }
 
     [Test]
