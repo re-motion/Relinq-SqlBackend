@@ -30,28 +30,21 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlEntityReferenceExpression : SqlEntityExpression
   {
-    private readonly SqlColumnExpression _primaryKeyColumn;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
     private readonly SqlEntityExpression _referencedEntity;
 
     public SqlEntityReferenceExpression (Type itemType, string tableAlias, string entityName, SqlEntityExpression referencedEntity)
-        : base(itemType, tableAlias, entityName)
+        : base(itemType, tableAlias, entityName, referencedEntity.IdentityExpressionGenerator)
     {
       ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
 
       _referencedEntity = referencedEntity;
       _columns = Array.AsReadOnly (referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
-      _primaryKeyColumn = GetColumn (referencedEntity.PrimaryKeyColumn.Type, referencedEntity.PrimaryKeyColumn.ColumnName, true);
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
-    }
-
-    public override SqlColumnExpression PrimaryKeyColumn
-    {
-      get { return _primaryKeyColumn; }
     }
 
     public override ReadOnlyCollection<SqlColumnExpression> Columns

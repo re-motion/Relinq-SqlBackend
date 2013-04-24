@@ -22,6 +22,7 @@ using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
@@ -124,11 +125,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (mi => _commandBuilder.Append ("false"))
           .Return (_nullableFalseExpression);
 
-      _sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
+      _sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       _expressionVisitorMock
           .Stub (stub => stub.VisitExpression (_sqlEntityExpression))
           .WhenCalled (mi => _commandBuilder.Append ("[c].[ID]"))
-          .Return (((SqlEntityExpression) _sqlEntityExpression).PrimaryKeyColumn);
+          .Return (((SqlEntityExpression) _sqlEntityExpression).GetIdentityExpression());
 
       _generator = new BinaryExpressionTextGenerator (_commandBuilder, _expressionVisitorMock);
     }

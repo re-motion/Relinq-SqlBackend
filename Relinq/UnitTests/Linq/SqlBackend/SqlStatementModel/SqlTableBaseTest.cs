@@ -18,8 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -30,15 +28,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     public void GetOrAddJoin_NewEntry ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var owningTableAlias = "c";
-      var entityExpression = new SqlEntityDefinitionExpression (typeof(Cook), owningTableAlias, null, new SqlColumnDefinitionExpression (typeof (string), owningTableAlias, "Name", false));
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
+      var unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_CookSubstitution();
 
-      var joinedTable = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
-      Assert.That (joinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedJoinInfo)));
-      Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
-      Assert.That (((UnresolvedJoinInfo) joinedTable.JoinInfo).OriginatingEntity.TableAlias, Is.SameAs (owningTableAlias));
+      var joinedTable = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, unresolvedJoinInfo.MemberInfo);
+      Assert.That (joinedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
+      Assert.That (joinedTable.JoinInfo, Is.SameAs (unresolvedJoinInfo));
     }
     
     [Test]
@@ -46,17 +40,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var owningTableAlias = "c";
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), owningTableAlias, null, new SqlColumnDefinitionExpression (typeof (string), owningTableAlias, "Name", false));
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
+      var unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_CookSubstitution ();
 
       var joinedTable1 = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
       var originalJoinInfo = joinedTable1.JoinInfo;
 
       var joinedTable2 = sqlTable.GetOrAddLeftJoin (originalJoinInfo, memberInfo);
 
-      Assert.That (joinedTable1.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
-      Assert.That (joinedTable2.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
       Assert.That (joinedTable2, Is.SameAs (joinedTable1));
       Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));
     }

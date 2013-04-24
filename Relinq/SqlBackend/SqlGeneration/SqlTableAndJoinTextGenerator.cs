@@ -168,9 +168,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       _commandBuilder.Append (" ON ");
 
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, joinInfo.LeftKey);
-      _commandBuilder.Append (" = ");
-      _stage.GenerateTextForJoinKeyExpression (_commandBuilder, joinInfo.RightKey);
+      _stage.GenerateTextForJoinCondition (_commandBuilder, joinInfo.JoinCondition);
 
       return joinInfo;
     }

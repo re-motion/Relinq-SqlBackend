@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -123,6 +125,15 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
     }
 
+    public Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext)
+    {
+      ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
+      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+
+      var resolvedJoinCondition = ResolveExpression (joinCondition, mappingResolutionContext);
+      return ApplyContext (resolvedJoinCondition, SqlExpressionContext.PredicateRequired, mappingResolutionContext);
+    }
+
     public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
@@ -169,8 +180,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedMemberAccess = MemberAccessResolver.ResolveMemberAccess (resolvedSourceExpression, memberInfo, mappingResolver, this, context);
-      return ResolveExpression (resolvedMemberAccess, context);
+      return MemberAccessResolver.ResolveMemberAccess (resolvedSourceExpression, memberInfo, mappingResolver, this, context);
     }
 
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
@@ -212,6 +222,5 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, this, context, _uniqueIdentifierGenerator);
     }
-    
   }
 }

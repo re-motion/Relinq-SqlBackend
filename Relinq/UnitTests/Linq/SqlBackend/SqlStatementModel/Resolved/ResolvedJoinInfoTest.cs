@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 
@@ -25,6 +26,42 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   [TestFixture]
   public class ResolvedJoinInfoTest
   {
+    [Test]
+    public void Initialization_BooleanJoinCondition ()
+    {
+      var foreignTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
+      var joinCondition = ExpressionHelper.CreateExpression (typeof (bool));
+      
+      var joinInfo = new ResolvedJoinInfo (foreignTableInfo, joinCondition);
+
+      Assert.That (joinInfo.ForeignTableInfo, Is.SameAs (foreignTableInfo));
+      Assert.That (joinInfo.JoinCondition, Is.SameAs (joinCondition));
+    }
+
+    [Test]
+    public void Initialization_NullableBooleanJoinCondition ()
+    {
+      var foreignTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
+      var joinCondition = ExpressionHelper.CreateExpression (typeof (bool?));
+
+      var joinInfo = new ResolvedJoinInfo (foreignTableInfo, joinCondition);
+
+      Assert.That (joinInfo.ForeignTableInfo, Is.SameAs (foreignTableInfo));
+      Assert.That (joinInfo.JoinCondition, Is.SameAs (joinCondition));
+    }
+
+    [Test]
+    public void Initialization_NonBooleanJoinCondition ()
+    {
+      var foreignTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo ();
+      var joinCondition = ExpressionHelper.CreateExpression (typeof (int));
+
+      Assert.That (
+          () => new ResolvedJoinInfo (foreignTableInfo, joinCondition),
+          Throws.ArgumentException.With.Message.EqualTo (
+            "The join condition must have boolean (or nullable boolean) type.\r\nParameter name: joinCondition"));
+    }
+
     [Test]
     public void GetResolvedJoinInfo ()
     {
@@ -39,10 +76,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     public new void ToString ()
     {
       var foreignTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var joinInfo = new ResolvedJoinInfo (foreignTableInfo, Expression.Constant (0), Expression.Constant (1));
+      var joinInfo = new ResolvedJoinInfo (foreignTableInfo, Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
       var result = joinInfo.ToString ();
 
-      Assert.That (result, Is.EqualTo ("[CookTable] [c] ON 0 = 1"));
+      Assert.That (result, Is.EqualTo ("[CookTable] [c] ON (0 = 1)"));
     }
   }
 }

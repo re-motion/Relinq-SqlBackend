@@ -14,32 +14,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
-namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   [TestFixture]
-  public class SqlBinaryOperatorExpressionTest
+  public class SqlInExpressionTest
   {
-    private SqlBinaryOperatorExpression _expression;
+    private SqlInExpression _expression;
     private ConstantExpression _leftExpression;
     private ConstantExpression _rightExpression;
-
-
+    
     [SetUp]
     public void SetUp ()
     {
       _leftExpression = Expression.Constant (1);
       _rightExpression = Expression.Constant (2);
 
-      _expression = new SqlBinaryOperatorExpression (typeof(bool), "Operator", _leftExpression, _rightExpression);
+      _expression = new SqlInExpression (_leftExpression, _rightExpression);
     }
 
     [Test]
@@ -67,16 +66,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
 
       visitorMock.VerifyAllExpectations();
       Assert.That (result, Is.Not.SameAs (_expression));
-      Assert.That (((SqlBinaryOperatorExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
-      Assert.That (((SqlBinaryOperatorExpression) result).RightExpression, Is.SameAs (newRightExpression));
+      Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
+      Assert.That (((SqlInExpression) result).RightExpression, Is.SameAs (newRightExpression));
     }
 
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlBinaryOperatorExpression, ISqlSpecificExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlInExpression, ISqlInExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlBinaryOperatorExpression(_expression));
+          mock => mock.VisitSqlInExpression(_expression));
     }
 
     [Test]
@@ -90,7 +89,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       var result = _expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("1 Operator 2"));
+      Assert.That (result, Is.EqualTo ("1 IN 2"));
     }
   }
 }

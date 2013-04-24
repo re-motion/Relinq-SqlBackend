@@ -61,7 +61,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSubStatementReferenceExpression_CreatesNewExpressionWithReferences_ForNewExpressions ()
     {
       var newExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor(new[]{typeof(int)}),
+          TypeForNewExpression.GetConstructor (typeof(int)),
           new[] { new NamedExpression ("const", Expression.Constant (0)) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
@@ -73,7 +73,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (newExpression, tableInfo, sqlTable, _context);
 
       var expectedResult = Expression.New (
-          typeof (TypeForNewExpression).GetConstructors ()[0],
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new Expression[] { new NamedExpression ("A", new SqlColumnDefinitionExpression (typeof (int), "q0", "const", false) ) },
           newExpression.Members);
 
@@ -84,7 +84,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void ResolveSubStatementReferenceExpression_CreatesNewExpressionWithReferences_ForNewExpressions_WithoutMembers ()
     {
       var newExpression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new[] { new NamedExpression ("const", Expression.Constant (0)) });
 
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (newExpression);
@@ -95,7 +95,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (newExpression, tableInfo, sqlTable, _context);
 
       var expectedResult = Expression.New (
-          typeof (TypeForNewExpression).GetConstructors ()[0],
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new Expression[] { new NamedExpression ("m0", new SqlColumnDefinitionExpression (typeof (int), "q0", "const", false)) });
 
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -104,12 +104,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveSubStatementReferenceExpression_CreatesEntityReference_ForEntities ()
     {
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityDefinitionExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                          {
-                             SelectProjection =
-                                 entityDefinitionExpression,
+                             SelectProjection = entityDefinitionExpression,
                              DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
                          }.GetSqlStatement();
       var tableInfo = new ResolvedSubStatementTableInfo ("q0", sqlStatement);
@@ -120,8 +118,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result, Is.TypeOf (typeof (SqlEntityReferenceExpression)));
       Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
 
-      var expectedResult = ((SqlEntityExpression) tableInfo.SqlStatement.SelectProjection).CreateReference (
-        "q0", tableInfo.SqlStatement.SelectProjection.Type);
+      var expectedResult = entityDefinitionExpression.CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

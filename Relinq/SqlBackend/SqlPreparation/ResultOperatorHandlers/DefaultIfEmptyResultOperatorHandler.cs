@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System.Linq.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -28,7 +30,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
   /// </summary>
   public class DefaultIfEmptyResultOperatorHandler : ResultOperatorHandler<DefaultIfEmptyResultOperator>
   {
-    public override void HandleResultOperator (DefaultIfEmptyResultOperator resultOperator, SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
+    public override void HandleResultOperator (
+        DefaultIfEmptyResultOperator resultOperator,
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
@@ -40,9 +47,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
           sqlStatementBuilder,
           generator,
           context,
-          info => new SqlJoinedTable (
-              new ResolvedJoinInfo ((IResolvedTableInfo)info, new SqlLiteralExpression (1), new SqlLiteralExpression (1)), JoinSemantics.Left), 
-              stage);
+          info =>
+          new SqlJoinedTable (
+              new ResolvedJoinInfo ((IResolvedTableInfo) info, Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1))),
+              JoinSemantics.Left),
+          stage);
     }
   }
 }

@@ -51,7 +51,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           typeof (Cook),
           "c",
           "test",
-          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true),
+          e => e,
           new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true),
           _nameColumnExpression,
           new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)

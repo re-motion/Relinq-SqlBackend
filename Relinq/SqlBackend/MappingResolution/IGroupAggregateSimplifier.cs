@@ -14,18 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
-using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 
-namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
+namespace Remotion.Linq.SqlBackend.MappingResolution
 {
-  public class TestableGroupAggregateSimplifier : GroupAggregateSimplifier
+  /// <summary>
+  /// Provides an abstraction for <see cref="GroupAggregateSimplifier"/>, mainly for testing reasons.
+  /// </summary>
+  public interface IGroupAggregateSimplifier
   {
-    public TestableGroupAggregateSimplifier (SqlTableBase oldElementSource, Expression elementExpressionToBeUsed)
-        : base (oldElementSource, elementExpressionToBeUsed)
-    {
-    }
+    bool IsSimplifiableGroupAggregate (SqlStatement resolvedSqlStatement);
+    Expression SimplifyIfPossible (SqlSubStatementExpression subStatementExpression, Expression unresolvedSelectProjection);
   }
 }

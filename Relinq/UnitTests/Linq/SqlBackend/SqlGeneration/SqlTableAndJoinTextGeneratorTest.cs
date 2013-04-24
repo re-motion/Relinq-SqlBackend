@@ -24,7 +24,6 @@ using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
@@ -73,25 +72,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "t", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
-      var joinedTable = originalTable.GetOrAddLeftJoin (unresolvedJoinInfo, kitchenCookMember);
+      var joinedTable = originalTable.GetOrAddLeftJoin (CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK"), kitchenCookMember);
 
       joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).LeftKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t1].[ID]"));
-      _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).RightKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[FK]"));
+          .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).JoinCondition))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("([t1].[ID] = [t2].[FK])"));
       _stageMock.Replay();
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (
-          _commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[FK]"));
+          _commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[FK])"));
     }
 
     [Test]
@@ -99,29 +93,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
       var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression1 = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
       var memberInfo2 = typeof (Cook).GetProperty ("Substitution");
-      var entityExpression2 = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
-      var joinedTable1 = originalTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
-      var joinedTable2 = joinedTable1.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
-
-      joinedTable1.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
-      joinedTable2.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2");
+      var joinedTable1 = originalTable.GetOrAddLeftJoin (CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK"), memberInfo1);
+      var joinedTable2 = joinedTable1.GetOrAddLeftJoin (CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2"), memberInfo2);
 
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).LeftKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t1].[ID]"));
+          .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).JoinCondition))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("X"));
       _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).RightKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[FK]"));
-      _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).LeftKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t2].[ID2]"));
-      _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).RightKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t3].[FK2]"));
+          .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).JoinCondition))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("Y"));
       _stageMock.Replay();
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true);
@@ -131,8 +112,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           _commandBuilder.GetCommandText(),
           Is.EqualTo (
               "[KitchenTable] AS [t1] LEFT OUTER JOIN "
-              + "[CookTable] AS [t2] ON [t1].[ID] = [t2].[FK] LEFT OUTER JOIN "
-              + "[CookTable2] AS [t3] ON [t2].[ID2] = [t3].[FK2]"));
+              + "[CookTable] AS [t2] ON X LEFT OUTER JOIN "
+              + "[CookTable2] AS [t3] ON Y"));
     }
 
     [Test]
@@ -205,45 +186,33 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitSqlJoinedTable_WithLeftJoinSemantic ()
     {
-      var leftKey = new SqlLiteralExpression (1);
-      var rightKey = new SqlLiteralExpression (1);
-      var sqlTable =
-          new SqlJoinedTable (
-              new ResolvedJoinInfo (
-                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), leftKey, rightKey),JoinSemantics.Left);
+      var condition = Expression.Constant (true);
+      var sqlTable = new SqlJoinedTable (
+          new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), condition), JoinSemantics.Left);
 
       _stageMock
-        .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, leftKey))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("leftKey"));
-      _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, rightKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("rightKey"));
+        .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("condition"));
 
       _generator.VisitSqlJoinedTable (sqlTable);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [c] ON leftKey = rightKey"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [c] ON condition"));
     }
 
     [Test]
     public void VisitSqlJoinedTable_WithInnerJoinSemantic ()
     {
-      var leftKey = new SqlLiteralExpression (1);
-      var rightKey = new SqlLiteralExpression (1);
-      var sqlTable =
-          new SqlJoinedTable (
-              new ResolvedJoinInfo (
-                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), leftKey, rightKey), JoinSemantics.Inner);
+      var condition = Expression.Constant (true);
+      var sqlTable = new SqlJoinedTable (
+          new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), condition), JoinSemantics.Inner);
 
       _stageMock
-        .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, leftKey))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("leftKey"));
-      _stageMock
-          .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, rightKey))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("rightKey"));
+        .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("condition"));
 
       _generator.VisitSqlJoinedTable (sqlTable);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c] ON leftKey = rightKey"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c] ON condition"));
     }
 
     [Test]
@@ -309,22 +278,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void VisitResolvedJoinInfo ()
     {
-      var leftKey = new SqlLiteralExpression (1);
-      var rightKey = new SqlLiteralExpression (1);
-      var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), leftKey, rightKey);
+      var condition = Expression.Constant (true);
+      var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), condition);
 
       _stageMock
-        .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, leftKey))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("leftKey"));
-      _stageMock
-         .Expect (mock => mock.GenerateTextForJoinKeyExpression (_commandBuilder, rightKey))
-         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("rightKey"));
+        .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
+        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("condition"));
       _stageMock.Replay();
 
       _generator.VisitResolvedJoinInfo (resolvedJoinInfo);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c] ON leftKey = rightKey"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c] ON condition"));
     }
     
     [Test]
@@ -342,7 +307,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
-      var entityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, kitchenCookMember, JoinCardinality.One);
 
       originalTable.GetOrAddLeftJoin (unresolvedJoinInfo, kitchenCookMember);
@@ -378,7 +343,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       var foreignTableSource = new ResolvedSimpleTableInfo (type, joinedTableName, joinedTableAlias);
       var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), originalTableAlias, leftSideKeyName, false);
       var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
-      return new ResolvedJoinInfo (foreignTableSource, primaryColumn, foreignColumn);
+      return new ResolvedJoinInfo (foreignTableSource, Expression.Equal (primaryColumn, foreignColumn));
     }
   }
 }

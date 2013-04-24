@@ -143,12 +143,12 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression)
+    public virtual Expression VisitSqlInExpression (SqlInExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       VisitExpression (expression.LeftExpression);
-      _commandBuilder.Append (string.Format (" {0} ", expression.BinaryOperator));
+      _commandBuilder.Append (" IN ");
       VisitExpression (expression.RightExpression);
 
       return expression;
@@ -407,6 +407,18 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
     {
       return VisitExtensionExpression (expression);
+    }
+
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var message = string.Format (
+          "It is not supported to use a constant entity object in any other context than to compare it with another entity. "
+          + "Expression: {0} (of type: '{1}').",
+          FormattingExpressionTreeVisitor.Format (expression),
+          expression.Type);
+      throw new NotSupportedException (message);
     }
 
     protected virtual void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)

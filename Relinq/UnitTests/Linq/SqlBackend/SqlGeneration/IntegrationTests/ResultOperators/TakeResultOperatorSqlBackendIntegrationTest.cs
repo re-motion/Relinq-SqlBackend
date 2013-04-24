@@ -38,11 +38,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void TakeWithMemberExpression ()
     {
       CheckQuery (
-          () => (from k in Kitchens from c in k.Restaurant.Cooks.Take (k.RoomNumber) select k.Name),
+          () => (from k in Kitchens from c in k.Restaurant.Cooks.Select (c => c.ID).Take (k.RoomNumber) select k.Name),
           "SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1] "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t2] ON [t1].[RestaurantID] = [t2].[ID] "
-          + "CROSS APPLY (SELECT TOP ([t1].[RoomNumber]) "
-          + "[t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t2] ON ([t1].[RestaurantID] = [t2].[ID]) "
+          + "CROSS APPLY (SELECT TOP ([t1].[RoomNumber]) [t3].[ID] AS [value] "
           + "FROM [CookTable] AS [t3] WHERE ([t2].[ID] = [t3].[RestaurantID])) AS [q0]",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }

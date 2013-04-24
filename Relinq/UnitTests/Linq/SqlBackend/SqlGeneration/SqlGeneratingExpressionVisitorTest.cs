@@ -83,8 +83,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnReferenceExpression_WithNamedEntity ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", "Test", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "Test");
       var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
@@ -98,7 +97,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           typeof (Cook),
           "c",
           "Test",
-          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true),
+          e => e.GetColumn (typeof (int), "ID", true),
           new SqlColumnDefinitionExpression (typeof (Cook), "c", "*", false));
       var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
 
@@ -110,8 +109,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlColumnReferenceExpression_WithUnnamedEntity ()
     {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true));
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null);
       var sqlColumnExpression = new SqlColumnReferenceExpression (typeof (int), "s", "ID", false, entityExpression);
       SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
@@ -121,15 +119,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_EntityDefinition ()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof (string),
           "t",
           null,
-          primaryKeyColumn,
+          e => e,
           new[]
           {
-              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
               new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
@@ -146,7 +143,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           typeof (Cook),
           "c",
           "Cook",
-          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          e => e,
           new[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
@@ -162,15 +159,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_NamedEntity()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof (string),
           "t",
           "Test",
-          primaryKeyColumn,
+          e => e,
           new[]
           {
-              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
               new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
@@ -204,7 +200,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateSql_VistNewExpression ()
     {
       var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
@@ -260,7 +256,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitConstantExpression_Collection ()
     {
       var collectionExpression = Expression.Constant (new[] { "Hugo", "Maier", "Markart" });
-      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant ("Hubert"), collectionExpression);
+      var sqlInExpression = new SqlInExpression (Expression.Constant ("Hubert"), collectionExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock);
 
@@ -279,15 +275,13 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void VisitConstantExpression_EmptyCollection ()
     {
       var collectionExpression = Expression.Constant (new string[] { });
-      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant ("Hubert"), collectionExpression);
+      var sqlInExpression = new SqlInExpression (Expression.Constant ("Hubert"), collectionExpression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (SELECT NULL WHERE 1 = 0)"));
     }
-
-
-
+    
     [Test]
     public void VisitLiteralExpression ()
     {
@@ -455,11 +449,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlBinaryOperatorExpression ()
+    public void VisitSqlInExpression ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
       var sqlSubStatementExpression = new SqlSubStatementExpression (sqlStatement);
-      var sqlInExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", Expression.Constant (1), sqlSubStatementExpression);
+      var sqlInExpression = new SqlInExpression (Expression.Constant (1), sqlSubStatementExpression);
 
       _stageMock
           .Expect (
@@ -742,6 +736,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters ()[0].Value, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void VisitSqlEntityConstantExpression ()
+    {
+      var entityConstant = new SqlEntityConstantExpression (typeof (Cook), new Cook(), Expression.Constant (0));
+
+      Assert.That (
+          () => SqlGeneratingExpressionVisitor.GenerateSql (entityConstant, _commandBuilder, _stageMock),
+          Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
+              "It is not supported to use a constant entity object in any other context than to compare it with another entity. "
+              + "Expression: ENTITY(0) (of type: 'Remotion.Linq.UnitTests.Linq.Core.TestDomain.Cook')."));
     }
   }
 }

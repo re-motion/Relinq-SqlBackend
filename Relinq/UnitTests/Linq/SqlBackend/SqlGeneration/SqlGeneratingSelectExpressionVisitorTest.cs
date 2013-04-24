@@ -92,15 +92,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_UnnamedEntity ()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof (string),
           "t",
           null,
-          primaryKeyColumn,
+          e => e,
           new[]
           {
-              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
               new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
@@ -113,15 +112,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_NamedEntity ()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof (string),
           "t",
           "Test",
-          primaryKeyColumn,
+          e => e,
           new[]
           {
-              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
               new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
           });
@@ -134,12 +132,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     [Test]
     public void GenerateSql_VisitSqlEntityExpression_NamedEntity_StarColumn ()
     {
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true);
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
           typeof (string),
           "t",
           "Test",
-          primaryKeyColumn,
+          e => e.GetColumn (typeof (int), "ID", true),
           new[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "*", false)
@@ -156,7 +153,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           typeof (Cook),
           "c",
           "Cook",
-          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          e => e,
           new[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
@@ -176,7 +173,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           typeof (Cook),
           "c",
           null,
-          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          e => e,
           new[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
@@ -196,7 +193,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           typeof (Cook),
           "c",
           "Cook",
-          new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false),
+          e => e,
           new[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),

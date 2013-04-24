@@ -22,7 +22,6 @@ using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 
@@ -174,12 +173,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return base.VisitQuerySourceReferenceExpression (expression);
     }
 
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
-    {
-      return VisitExtensionExpression (expression);
-    }
-
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
       return VisitExtensionExpression (expression);
     }

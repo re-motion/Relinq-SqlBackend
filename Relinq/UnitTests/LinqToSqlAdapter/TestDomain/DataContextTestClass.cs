@@ -136,6 +136,15 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain
     [Table (Name = "dbo.Territories")]
     public class Territory
     {
+      private int? _RegionID;
+
+      // Added to test a join info involving a nullable key
+      [Column (Storage = "_RegionID", DbType = "Int NULL")]
+      public int? RegionID
+      {
+        get { return _RegionID; }
+        set { _RegionID = value; }
+      }
     }
 
     [Table (Name = "dbo.Orders")]
@@ -250,6 +259,33 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain
       {
         get { return _Name; }
         set { _Name = value; }
+      }
+    }
+
+    [Table (Name = "dbo.ClassWithCompoundPrimaryKey")]
+    public class ClassWithCompoundPrimaryKey
+    {
+      private int _Key1;
+      private string _Key2;
+
+      [Column (Storage = "_Key1", DbType = "Int NOT NULL", IsPrimaryKey = true)]
+      public int Key1
+      {
+        get
+        {
+          return this._Key1;
+        }
+        set { _Key1 = value; }
+        }
+
+      [Column (Storage = "_Key2", DbType = "NVarChar(20) NOT NULL", CanBeNull = false, IsPrimaryKey = true)]
+      public string Key2
+      {
+        get
+        {
+          return _Key2;
+        }
+        set { _Key2 = value; }
       }
     }
 

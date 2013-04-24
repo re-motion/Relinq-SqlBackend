@@ -36,7 +36,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// result that itself needs to be resolved again.
   /// </summary>
   public class MemberAccessResolver
-      : ThrowingExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor, INamedExpressionVisitor, IResolvedSqlExpressionVisitor, ISqlGroupingSelectExpressionVisitor
+      : ThrowingExpressionTreeVisitor,
+        INamedExpressionVisitor,
+        IResolvedSqlExpressionVisitor,
+        ISqlGroupingSelectExpressionVisitor,
+        ISqlEntityRefMemberExpressionVisitor
   {
     private readonly MemberInfo _memberInfo;
     private readonly IMappingResolver _mappingResolver;
@@ -142,7 +146,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         if (result != null)
         {
           // remove name if any - the name is only required at the definition, not at the reference
-          return NamedExpression.StripSurroundingNames (result.AssociatedExpression);
+          return _context.RemoveNamesAndUpdateMapping (result.AssociatedExpression);
         }
       }
 
@@ -200,23 +204,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       // No problem, just use the KeyExpression (without a name, we don't care about the original name of the expression when we resolve members).
 
-      return NamedExpression.StripSurroundingNames (expression.KeyExpression);
+      return _context.RemoveNamesAndUpdateMapping (expression.KeyExpression);
     }
 
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       // Not supported, required by IUnresolvedSqlExpressionVisitor.
       return VisitExtensionExpression (expression);
     }
-
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      // Not supported, required by IUnresolvedSqlExpressionVisitor.
-      return VisitExtensionExpression (expression);
-    }
-
-    
   }
 }

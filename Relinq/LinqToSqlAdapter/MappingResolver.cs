@@ -16,12 +16,15 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Linq.SqlBackend;
 using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
@@ -73,13 +76,17 @@ namespace Remotion.Linq.LinqToSqlAdapter
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       Type type = tableInfo.ItemType;
-      var primaryKeyMember = GetPrimaryKeyMember(GetMetaType (type));
-      var primaryKeyColumn = CreateSqlColumnExpression (tableInfo, primaryKeyMember);
+      var primaryKeyMembers = GetMetaType (type).IdentityMembers;
 
       var columnMembers = GetMetaDataMembers (tableInfo.ItemType);
 
       var columns = columnMembers.Select (metaDataMember => CreateSqlColumnExpression (tableInfo, metaDataMember)).ToArray();
-      return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableInfo.TableAlias, null, primaryKeyColumn, columns);
+      return new SqlEntityDefinitionExpression (
+          tableInfo.ItemType,
+          tableInfo.TableAlias,
+          null,
+          e => CreateIdentityExpression (type, primaryKeyMembers.Select (m => ResolveDataMember (e, m)).ToArray()),
+          columns);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
@@ -92,11 +99,10 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       if (dataMember.IsAssociation)
         return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
-
-      var memberType = ReflectionUtility.GetMemberReturnType (memberInfo);
-      return originatingEntity.GetColumn (memberType, dataMember.MappedName, dataMember.IsPrimaryKey);
+      else
+        return ResolveDataMember (originatingEntity, dataMember);
     }
-    
+
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
       var message = string.Format (
@@ -116,9 +122,11 @@ namespace Remotion.Linq.LinqToSqlAdapter
       var metaType = _metaModel.GetMetaType (constantExpression.Type);
       if (metaType.Table != null)
       {
-        var primaryKey = GetPrimaryKeyMember (metaType);
-        var primaryKeyValue = primaryKey.MemberAccessor.GetBoxedValue (constantExpression.Value);
-        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, Expression.Constant (primaryKeyValue, primaryKey.Type));
+        var primaryKeyMembers = metaType.IdentityMembers;
+        var primaryKeyValues = primaryKeyMembers.Select (member => Expression.Constant (member.MemberAccessor.GetBoxedValue (constantExpression.Value), member.Type)).ToArray();
+        var primaryKeyExpression = CreateIdentityExpression (metaType.Type, primaryKeyValues);
+
+        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, primaryKeyExpression);
       }
 
       return constantExpression;
@@ -147,6 +155,21 @@ namespace Remotion.Linq.LinqToSqlAdapter
           Expression.MakeMemberAccess (expression, discriminatorDataMember.Member),
           Expression.Constant (desiredDiscriminatorValue));
       // ReSharper restore PossibleNullReferenceException
+    }
+
+    public Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
+    {
+      ArgumentUtility.CheckNotNull ("entityRefMemberExpression", entityRefMemberExpression);
+
+      var metaType = GetMetaType (entityRefMemberExpression.OriginatingEntity.Type);
+      var metaAssociation = GetDataMember (metaType, entityRefMemberExpression.MemberInfo).Association;
+      Debug.Assert (metaAssociation != null);
+
+      if (metaAssociation.OtherKeyIsPrimaryKey)
+        return ResolveMember (entityRefMemberExpression.OriginatingEntity, metaAssociation.ThisKey);
+
+      // Optimization not implemented for now. Could be implemented by 
+      return null;
     }
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
@@ -195,20 +218,6 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return metaType;
     }
 
-    private MetaDataMember GetPrimaryKeyMember (MetaType metaType)
-    {
-      var identityMembers = metaType.IdentityMembers;
-
-      // TODO RM-3110: Refactor when re-linq supports compound keys
-      if (identityMembers.Count > 1)
-        throw new NotSupportedException ("Entities with more than one identity member are currently not supported by re-linq. (" + metaType.Name + ")");
-
-      if (identityMembers.Count == 0)
-        throw new NotSupportedException ("Entities without identity members are not supported by re-linq. (" + metaType.Name + ")");
-
-      return identityMembers.Single ();
-    }
-
     private MetaDataMember[] GetMetaDataMembersRecursive (MetaType metaType)
     {
       var members = new HashSet<MetaDataMember> (new MetaDataMemberComparer ());
@@ -227,22 +236,42 @@ namespace Remotion.Linq.LinqToSqlAdapter
     private static ResolvedJoinInfo CreateResolvedJoinInfo (
         SqlEntityExpression originatingEntity, MetaAssociation metaAssociation, IResolvedTableInfo joinedTableInfo)
     {
-      // TODO RM-3110: Refactor when re-linq supports compound keys
+      var leftColumn = ResolveMember (originatingEntity, metaAssociation.ThisKey);
 
-      Debug.Assert (metaAssociation.ThisKey.Count == 1);
-      Debug.Assert (metaAssociation.OtherKey.Count == 1);
+      // If needed, implement by using compounds (NewExpressions with named arguments, see NamedExpression.CreateNewExpressionWithNamedArguments.)
+      if (metaAssociation.OtherKey.Count > 1)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Associations with more than one column are currently not supported. ({0}.{1})",
+                originatingEntity.Type,
+                metaAssociation.OtherMember.Name));
+      }
 
-      var thisKey = metaAssociation.ThisKey[0];
       var otherKey = metaAssociation.OtherKey[0];
-
-      var leftColumn = originatingEntity.GetColumn (thisKey.Type, thisKey.MappedName, thisKey.IsPrimaryKey);
       var rightColumn = new SqlColumnDefinitionExpression (
         otherKey.Type,
         joinedTableInfo.TableAlias,
         otherKey.MappedName,
         otherKey.IsPrimaryKey);
 
-      return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
+      var joinCondition = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null);
+      return new ResolvedJoinInfo (joinedTableInfo, joinCondition);
+    }
+
+    private static SqlColumnExpression ResolveMember (SqlEntityExpression entity, ReadOnlyCollection<MetaDataMember> metaDataMembers)
+    {
+      // If needed, implement by using compounds (NewExpressions with named arguments, see NamedExpression.CreateNewExpressionWithNamedArguments.)
+      if (metaDataMembers.Count > 1)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Members mapped to more than one column are currently not supported. ({0}.{1})",
+                entity.Type));
+      }
+
+      var thisKey = metaDataMembers[0];
+      return ResolveDataMember (entity, thisKey);
     }
 
     private static SqlColumnExpression CreateSqlColumnExpression (IResolvedTableInfo tableInfo, MetaDataMember metaDataMember)
@@ -253,5 +282,58 @@ namespace Remotion.Linq.LinqToSqlAdapter
           metaDataMember.MappedName,
           metaDataMember.IsPrimaryKey);
     }
+
+    private static SqlColumnExpression ResolveDataMember (SqlEntityExpression originatingEntity, MetaDataMember dataMember)
+    {
+      return originatingEntity.GetColumn (dataMember.Type, dataMember.MappedName, dataMember.IsPrimaryKey);
+    }
+
+    private Expression CreateIdentityExpression (Type entityType, Expression[] primaryKeyValues)
+    {
+      Type genericTupleType;
+      switch (primaryKeyValues.Length)
+      {
+        case 0:
+          throw new NotSupportedException (string.Format ("Entities without identity members are not supported by re-linq. ({0})", entityType));
+        case 1:
+          return primaryKeyValues.Single ();
+        case 2:
+          genericTupleType = typeof (CompoundIdentityTuple<,>);
+          break;
+        default:
+          throw new NotSupportedException (string.Format ("Primary keys with more than 2 members are not supported. ({0})", entityType));
+      }
+
+      var ctor = genericTupleType.MakeGenericType (primaryKeyValues.Select (e => e.Type).ToArray ()).GetConstructors ().Single ();
+      Debug.Assert (ctor != null);
+      var tupleConstructionExpression = Expression.New (
+          ctor, 
+          primaryKeyValues, 
+          ctor.GetParameters().Select ((pi, i) => (MemberInfo) ctor.DeclaringType.GetProperty ("Item" + (i + 1))));
+      return NamedExpression.CreateNewExpressionWithNamedArguments (tupleConstructionExpression);
+    }
+    
+    public class CompoundIdentityTuple<T1, T2>
+    {
+      private readonly T1 _item1;
+      private readonly T2 _item2;
+
+      public CompoundIdentityTuple (T1 item1, T2 item2)
+      {
+        _item1 = item1;
+        _item2 = item2;
+      }
+
+      public T1 Item1
+      {
+        get { return _item1; }
+      }
+
+      public T2 Item2
+      {
+        get { return _item2; }
+      }
+    }
+
   }
 }

@@ -29,9 +29,21 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// Provides functionality to simplify sub-statements that contain an <see cref="AggregateExpressionNode"/> aggregating over the
   /// elements of a grouping. The sub-statements must be resolved before they can be simplified.
   /// </summary>
-  public class GroupAggregateSimplifier : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor
+  public class GroupAggregateSimplifier : IGroupAggregateSimplifier
   {
-    public static bool IsSimplifiableGroupAggregate (SqlStatement resolvedSqlStatement)
+    private readonly IMappingResolutionStage _stage;
+    private readonly IMappingResolutionContext _context;
+
+    public GroupAggregateSimplifier (IMappingResolutionStage stage, IMappingResolutionContext context)
+    {
+      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      _stage = stage;
+      _context = context;
+    }
+
+    public bool IsSimplifiableGroupAggregate (SqlStatement resolvedSqlStatement)
     {
       ArgumentUtility.CheckNotNull ("resolvedSqlStatement", resolvedSqlStatement);
 
@@ -52,23 +64,22 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression as AggregationExpression;
     }
 
-    public static Expression SimplifyIfPossible (SqlStatement resolvedSqlStatement, Expression unresolvedSelectProjection, IMappingResolutionStage stage, IMappingResolutionContext context)
+    public Expression SimplifyIfPossible (
+        SqlSubStatementExpression subStatementExpression,
+        Expression unresolvedSelectProjection)
     {
-      ArgumentUtility.CheckNotNull ("resolvedSqlStatement", resolvedSqlStatement);
+      ArgumentUtility.CheckNotNull ("subStatementExpression", subStatementExpression);
       ArgumentUtility.CheckNotNull ("unresolvedSelectProjection", unresolvedSelectProjection);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
 
+      var resolvedSqlStatement = subStatementExpression.SqlStatement;
       if (IsSimplifiableGroupAggregate (resolvedSqlStatement))
       {
-        var joinedGroupingTableInfo = (ResolvedJoinedGroupingTableInfo) resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo();
+        var joinedGroupingTableInfo = (ResolvedJoinedGroupingTableInfo) resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo ();
 
         // Strip surrounding names so that there won't be a named expression inside the new aggregation
-        var elementExpression = NamedExpression.StripSurroundingNames (joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression);
-        var visitor = new GroupAggregateSimplifier (
-            resolvedSqlStatement.SqlTables[0], 
-            elementExpression);
-        
+        var elementExpression = _context.RemoveNamesAndUpdateMapping (joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression);
+        var visitor = new SimplifyingVisitor (resolvedSqlStatement.SqlTables[0], elementExpression);
+
         var aggregationExpression = FindAggregationExpression (unresolvedSelectProjection);
         if (aggregationExpression == null)
         {
@@ -80,7 +91,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
         if (visitor.CanBeTransferredToGroupingSource)
         {
-          var resolvedNewAggregation = stage.ResolveAggregationExpression(newAggregation, context);
+          var resolvedNewAggregation = _stage.ResolveAggregationExpression (newAggregation, _context);
 
           var aggregationName = joinedGroupingTableInfo.AssociatedGroupingSelectExpression.AddAggregationExpressionWithName (resolvedNewAggregation);
 
@@ -92,46 +103,44 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         }
       }
 
-      return new SqlSubStatementExpression (resolvedSqlStatement);
+      return subStatementExpression;
     }
 
-    private readonly SqlTableBase _oldElementSource;
-    private readonly Expression _newElementExpression;
-
-    protected GroupAggregateSimplifier (SqlTableBase oldElementSource, Expression newElementExpression)
+    public class SimplifyingVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor
     {
-      ArgumentUtility.CheckNotNull ("oldElementSource", oldElementSource);
-      ArgumentUtility.CheckNotNull ("newElementExpression", newElementExpression);
+      private readonly SqlTableBase _oldElementSource;
+      private readonly Expression _newElementExpression;
 
-      _oldElementSource = oldElementSource;
-      _newElementExpression = newElementExpression;
-
-      CanBeTransferredToGroupingSource = true;
-    }
-
-    public bool CanBeTransferredToGroupingSource { get; protected set; }
-    
-    public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
-    {
-      if (expression.SqlTable == _oldElementSource)
+      public SimplifyingVisitor (SqlTableBase oldElementSource, Expression newElementExpression)
       {
-        return _newElementExpression;
+        ArgumentUtility.CheckNotNull ("oldElementSource", oldElementSource);
+        ArgumentUtility.CheckNotNull ("newElementExpression", newElementExpression);
+
+        _oldElementSource = oldElementSource;
+        _newElementExpression = newElementExpression;
+
+        CanBeTransferredToGroupingSource = true;
       }
-      else
+
+      public bool CanBeTransferredToGroupingSource { get; protected set; }
+
+      public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
       {
-        CanBeTransferredToGroupingSource = false;
-        return expression;
+        if (expression.SqlTable == _oldElementSource)
+        {
+          return _newElementExpression;
+        }
+        else
+        {
+          CanBeTransferredToGroupingSource = false;
+          return expression;
+        }
       }
-    }
 
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
-    {
-      return VisitExtensionExpression (expression);
-    }
-
-    Expression IUnresolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
-    {
-      return VisitExtensionExpression (expression);
+      Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+      {
+        return VisitExtensionExpression (expression);
+      }
     }
   }
 }

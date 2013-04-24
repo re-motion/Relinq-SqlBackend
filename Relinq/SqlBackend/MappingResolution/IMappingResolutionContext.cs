@@ -36,5 +36,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     SqlGroupingSelectExpression UpdateGroupingSelectAndAddMapping (
         SqlGroupingSelectExpression expression, Expression newKey, Expression newElement, IEnumerable<Expression> aggregations);
     void AddSqlTable (SqlTableBase sqlTableBase, SqlStatementBuilder sqlStatementBuilder);
+    Expression RemoveNamesAndUpdateMapping (Expression expression);
   }
 }
