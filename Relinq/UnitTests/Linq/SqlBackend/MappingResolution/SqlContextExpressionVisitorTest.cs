@@ -30,7 +30,6 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
@@ -1081,24 +1080,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitSqlCaseExpression_NoElse ()
-    {
-      var case1 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), Expression.Constant (true));
-      var case2 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (false), Expression.Constant (false));
-      var expression = new SqlCaseExpression (typeof (bool?), new[] { case1, case2 }, null);
-
-      var result = _valueRequiredVisitor.VisitSqlCaseExpression (expression);
-
-      var expectedCase1 = new SqlCaseExpression.CaseWhenPair (
-          Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
-      var expectedCase2 = new SqlCaseExpression.CaseWhenPair (
-          Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (0)));
-      var expectedExpression = new SqlCaseExpression (typeof (bool?), new[] { expectedCase1, expectedCase2 }, null);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
-    }
-
-    [Test]
-    public void VisitSqlCaseExpression_WithElse ()
+    public void VisitSqlCaseExpression_AppliesValueContext ()
     {
       var case1 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), Expression.Constant (true));
       var case2 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (false), Expression.Constant (false));
@@ -1113,6 +1095,55 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (0)));
       var expectedElseCase = new SqlConvertedBooleanExpression (Expression.Constant (1));
       var expectedExpression = new SqlCaseExpression (typeof (bool), new[] { expectedCase1, expectedCase2 }, expectedElseCase);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void VisitSqlCaseExpression_RequiresSingleValue_InThen ()
+    {
+      var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var nonEntity = Expression.Constant (null, typeof (Cook));
+
+      var case1 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), entity);
+      var elseCase = nonEntity;
+      var expression = new SqlCaseExpression (typeof (Cook), new[] { case1 }, elseCase);
+
+      Assert.That (
+          () => _valueRequiredVisitor.VisitSqlCaseExpression (expression),
+          Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
+              "Cannot use an entity expression ('[t0]' of type 'Cook') in a place where SQL requires a single value."));
+    }
+
+    [Test]
+    public void VisitSqlCaseExpression_RequiresSingleValue_InElse ()
+    {
+      var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var nonEntity = Expression.Constant (null, typeof (Cook));
+
+      var case1 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), nonEntity);
+      var elseCase = entity;
+      var expression = new SqlCaseExpression (typeof (Cook), new[] { case1 }, elseCase);
+
+      Assert.That (
+          () => _valueRequiredVisitor.VisitSqlCaseExpression (expression),
+          Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
+              "Cannot use an entity expression ('[t0]' of type 'Cook') in a place where SQL requires a single value."));
+    }
+    
+    [Test]
+    public void VisitSqlCaseExpression_NoElse ()
+    {
+      var case1 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (true), Expression.Constant (true));
+      var case2 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (false), Expression.Constant (false));
+      var expression = new SqlCaseExpression (typeof (bool?), new[] { case1, case2 }, null);
+
+      var result = _valueRequiredVisitor.VisitSqlCaseExpression (expression);
+
+      var expectedCase1 = new SqlCaseExpression.CaseWhenPair (
+          Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
+      var expectedCase2 = new SqlCaseExpression.CaseWhenPair (
+          Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (0)));
+      var expectedExpression = new SqlCaseExpression (typeof (bool?), new[] { expectedCase1, expectedCase2 }, null);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 

@@ -373,12 +373,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           caseWhenPair =>
           {
             var newWhen = ApplyPredicateContext (caseWhenPair.When);
-            // TODO 4878: Actually, this should be single value context.
-            var newThen = ApplyValueContext (caseWhenPair.Then);
+            var newThen = ApplySingleValueContext (caseWhenPair.Then);
             return caseWhenPair.Update (newWhen, newThen);
           });
-      // TODO 4878: Actually, this should be single value context.
-      var newElseCase = expression.ElseCase != null ? ApplyValueContext (expression.ElseCase) : null;
+      var newElseCase = expression.ElseCase != null ? ApplySingleValueContext (expression.ElseCase) : null;
       return expression.Update (newCases, newElseCase);
     }
 
