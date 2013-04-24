@@ -181,6 +181,27 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
+    public void ResolveSimpleTableInfo_MultiplePrimaryKeyProperties ()
+    {
+      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.ClassWithCompoundPrimaryKey), "ClassWithCompoundPrimaryKey", "t0");
+
+      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+
+      SqlColumnExpression expectedPrimaryColumn1 = new SqlColumnDefinitionExpression (typeof (int), simpleTableInfo.TableAlias, "Key1", true);
+      SqlColumnExpression expectedPrimaryColumn2 = new SqlColumnDefinitionExpression (typeof (string), simpleTableInfo.TableAlias, "Key2", true);
+      var type = typeof (MappingResolver.CompoundIdentityTuple<int, string>);
+      var expectedIdentityExpression = Expression.New (
+          type.GetConstructors().Single(), 
+          new[] { new NamedExpression ("Item1", expectedPrimaryColumn1), new NamedExpression ("Item2", expectedPrimaryColumn2) },
+          new[] { type.GetProperty ("Item1"), type.GetProperty ("Item2") });
+
+      Assert.That (resolvedExpr.Type, Is.SameAs (typeof (DataContextTestClass.ClassWithCompoundPrimaryKey)));
+      Assert.That (resolvedExpr.TableAlias, Is.EqualTo ("t0"));
+      Assert.That (resolvedExpr.Name, Is.Null);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedIdentityExpression, resolvedExpr.GetIdentityExpression ());
+    }
+
+    [Test]
     public void ResolveSimpleTableInfo_WithInheritanceHierarchy ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (ContactWithInheritanceHierarchy), "dbo.Contact", "t0");
@@ -312,6 +333,22 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
+    public void ResolveConstantExpression_WithMultiplePrimaryKeyMembers ()
+    {
+      var entity = new DataContextTestClass.ClassWithCompoundPrimaryKey { Key1 = 1, Key2 = "two"};
+      var constantExpr = Expression.Constant (entity);
+
+      var result = _mappingResolver.ResolveConstantExpression (constantExpr);
+
+      var type = typeof (MappingResolver.CompoundIdentityTuple<int, string>);
+      var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.ClassWithCompoundPrimaryKey), entity, Expression.New (
+          type.GetConstructors().Single(), 
+          new[] { new NamedExpression ("Item1", Expression.Constant (1)), new NamedExpression ("Item2", Expression.Constant ("two")) },
+          new[] { type.GetProperty ("Item1"), type.GetProperty ("Item2") }));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
+    }
+
+    [Test]
     public void ResolveConstantExpression_Null ()
     {
       var constantExpr = Expression.Constant (null, typeof (DataContextTestClass.Customer));
@@ -332,8 +369,9 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "Entities without identity members are not supported by re-linq. (FakeClassWithoutPrimaryKey)")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Entities without identity members are not supported by re-linq. "
+        + "(Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+FakeClassWithoutPrimaryKey)")]
     public void ResolveConstantExpression_NoPrimaryKey ()
     {
       var customer = new DataContextTestClass.FakeClassWithoutPrimaryKey { Name = "abc" };

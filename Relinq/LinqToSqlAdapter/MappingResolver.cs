@@ -24,6 +24,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.SqlBackend;
 using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
@@ -75,7 +76,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       Type type = tableInfo.ItemType;
-      var primaryKeyMember = GetPrimaryKeyMember(GetMetaType (type));
+      var primaryKeyMembers = GetMetaType (type).IdentityMembers;
 
       var columnMembers = GetMetaDataMembers (tableInfo.ItemType);
 
@@ -84,7 +85,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
           tableInfo.ItemType,
           tableInfo.TableAlias,
           null,
-          e => e.GetColumn (primaryKeyMember.Type, primaryKeyMember.MappedName, primaryKeyMember.IsPrimaryKey),
+          e => CreateIdentityExpression (type, primaryKeyMembers.Select (m => ResolveDataMember (e, m)).ToArray()),
           columns);
     }
 
@@ -121,9 +122,11 @@ namespace Remotion.Linq.LinqToSqlAdapter
       var metaType = _metaModel.GetMetaType (constantExpression.Type);
       if (metaType.Table != null)
       {
-        var primaryKey = GetPrimaryKeyMember (metaType);
-        var primaryKeyValue = primaryKey.MemberAccessor.GetBoxedValue (constantExpression.Value);
-        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, Expression.Constant (primaryKeyValue, primaryKey.Type));
+        var primaryKeyMembers = metaType.IdentityMembers;
+        var primaryKeyValues = primaryKeyMembers.Select (member => Expression.Constant (member.MemberAccessor.GetBoxedValue (constantExpression.Value), member.Type)).ToArray();
+        var primaryKeyExpression = CreateIdentityExpression (metaType.Type, primaryKeyValues);
+
+        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, primaryKeyExpression);
       }
 
       return constantExpression;
@@ -215,20 +218,6 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return metaType;
     }
 
-    private MetaDataMember GetPrimaryKeyMember (MetaType metaType)
-    {
-      var identityMembers = metaType.IdentityMembers;
-
-      // TODO RM-3110: Refactor when re-linq supports compound keys
-      if (identityMembers.Count > 1)
-        throw new NotSupportedException ("Entities with more than one identity member are currently not supported by re-linq. (" + metaType.Name + ")");
-
-      if (identityMembers.Count == 0)
-        throw new NotSupportedException ("Entities without identity members are not supported by re-linq. (" + metaType.Name + ")");
-
-      return identityMembers.Single ();
-    }
-
     private MetaDataMember[] GetMetaDataMembersRecursive (MetaType metaType)
     {
       var members = new HashSet<MetaDataMember> (new MetaDataMemberComparer ());
@@ -282,6 +271,53 @@ namespace Remotion.Linq.LinqToSqlAdapter
     private static SqlColumnExpression ResolveDataMember (SqlEntityExpression originatingEntity, MetaDataMember dataMember)
     {
       return originatingEntity.GetColumn (dataMember.Type, dataMember.MappedName, dataMember.IsPrimaryKey);
+    }
+
+    private Expression CreateIdentityExpression (Type entityType, Expression[] primaryKeyValues)
+    {
+      Type genericTupleType;
+      switch (primaryKeyValues.Length)
+      {
+        case 0:
+          throw new NotSupportedException (string.Format ("Entities without identity members are not supported by re-linq. ({0})", entityType));
+        case 1:
+          return primaryKeyValues.Single ();
+        case 2:
+          genericTupleType = typeof (CompoundIdentityTuple<,>);
+          break;
+        default:
+          throw new NotSupportedException (string.Format ("Primary keys with more than 2 members are not supported. ({0})", entityType));
+      }
+
+      var ctor = genericTupleType.MakeGenericType (primaryKeyValues.Select (e => e.Type).ToArray ()).GetConstructors ().Single ();
+      Debug.Assert (ctor != null);
+      var tupleConstructionExpression = Expression.New (
+          ctor, 
+          primaryKeyValues, 
+          ctor.GetParameters().Select ((pi, i) => (MemberInfo) ctor.DeclaringType.GetProperty ("Item" + (i + 1))));
+      return NamedExpression.CreateNewExpressionWithNamedArguments (tupleConstructionExpression);
+    }
+    
+    public class CompoundIdentityTuple<T1, T2>
+    {
+      private readonly T1 _item1;
+      private readonly T2 _item2;
+
+      public CompoundIdentityTuple (T1 item1, T2 item2)
+      {
+        _item1 = item1;
+        _item2 = item2;
+      }
+
+      public T1 Item1
+      {
+        get { return _item1; }
+      }
+
+      public T2 Item2
+      {
+        get { return _item2; }
+      }
     }
 
   }
