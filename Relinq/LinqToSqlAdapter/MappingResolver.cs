@@ -238,8 +238,16 @@ namespace Remotion.Linq.LinqToSqlAdapter
     {
       var leftColumn = ResolveMember (originatingEntity, metaAssociation.ThisKey);
 
-      // TODO RM-3110: Refactor when re-linq supports compound keys
-      Debug.Assert (metaAssociation.OtherKey.Count == 1);
+      // If needed, implement by using compounds (NewExpressions with named arguments, see NamedExpression.CreateNewExpressionWithNamedArguments.)
+      if (metaAssociation.OtherKey.Count > 1)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Associations with more than one column are currently not supported. ({0}.{1})",
+                originatingEntity.Type,
+                metaAssociation.OtherMember.Name));
+      }
+
       var otherKey = metaAssociation.OtherKey[0];
       var rightColumn = new SqlColumnDefinitionExpression (
         otherKey.Type,
@@ -253,8 +261,15 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     private static SqlColumnExpression ResolveMember (SqlEntityExpression entity, ReadOnlyCollection<MetaDataMember> metaDataMembers)
     {
-      // TODO RM-3110: Refactor when re-linq supports compound keys
-      Debug.Assert (metaDataMembers.Count == 1);
+      // If needed, implement by using compounds (NewExpressions with named arguments, see NamedExpression.CreateNewExpressionWithNamedArguments.)
+      if (metaDataMembers.Count > 1)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Members mapped to more than one column are currently not supported. ({0}.{1})",
+                entity.Type));
+      }
+
       var thisKey = metaDataMembers[0];
       return ResolveDataMember (entity, thisKey);
     }
