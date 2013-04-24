@@ -24,7 +24,6 @@ using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
@@ -374,11 +373,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           caseWhenPair =>
           {
             var newWhen = ApplyPredicateContext (caseWhenPair.When);
-            // Actually, this should be single value context, but we don't yet support entities in a SqlCaseExpression
+            // TODO 4878: Actually, this should be single value context.
             var newThen = ApplyValueContext (caseWhenPair.Then);
             return caseWhenPair.Update (newWhen, newThen);
           });
-      // Actually, this should be single value context, but we don't yet support entities in a SqlCaseExpression
+      // TODO 4878: Actually, this should be single value context.
       var newElseCase = expression.ElseCase != null ? ApplyValueContext (expression.ElseCase) : null;
       return expression.Update (newCases, newElseCase);
     }
