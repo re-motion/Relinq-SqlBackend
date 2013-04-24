@@ -15,15 +15,12 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
@@ -146,13 +143,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ApplyContext_SqlJoinedTable_SameJoinInfo ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false), new SqlColumnDefinitionExpression (typeof (int), "r", "CookID", false));
-      var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left);
+      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
+      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
-          .Return (resolvedJoinInfo);
+          .Expect (mock => mock.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
+          .Return (joinInfo);
       _stageMock.Replay ();
 
       var result = SqlContextTableInfoVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
@@ -164,13 +160,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ApplyContext_SqlJoinedTable_NewJoinInfo ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var resolvedJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false), new SqlColumnDefinitionExpression (typeof (int), "r", "CookID", false));
-      var sqlJoinedTable = new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left);
-      var fakeJoinInfo = new ResolvedJoinInfo (tableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
+      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
+      var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
+          .Expect (mock => mock.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
           .Return (fakeJoinInfo);
       _stageMock.Replay ();
 

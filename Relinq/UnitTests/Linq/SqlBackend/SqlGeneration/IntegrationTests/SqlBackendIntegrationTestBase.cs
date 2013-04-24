@@ -33,6 +33,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
   public class SqlBackendIntegrationTestBase
   {
     private IQueryable<Cook> _cooks;
+    private IQueryable<Knife> _knives;
     private IQueryable<Kitchen> _kitchens;
     private IQueryable<Restaurant> _restaurants;
     private IQueryable<Company> _companies;
@@ -42,6 +43,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public IQueryable<Cook> Cooks
     {
       get { return _cooks; }
+    }
+
+    public IQueryable<Knife> Knives
+    {
+      get { return _knives; }
     }
 
     public IQueryable<Kitchen> Kitchens
@@ -68,6 +74,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public virtual void SetUp ()
     {
       _cooks = ExpressionHelper.CreateCookQueryable();
+      _knives = ExpressionHelper.CreateKnifeQueryable ();
       _kitchens = ExpressionHelper.CreateKitchenQueryable();
       _restaurants = ExpressionHelper.CreateRestaurantQueryable();
       _chefs = ExpressionHelper.CreateChefQueryable();
@@ -182,7 +189,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var result = GenerateSql (queryModel);
 
-      Assert.That (result.CommandText, Is.EqualTo (expectedStatement), "Full generated statement: " + result.CommandText);
+      try
+      {
+        Assert.That (result.CommandText, Is.EqualTo (expectedStatement));
+      }
+      catch
+      {
+        Console.WriteLine ("Full generated statement: " + result.CommandText);
+        Console.WriteLine ("Full expected statement:  " + expectedStatement);
+        throw;
+      }
+
       Assert.That (result.Parameters, Is.EqualTo (expectedParameters));
 
       if (expectedInMemoryProjection != null)
@@ -208,28 +225,37 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 
     private Expression ReplaceConvertExpressionMarker (Expression simplifiedExpectedInMemoryProjection)
     {
-      var markerReplacer = new AdHocExpressionTreeVisitor (
-          expr =>
+      return AdHocExpressionTreeVisitor.Transform(simplifiedExpectedInMemoryProjection, expr =>
+      {
+        var methodCallExpression = expr as MethodCallExpression;
+        if (methodCallExpression != null && methodCallExpression.Method.Name == "ConvertExpressionMarker")
+        {
+          var conversionMethodCall = methodCallExpression.Arguments.Single() as MethodCallExpression;
+          if (conversionMethodCall == null || conversionMethodCall.Object != null || conversionMethodCall.Arguments.Count != 1)
           {
-            var methodCallExpression = expr as MethodCallExpression;
-            if (methodCallExpression != null && methodCallExpression.Method.Name == "ConvertExpressionMarker")
-            {
-              var conversionMethodCall = methodCallExpression.Arguments.Single () as MethodCallExpression;
-              if (conversionMethodCall == null || conversionMethodCall.Object != null || conversionMethodCall.Arguments.Count != 1)
-              {
-                throw new InvalidOperationException (
-                    "The argument to ConvertExpressionMarker must be a MethodCallExpression to a static method with a single argument.");
-              }
-              return Expression.Convert (conversionMethodCall.Arguments.Single (), conversionMethodCall.Type, conversionMethodCall.Method);
-            }
-            
-            return expr;
-          });
-      return markerReplacer.VisitExpression (simplifiedExpectedInMemoryProjection);
+            throw new InvalidOperationException (
+                "The argument to ConvertExpressionMarker must be a MethodCallExpression to a static method with a single argument.");
+          }
+          return Expression.Convert (conversionMethodCall.Arguments.Single(), conversionMethodCall.Type, conversionMethodCall.Method);
+        }
+
+        return expr;
+      });
     }
 
-    private class AdHocExpressionTreeVisitor : ExpressionTreeVisitor
+    protected class AdHocExpressionTreeVisitor : ExpressionTreeVisitor
     {
+      public static Expression Transform (Expression expression, Func<Expression, Expression> transformation)
+      {
+        return new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+      }
+
+      public static T TransformAndRetainType<T> (T expression, Func<Expression, Expression> transformation)
+        where T : Expression
+      {
+        return (T) new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+      }
+
       private readonly Func<Expression, Expression> _transformation;
 
       public AdHocExpressionTreeVisitor (Func<Expression, Expression> transformation)

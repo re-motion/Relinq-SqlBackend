@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 
@@ -29,21 +28,21 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   [TestFixture]
   public class SqlEntityConstantExpressionTest
   {
-    private ConstantExpression _primaryKeyExpression;
+    private ConstantExpression _identityExpression;
     private SqlEntityConstantExpression _expression;
 
     [SetUp]
     public void SetUp ()
     {
-      _primaryKeyExpression = Expression.Constant (5);
-      _expression = new SqlEntityConstantExpression (typeof (Cook), new object(), _primaryKeyExpression);
+      _identityExpression = Expression.Constant (5);
+      _expression = new SqlEntityConstantExpression (typeof (Cook), new object(), _identityExpression);
     }
 
     [Test]
-    public void VisitChildren_VisitsPrimaryKeyExpression_Unchanged ()
+    public void VisitChildren_VisitsIdentityExpression_Unchanged ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
-      visitorMock.Expect (mock => mock.VisitExpression (_primaryKeyExpression)).Return (_primaryKeyExpression);
+      visitorMock.Expect (mock => mock.VisitExpression (_identityExpression)).Return (_identityExpression);
       visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
@@ -53,11 +52,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     }
 
     [Test]
-    public void VisitChildren_VisitsPrimaryKeyExpression_Changed ()
+    public void VisitChildren_VisitsIdentityExpression_Changed ()
     {
       var newPrimaryKeyExpression = Expression.Constant (6);
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
-      visitorMock.Expect (mock => mock.VisitExpression (_primaryKeyExpression)).Return (newPrimaryKeyExpression);
+      visitorMock.Expect (mock => mock.VisitExpression (_identityExpression)).Return (newPrimaryKeyExpression);
       visitorMock.Replay ();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
@@ -67,7 +66,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
       Assert.That (result, Is.TypeOf<SqlEntityConstantExpression> ());
 
       var newSqlEntityConstantExpression = ((SqlEntityConstantExpression) result);
-      Assert.That (newSqlEntityConstantExpression.PrimaryKeyExpression, Is.SameAs (newPrimaryKeyExpression));
+      Assert.That (newSqlEntityConstantExpression.IdentityExpression, Is.SameAs (newPrimaryKeyExpression));
       Assert.That (newSqlEntityConstantExpression.Value, Is.SameAs (_expression.Value));
       Assert.That (newSqlEntityConstantExpression.Type, Is.SameAs (_expression.Type));
     }
@@ -75,7 +74,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityConstantExpression, IUnresolvedSqlExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityConstantExpression, IResolvedSqlExpressionVisitor> (
           _expression,
           mock => mock.VisitSqlEntityConstantExpression(_expression));
     }

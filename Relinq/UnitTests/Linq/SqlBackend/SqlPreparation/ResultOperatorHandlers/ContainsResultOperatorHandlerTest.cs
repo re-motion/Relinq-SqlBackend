@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -72,7 +73,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
       
-      var expectedExpression = new SqlBinaryOperatorExpression (typeof(bool), "IN", preparedExpression, new SqlSubStatementExpression (sqlStatement));
+      var expectedExpression = new SqlInExpression (preparedExpression, new SqlSubStatementExpression (sqlStatement));
       
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, _sqlStatementBuilder.SelectProjection);
     }

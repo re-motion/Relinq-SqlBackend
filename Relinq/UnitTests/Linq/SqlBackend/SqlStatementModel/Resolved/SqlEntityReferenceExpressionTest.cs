@@ -25,34 +25,34 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
   [TestFixture]
   public class SqlEntityReferenceExpressionTest
   {
+    private SqlEntityDefinitionExpression _entityDefinitionExpression;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
+      _entityDefinitionExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, e => e, columns);
+    }
+
     [Test]
     public void Initialize ()
     {
-      var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, _entityDefinitionExpression);
 
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
+      var expectedColumn = new SqlColumnReferenceExpression (typeof (string), "t", "Name", false, _entityDefinitionExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedColumn, entityReferenceExpression.Columns[0]);
 
-      var exptecedPrimaryColumn = new SqlColumnReferenceExpression (typeof (int), "t", "ID", true, entityDefinitionExpression);
-      var exppectedColumn = new SqlColumnReferenceExpression (typeof (string), "t", "Name", false, entityDefinitionExpression);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (exptecedPrimaryColumn, entityReferenceExpression.PrimaryKeyColumn);
-      ExpressionTreeComparer.CheckAreEqualTrees (exppectedColumn, entityReferenceExpression.Columns[0]);
+      Assert.That (entityReferenceExpression.IdentityExpressionGenerator, Is.SameAs (_entityDefinitionExpression.IdentityExpressionGenerator));
     }
 
     [Test]
     public void GetColumn ()
     {
-      var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
-
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, _entityDefinitionExpression);
 
       var result = entityReferenceExpression.GetColumn (typeof (string), "Test", false);
 
-      var exprectedresult = new SqlColumnReferenceExpression (typeof (string), "t", "Test", false, entityDefinitionExpression);
+      var exprectedresult = new SqlColumnReferenceExpression (typeof (string), "t", "Test", false, _entityDefinitionExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (exprectedresult, result);
     }
@@ -60,15 +60,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     [Test]
     public void CreateReference ()
     {
-      var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
-
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, _entityDefinitionExpression);
       
       var exptectedResult = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityReferenceExpression);
 
-      var result = entityReferenceExpression.CreateReference ("t", entityDefinitionExpression.Type);
+      var result = entityReferenceExpression.CreateReference ("t", _entityDefinitionExpression.Type);
 
       ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);
     }
@@ -76,15 +72,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     [Test]
     public void Update ()
     {
-      var columns = new[] { new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false) };
-      var entityDefinitionExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true), columns);
-
-      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, entityDefinitionExpression);
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, _entityDefinitionExpression);
 
       var result = entityReferenceExpression.Update (typeof (Kitchen), "f", "testName");
 
-      var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", "testName", entityDefinitionExpression);
+      var exptectedResult = new SqlEntityReferenceExpression (typeof (Kitchen), "f", "testName", _entityDefinitionExpression);
 
       Assert.That (result.Name, Is.EqualTo ("testName"));
       ExpressionTreeComparer.CheckAreEqualTrees (exptectedResult, result);

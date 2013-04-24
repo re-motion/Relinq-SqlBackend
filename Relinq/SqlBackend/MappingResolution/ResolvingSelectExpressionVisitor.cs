@@ -44,18 +44,61 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("generator", generator);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
 
-      var visitor = new ResolvingSelectExpressionVisitor (resolver, stage, context, generator, sqlStatementBuilder);
-      var result = visitor.VisitExpression (expression);
-      return result;
+      var entityIdentityResolver = new EntityIdentityResolver (stage, resolver, context);
+      var comparisonSplitter = new CompoundExpressionComparisonSplitter ();
+      var namedExpressionCombiner = new NamedExpressionCombiner (context);
+      var groupAggregateSimplifier = new GroupAggregateSimplifier (stage, context);
+
+      var visitor1 = new ResolvingSelectExpressionVisitor (
+          resolver,
+          stage,
+          context,
+          generator,
+          entityIdentityResolver,
+          comparisonSplitter,
+          namedExpressionCombiner,
+          groupAggregateSimplifier,
+          false,
+          sqlStatementBuilder);
+      var result1 = visitor1.VisitExpression (expression);
+
+      var visitor2 = new ResolvingSelectExpressionVisitor (
+          resolver,
+          stage,
+          context,
+          generator,
+          entityIdentityResolver,
+          comparisonSplitter,
+          namedExpressionCombiner,
+          groupAggregateSimplifier,
+          true,
+          sqlStatementBuilder);
+      var result2 = visitor2.VisitExpression (result1);
+
+      return result2;
     }
 
     protected ResolvingSelectExpressionVisitor (
         IMappingResolver resolver,
         IMappingResolutionStage stage,
         IMappingResolutionContext context,
-        UniqueIdentifierGenerator generator,
+        UniqueIdentifierGenerator generator, 
+        IEntityIdentityResolver entityIdentityResolver,
+        ICompoundExpressionComparisonSplitter comparisonSplitter,
+        INamedExpressionCombiner namedExpressionCombiner,
+        IGroupAggregateSimplifier groupAggregateSimplifier,
+        bool resolveEntityRefMemberExpressions,
         SqlStatementBuilder sqlStatementBuilder)
-        : base (resolver, stage, context, generator)
+        : base (
+            resolver,
+            stage,
+            context,
+            generator,
+            entityIdentityResolver,
+            comparisonSplitter,
+            namedExpressionCombiner,
+            groupAggregateSimplifier,
+            resolveEntityRefMemberExpressions)
     {
       _sqlStatementBuilder = sqlStatementBuilder;
     }

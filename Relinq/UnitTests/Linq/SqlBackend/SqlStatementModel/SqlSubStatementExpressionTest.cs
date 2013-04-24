@@ -83,7 +83,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 
       var result = expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("(SELECT [t] FROM [Table] [t])"));
+      Assert.That (result, Is.EqualTo ("(SELECT [t0] FROM [Table] [t])"));
     }
 
     [Test]

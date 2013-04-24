@@ -34,27 +34,26 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     private SqlStatement _sqlStatement;
     private DefaultSqlGenerationStage _stageMock;
     private SqlCommandBuilder _commandBuilder;
-    private SqlEntityExpression _columnListExpression;
+    private SqlEntityExpression _entityExpression;
 
     [SetUp]
     public void SetUp ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true);
-      _columnListExpression = new SqlEntityDefinitionExpression (
+      _entityExpression = new SqlEntityDefinitionExpression (
           typeof (string),
           "t",
           null,
-          primaryKeyColumn,
+          e => e.GetColumn (typeof (string), "ID", true),
           new[]
           {
-              primaryKeyColumn,
+              new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false),
               new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
 
       _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)), _columnListExpression, new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
+          new TestStreamedValueInfo (typeof (int)), _entityExpression, new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
       _commandBuilder = new SqlCommandBuilder();
 
       _stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
@@ -97,7 +96,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlStatement =
           new SqlStatementBuilder
-          { DataInfo = new TestStreamedValueInfo (typeof (int)), SelectProjection = _columnListExpression, TopExpression = Expression.Constant (5) }.
+          { DataInfo = new TestStreamedValueInfo (typeof (int)), SelectProjection = _entityExpression, TopExpression = Expression.Constant (5) }.
               GetSqlStatement();
 
       _stageMock
@@ -116,7 +115,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     {
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
-          _columnListExpression,
+          _entityExpression,
           new SqlTable[] { },
           Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)),
           null,
@@ -168,7 +167,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (
-          _columnListExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
+          _entityExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
 
       _stageMock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement);
 
@@ -179,7 +178,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateTextForOuterSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (
-          _columnListExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
+          _entityExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
 
       _stageMock.GenerateTextForOuterSqlStatement (_commandBuilder, sqlStatement);
 
@@ -206,7 +205,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay();
 
-      _stageMock.GenerateTextForJoinKeyExpression (_commandBuilder, expression);
+      _stageMock.GenerateTextForJoinCondition (_commandBuilder, expression);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));

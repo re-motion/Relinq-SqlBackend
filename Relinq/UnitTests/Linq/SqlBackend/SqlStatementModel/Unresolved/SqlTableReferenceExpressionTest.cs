@@ -47,7 +47,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlTableReferenceExpression, IUnresolvedSqlExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlTableReferenceExpression, ISqlTableReferenceExpressionVisitor> (
           _tableReferenceExpression,
           mock => mock.VisitSqlTableReferenceExpression (_tableReferenceExpression));
     }
@@ -84,7 +84,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
       var sqlTable =
           new SqlJoinedTable (
               new ResolvedJoinInfo (
-                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), Expression.Constant ("leftKey"), Expression.Constant ("rightKey")),
+                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), Expression.Constant (true)),
               JoinSemantics.Left);
       var expression = new SqlTableReferenceExpression (sqlTable);
       var result = expression.ToString();
@@ -95,12 +95,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void ToString_SqlJoinedTableWithUnresolvedJoinInfo ()
     {
-      var sqlTable =
-          new SqlJoinedTable (
-              new UnresolvedJoinInfo (
-                  new SqlEntityDefinitionExpression (typeof (Cook), "c", "Test", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true)),
-                  typeof (Cook).GetProperty ("Substitution"),
-                  JoinCardinality.One), JoinSemantics.Left);
+      var sqlTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook(), JoinSemantics.Left);
       var expression = new SqlTableReferenceExpression (sqlTable);
       var result = expression.ToString();
 

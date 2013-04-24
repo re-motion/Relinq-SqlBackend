@@ -17,16 +17,16 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
@@ -62,15 +62,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorH
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (_sqlStatementBuilder.SqlTables[0], Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinSemantics, Is.EqualTo (JoinSemantics.Left));
+      Assert.That (_sqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Left));
       
       var joinInfo = (ResolvedJoinInfo)((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo;
       Assert.That (joinInfo, Is.TypeOf (typeof (ResolvedJoinInfo)));
       Assert.That (joinInfo.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (joinInfo.LeftKey, Is.TypeOf (typeof (SqlLiteralExpression)));
-      Assert.That (((SqlLiteralExpression) joinInfo.LeftKey).Value, Is.EqualTo(1));
-      Assert.That (joinInfo.RightKey, Is.TypeOf(typeof (SqlLiteralExpression)));
-      Assert.That (((SqlLiteralExpression) joinInfo.RightKey).Value, Is.EqualTo (1));
+      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)), joinInfo.JoinCondition);
       Assert.That (joinInfo.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo))); // moved to sub-statement
       Assert.That (_context.GetExpressionMapping (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).ItemExpression), Is.Not.Null);
     }

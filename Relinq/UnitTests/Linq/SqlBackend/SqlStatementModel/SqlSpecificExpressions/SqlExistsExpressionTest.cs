@@ -79,7 +79,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.SqlSpecificE
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlExistsExpression, ISqlSpecificExpressionVisitor> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlExistsExpression, ISqlExistsExpressionVisitor> (
           _sqlExistsExpression,
           mock => mock.VisitSqlExistsExpression(_sqlExistsExpression));
     }

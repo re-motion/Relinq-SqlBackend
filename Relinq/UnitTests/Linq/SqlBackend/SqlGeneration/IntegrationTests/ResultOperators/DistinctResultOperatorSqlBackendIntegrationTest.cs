@@ -38,9 +38,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void OrderBy_BeforeDistinct ()
     {
       CheckQuery (
-          () => (from c in Cooks orderby c.Name select c).Distinct (),
-          "SELECT DISTINCT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
-          "FROM [CookTable] AS [t0]");
+          () => (from c in Cooks orderby c.Name select c.ID).Distinct (),
+          "SELECT DISTINCT [t0].[ID] AS [value] " 
+          + "FROM [CookTable] AS [t0]");
     }
   }
 }

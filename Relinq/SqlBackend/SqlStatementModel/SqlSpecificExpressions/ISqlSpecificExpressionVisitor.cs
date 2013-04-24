@@ -15,22 +15,17 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
   /// This interface should be implemented by visitors that handle SQL-specific expressions.
   /// </summary>
-  public interface ISqlSpecificExpressionVisitor
+  public interface ISqlSpecificExpressionVisitor : ISqlNullCheckExpressionVisitor, ISqlInExpressionVisitor, ISqlExistsExpressionVisitor
   {
     Expression VisitSqlLiteralExpression (SqlLiteralExpression expression);
-    Expression VisitSqlBinaryOperatorExpression (SqlBinaryOperatorExpression expression);
-    Expression VisitSqlIsNullExpression (SqlIsNullExpression expression);
-    Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression);
     Expression VisitSqlFunctionExpression (SqlFunctionExpression expression);
     Expression VisitSqlConvertExpression (SqlConvertExpression expression);
-    Expression VisitSqlExistsExpression (SqlExistsExpression expression);
     Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression);
     Expression VisitSqlLikeExpression (SqlLikeExpression expression);
     Expression VisitSqlLengthExpression (SqlLengthExpression expression);

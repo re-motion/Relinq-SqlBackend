@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
+      var specificVisitor = visitor as ISqlEntityRefMemberExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlEntityRefMemberExpression(this);
       else

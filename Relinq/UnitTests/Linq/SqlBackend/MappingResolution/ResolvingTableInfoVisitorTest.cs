@@ -22,7 +22,6 @@ using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -170,19 +169,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     public void ResolveTableInfo_SqlJoinedTable ()
     {
-      var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var leftJoinInfo = new ResolvedJoinInfo (simpleTableInfo, new SqlLiteralExpression (1), new SqlLiteralExpression (1));
-      var sqlJoinedTable = new SqlJoinedTable (leftJoinInfo, JoinSemantics.Left);
+      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
+      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
 
       _stageMock
-          .Expect (mock => mock.ResolveJoinInfo(leftJoinInfo, _mappingResolutionContext))
-          .Return(leftJoinInfo);
+          .Expect (mock => mock.ResolveJoinInfo(joinInfo, _mappingResolutionContext))
+          .Return(joinInfo);
       _resolverMock.Replay();
 
       var result = ResolvingTableInfoVisitor.ResolveTableInfo (sqlJoinedTable, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (simpleTableInfo));
+      Assert.That (result, Is.SameAs (joinInfo.ForeignTableInfo));
     }
 
     [Test]

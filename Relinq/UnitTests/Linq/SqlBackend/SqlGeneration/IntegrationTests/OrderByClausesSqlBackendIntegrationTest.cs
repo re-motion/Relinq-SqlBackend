@@ -89,7 +89,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks select (from k in Kitchens orderby k.Name where k.Cook==c select k).Count(),
-          "SELECT (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] "+
+          "SELECT (SELECT COUNT(*) AS [value] FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[KitchenID]) "+
           "WHERE ([t2].[ID] = [t0].[ID])) AS [value] FROM [CookTable] AS [t0]");
     }
 
@@ -103,7 +103,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           + "CROSS APPLY "
           + "(SELECT TOP (1) [t1].[ID],[t1].[Name],[t1].[RestaurantID],[t1].[LastCleaningDay],[t1].[PassedLastInspection],[t1].[LastInspectionScore] "
           + "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN "
-          +"[CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID] WHERE ([t2].[ID] = [t0].[ID]) ORDER BY [t1].[Name] ASC) AS [q3]");
+          +"[CookTable] AS [t2] ON ([t1].[ID] = [t2].[KitchenID]) WHERE ([t2].[ID] = [t0].[ID]) ORDER BY [t1].[Name] ASC) AS [q3]");
     }
 
     [Test]
@@ -113,8 +113,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Cooks
           where (from sc in Cooks orderby sc.Name select sc.Name).Single() != null
           select c,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
-          "FROM [CookTable] AS [t0] WHERE ((SELECT TOP (2) [t1].[Name] AS [value] FROM [CookTable] AS [t1] ORDER BY [t1].[Name] ASC) IS NOT NULL)");
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] " 
+          + "FROM [CookTable] AS [t0] WHERE ((SELECT TOP (2) [t1].[Name] AS [value] FROM [CookTable] AS [t1] ORDER BY [t1].[Name] ASC) IS NOT NULL)");
     }
 
     [Test]
@@ -124,8 +125,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           (from c in Cooks
           where (from sc in Cooks orderby sc.Name select sc).Count()>0
           select c),
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "+
-          "FROM [CookTable] AS [t0] WHERE ((SELECT COUNT(*) AS [value] FROM [CookTable] AS [t1]) > @1)",
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] " 
+          + "FROM [CookTable] AS [t0] WHERE ((SELECT COUNT(*) AS [value] FROM [CookTable] AS [t1]) > @1)",
           new CommandParameter("@1", 0));
     }
   }

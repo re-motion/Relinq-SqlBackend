@@ -37,8 +37,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SetUp ()
     {
       _context = new MappingResolutionContext();
-      _entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      _entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "c");
       _groupingSelectExpression = new SqlGroupingSelectExpression (Expression.Constant ("key"), Expression.Constant ("element"));
       _sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
     }
@@ -117,6 +116,69 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       Assert.That (result.ElementExpression, Is.SameAs (newElementExpression));
       Assert.That (result.AggregationExpressions[0], Is.SameAs (newAggregationExpression1));
       Assert.That (result.AggregationExpressions[1], Is.SameAs (newAggregationExpression2));
+    }
+
+    [Test]
+    public void RemoveNamesAndUpdateMapping_Unnamed ()
+    {
+      var wrappedExpression = Expression.Constant (0);
+
+      var result = _context.RemoveNamesAndUpdateMapping (wrappedExpression);
+
+      Assert.That (result, Is.SameAs (wrappedExpression));
+    }
+
+    [Test]
+    public void RemoveNamesAndUpdateMapping_Named ()
+    {
+      var wrappedExpression = Expression.Constant (0);
+      var namedExpression = new NamedExpression ("X", wrappedExpression);
+
+      var result = _context.RemoveNamesAndUpdateMapping (namedExpression);
+
+      Assert.That (result, Is.SameAs (wrappedExpression));
+    }
+
+    [Test]
+    public void RemoveNamesAndUpdateMapping_DoubleNamed ()
+    {
+      var wrappedExpression = Expression.Constant (0);
+      var namedExpression = new NamedExpression ("X", wrappedExpression);
+      var namedNamedExpression = new NamedExpression ("Y", namedExpression);
+
+      var result = _context.RemoveNamesAndUpdateMapping (new NamedExpression ("outer", namedNamedExpression));
+      Assert.That (result, Is.SameAs (wrappedExpression));
+    }
+
+    [Test]
+    public void RemoveNamesAndUpdateMapping_Entity ()
+    {
+      var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (name: "X");
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      _context.AddSqlEntityMapping (entity, sqlTable);
+
+      var result = _context.RemoveNamesAndUpdateMapping (entity);
+
+      Assert.That (result, Is.TypeOf (entity.GetType ()));
+      Assert.That (result.Type, Is.SameAs (entity.Type));
+      Assert.That (((SqlEntityExpression) result).TableAlias, Is.EqualTo (entity.TableAlias));
+      Assert.That (((SqlEntityExpression) result).Name, Is.Null);
+
+      Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (sqlTable));
+    }
+
+    [Test]
+    public void RemoveNamesAndUpdateMapping_NameAroundEntity ()
+    {
+      var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (name: "X");
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      _context.AddSqlEntityMapping (entity, sqlTable);
+
+      var result = _context.RemoveNamesAndUpdateMapping (new NamedExpression ("X", entity));
+
+      Assert.That (result, Is.TypeOf (entity.GetType ()));
+      Assert.That (((SqlEntityExpression) result).Name, Is.Null);
+      Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (sqlTable));
     }
   }
 }

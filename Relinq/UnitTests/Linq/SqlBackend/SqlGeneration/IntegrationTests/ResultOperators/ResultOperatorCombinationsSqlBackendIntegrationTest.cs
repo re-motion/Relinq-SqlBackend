@@ -134,9 +134,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Cooks.Take (1).Cast<object>(),
-          "SELECT TOP (1) [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-           +"FROM [CookTable] AS [t0]"
-          );
+          "SELECT TOP (1) [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "FROM [CookTable] AS [t0]");
     }
 
     [Test]
@@ -144,7 +144,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Cooks.Take (1).OfType<Chef>(),
-          "SELECT TOP (1) [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          "SELECT TOP (1) [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] "
           + "FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = 1)");
     }
 
@@ -153,9 +154,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => (from s in Cooks select s).Take (10).Take (20).All (s => s.IsStarredCook),
-        "SELECT CASE WHEN NOT EXISTS((SELECT TOP (20) [q0].[ID] FROM (SELECT TOP (10) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"+
-        "[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q0] "+
-        "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]");
+          "SELECT CASE WHEN NOT EXISTS((SELECT TOP (20) [q0].[ID] "
+          + "FROM (SELECT TOP (10) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"
+          + "[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],[t1].[KnifeID],[t1].[KnifeClassID]"
+          + " FROM [CookTable] AS [t1]) AS [q0] "
+          + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]");
 
       CheckQuery (
           () => (from s in Cooks select s.FirstName).Take (10).Take (20).All (s => s != null),
@@ -168,10 +171,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => (from s in Cooks select s).DefaultIfEmpty().All (s => s.IsStarredCook),
-        "SELECT CASE WHEN NOT EXISTS((SELECT [q0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN (SELECT [t1].[ID],[t1].[FirstName],"+
-        "[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID] FROM [CookTable] AS [t1]) AS [q0] ON 1 = 1 "+
-        "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]"
-        );
+          "SELECT CASE WHEN NOT EXISTS((SELECT [q0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN (SELECT [t1].[ID],[t1].[FirstName],"
+          + "[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID] "
+          + "FROM [CookTable] AS [t1]) AS [q0] ON (1 = 1) "
+          + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]");
     }
 
     [Test]

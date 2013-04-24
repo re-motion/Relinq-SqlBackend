@@ -136,6 +136,15 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain
     [Table (Name = "dbo.Territories")]
     public class Territory
     {
+      private int? _RegionID;
+
+      // Added to test a join info involving a nullable key
+      [Column (Storage = "_RegionID", DbType = "Int NULL")]
+      public int? RegionID
+      {
+        get { return _RegionID; }
+        set { _RegionID = value; }
+      }
     }
 
     [Table (Name = "dbo.Orders")]

@@ -59,8 +59,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
     public void ResolveReference ()
     {
       var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
-      var fakeResult = new SqlEntityDefinitionExpression (
-          typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var generator = new UniqueIdentifierGenerator();
       var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver>();

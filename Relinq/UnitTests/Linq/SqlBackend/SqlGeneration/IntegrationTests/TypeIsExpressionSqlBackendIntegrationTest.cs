@@ -30,34 +30,38 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           Cooks.Where (c => c is Chef),
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
-          "FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = 1)"
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = 1)"
           );
 
       CheckQuery (
 #pragma warning disable 183
           Cooks.Where (c => c is Cook),
 #pragma warning restore 183
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] " +
-          "FROM [CookTable] AS [t0] WHERE (@1 = 1)",
-          new CommandParameter("@1", 1)
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "FROM [CookTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter ("@1", 1)
           );
 
       CheckQuery (
 #pragma warning disable 183
           Chefs.Where (c => c is Cook),
 #pragma warning restore 183
- "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-      + "[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
-      new CommandParameter("@1", 1));
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],"
+          + "[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter ("@1", 1));
 
       CheckQuery (
 #pragma warning disable 183
           Chefs.Where (c => c is Chef),
 #pragma warning restore 183
- "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-      + "[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
-      new CommandParameter("@1", 1));
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],"
+          + "[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
+          new CommandParameter ("@1", 1));
     }
   }
 }

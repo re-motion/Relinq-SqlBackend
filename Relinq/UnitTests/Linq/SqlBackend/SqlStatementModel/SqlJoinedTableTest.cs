@@ -20,7 +20,6 @@ using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
@@ -32,12 +31,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void SameType ()
     {
-      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
-      var newEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var newJoinInfo = new UnresolvedJoinInfo (newEntityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
 
+      var newJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_CookSubstitution ();
       sqlJoinedTable.JoinInfo = newJoinInfo;
 
       Assert.That (sqlJoinedTable.JoinInfo.ItemType, Is.EqualTo (newJoinInfo.ItemType));
@@ -48,11 +45,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [ExpectedException (typeof (ArgumentTypeException))]
     public void DifferentType ()
     {
-      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
-      var newEntityExpression = new SqlEntityDefinitionExpression (typeof (Cook), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var newJoinInfo = new UnresolvedJoinInfo (newEntityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
+      var newJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenRestaurant ();
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }
@@ -60,8 +55,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
 
       var visitorMock = MockRepository.GenerateMock<ISqlTableBaseVisitor> ();
@@ -77,8 +71,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     [Test]
     public void Accept_ITableInfoVisitor ()
     {
-      var oldEntityExpression = new SqlEntityDefinitionExpression (typeof (Kitchen), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var oldJoinInfo = new UnresolvedJoinInfo (oldEntityExpression, typeof (Kitchen).GetProperty ("Cook"), JoinCardinality.One);
+      var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var fakeResult = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 

@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -87,6 +86,7 @@ LOG ON (
       sb.AppendLine();
       AppendCreateTableScript (sb, typeof (Chef));
       AppendCreateTableScript (sb, typeof (Company));
+      AppendCreateTableScript (sb, typeof (Knife));
       AppendCreateTableScript (sb, typeof (Cook));
       AppendCreateTableScript (sb, typeof (Kitchen));
       AppendCreateTableScript (sb, typeof (Restaurant));
@@ -129,22 +129,22 @@ LOG ON (
       var propertiesWithColumnName =
           entity.GetType()
                 .GetProperties()
-                .Select (p => new { Property = p, ColumnNameAndValue = TryResolveProperty (mappingResolver, sqlEntityDefinition, p, entity) })
+                .SelectMany (p => TryResolveProperty (mappingResolver, sqlEntityDefinition, p, entity), (p, t) => new { Property = p, ColumnNameAndValue = t })
                 .ToArray();
-      var matchingProperties = propertiesWithColumnName.Where (d => d.ColumnNameAndValue != null && d.ColumnNameAndValue.Value.Key == columnName).ToArray ();
-      Assert.That (matchingProperties, Has.Length.LessThanOrEqualTo (1), entity.GetType().Name + ": " + SeparatedStringBuilder.Build (",", matchingProperties));
+      var matchingProperty = propertiesWithColumnName.FirstOrDefault (d => d.ColumnNameAndValue.Key == columnName);
+      // Assert.That (matchingProperties, Has.Length.LessThanOrEqualTo (1), entity.GetType().Name + ": " + SeparatedStringBuilder.Build (",", matchingProperties));
 
-      var matchingProperty = matchingProperties.SingleOrDefault();
       Assert.IsNotNull (
           matchingProperty,
           "No member found for column '{0}' on entity type '{1}'.\r\n(Found: {2})",
           columnName,
           entity.GetType().Name,
           SeparatedStringBuilder.Build (",", propertiesWithColumnName));
-      return matchingProperty.ColumnNameAndValue.Value.Value;
+      return matchingProperty.ColumnNameAndValue.Value;
     }
 
-    private static KeyValuePair<string, object>? TryResolveProperty (MappingResolverStub mappingResolver, SqlEntityExpression sqlEntityDefinition, PropertyInfo member, object entity)
+    private static KeyValuePair<string, object>[] TryResolveProperty (
+        MappingResolverStub mappingResolver, SqlEntityExpression sqlEntityDefinition, PropertyInfo member, object entity)
     {
       Expression expression;
       try
@@ -153,29 +153,43 @@ LOG ON (
       }
       catch (UnmappedItemException)
       {
-        return null;
+        return new KeyValuePair<string, object>[0];
       }
-      
+
+      var memberValue = member.GetValue (entity, null);
+      return TryResolvePropertyExpression(mappingResolver, expression, memberValue).ToArray();
+    }
+
+    private static KeyValuePair<string, object>[] TryResolvePropertyExpression (
+        MappingResolverStub mappingResolver, Expression expression, object value)
+    {
       var columnExpression = expression as SqlColumnExpression;
       if (columnExpression != null)
-        return new KeyValuePair<string, object> (columnExpression.ColumnName, member.GetValue (entity, null));
+        return new[] { new KeyValuePair<string, object> (columnExpression.ColumnName, value) };
+
+      var newExpression = expression as NewExpression;
+      if (newExpression != null)
+      {
+        return
+            newExpression.Arguments.SelectMany (
+            (a, i) =>
+            {
+              var argumentMemberValue = value != null ? ((PropertyInfo) newExpression.Members[i]).GetValue (value, null) : null;
+              return TryResolvePropertyExpression (mappingResolver, a, argumentMemberValue);
+            }).ToArray();
+      }
+
+      var namedExpression = expression as NamedExpression;
+      if (namedExpression != null)
+        return TryResolvePropertyExpression (mappingResolver, namedExpression.Expression, value);
 
       var memberRefExpression = (SqlEntityRefMemberExpression) expression;
-      if (typeof (IEnumerable).IsAssignableFrom (memberRefExpression.Type))
-        return null;
+      var optimizedIdentity = mappingResolver.TryResolveOptimizedIdentity (memberRefExpression);
+      if (optimizedIdentity == null)
+        return new KeyValuePair<string, object>[0];
 
-      var resolvedJoin =
-          mappingResolver.ResolveJoinInfo (
-              new UnresolvedJoinInfo (memberRefExpression.OriginatingEntity, memberRefExpression.MemberInfo, JoinCardinality.One),
-              new UniqueIdentifierGenerator());
-      var leftKey = ((SqlColumnExpression) resolvedJoin.LeftKey);
-
-      if (leftKey.IsPrimaryKey)
-        return null;
-
-      var referencedEntity = member.GetValue (entity, null);
-      var foreignKeyValue = referencedEntity != null ? referencedEntity.GetType().GetProperty ("ID").GetValue (referencedEntity, null) : null;
-      return new KeyValuePair<string, object> (leftKey.ColumnName, foreignKeyValue);
+      var idOfReferencedEntity = value != null ? value.GetType().GetProperty ("ID").GetValue (value, null) : null;
+      return TryResolvePropertyExpression (mappingResolver, optimizedIdentity, idOfReferencedEntity);
     }
 
     private static string GetSqlValueString (object columnValue)
@@ -203,8 +217,8 @@ LOG ON (
 
     private static IEnumerable<object> GetSampleDataEntities ()
     {
-      var company1 = new Company { ID = 1, MainRestaurant = null, MainKitchen = null };
-      var company2 = new Company { ID = 2, MainRestaurant = null, MainKitchen = null };
+      var company1 = new Company { ID = 1, MainRestaurant = null, MainKitchen = null, DateOfIncorporation = new DateTime (2001, 01, 13)};
+      var company2 = new Company { ID = 2, MainRestaurant = null, MainKitchen = null, DateOfIncorporation = new DateTime (1886, 02, 20) };
 
       var restaurant1 = new Restaurant { ID = 1, CompanyIfAny = company1};
       company1.MainRestaurant = restaurant1;
@@ -249,6 +263,7 @@ LOG ON (
                      };
       company2.MainKitchen = kitchen3;
 
+      var knife1 = new Knife { ID = new MetaID (1, "KnifeClass"), Sharpness = 10.0 };
       var cook1 = new Cook
                   {
                       ID = 1,
@@ -257,8 +272,12 @@ LOG ON (
                       IsStarredCook = false,
                       IsFullTimeCook = false,
                       Substitution = null,
-                      Kitchen = null
+                      Kitchen = null,
+                      KnifeID = knife1.ID,
+                      Knife = knife1,
+                      KnifeWithOptimizedJoin = knife1
                   };
+      var knife2 = new Knife { ID = new MetaID (2, "DerivedKnifeClass"), Sharpness = 5.0 };
       var cook2 = new Cook
                   {
                       ID = 2,
@@ -267,7 +286,10 @@ LOG ON (
                       IsStarredCook = true,
                       IsFullTimeCook = false,
                       Substitution = null,
-                      Kitchen = kitchen1
+                      Kitchen = kitchen1,
+                      KnifeID = knife2.ID,
+                      Knife = knife2,
+                      KnifeWithOptimizedJoin = knife2
                   };
       kitchen1.Cook = cook2;
       var cook3 = new Cook
@@ -309,7 +331,7 @@ LOG ON (
                   };
       cook2.Substituted = chef2;
 
-      return new object[] { company1, company2, restaurant1, restaurant2, kitchen1, kitchen2, kitchen3, chef1, chef2, cook1, cook2, cook3 };
+      return new object[] { company1, company2, restaurant1, restaurant2, kitchen1, kitchen2, kitchen3, chef1, chef2, knife1, knife2, cook1, cook2, cook3 };
     }
 
     private static void AppendCreateTableScript (StringBuilder sb, Type type)
@@ -320,16 +342,33 @@ LOG ON (
       var entity = mappingResolver.ResolveSimpleTableInfo (tableInfo, generator);
 
       var columnDeclarations = from c in entity.Columns
-                               let sqlTypeName = SqlConvertExpression.GetSqlTypeName (c.Type)
-                               let primaryKeyConstraint = c.IsPrimaryKey ? " PRIMARY KEY" : ""
-                               select string.Format ("[{0}] {1}{2}", c.ColumnName, sqlTypeName, primaryKeyConstraint);
+                               let sqlTypeName = GetColumnType(c)
+                               select string.Format ("[{0}] {1}", c.ColumnName, sqlTypeName);
+      var primaryKeyColumns = entity.Columns.Where (c => c.IsPrimaryKey).Select (c => c.ColumnName).ToArray();
+      string primaryKeyConstraint = "";
+      if (primaryKeyColumns.Length > 0)
+      {
+        primaryKeyConstraint = string.Format (
+            " CONSTRAINT PK_{0} PRIMARY KEY ({1})", tableInfo.TableName.Replace (".", "_"), SeparatedStringBuilder.Build (",", primaryKeyColumns));
+      }
 
       sb.AppendFormat (
-          "CREATE TABLE [{0}]{1}({1}{2}{1})",
+          "CREATE TABLE [{0}]{1}({1}{2}{1} {3})",
           tableInfo.TableName,
           Environment.NewLine,
-          SeparatedStringBuilder.Build ("," + Environment.NewLine, columnDeclarations.Select (c => "  " + c)));
+          SeparatedStringBuilder.Build ("," + Environment.NewLine, columnDeclarations.Select (c => "  " + c)),
+          primaryKeyConstraint);
       sb.AppendLine();
+    }
+
+    private static string GetColumnType (SqlColumnExpression c)
+    {
+      var sqlTypeName = SqlConvertExpression.GetSqlTypeName (c.Type);
+      // (MAX) types are not valid in primary key columns.
+      if (c.IsPrimaryKey)
+        return sqlTypeName.Replace ("(MAX)", "(100)");
+
+      return sqlTypeName;
     }
   }
 }

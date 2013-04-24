@@ -14,18 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
-using System.Linq.Expressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="IUnresolvedSqlExpressionVisitor"/> provides methods to visit expressions held by the <see cref="SqlStatement"/>.
+  /// <see cref="IUnresolvedSqlExpressionVisitor"/> provides methods to visit expressions that are yet to be resolved.
   /// </summary>
-  public interface IUnresolvedSqlExpressionVisitor
+  public interface IUnresolvedSqlExpressionVisitor : ISqlTableReferenceExpressionVisitor, ISqlEntityRefMemberExpressionVisitor
   {
-    Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression);
-    Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression);
-    Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression);
   }
 }

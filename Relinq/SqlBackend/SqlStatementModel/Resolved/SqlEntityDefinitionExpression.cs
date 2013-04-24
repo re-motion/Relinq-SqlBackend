@@ -28,36 +28,28 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class SqlEntityDefinitionExpression : SqlEntityExpression
   {
-    private readonly SqlColumnExpression _primaryKeyColumn;
     private readonly ReadOnlyCollection<SqlColumnExpression> _columns;
 
     public SqlEntityDefinitionExpression (
         Type entityType, 
         string tableAlias, 
         string entityName, 
-        SqlColumnExpression primaryKeyColumn, 
+        Func<SqlEntityExpression, Expression> identityExpressionGenerator, 
         params SqlColumnExpression[] projectionColumns)
-        : base (entityType, tableAlias, entityName)
+      : base (entityType, tableAlias, entityName, identityExpressionGenerator)
     {
-      ArgumentUtility.CheckNotNull ("primaryKeyColumn", primaryKeyColumn);
       ArgumentUtility.CheckNotNull ("projectionColumns", projectionColumns);
 
       _columns = Array.AsReadOnly (projectionColumns);
-      _primaryKeyColumn = primaryKeyColumn;
     }
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       var newColumns = visitor.VisitAndConvert (Columns, "VisitChildren");
       if (newColumns != Columns)
-        return new SqlEntityDefinitionExpression (Type, TableAlias, null, PrimaryKeyColumn, newColumns.ToArray ());
+        return new SqlEntityDefinitionExpression (Type, TableAlias, null, IdentityExpressionGenerator, newColumns.ToArray ());
       else
         return this;
-    }
-
-    public override SqlColumnExpression PrimaryKeyColumn
-    {
-      get { return _primaryKeyColumn;  }
     }
 
     public override ReadOnlyCollection<SqlColumnExpression> Columns
@@ -72,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override SqlEntityExpression Update (Type itemType, string tableAlias, string entityName)
     {
-      return new SqlEntityDefinitionExpression (itemType, tableAlias, entityName, PrimaryKeyColumn, Columns.ToArray ());
+      return new SqlEntityDefinitionExpression (itemType, tableAlias, entityName, IdentityExpressionGenerator, Columns.ToArray ());
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)

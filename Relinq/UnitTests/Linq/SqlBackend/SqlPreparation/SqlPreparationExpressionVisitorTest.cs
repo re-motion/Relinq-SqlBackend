@@ -663,7 +663,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     public void VisitNewExpression ()
     {
       var expression = Expression.New (
-          typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }),
+          TypeForNewExpression.GetConstructor (typeof (int)),
           new[] { Expression.Constant (0) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
 
@@ -682,7 +682,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     [Test]
     public void VisitNewExpression_NoMembers ()
     {
-      var expression = Expression.New (typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) }), new[] { Expression.Constant (0) });
+      var expression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), new[] { Expression.Constant (0) });
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 

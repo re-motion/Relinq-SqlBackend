@@ -114,5 +114,20 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       sqlStatementBuilder.SqlTables.Add (sqlTableBase);
     }
 
+    public Expression RemoveNamesAndUpdateMapping (Expression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      while (expression is NamedExpression)
+        expression = ((NamedExpression) expression).Expression;
+
+      if (expression is SqlEntityExpression)
+      {
+        var sqlEntityExpression = (SqlEntityExpression) expression;
+        expression = UpdateEntityAndAddMapping (sqlEntityExpression, sqlEntityExpression.Type, sqlEntityExpression.TableAlias, null);
+      }
+
+      return expression;
+    }
   }
 }

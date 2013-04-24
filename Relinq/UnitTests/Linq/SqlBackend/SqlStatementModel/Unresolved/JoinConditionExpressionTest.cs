@@ -15,12 +15,12 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
@@ -77,12 +77,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     [Test]
     public void ToString_Resolved ()
     {
-      var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), new SqlLiteralExpression(1), new SqlLiteralExpression(1));
+      var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), Expression.Constant (true));
       var expression = new JoinConditionExpression (new SqlJoinedTable (resolvedJoinInfo, JoinSemantics.Left));
 
       var result = expression.ToString();
 
-      Assert.That (result, Is.EqualTo ("CONDITION(LEFT JOIN [CookTable] [c] ON 1 = 1)"));
+      Assert.That (result, Is.EqualTo ("CONDITION(LEFT JOIN [CookTable] [c] ON True)"));
     }
   }
 }

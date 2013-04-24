@@ -16,11 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Linq.SqlBackend;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -74,12 +76,16 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       Type type = tableInfo.ItemType;
       var primaryKeyMember = GetPrimaryKeyMember(GetMetaType (type));
-      var primaryKeyColumn = CreateSqlColumnExpression (tableInfo, primaryKeyMember);
 
       var columnMembers = GetMetaDataMembers (tableInfo.ItemType);
 
       var columns = columnMembers.Select (metaDataMember => CreateSqlColumnExpression (tableInfo, metaDataMember)).ToArray();
-      return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableInfo.TableAlias, null, primaryKeyColumn, columns);
+      return new SqlEntityDefinitionExpression (
+          tableInfo.ItemType,
+          tableInfo.TableAlias,
+          null,
+          e => e.GetColumn (primaryKeyMember.Type, primaryKeyMember.MappedName, primaryKeyMember.IsPrimaryKey),
+          columns);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
@@ -92,11 +98,10 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       if (dataMember.IsAssociation)
         return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
-
-      var memberType = ReflectionUtility.GetMemberReturnType (memberInfo);
-      return originatingEntity.GetColumn (memberType, dataMember.MappedName, dataMember.IsPrimaryKey);
+      else
+        return ResolveDataMember (originatingEntity, dataMember);
     }
-    
+
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
     {
       var message = string.Format (
@@ -147,6 +152,21 @@ namespace Remotion.Linq.LinqToSqlAdapter
           Expression.MakeMemberAccess (expression, discriminatorDataMember.Member),
           Expression.Constant (desiredDiscriminatorValue));
       // ReSharper restore PossibleNullReferenceException
+    }
+
+    public Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
+    {
+      ArgumentUtility.CheckNotNull ("entityRefMemberExpression", entityRefMemberExpression);
+
+      var metaType = GetMetaType (entityRefMemberExpression.OriginatingEntity.Type);
+      var metaAssociation = GetDataMember (metaType, entityRefMemberExpression.MemberInfo).Association;
+      Debug.Assert (metaAssociation != null);
+
+      if (metaAssociation.OtherKeyIsPrimaryKey)
+        return ResolveMember (entityRefMemberExpression.OriginatingEntity, metaAssociation.ThisKey);
+
+      // Optimization not implemented for now. Could be implemented by 
+      return null;
     }
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
@@ -227,22 +247,27 @@ namespace Remotion.Linq.LinqToSqlAdapter
     private static ResolvedJoinInfo CreateResolvedJoinInfo (
         SqlEntityExpression originatingEntity, MetaAssociation metaAssociation, IResolvedTableInfo joinedTableInfo)
     {
+      var leftColumn = ResolveMember (originatingEntity, metaAssociation.ThisKey);
+
       // TODO RM-3110: Refactor when re-linq supports compound keys
-
-      Debug.Assert (metaAssociation.ThisKey.Count == 1);
       Debug.Assert (metaAssociation.OtherKey.Count == 1);
-
-      var thisKey = metaAssociation.ThisKey[0];
       var otherKey = metaAssociation.OtherKey[0];
-
-      var leftColumn = originatingEntity.GetColumn (thisKey.Type, thisKey.MappedName, thisKey.IsPrimaryKey);
       var rightColumn = new SqlColumnDefinitionExpression (
         otherKey.Type,
         joinedTableInfo.TableAlias,
         otherKey.MappedName,
         otherKey.IsPrimaryKey);
 
-      return new ResolvedJoinInfo (joinedTableInfo, leftColumn, rightColumn);
+      var joinCondition = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null);
+      return new ResolvedJoinInfo (joinedTableInfo, joinCondition);
+    }
+
+    private static SqlColumnExpression ResolveMember (SqlEntityExpression entity, ReadOnlyCollection<MetaDataMember> metaDataMembers)
+    {
+      // TODO RM-3110: Refactor when re-linq supports compound keys
+      Debug.Assert (metaDataMembers.Count == 1);
+      var thisKey = metaDataMembers[0];
+      return ResolveDataMember (entity, thisKey);
     }
 
     private static SqlColumnExpression CreateSqlColumnExpression (IResolvedTableInfo tableInfo, MetaDataMember metaDataMember)
@@ -253,5 +278,11 @@ namespace Remotion.Linq.LinqToSqlAdapter
           metaDataMember.MappedName,
           metaDataMember.IsPrimaryKey);
     }
+
+    private static SqlColumnExpression ResolveDataMember (SqlEntityExpression originatingEntity, MetaDataMember dataMember)
+    {
+      return originatingEntity.GetColumn (dataMember.Type, dataMember.MappedName, dataMember.IsPrimaryKey);
+    }
+
   }
 }

@@ -29,11 +29,18 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// a sub-statement must be defined before an outer statement's reference to that entity or value is resolved by 
   /// <see cref="SubStatementReferenceResolver"/>.
   /// </summary>
-  public class NamedExpressionCombiner
+  public class NamedExpressionCombiner : INamedExpressionCombiner
   {
-    public static Expression ProcessNames (IMappingResolutionContext mappingResolutionContext, NamedExpression outerExpression)
+    private readonly IMappingResolutionContext _mappingResolutionContext;
+
+    public NamedExpressionCombiner (IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      _mappingResolutionContext = mappingResolutionContext;
+    }
+
+    public Expression ProcessNames (NamedExpression outerExpression)
+    {
       ArgumentUtility.CheckNotNull ("outerExpression", outerExpression);
 
       // We cannot implement this as an expression visitor because expression visitors have no fallback case, i.e., there is no good possibility
@@ -43,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (outerExpression.Expression is NewExpression)
       {
         var newExpression = (NewExpression) outerExpression.Expression;
-        var preparedArguments = newExpression.Arguments.Select (expr => ProcessNames (mappingResolutionContext, new NamedExpression (outerExpression.Name, expr)));
+        var preparedArguments = newExpression.Arguments.Select (expr => ProcessNames (new NamedExpression (outerExpression.Name, expr)));
 
         if (newExpression.Members != null && newExpression.Members.Count>0)
           return Expression.New (newExpression.Constructor, preparedArguments, newExpression.Members);
@@ -56,41 +63,32 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var namedInstance = methodCallExpression.Object != null ? new NamedExpression (outerExpression.Name, methodCallExpression.Object) : null;
         var namedArguments = methodCallExpression.Arguments.Select ((a, i) => new NamedExpression (outerExpression.Name, a));
         return Expression.Call (
-            namedInstance != null ? ProcessNames (mappingResolutionContext, namedInstance) : null,
+            namedInstance != null ? ProcessNames (namedInstance) : null,
             methodCallExpression.Method,
-            namedArguments.Select (a => ProcessNames (mappingResolutionContext, a)));
+            namedArguments.Select (ProcessNames));
       }
       else if (outerExpression.Expression is SqlEntityExpression)
       {
         var entityExpression = (SqlEntityExpression) outerExpression.Expression;
         string newName = CombineNames (outerExpression.Name, entityExpression.Name);
 
-        return mappingResolutionContext.UpdateEntityAndAddMapping (entityExpression, entityExpression.Type, entityExpression.TableAlias, newName);
+        return _mappingResolutionContext.UpdateEntityAndAddMapping (entityExpression, entityExpression.Type, entityExpression.TableAlias, newName);
       }
       else if (outerExpression.Expression is NamedExpression)
       {
         var namedExpression = (NamedExpression) outerExpression.Expression;
         var newName = CombineNames (outerExpression.Name, namedExpression.Name);
-        return ProcessNames (mappingResolutionContext, new NamedExpression (newName, namedExpression.Expression));
+        return ProcessNames (new NamedExpression (newName, namedExpression.Expression));
       }
       else if (outerExpression.Expression is SqlGroupingSelectExpression)
       {
         var groupingSelectExpression = (SqlGroupingSelectExpression) outerExpression.Expression;
-        var newKeyExpression = ProcessNames (
-            mappingResolutionContext, 
-            new NamedExpression (outerExpression.Name, groupingSelectExpression.KeyExpression));
-        var newElementExpression = ProcessNames (
-            mappingResolutionContext,
-            new NamedExpression (outerExpression.Name, groupingSelectExpression.ElementExpression));
-        var newAggregationExpressions = groupingSelectExpression.AggregationExpressions.Select (
-            e => ProcessNames (mappingResolutionContext, new NamedExpression (outerExpression.Name, e)));
-        return mappingResolutionContext.UpdateGroupingSelectAndAddMapping (groupingSelectExpression, newKeyExpression, newElementExpression, newAggregationExpressions);
-      }
-      else if (outerExpression.Expression is SqlConvertedBooleanExpression)
-      {
-        var convertedBooleanExpression = (SqlConvertedBooleanExpression) outerExpression.Expression;
-        var innerNamedExpression = new NamedExpression (outerExpression.Name, convertedBooleanExpression.Expression);
-        return new SqlConvertedBooleanExpression (ProcessNames (mappingResolutionContext, innerNamedExpression));
+        var newKeyExpression = ProcessNames (new NamedExpression (outerExpression.Name, groupingSelectExpression.KeyExpression));
+        var newElementExpression = ProcessNames (new NamedExpression (outerExpression.Name, groupingSelectExpression.ElementExpression));
+        var newAggregationExpressions =
+            groupingSelectExpression.AggregationExpressions.Select (e => ProcessNames (new NamedExpression (outerExpression.Name, e)));
+        return _mappingResolutionContext.UpdateGroupingSelectAndAddMapping (
+            groupingSelectExpression, newKeyExpression, newElementExpression, newAggregationExpressions);
       }
       else if (outerExpression.Expression.NodeType == ExpressionType.Convert || outerExpression.Expression.NodeType == ExpressionType.ConvertChecked)
       {
@@ -98,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var innerNamedExpression = new NamedExpression (outerExpression.Name, unaryExpression.Operand);
         return Expression.MakeUnary (
             unaryExpression.NodeType, 
-            ProcessNames (mappingResolutionContext, innerNamedExpression), 
+            ProcessNames (innerNamedExpression), 
             unaryExpression.Type, 
             unaryExpression.Method);
       }
@@ -106,7 +104,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return outerExpression;
     }
 
-    private static string CombineNames (string name1, string name2)
+    private string CombineNames (string name1, string name2)
     {
       if (name1 == null)
         return name2;

@@ -40,24 +40,19 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     private readonly string _name;
     private readonly Expression _expression;
 
-    public static Expression StripSurroundingNames (Expression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      while (expression is NamedExpression)
-        expression = ((NamedExpression) expression).Expression;
-      return expression;
-    }
-
     public static NamedExpression CreateFromMemberName (string memberName, Expression innerExpression)
     {
       ArgumentUtility.CheckNotNull ("memberName", memberName);
       ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
 
-      if (memberName.StartsWith ("get_") && memberName.Length > 4)
-        memberName = memberName.Substring (4);
-
       return new NamedExpression (memberName, innerExpression);
+    }
+
+    public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      
+      return CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
     }
 
     public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression, IEnumerable<Expression> processedArguments)
@@ -65,10 +60,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       var newArguments = processedArguments.Select ((e, i) => WrapIntoNamedExpression (GetMemberName (expression.Members, i), e)).ToArray ();
       if (!newArguments.SequenceEqual (expression.Arguments))
       {
+        // ReSharper disable ConditionIsAlwaysTrueOrFalse - ReSharper is wrong, expression.Members can be null
+        // ReSharper disable HeuristicUnreachableCode
         if (expression.Members != null)
-          return Expression.New (expression.Constructor, newArguments, expression.Members);
+          return New (expression.Constructor, newArguments, expression.Members);
         else
-          return Expression.New (expression.Constructor, newArguments);
+          return New (expression.Constructor, newArguments);
+        // ReSharper restore HeuristicUnreachableCode
+        // ReSharper restore ConditionIsAlwaysTrueOrFalse
       }
 
       return expression;
@@ -87,7 +86,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       if (members == null || members.Count <= index)
         return "m" + index;
-      return members[index].Name;
+      return StripGetPrefix (members[index].Name);
+    }
+
+    private static string StripGetPrefix (string memberName)
+    {
+      if (memberName.StartsWith ("get_") && memberName.Length > 4)
+        memberName = memberName.Substring (4);
+      return memberName;
     }
 
     public NamedExpression (string name, Expression expression)

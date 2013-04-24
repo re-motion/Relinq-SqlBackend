@@ -17,10 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -37,6 +38,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     private IMappingResolver _resolverMock;
     private IMappingResolutionContext _mappingResolutionContext;
     private UniqueIdentifierGenerator _generator;
+    private IGroupAggregateSimplifier _groupAggregateSimplifier;
 
     [SetUp]
     public void SetUp ()
@@ -45,6 +47,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
       _mappingResolutionContext = new MappingResolutionContext();
       _generator = new UniqueIdentifierGenerator();
+      _groupAggregateSimplifier = MockRepository.GenerateStrictMock<IGroupAggregateSimplifier> ();
     }
 
     [Test]
@@ -56,13 +59,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock
           .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
           .Return (sqlStatement);
-      _stageMock.Replay();
+      _groupAggregateSimplifier
+          .Expect (mock => mock.SimplifyIfPossible (expression, sqlStatement.SelectProjection))
+          .Return (expression);
 
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      var result = ResolvingSelectExpressionVisitor.ResolveExpression (
-          expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator, sqlStatementBuilder);
+      var visitor = CreateVisitor (new SqlStatementBuilder (sqlStatement));
+      var result = visitor.VisitExpression (expression);
 
       _stageMock.VerifyAllExpectations();
+      _groupAggregateSimplifier.VerifyAllExpectations ();
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
     }
@@ -76,13 +81,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock
           .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
           .Return (sqlStatement);
-      _stageMock.Replay();
+      _groupAggregateSimplifier
+          .Expect (mock => mock.SimplifyIfPossible (expression, sqlStatement.SelectProjection))
+          .Return (expression);
 
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
-      var result = ResolvingSelectExpressionVisitor.ResolveExpression (
-          expression, _resolverMock, _stageMock, _mappingResolutionContext, _generator, sqlStatementBuilder);
+      var visitor = CreateVisitor (new SqlStatementBuilder (sqlStatement));
+      var result = visitor.VisitExpression (expression);
 
       _stageMock.VerifyAllExpectations();
+      _groupAggregateSimplifier.VerifyAllExpectations ();
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
     }
@@ -92,7 +99,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Single();
       var fakeResolvedSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Single();
-      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
       var expression = new SqlSubStatementExpression (sqlStatement);
 
       var resolvedReference = Expression.Constant ("fake");
@@ -101,6 +107,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _stageMock
           .Expect (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
           .Return (fakeResolvedSqlStatement);
+      _groupAggregateSimplifier
+          .Expect (
+              mock => mock.SimplifyIfPossible (
+                  Arg<SqlSubStatementExpression>.Matches (e => e.SqlStatement == fakeResolvedSqlStatement), Arg.Is (sqlStatement.SelectProjection)))
+          .Return (null)
+          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
       _stageMock
           .Expect (mock => mock.ResolveTableReferenceExpression (Arg<SqlTableReferenceExpression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
           .WhenCalled (
@@ -113,27 +125,99 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
                 Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (expectedStatement));
               })
           .Return (resolvedReference);
-      _stageMock.Replay();
 
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (resolvedReference)).Return (resolvedReference);
-      _resolverMock.Replay();
+
+      var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
+      var visitor = CreateVisitor (sqlStatementBuilder);
 
       Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
       
-      var result = ResolvingSelectExpressionVisitor.ResolveExpression (
-          expression,
-          _resolverMock,
-          _stageMock,
-          _mappingResolutionContext,
-          _generator,
-          sqlStatementBuilder);
+      var result = visitor.VisitExpression (expression);
 
       _stageMock.VerifyAllExpectations();
+      _groupAggregateSimplifier.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (resolvedReference));
       Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (sqlStatementBuilder.SqlTables[0], Is.EqualTo (sqlTable));
+    }
+
+    [Test]
+    public void ResolveExpression_OptimizesEntityRefMemberComparisons ()
+    {
+      // This test proves that the first stage (without resolving SqlEntityRefMemberExpressions) is executed.
+      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
+      var fakeOptimizedRefIdentity = new SqlColumnDefinitionExpression (typeof (int), "c", "KitchenID", false);
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+      _resolverMock
+          .Stub (stub => stub.TryResolveOptimizedIdentity (entityRefMemberExpression))
+          .Return (fakeOptimizedRefIdentity);
+
+      var entity = CreateEntityExpressionWithIdentity (typeof (Cook), typeof (int));
+      var binary = Expression.Equal (entityRefMemberExpression, entity);
+      var sqlStatementBuilder = new SqlStatementBuilder ();
+
+      var result = ResolvingSelectExpressionVisitor.ResolveExpression (
+          binary, _resolverMock, _stageMock, _mappingResolutionContext, _generator, sqlStatementBuilder);
+
+      var expected = Expression.Equal (fakeOptimizedRefIdentity, entity.GetIdentityExpression ());
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void ResolveExpression_ResolvesSqlEntityRefMemberExpressions ()
+    {
+      // This test proves that the second stage (resolving SqlEntityRefMemberExpressions) is executed.
+      var memberInfo = typeof (Cook).GetProperty ("Kitchen");
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+      var sqlStatementBuilder = new SqlStatementBuilder();
+
+      var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
+      _stageMock
+          .Expect (
+              mock => mock.ResolveEntityRefMemberExpression (
+                  Arg.Is (entityRefMemberExpression),
+                  Arg<UnresolvedJoinInfo>.Matches (
+                      i => i.OriginatingEntity == entityExpression && i.MemberInfo == memberInfo && i.Cardinality == JoinCardinality.One),
+                  Arg.Is (_mappingResolutionContext)))
+          .Return (fakeResult);
+
+      var result = ResolvingSelectExpressionVisitor.ResolveExpression (
+          entityRefMemberExpression, _resolverMock, _stageMock, _mappingResolutionContext, _generator, sqlStatementBuilder);
+
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    private SqlEntityExpression CreateEntityExpressionWithIdentity (Type entityType, Type identityType)
+    {
+      return SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (entityType, null, "t0", identityType);
+    }
+
+    private ResolvingSelectExpressionVisitor CreateVisitor (SqlStatementBuilder statementBuilder)
+    {
+      return (ResolvingSelectExpressionVisitor)
+             Activator.CreateInstance (
+                 typeof (ResolvingSelectExpressionVisitor),
+                 BindingFlags.Instance | BindingFlags.NonPublic,
+                 null,
+                 new object[]
+                 {
+                     _resolverMock, 
+                     _stageMock, 
+                     _mappingResolutionContext, 
+                     _generator, 
+                     MockRepository.GenerateStub<IEntityIdentityResolver>(),
+                     MockRepository.GenerateStub<ICompoundExpressionComparisonSplitter>(),
+                     MockRepository.GenerateStub<INamedExpressionCombiner>(), 
+                     _groupAggregateSimplifier, 
+                     false, 
+                     statementBuilder
+                 },
+                 null);
     }
   }
 }

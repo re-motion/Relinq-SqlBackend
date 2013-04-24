@@ -34,12 +34,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
   {
     private IMappingResolutionContext _context;
     private ConstructorInfo _typeForNewExpressionConstructor;
+    private NamedExpressionCombiner _namedExpressionCombiner;
 
     [SetUp]
     public void SetUp ()
     {
       _context = new MappingResolutionContext();
-      _typeForNewExpressionConstructor = typeof (TypeForNewExpression).GetConstructor (new[] { typeof (int) });
+      _typeForNewExpressionConstructor = TypeForNewExpression.GetConstructor (typeof (int));
+      _namedExpressionCombiner = new NamedExpressionCombiner (_context);
     }
 
     [Test]
@@ -47,7 +49,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var expression = new NamedExpression ("test", Expression.Constant ("test"));
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, expression);
+      var result = _namedExpressionCombiner.ProcessNames (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -57,7 +59,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var expression = new NamedExpression ("outer", new NamedExpression ("inner", new NamedExpression ("innermost", Expression.Constant ("test"))));
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, expression);
+      var result = _namedExpressionCombiner.ProcessNames (expression);
 
       Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NamedExpression) result).Name, Is.EqualTo ("outer_inner_innermost"));
@@ -68,7 +70,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var expression = new NamedExpression ("outer", new NamedExpression (null, Expression.Constant ("test")));
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, expression);
+      var result = _namedExpressionCombiner.ProcessNames (expression);
 
       Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NamedExpression) result).Name, Is.EqualTo ("outer"));
@@ -79,7 +81,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var expression = new NamedExpression (null, new NamedExpression ("inner", Expression.Constant ("test")));
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, expression);
+      var result = _namedExpressionCombiner.ProcessNames (expression);
 
       Assert.That (result, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NamedExpression) result).Name, Is.EqualTo ("inner"));
@@ -94,7 +96,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var tableRegisteredForEntity = SqlStatementModelObjectMother.CreateSqlTable ();
       _context.AddSqlEntityMapping (entityExpression, tableRegisteredForEntity);
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       Assert.That (result, Is.Not.SameAs (namedExpression));
       Assert.That (result, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
@@ -111,7 +113,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       var namedExpression = new NamedExpression ("test", expression);
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
       Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
@@ -129,7 +131,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("A"));
       var namedExpression = new NamedExpression ("outer", expression);
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
       Assert.That (((NewExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
@@ -142,7 +144,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expression = Expression.New (_typeForNewExpressionConstructor, new[] { Expression.Constant (0) });
       var namedExpression = new NamedExpression ("test", expression);
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (NewExpression)));
       Assert.That (((NewExpression) result).Arguments.Count, Is.EqualTo (1));
@@ -158,7 +160,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var expression = Expression.Call (instance, ReflectionUtility.GetMethod (() => 5.ToString ("arg")), argument);
       var namedExpression = new NamedExpression ("test", expression);
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
       Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
@@ -182,7 +184,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new NamedExpression ("inner", argument));
       var namedExpression = new NamedExpression ("outer", expression);
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
       Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
@@ -205,7 +207,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           argument);
       var namedExpression = new NamedExpression ("test", expression);
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
       Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
@@ -228,21 +230,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           new NamedExpression ("outer_element", Expression.Constant ("element")),
           new[]{new NamedExpression("outer_a0", Expression.Constant("aggregation"))});
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, expression);
+      var result = _namedExpressionCombiner.ProcessNames (expression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
       Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
-    }
-
-    [Test]
-    public void ProcessNames_ConvertedBooleanExpression ()
-    {
-      var namedExpression = new NamedExpression ("outer", new SqlConvertedBooleanExpression (new NamedExpression ("inner", Expression.Constant (1))));
-
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
-
-      var expectedResult = new SqlConvertedBooleanExpression (new NamedExpression ("outer_inner", Expression.Constant (1)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -250,7 +241,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var namedExpression = new NamedExpression ("outer", Expression.Convert (new NamedExpression ("inner", Expression.Constant (1)), typeof (double)));
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       var expectedResult = Expression.Convert (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -269,7 +260,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
               typeof (double), 
               convertMethod));
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       var expectedResult = Expression.Convert (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double), convertMethod);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -283,7 +274,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           Expression.ConvertChecked (new NamedExpression ("inner", Expression.Constant (1)), 
           typeof (double)));
 
-      var result = NamedExpressionCombiner.ProcessNames (_context, namedExpression);
+      var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       var expectedResult = Expression.ConvertChecked (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);

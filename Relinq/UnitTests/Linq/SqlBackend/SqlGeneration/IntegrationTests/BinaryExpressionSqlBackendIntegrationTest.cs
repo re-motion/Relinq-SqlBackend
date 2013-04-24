@@ -179,7 +179,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT "
               + "CASE WHEN [t0].[ID] IS NOT NULL THEN [t0].[ID] ELSE [t1].[ID] END, "
               + "CASE WHEN [t0].[ID] IS NOT NULL THEN [t0].[Name] ELSE [t1].[Name] END "
-              + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[SubstitutedID]",
+              + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[SubstitutedID])",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "hugo")
           );
@@ -354,7 +354,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens where k.Cook == null select k.Name,
-          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON [t0].[ID] = [t1].[KitchenID] "
+          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[KitchenID]) "
           + "WHERE ([t1].[ID] IS NULL)");
     }
 
@@ -407,10 +407,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens where k.Cook == k.Restaurant.SubKitchen.Cook select k.Name,
           "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] "+
-          "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] "+
-          "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] "+
-          "LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] "+
-          "LEFT OUTER JOIN [CookTable] AS [t3] ON [t0].[ID] = [t3].[KitchenID] "+
+          "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "+
+          "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "+
+          "LEFT OUTER JOIN [CookTable] AS [t4] ON ([t2].[ID] = [t4].[KitchenID]) "+
+          "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t0].[ID] = [t3].[KitchenID]) "+
           "WHERE ([t3].[ID] = [t4].[ID])");
     }
 
@@ -420,10 +420,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens where ((Chef) k.Cook) == k.Restaurant.SubKitchen.Cook select k.Name,
           "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] " +
-          "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON [t0].[RestaurantID] = [t1].[ID] " +
-          "LEFT OUTER JOIN [KitchenTable] AS [t2] ON [t1].[ID] = [t2].[RestaurantID] " +
-          "LEFT OUTER JOIN [CookTable] AS [t4] ON [t2].[ID] = [t4].[KitchenID] " +
-          "LEFT OUTER JOIN [CookTable] AS [t3] ON [t0].[ID] = [t3].[KitchenID] " +
+          "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) " +
+          "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) " +
+          "LEFT OUTER JOIN [CookTable] AS [t4] ON ([t2].[ID] = [t4].[KitchenID]) " +
+          "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t0].[ID] = [t3].[KitchenID]) " +
           "WHERE ([t3].[ID] = [t4].[ID])");
 
       // Note: ConvertChecked doesn't work with entities, so we can't test it here:
@@ -438,7 +438,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks where c == (from k in Kitchens select k.Cook).First () select c.ID,
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[ID] = (SELECT TOP (1) [t2].[ID] FROM [KitchenTable] AS [t1] "
-          +"LEFT OUTER JOIN [CookTable] AS [t2] ON [t1].[ID] = [t2].[KitchenID]))");
+          +"LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[KitchenID])))");
     }
 
     [Test]

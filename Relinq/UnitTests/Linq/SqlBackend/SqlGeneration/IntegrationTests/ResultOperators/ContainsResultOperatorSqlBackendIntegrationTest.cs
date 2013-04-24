@@ -31,11 +31,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void Contains_WithQuery ()
     {
       CheckQuery (
-          from s in Cooks where (from s2 in Cooks select s2).Contains (s) select s,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-          +"FROM [CookTable] AS [t0] "
-          +"WHERE [t0].[ID] "
-          +"IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
+          from s in Cooks where (from s2 in Cooks select s2).Contains (s) select s.ID,
+          "SELECT [t0].[ID] AS [value] "
+          + "FROM [CookTable] AS [t0] "
+          + "WHERE [t0].[ID] "
+          + "IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])");
     }
 
     [Test]
@@ -43,9 +43,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
-          from s in Cooks where (from s2 in Cooks select s2).Contains (cook) select s,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
-          +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])",
+          from s in Cooks where (from s2 in Cooks select s2).Contains (cook) select s.ID,
+          "SELECT [t0].[ID] AS [value] "
+          + "FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1])",
           new CommandParameter("@1", 23));
     }
 
@@ -54,8 +54,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var chef = new Chef { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
-          from s in Cooks where s.Assistants.Contains (chef) select s,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          from s in Cooks where s.Assistants.Contains (chef) select s.ID,
+          "SELECT [t0].[ID] AS [value] "
           + "FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID]))",
           new CommandParameter ("@1", 23));
     }
@@ -65,8 +65,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
-          from s in Cooks where s.Assistants.Contains (cook) select s,
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID] "
+          from s in Cooks where s.Assistants.Contains (cook) select s.ID,
+          "SELECT [t0].[ID] AS [value] "
           +"FROM [CookTable] AS [t0] WHERE @1 IN (SELECT [t1].[ID] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID]))",
           new CommandParameter("@1", 23));
     }

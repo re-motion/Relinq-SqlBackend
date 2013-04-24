@@ -16,6 +16,7 @@
 // 
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 
@@ -41,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var sqlSubStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
       var subStatementExpression = sqlSubStatement.CreateExpression();
       
-      sqlStatementBuilder.SelectProjection = new SqlBinaryOperatorExpression (typeof(bool), "IN", preparedItemExpression, subStatementExpression);
+      sqlStatementBuilder.SelectProjection = new SqlInExpression (preparedItemExpression, subStatementExpression);
       
       UpdateDataInfo (resultOperator, sqlStatementBuilder, dataInfo);
     }

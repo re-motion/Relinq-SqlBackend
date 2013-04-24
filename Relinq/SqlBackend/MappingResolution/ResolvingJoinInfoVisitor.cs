@@ -99,8 +99,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       var newForeignTableInfo = _stage.ResolveTableInfo (joinInfo.ForeignTableInfo, _context);
-      if (newForeignTableInfo != joinInfo.ForeignTableInfo)
-        return new ResolvedJoinInfo (newForeignTableInfo, joinInfo.LeftKey, joinInfo.RightKey);
+      var newCondition = _stage.ResolveJoinCondition (joinInfo.JoinCondition, _context);
+      if (newForeignTableInfo != joinInfo.ForeignTableInfo || newCondition != joinInfo.JoinCondition)
+        return new ResolvedJoinInfo (newForeignTableInfo, newCondition );
       return joinInfo;
     }
   }
