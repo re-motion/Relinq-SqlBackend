@@ -226,6 +226,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
+    public void ResolvePotentialEntity_ConvertedNamedExpression_WithNoEntity_IsLeftUnchanged ()
+    {
+      var expression = Expression.Convert (new NamedExpression ("X", Expression.Constant (0)), typeof (object));
+
+      var result = _entityIdentityResolver.ResolvePotentialEntity (expression);
+
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
     public void ResolvePotentialEntityComparison_BinaryExpression_ResolvesEntitiesToIdentity ()
     {
       var binary = Expression.Equal (_entityExpression, _entityConstantExpression);

@@ -396,9 +396,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         var message = string.Format (
             "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot "
-            + "be translated to SQL: '{0}'. {1}",
-            FormattingExpressionTreeVisitor.Format (expression),
-            ex.Message);
+            + "be translated to SQL: '{0}'.",
+            FormattingExpressionTreeVisitor.Format (expression));
         throw new NotSupportedException (message, ex);
       }
     }

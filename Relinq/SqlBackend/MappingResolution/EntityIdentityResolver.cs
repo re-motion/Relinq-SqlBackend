@@ -54,7 +54,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         if (result != namedExpression.Expression)
           return new NamedExpression (namedExpression.Name, result);
 
-        return namedExpression;
+        return expression;
       }
 
       var entityExpression = strippedExpression as SqlEntityExpression;

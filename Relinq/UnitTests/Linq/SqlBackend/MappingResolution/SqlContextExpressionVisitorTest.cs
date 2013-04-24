@@ -1190,8 +1190,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
           () => _predicateRequiredVisitor.VisitSqlInExpression (expression),
           Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
               "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression "
-              + "cannot be translated to SQL: 'new TypeForNewExpression(0) IN value(System.Int32[])'. Cannot use a complex expression "
-              + "('new TypeForNewExpression(0)') in a place where SQL requires a single value."));
+              + "cannot be translated to SQL: 'new TypeForNewExpression(0) IN value(System.Int32[])'."));
     }
 
 
