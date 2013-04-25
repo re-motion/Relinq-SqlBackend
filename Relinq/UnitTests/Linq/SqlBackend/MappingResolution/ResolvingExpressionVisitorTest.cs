@@ -359,7 +359,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       _entityIdentityResolverMock.VerifyAllExpectations ();
       _compoundComparisonSplitterMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is.TypeOf<BinaryExpression> ());
+      Assert.That (result, Is.AssignableTo<BinaryExpression> ());
       Assert.That (((BinaryExpression) result).Left, Is.SameAs (fakeResolvedLeft));
       Assert.That (((BinaryExpression) result).Right, Is.SameAs (fakeResolvedRight));
     }

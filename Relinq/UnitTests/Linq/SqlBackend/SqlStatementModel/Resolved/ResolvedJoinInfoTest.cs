@@ -79,7 +79,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
       var joinInfo = new ResolvedJoinInfo (foreignTableInfo, Expression.Equal (Expression.Constant (0), Expression.Constant (1)));
       var result = joinInfo.ToString ();
 
-      Assert.That (result, Is.EqualTo ("[CookTable] [c] ON (0 = 1)"));
+      Assert.That (result, Is.EqualTo ("[CookTable] [c] ON (0 == 1)"));
     }
   }
 }
