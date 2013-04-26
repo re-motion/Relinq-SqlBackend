@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend;
@@ -74,7 +73,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5533 - the IEnumerable<string> test below doesn't work, probably due to the conversion")]
     public void String_Concat ()
     {
       // object overloads
@@ -127,11 +125,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT (CONVERT(NVARCHAR(MAX), [t0].[ID]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
           );
 
-      // IEnumerable<string> overload
-      CheckQuery (
-          from c in Cooks select string.Concat ((IEnumerable<string>) new[] { c.FirstName, c.Name }),
-          "SELECT ([t0].[FirstName] + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
-          );
+      // IEnumerable<string> overload is not tested because it's not possible to call it using a constant or NewArray expression.
+      // - string.Concat (new[] { c.FirstName, c.Name }) would call the string[] overload.
+      // - string.Concat (constantEnumerable) would partially evaluate the whole expression.
+      // - string.Concat ((IEnumerable<string>) new[] { c.FirstName, c.Name }) is not currently supported.
 
       // IEnumerable<T> overload
       CheckQuery (

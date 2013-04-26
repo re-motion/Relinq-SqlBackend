@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -59,6 +60,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
 
       var expectedExpression = new SqlConvertExpression (typeof (string), argument0);
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    [Test]
+    public void Transform_SingleString ()
+    {
+      var argument0 = Expression.Constant ("test");
+      var expression = Expression.Call (typeof (string), "Concat", Type.EmptyTypes, argument0);
+
+      var result = _transformer.Transform (expression);
+
+      ExpressionTreeComparer.CheckAreEqualTrees (argument0, result);
     }
 
     [Test]
@@ -209,6 +221,22 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
 
       var expression = Expression.Call (
           typeof (string).GetMethod ("Concat", new[] { typeof (string[]) }),
+          argument);
+
+      _transformer.Transform (expression);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The method call 'Concat(CustomExpression)' is not supported. When the array overloads of String.Concat are used, only constant or new array "
+        + "expressions can be translated to SQL; in this usage, the expression has type "
+        + "'Remotion.Linq.UnitTests.Linq.SqlBackend.CustomExpression'.")]
+    public void Transform_NonParseableEnumerable ()
+    {
+      var argument = new CustomExpression (typeof (IEnumerable<string>));
+
+      var expression = Expression.Call (
+          typeof (string).GetMethod ("Concat", new[] { typeof (IEnumerable<string>) }),
           argument);
 
       _transformer.Transform (expression);
