@@ -105,12 +105,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void ChainedPropertySelectAndWhere_PartialPathTwice ()
     {
       CheckQuery (
-          from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.ID == 0 select k.Restaurant.SubKitchen.Cook.ID,
+          from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.CompanyIfAny == null select k.Restaurant.SubKitchen.Cook.ID,
           "SELECT [t3].[ID] AS [value] " 
           + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) LEFT OUTER JOIN " 
           + "[KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) " 
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON ([t2].[RestaurantID] = [t4].[ID]) WHERE ([t4].[ID] = @1)",
-          new CommandParameter ("@1", 0));
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON ([t2].[RestaurantID] = [t4].[ID]) WHERE ([t4].[CompanyID] IS NULL)");
     }
 
     [Test]
@@ -275,13 +274,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3315")]
     public void EntityAccess_NoLeftJoin_OnIDAccess ()
     {
       CheckQuery (
           from k in Kitchens where k.Restaurant.ID == 10 select k.Restaurant.ID,
           "SELECT [t0].[RestaurantID] AS [value] "
-          + "FROM [KitchenTable] AS [t0]  "
+          + "FROM [KitchenTable] AS [t0] "
           + "WHERE ([t0].[RestaurantID] = @1)",
           new CommandParameter ("@1", 10));
     }

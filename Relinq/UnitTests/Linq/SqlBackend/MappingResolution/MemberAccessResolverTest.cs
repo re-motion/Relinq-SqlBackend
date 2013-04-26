@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -46,7 +47,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnEntity ()
+    public void ResolveMemberAccess_OnEntity ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
@@ -66,7 +67,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "The member 'Cook.Courses' describes a collection and can only be used in places where collections are allowed. Expression: '[c]'")]
-    public void VisitMemberExpression_OnEntity_WithCollectionMember ()
+    public void ResolveMemberAccess_OnEntity_WithCollectionMember ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Courses");
       var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "c");
@@ -75,11 +76,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnEntityRefMemberExpression ()
+    public void ResolveMemberAccess_OnEntityRefMemberExpression_NoOptimization ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
-      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+      var entityRefMemberExpression = SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ();
+
+      _resolverMock
+          .Stub (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
+          .Return (null);
 
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       _stageMock
@@ -88,18 +92,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
               mock.ResolveEntityRefMemberExpression (
                   Arg.Is (entityRefMemberExpression),
                   Arg<UnresolvedJoinInfo>.Matches (j => 
-                      j.OriginatingEntity == entityExpression 
-                      && j.MemberInfo == memberInfo 
+                      j.OriginatingEntity == entityRefMemberExpression.OriginatingEntity 
+                      && j.MemberInfo == entityRefMemberExpression.MemberInfo
                       && j.Cardinality == JoinCardinality.One),
                   Arg.Is (_mappingResolutionContext)))
           .Return (fakeEntityExpression);
-      _stageMock.Replay ();
 
       var fakeResult = Expression.Constant (0);
       _resolverMock
           .Expect (mock => mock.ResolveMemberExpression (fakeEntityExpression, memberInfo))
           .Return (fakeResult);
-      _resolverMock.Replay ();
 
       var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
 
@@ -109,7 +111,28 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnUnaryExpression_Convert ()
+    public void ResolveMemberAccess_OnEntityRefMemberExpression_WithSuccessfulOptimization ()
+    {
+      var memberInfo = typeof (Cook).GetProperty ("Substitution");
+      var entityRefMemberExpression = SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ();
+
+      var fakeResolvedExpression = ExpressionHelper.CreateExpression ();
+      _resolverMock
+          .Expect (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
+          .Return (fakeResolvedExpression);
+
+      var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations ();
+      _stageMock.AssertWasNotCalled (
+          mock => mock.ResolveEntityRefMemberExpression (
+              Arg<SqlEntityRefMemberExpression>.Is.Anything, Arg<IJoinInfo>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything));
+      Assert.That (result, Is.SameAs (fakeResolvedExpression));
+    }
+
+
+    [Test]
+    public void ResolveMemberAccess_OnUnaryExpression_Convert ()
     {
       var operand = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
       var convertExpression = Expression.Convert (Expression.Convert (operand, typeof (Chef)), typeof (Chef));
@@ -131,7 +154,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "Cannot resolve member 'LetterOfRecommendation' applied to expression '-[c].[ID]'; the expression type 'UnaryExpression' is not supported in "
         + "member expressions.")]
-    public void VisitMemberExpression_OnUnaryExpression_NotConvert ()
+    public void ResolveMemberAccess_OnUnaryExpression_NotConvert ()
     {
       var operand = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
       var convertExpression = Expression.Negate (operand);
@@ -141,7 +164,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnNamedExpression ()
+    public void ResolveMemberAccess_OnNamedExpression ()
     {
       var operand = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
       var namedExpression = new NamedExpression ("two", new NamedExpression ("one", operand));
@@ -161,7 +184,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnNestedNamedConvertExpressions ()
+    public void ResolveMemberAccess_OnNestedNamedConvertExpressions ()
     {
       var operand = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
       var innerMostNamedExpression = new NamedExpression ("inner", operand);
@@ -186,7 +209,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void VisitMemberExpression_MemberAppliedToConstant ()
+    public void ResolveMemberAccess_MemberAppliedToConstant ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var expression = Expression.Constant (new Cook ());
@@ -201,7 +224,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnColumnExpression ()
+    public void ResolveMemberAccess_OnColumnExpression ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
       var constantExpression = Expression.Constant ("test");
@@ -219,7 +242,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnGroupingSelectExpression ()
+    public void ResolveMemberAccess_OnGroupingSelectExpression ()
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression();
       var memberInfo = typeof (IGrouping<string, string>).GetProperty ("Key");
@@ -230,7 +253,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnGroupingSelectExpression_StripsNames ()
+    public void ResolveMemberAccess_OnGroupingSelectExpression_StripsNames ()
     {
       var expression = new SqlGroupingSelectExpression (
           new NamedExpression ("k", Expression.Constant ("key")), 
@@ -243,7 +266,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnNewExpression_PropertyInfo ()
+    public void ResolveMemberAccess_OnNewExpression_PropertyInfo ()
     {
       var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       var newExpression = Expression.New (
@@ -262,7 +285,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     }
 
     [Test]
-    public void VisitMemberExpression_OnNewExpression_FieldInfo ()
+    public void ResolveMemberAccess_OnNewExpression_FieldInfo ()
     {
       var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       var newExpression = Expression.New (
@@ -283,7 +306,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. "+
       "Expression: 'new TypeForNewExpression(1 AS value, 2 AS value)'")]
-    public void VisitMemberExpression_OnNewExpression_NoMembers ()
+    public void ResolveMemberAccess_OnNewExpression_NoMembers ()
     {
       var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       var newExpression = Expression.New (
@@ -302,7 +325,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Cannot resolve member 'LetterOfRecommendation' applied to expression '([c].[ID] & [c].[ID])'; the expression type 'BinaryExpression' is not "
         + "supported in member expressions.")]
-    public void VisitMemberExpression_OnUnsupportedExpression ()
+    public void ResolveMemberAccess_OnUnsupportedExpression ()
     {
       var operand = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
       var convertExpression = Expression.And (operand, operand);
@@ -315,7 +338,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Cannot resolve member 'FirstName' applied to expression 'TABLE-REF(UnresolvedTableInfo(Cook))'; "
         +"the expression type 'SqlTableReferenceExpression' is not supported in member expressions.")]
-    public void VisitMemberExpression_OnSqlTableReferenceExpression ()
+    public void ResolveMemberAccess_OnSqlTableReferenceExpression ()
     {
       var expression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
@@ -327,7 +350,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Cannot resolve member 'FirstName' applied to expression 'ENTITY(14)'; the expression type 'SqlEntityConstantExpression' is not supported in "
         + "member expressions.")]
-    public void VisitMemberExpression_OnSqlEntityConstantExpression ()
+    public void ResolveMemberAccess_OnSqlEntityConstantExpression ()
     {
       var expression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), Expression.Constant (14));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");

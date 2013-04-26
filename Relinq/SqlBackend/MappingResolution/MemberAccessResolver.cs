@@ -113,7 +113,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       // Scenario: entityRef.Member
-      // First, resolve the entity-reference (adding joins and such), then retry.
+
+      var result = _mappingResolver.TryResolveOptimizedMemberExpression (expression, _memberInfo);
+      if (result != null)
+        return result;
+
+      // Optimized member access didn't work, so resolve the entity reference (adding joins and such), then retry.
       var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
       var entityExpression = _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
       return VisitExpression (entityExpression);

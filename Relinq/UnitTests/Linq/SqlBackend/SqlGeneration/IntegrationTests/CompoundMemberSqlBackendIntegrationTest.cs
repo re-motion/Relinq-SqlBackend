@@ -268,15 +268,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3315")]
     public void ImplicitJoin_WithOptimizedAwayLeftOuterJoin_ForCompoundID_IDMember ()
     {
       CheckQuery (
           from c in Cooks
           where c.Knife.ID == null
           select c.Knife.ID,
-          "SELECT [t0].[ID] AS [ID],[t0].[ClassID] AS [ClassID],[t0].[Sharpness] AS [Sharpness] "
-          + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [KnifeTable] AS [t1] ON ([t0].[KnifeID] = [t1].[ID])");
+          "SELECT [t0].[KnifeID] AS [Value],[t0].[KnifeClassID] AS [ClassID] "
+          + "FROM [CookTable] AS [t0] WHERE (([t0].[KnifeID] IS NULL) AND ([t0].[KnifeClassID] IS NULL))");
     }
 
     // Adds Value = ... and ClassID = ... member decorations to all NewExpressions for MetaID within the given expression.

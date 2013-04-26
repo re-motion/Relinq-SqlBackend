@@ -274,8 +274,7 @@ LOG ON (
                       Substitution = null,
                       Kitchen = null,
                       KnifeID = knife1.ID,
-                      Knife = knife1,
-                      KnifeWithOptimizedJoin = knife1
+                      Knife = knife1
                   };
       var knife2 = new Knife { ID = new MetaID (2, "DerivedKnifeClass"), Sharpness = 5.0 };
       var cook2 = new Cook
@@ -288,8 +287,7 @@ LOG ON (
                       Substitution = null,
                       Kitchen = kitchen1,
                       KnifeID = knife2.ID,
-                      Knife = knife2,
-                      KnifeWithOptimizedJoin = knife2
+                      Knife = knife2
                   };
       kitchen1.Cook = cook2;
       var cook3 = new Cook

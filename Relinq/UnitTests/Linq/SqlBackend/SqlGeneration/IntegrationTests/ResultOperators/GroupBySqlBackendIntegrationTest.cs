@@ -451,12 +451,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           Cooks.Take (10).GroupBy (c => c.Kitchen.ID).Select (g => g.Key),
           "SELECT [q1].[key] AS [value] "
-          + "FROM (SELECT [t3].[ID] AS [key] "
+          + "FROM (SELECT [q0].[KitchenID] AS [key] "
           + "FROM (SELECT TOP (10) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],"
           + "[t2].[KitchenID],[t2].[KnifeID],[t2].[KnifeClassID] "
           + "FROM [CookTable] AS [t2]) AS [q0] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([q0].[KitchenID] = [t3].[ID]) "
-          + "GROUP BY [t3].[ID]) AS [q1]");
+          + "GROUP BY [q0].[KitchenID]) AS [q1]");
     }
 
     [Test]
@@ -465,13 +464,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           Cooks.Distinct().GroupBy (c => c.Kitchen.ID).Select (g => g.Key),
           "SELECT [q1].[key] AS [value] "
-          + "FROM (SELECT [t3].[ID] AS [key] "
+          + "FROM (SELECT [q0].[KitchenID] AS [key] "
           + "FROM (SELECT DISTINCT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],"
           + "[t2].[KitchenID],"
           + "[t2].[KnifeID],[t2].[KnifeClassID] "
           + "FROM [CookTable] AS [t2]) AS [q0] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([q0].[KitchenID] = [t3].[ID]) "
-          + "GROUP BY [t3].[ID]) AS [q1]");
+          + "GROUP BY [q0].[KitchenID]) AS [q1]");
     }
 
     [Test]
@@ -480,15 +478,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           Cooks.GroupBy (c => c).GroupBy (c => c.Key.Kitchen.ID).Select (g => g.Key),
           "SELECT [q1].[key] AS [value] FROM ("
-          + "SELECT [t3].[ID] AS [key] FROM ("
+          + "SELECT [q0].[key_KitchenID] AS [key] FROM ("
           + "SELECT [t2].[ID] AS [key_ID],[t2].[FirstName] AS [key_FirstName],[t2].[Name] AS [key_Name],[t2].[IsStarredCook] AS [key_IsStarredCook],"
           + "[t2].[IsFullTimeCook] AS [key_IsFullTimeCook],[t2].[SubstitutedID] AS [key_SubstitutedID],[t2].[KitchenID] AS [key_KitchenID],"
           + "[t2].[KnifeID] AS [key_KnifeID],[t2].[KnifeClassID] AS [key_KnifeClassID] "
           + "FROM [CookTable] AS [t2] "
           + "GROUP BY [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
           + "[t2].[KnifeID],[t2].[KnifeClassID]) AS [q0] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([q0].[key_KitchenID] = [t3].[ID]) "
-          + "GROUP BY [t3].[ID]) AS [q1]");
+          + "GROUP BY [q0].[key_KitchenID]) AS [q1]");
     }
   }
 }
