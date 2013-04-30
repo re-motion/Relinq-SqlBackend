@@ -165,10 +165,24 @@ namespace Remotion.Linq.LinqToSqlAdapter
       var metaAssociation = GetDataMember (metaType, entityRefMemberExpression.MemberInfo).Association;
       Debug.Assert (metaAssociation != null);
 
-      if (metaAssociation.OtherKeyIsPrimaryKey)
+      if (metaAssociation.IsForeignKey)
         return ResolveMember (entityRefMemberExpression.OriginatingEntity, metaAssociation.ThisKey);
 
-      // Optimization not implemented for now. Could be implemented by 
+      return null;
+    }
+
+    public Expression TryResolveOptimizedMemberExpression (SqlEntityRefMemberExpression entityRefMemberExpression, MemberInfo memberInfo)
+    {
+      ArgumentUtility.CheckNotNull ("entityRefMemberExpression", entityRefMemberExpression);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+
+      var metaType = GetMetaType (entityRefMemberExpression.OriginatingEntity.Type);
+      var metaAssociation = GetDataMember (metaType, entityRefMemberExpression.MemberInfo).Association;
+      var memberOnReferencedType = GetDataMember (metaAssociation.OtherType, memberInfo);
+
+      if (memberOnReferencedType.IsPrimaryKey)
+        return TryResolveOptimizedIdentity (entityRefMemberExpression);
+
       return null;
     }
 

@@ -143,5 +143,28 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// expression.
     /// </remarks>
     Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression);
+
+    /// <summary>
+    /// Analyzes the given <see cref="SqlEntityRefMemberExpression"/> and <see cref="MemberInfo"/> and returns an expression that represents an
+    /// optimized version of the member acces on the referenced entity if possible. The expression must be equivalent to the result of
+    /// <see cref="ResolveMemberExpression(Remotion.Linq.SqlBackend.SqlStatementModel.Resolved.SqlEntityExpression,System.Reflection.MemberInfo)"/>
+    /// when executed on the resolved result of <paramref name="entityRefMemberExpression"/>. The purpose of this method is to avoid creating a join
+    /// if a the member can be inferred from the <see cref="SqlEntityRefMemberExpression.OriginatingEntity"/> (e.g., by analyzing a foreign key).
+    /// </summary>
+    /// <param name="entityRefMemberExpression">The <see cref="SqlEntityRefMemberExpression"/> representing the referenced entity whose member
+    /// is to be returned.</param>
+    /// <param name="memberInfo">The <see cref="MemberInfo"/> that is to be resolved.</param>
+    /// <returns>An expression equivalent to the result of 
+    /// <see cref="ResolveMemberExpression(Remotion.Linq.SqlBackend.SqlStatementModel.Resolved.SqlEntityExpression,System.Reflection.MemberInfo)"/>
+    /// deduced without a join, or <see langword="null" /> is the <paramref name="memberInfo"/> cannot be deduced without a join.
+    /// </returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.
+    /// (Implementations can also return <see langword="null" /> instead.)</exception>
+    /// <remarks>
+    /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express a compound member. 
+    /// Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
+    /// expression.
+    /// </remarks>   
+    Expression TryResolveOptimizedMemberExpression (SqlEntityRefMemberExpression entityRefMemberExpression, MemberInfo memberInfo);
   }
 }

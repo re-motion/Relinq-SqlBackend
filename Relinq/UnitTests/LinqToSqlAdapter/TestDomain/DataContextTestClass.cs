@@ -289,6 +289,76 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain
       }
     }
 
+    [Table (Name = "dbo.ClassWithOneToOneRelation_ForeignKeySide")]
+    public class ClassWithOneToOneRelation_ForeignKeySide
+    {
+      private int _ID;
+      private int _VirtualSideID;
+      private ClassWithOneToOneRelation_VirtualSide _VirtualSide;
+
+      [Column (Storage = "_ID", DbType = "Int NOT NULL", IsPrimaryKey = true)]
+      public int ID
+      {
+        get
+        {
+          return this._ID;
+        }
+        set { _ID = value; }
+      }
+
+      [Column (Storage = "_VirtualSideID", DbType = "Int")]
+      public int VirtualSideID
+      {
+        get { return _VirtualSideID; }
+        set
+        {
+          _VirtualSideID = value;
+        }
+      }
+
+      [Association (Name = "OneToOneRelation", Storage = "_VirtualSide", ThisKey = "VirtualSideID", IsForeignKey = true)]
+      public ClassWithOneToOneRelation_VirtualSide VirtualSide
+      {
+        get { return _VirtualSide; }
+        set { _VirtualSide = value; }
+      }
+    }
+
+    [Table (Name = "dbo.ClassWithOneToOneRelation_VirtualSide")]
+    public class ClassWithOneToOneRelation_VirtualSide
+    {
+      private int _ID;
+      private int _OtherMember;
+      private ClassWithOneToOneRelation_ForeignKeySide _ForeignKeySide;
+
+      [Column (Storage = "_ID", DbType = "Int NOT NULL", IsPrimaryKey = true)]
+      public int ID
+      {
+        get
+        {
+          return this._ID;
+        }
+        set { _ID = value; }
+      }
+
+      [Association (Name = "OneToOneRelation", Storage = "_ForeignKeySide", IsForeignKey = false)]
+      public ClassWithOneToOneRelation_ForeignKeySide ForeignKeySide
+      {
+        get { return _ForeignKeySide; }
+        set { _ForeignKeySide = value; }
+      }
+
+      [Column (Storage = "_OtherMember", DbType = "Int NOT NULL")]
+      public int OtherMember
+      {
+        get
+        {
+          return this._OtherMember;
+        }
+        set { _OtherMember = value; }
+      }
+    }
+
     #endregion
   }
 }

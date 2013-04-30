@@ -38,6 +38,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext);
     SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context);
     Expression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context);
+    // TODO 3315: Consider removing join info.
     SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context);
     Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression, IMappingResolutionContext context);
     Expression ResolveMemberAccess (

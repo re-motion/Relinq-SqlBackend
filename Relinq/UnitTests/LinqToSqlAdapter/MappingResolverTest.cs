@@ -437,11 +437,11 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void TryResolveOptimizedIdentity_ForeignKeyOnTheRight ()
     {
-      var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
-      var customerEntity = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.ClassWithOneToOneRelation_VirtualSide), "X", "x");
+      var originatingEntity = new SqlEntityDefinitionExpression (tableInfo.ItemType, tableInfo.TableAlias, null, e => e);
 
-      var ordersMember = customerTableInfo.ItemType.GetProperty ("Orders");
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (customerEntity, ordersMember);
+      var relationMember = tableInfo.ItemType.GetProperty ("ForeignKeySide");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (originatingEntity, relationMember);
 
       var result = _mappingResolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
 
@@ -451,18 +451,68 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     public void TryResolveOptimizedIdentity_ForeignKeyOnTheLeft ()
     {
-      var orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t1");
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.ClassWithOneToOneRelation_ForeignKeySide), "X", "x");
 
-      var orderEntity = new SqlEntityDefinitionExpression (
-          orderTableInfo.ItemType, orderTableInfo.TableAlias, null, e => e.GetColumn (typeof (string), "OrderID", true));
+      var originatingEntity = new SqlEntityDefinitionExpression (
+          tableInfo.ItemType, tableInfo.TableAlias, null, e => e.GetColumn (typeof (int), "ID", true));
 
-      var customerMember = orderTableInfo.ItemType.GetProperty ("Customer");
-      var entityRefMemberExpression = new SqlEntityRefMemberExpression (orderEntity, customerMember);
+      var relationMember = tableInfo.ItemType.GetProperty ("VirtualSide");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (originatingEntity, relationMember);
 
       var result = _mappingResolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
 
-      var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
+      var orderForeignKey = new SqlColumnDefinitionExpression (typeof (int), tableInfo.TableAlias, "VirtualSideID", false);
       ExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, result);
+    }
+
+    [Test]
+    public void TryResolveOptimizedMemberExpression_IdentityMember_ForeignKeyOnTheRight ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.ClassWithOneToOneRelation_VirtualSide), "X", "x");
+      var originatingEntity = new SqlEntityDefinitionExpression (tableInfo.ItemType, tableInfo.TableAlias, null, e => e);
+
+      var relationMember = tableInfo.ItemType.GetProperty ("ForeignKeySide");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (originatingEntity, relationMember);
+
+      var identityMember = typeof (DataContextTestClass.ClassWithOneToOneRelation_ForeignKeySide).GetProperty ("ID");
+      var result = _mappingResolver.TryResolveOptimizedMemberExpression (entityRefMemberExpression, identityMember);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void TryResolveOptimizedMemberExpression_IdentityMember_ForeignKeyOnTheLeft ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.ClassWithOneToOneRelation_ForeignKeySide), "X", "x");
+
+      var originatingEntity = new SqlEntityDefinitionExpression (
+          tableInfo.ItemType, tableInfo.TableAlias, null, e => e.GetColumn (typeof (int), "ID", true));
+
+      var relationMember = tableInfo.ItemType.GetProperty ("VirtualSide");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (originatingEntity, relationMember);
+
+      var identityMember = typeof (DataContextTestClass.ClassWithOneToOneRelation_VirtualSide).GetProperty ("ID");
+      var result = _mappingResolver.TryResolveOptimizedMemberExpression (entityRefMemberExpression, identityMember);
+
+      var orderForeignKey = new SqlColumnDefinitionExpression (typeof (int), tableInfo.TableAlias, "VirtualSideID", false);
+      ExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, result);
+    }
+
+    [Test]
+    public void TryResolveOptimizedMemberExpression_OtherMember ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.ClassWithOneToOneRelation_ForeignKeySide), "X", "x");
+
+      var originatingEntity = new SqlEntityDefinitionExpression (
+          tableInfo.ItemType, tableInfo.TableAlias, null, e => e.GetColumn (typeof (int), "ID", true));
+
+      var relationMember = tableInfo.ItemType.GetProperty ("VirtualSide");
+      var entityRefMemberExpression = new SqlEntityRefMemberExpression (originatingEntity, relationMember);
+
+      var identityMember = typeof (DataContextTestClass.ClassWithOneToOneRelation_VirtualSide).GetProperty ("OtherMember");
+      var result = _mappingResolver.TryResolveOptimizedMemberExpression (entityRefMemberExpression, identityMember);
+
+      Assert.That (result, Is.Null);
     }
 
     [Test]

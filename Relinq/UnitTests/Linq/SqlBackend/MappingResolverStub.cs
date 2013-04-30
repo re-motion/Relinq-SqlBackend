@@ -97,16 +97,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
             var leftKey = ResolveMemberExpression (joinInfo.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
             var rightKey = ResolveSimpleTableInfo (joinedTableInfo, generator).GetIdentityExpression();
             return new ResolvedJoinInfo (joinedTableInfo, Expression.Equal (leftKey, rightKey));
-          case "KnifeWithOptimizedJoin":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "KnifeID",
-                typeof (int),
-                false,
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "ID",
-                typeof (int),
-                true);
         }
       }
       else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
@@ -286,7 +276,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
           case "Substituted":
           case "Kitchen":
           case "Knife":
-          case "KnifeWithOptimizedJoin":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
         }
       }
@@ -392,6 +381,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
       if (entityRefMemberExpression.MemberInfo.DeclaringType == typeof (Cook) && entityRefMemberExpression.MemberInfo.Name == "Knife")
         return ResolveMemberExpression (entityRefMemberExpression.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
 
+      // Prepare a join, then check if the foreign key column is on the left side => this is the identity. (Otherwise, return null.)
+
       var joinInfo =
           ResolveJoinInfo (
               new UnresolvedJoinInfo (entityRefMemberExpression.OriginatingEntity, entityRefMemberExpression.MemberInfo, JoinCardinality.One),
@@ -403,6 +394,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend
 
       if (((SqlColumnExpression) rightKey).IsPrimaryKey)
         return ((BinaryExpression) joinInfo.JoinCondition).Left;
+
+      return null;
+    }
+
+    public Expression TryResolveOptimizedMemberExpression (SqlEntityRefMemberExpression entityRefMemberExpression, MemberInfo memberInfo)
+    {
+      if (memberInfo.Name == "ID")
+        return TryResolveOptimizedIdentity (entityRefMemberExpression);
 
       return null;
     }
