@@ -27,7 +27,7 @@ using Remotion.Linq.Utilities;
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// Splits comparisons involving a compound expression, e.g., new { A = 1, B = 2 } == new { A = 3, B = 4 } => 1 == 1 AND 2 == 2.
+  /// Splits comparisons involving a compound expression, e.g., new { A = 1, B = 2 } == new { A = 3, B = 4 } => (1 == 3) AND (2 == 4).
   /// </summary>
   public class CompoundExpressionComparisonSplitter : ICompoundExpressionComparisonSplitter
   {
