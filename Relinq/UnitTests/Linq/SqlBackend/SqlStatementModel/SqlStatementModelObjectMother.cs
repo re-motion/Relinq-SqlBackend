@@ -218,6 +218,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
       return new ResolvedJoinInfo (foreignTableInfo, Expression.Equal (primaryColumn, foreignColumn));
     }
 
+    public static SqlColumnExpression CreateSqlColumn (Type type = null, string owningTableAlias = null, string column = null, bool isPrimaryKey = false)
+    {
+      return new SqlColumnDefinitionExpression (type ?? typeof (int), owningTableAlias ?? "t0", column ?? "column", isPrimaryKey);
+    }
+
     public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type = null, string name = null, string owningTableAlias = null, Type primaryKeyType = null)
     {
       type = type ?? typeof (Cook);

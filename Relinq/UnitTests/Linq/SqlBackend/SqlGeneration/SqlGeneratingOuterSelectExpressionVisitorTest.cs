@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -107,6 +108,90 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 AS [outer]"));
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_EmitsBitConversion_AndUsesBoolInProjection ()
+    {
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (_namedIntExpression);
+
+       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
+      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (bool));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(BIT, @1) AS [test]"));
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_ReturnsAdaptedNamedExpressionOfCorrectType ()
+    {
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (_namedIntExpression);
+
+      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      var expectedResult = new NamedExpression (_namedIntExpression.Name, new SqlConvertExpression (typeof (bool), _namedIntExpression.Expression));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_NullableBool_EmitsBitConversion_AndUsesNullableBoolInProjection ()
+    {
+      var namedNullableIntExpression = new NamedExpression ("test", Expression.Constant (0, typeof (int?)));
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (namedNullableIntExpression);
+
+      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (bool?));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(BIT, @1) AS [test]"));
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_NullableBool_ReturnsAdaptedNamedExpressionOfCorrectType ()
+    {
+      var namedNullableIntExpression = new NamedExpression ("test", Expression.Constant (0, typeof (int?)));
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (namedNullableIntExpression);
+
+      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      var expectedResult = new NamedExpression (
+          namedNullableIntExpression.Name, new SqlConvertExpression (typeof (bool?), namedNullableIntExpression.Expression));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_OmitsSqlConversion_ForColumns ()
+    {
+      var namedIntColumnExpression = new NamedExpression ("col", SqlStatementModelObjectMother.CreateSqlColumn (typeof (int)));
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (namedIntColumnExpression);
+
+       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
+      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "col", 0, typeof (bool));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t0].[column] AS [col]"));
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithADifferentExpression_VisitsInnerExpressionAndReturnsInputExpression ()
+    {
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (new SqlLiteralExpression (0));
+
+      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("0"));
+      Assert.That (result, Is.SameAs (sqlConvertedBooleanExpression));
     }
 
     [Test]

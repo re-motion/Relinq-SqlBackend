@@ -30,8 +30,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Cooks.Any(),
-          "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]",
-          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))));
+          "SELECT CONVERT(BIT, CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END) AS [value]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0)));
     }
 
     [Test]
@@ -39,8 +39,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Cooks.Any (c => c.FirstName == "Hugo"),
-          "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) THEN 1 ELSE 0 END AS [value]",
-          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
+          "SELECT CONVERT(BIT, CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1))) "
+          + "THEN 1 ELSE 0 END) AS [value]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
           new CommandParameter("@1", "Hugo"));
     }
 
@@ -57,8 +58,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Cooks.OrderBy (c => c.FirstName).Any(),
-          "SELECT CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END AS [value]",
-          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0))))
+          "SELECT CONVERT(BIT, CASE WHEN EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0])) THEN 1 ELSE 0 END) AS [value]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0))
           );
     }
   }

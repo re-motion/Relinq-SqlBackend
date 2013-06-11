@@ -76,8 +76,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from c in Cooks select !c.IsStarredCook,
-          "SELECT CASE WHEN NOT ([t0].[IsStarredCook] = 1) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]",
-          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0))))
+          "SELECT CONVERT(BIT, CASE WHEN NOT ([t0].[IsStarredCook] = 1) THEN 1 ELSE 0 END) AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0))
           );
     }
 

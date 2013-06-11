@@ -22,6 +22,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
@@ -31,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// <see cref="SqlStatement.SelectProjection"/> of the outermost <see cref="SqlStatement"/> in a query. For substatements, 
   /// <see cref="SqlGeneratingSelectExpressionVisitor"/> should be used instead.
   /// </summary>
-  public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor
+  public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor, ISqlConvertedBooleanExpressionVisitor
   {
     private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");
     private static readonly MethodInfo s_getEntityMethod = typeof (IDatabaseResultRow).GetMethod ("GetEntity");
@@ -60,15 +61,31 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var result = base.VisitNamedExpression (expression);
-
-      var newInMemoryProjectionBody = Expression.Call (
-          CommandBuilder.InMemoryProjectionRowParameter,
-          s_getValueMethod.MakeGenericMethod (expression.Type),
-          Expression.Constant (GetNextColumnID (expression.Name ?? NamedExpression.DefaultName)));
-
-      CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
+      SetInMemoryProjectionForNamedExpression (expression.Type, Expression.Constant (GetNextColumnID (expression.Name ?? NamedExpression.DefaultName)));
 
       return result;
+    }
+
+    public virtual Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var namedExpression = expression.Expression as NamedExpression;
+      if (namedExpression != null)
+      {
+        // Since ADO.NET returns bit columns as actual boolean values (not as integer values), we need to convert the NamedExpression back to be
+        // of type bool/bool? instead of int/int?.
+        var conversionToBool = GetBitConversionExpression (
+            sourceType: namedExpression.Type, targetType: expression.Type, convertedExpression: namedExpression.Expression);
+
+        var newNamedExpression = new NamedExpression (namedExpression.Name, conversionToBool);
+        return VisitExpression (newNamedExpression);
+      }
+      else
+      {
+        VisitExpression (expression.Expression);
+        return expression;
+      }
     }
 
     public override Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -198,6 +215,27 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       {
         CommandBuilder.SetInMemoryProjectionBody (null);
       }
+    }
+
+    private void SetInMemoryProjectionForNamedExpression (Type typeOfValue, Expression columnID)
+    {
+      var newInMemoryProjectionBody = Expression.Call (
+          CommandBuilder.InMemoryProjectionRowParameter,
+          s_getValueMethod.MakeGenericMethod (typeOfValue),
+          columnID);
+
+      CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
+    }
+
+    private Expression GetBitConversionExpression (Type sourceType, Type targetType, Expression convertedExpression)
+    {
+      // When selecting anything but a column, we also need to insert a "CONVERT (BIT, ...)" to convert the value to BIT.
+      // For columns, we don't want that, as they already are of type BIT and we want to avoid the noise.
+
+      if (convertedExpression is SqlColumnExpression)
+        return Expression.Convert (convertedExpression, targetType, BooleanUtility.GetIntToBoolConversionMethod (sourceType));
+      else
+        return new SqlConvertExpression (targetType, convertedExpression);
     }
   }
 }
