@@ -22,6 +22,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
@@ -69,7 +70,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      VisitExpression (expression.Expression);
       var namedExpression = expression.Expression as NamedExpression;
       if (namedExpression != null)
       {
@@ -79,14 +79,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         // Since ADO.NET returns bit values as actual boolean values (not as integer values), we need to change this to 
         // be "row => row.GetValue<bool/bool?> (columnID)".
 
-        var inMemoryProjection = CommandBuilder.GetInMemoryProjectionBody() as MethodCallExpression;
-        Trace.Assert (inMemoryProjection != null);
-        Trace.Assert (inMemoryProjection.Method.IsGenericMethod);
-        Trace.Assert (inMemoryProjection.Method.GetGenericMethodDefinition() == s_getValueMethod);
-        SetInMemoryProjectionForNamedExpression (expression.Type, inMemoryProjection.Arguments.Single());
+        var newNamedExpression = new NamedExpression (namedExpression.Name, new SqlConvertExpression (expression.Type, namedExpression.Expression));
+        return VisitExpression (newNamedExpression);
       }
-
-      return expression;
+      else
+      {
+        VisitExpression (expression.Expression);
+        return expression;
+      }
     }
 
     public override Expression VisitSqlEntityExpression (SqlEntityExpression expression)
