@@ -175,24 +175,29 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private Expression VisitArgumentOfLocalEvaluation (Expression argumentExpression)
     {
-      var namedExpression = argumentExpression as NamedExpression;
-      if (namedExpression != null && namedExpression.Expression is ConstantExpression)
+      try
       {
-        // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory projection.
-        // This enables us to use complex, local-only constants within a local expression.
-        VisitExpression (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
-        CommandBuilder.SetInMemoryProjectionBody (namedExpression.Expression);
+        var namedExpression = argumentExpression as NamedExpression;
+        if (namedExpression != null && namedExpression.Expression is ConstantExpression)
+        {
+          // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory projection.
+          // This enables us to use complex, local-only constants within a local expression.
+          VisitExpression (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
+          return namedExpression.Expression;
+        }
+        else
+        {
+          VisitExpression (argumentExpression);
+          var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
+          Debug.Assert (argumentInMemoryProjectionBody != null);
+
+          return argumentInMemoryProjectionBody;
+        }
       }
-      else
+      finally
       {
-        VisitExpression (argumentExpression);
+        CommandBuilder.SetInMemoryProjectionBody (null);
       }
-
-      var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
-      Debug.Assert (argumentInMemoryProjectionBody != null);
-      CommandBuilder.SetInMemoryProjectionBody (null);
-
-      return argumentInMemoryProjectionBody;
     }
   }
 }
