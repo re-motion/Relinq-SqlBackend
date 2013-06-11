@@ -102,7 +102,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    public void BooleanConditions ()
+    public void BooleanConditions_Old ()
     {
       CheckQuery (
           from c in Cooks select c.IsStarredCook,
@@ -119,6 +119,27 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           from c in Cooks select c.FirstName != null,
           "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]",
           row => (object) ConvertExpressionMarker (Convert.ToBoolean(row.GetValue<int> (new ColumnID ("value", 0)))));
+    }
+
+    [Test]
+    [Ignore ("TODO 5679")]
+    public void BooleanConditions ()
+    {
+      CheckQuery (
+          from c in Cooks select c.IsStarredCook,
+          "SELECT [t0].[IsStarredCook] AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0)));
+
+      CheckQuery (
+          from c in Cooks select true,
+          "SELECT @1 AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", 1));
+
+      CheckQuery (
+          from c in Cooks select c.FirstName != null,
+          "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)));
     }
 
     [Test]
