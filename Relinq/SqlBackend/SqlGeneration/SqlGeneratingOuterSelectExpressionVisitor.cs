@@ -73,13 +73,12 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       var namedExpression = expression.Expression as NamedExpression;
       if (namedExpression != null)
       {
-        // This assumes that VisitNamedExpression always generates an in-memory projection like "row => row.GetValue<int/int?> (columnID)" for 
-        // NamedExpressions wrapped into SqlConvertedBooleanExpressions.
+        // Since ADO.NET returns bit columns as actual boolean values (not as integer values), we need to convert the NamedExpression back to be
+        // of type bool/bool? instead of int/int?.
+        var conversionToBool = GetBitConversionExpression (
+            sourceType: namedExpression.Type, targetType: expression.Type, convertedExpression: namedExpression.Expression);
 
-        // Since ADO.NET returns bit values as actual boolean values (not as integer values), we need to change this to 
-        // be "row => row.GetValue<bool/bool?> (columnID)".
-
-        var newNamedExpression = new NamedExpression (namedExpression.Name, new SqlConvertExpression (expression.Type, namedExpression.Expression));
+        var newNamedExpression = new NamedExpression (namedExpression.Name, conversionToBool);
         return VisitExpression (newNamedExpression);
       }
       else
@@ -228,5 +227,15 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
     }
 
+    private Expression GetBitConversionExpression (Type sourceType, Type targetType, Expression convertedExpression)
+    {
+      // When selecting anything but a column, we also need to insert a "CONVERT (BIT, ...)" to convert the value to BIT.
+      // For columns, we don't want that, as they already are of type BIT and we want to avoid the noise.
+
+      if (convertedExpression is SqlColumnExpression)
+        return Expression.Convert (convertedExpression, targetType, BooleanUtility.GetIntToBoolConversionMethod (sourceType));
+      else
+        return new SqlConvertExpression (targetType, convertedExpression);
+    }
   }
 }

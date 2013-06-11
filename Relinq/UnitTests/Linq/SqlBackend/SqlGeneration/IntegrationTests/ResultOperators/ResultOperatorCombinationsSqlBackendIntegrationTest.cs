@@ -125,7 +125,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       Cook cook = new Cook { ID = 5, FirstName = "Hugo", Name = "Hanser" };
       CheckQuery (
           () => Cooks.Take (1).Contains (cook),
-          "SELECT CASE WHEN @1 IN (SELECT TOP (1) [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END AS [value]",
+          "SELECT CONVERT(BIT, CASE WHEN @1 IN (SELECT TOP (1) [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END) AS [value]",
           new CommandParameter("@1", cook.ID));
     }
 
@@ -154,16 +154,16 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => (from s in Cooks select s).Take (10).Take (20).All (s => s.IsStarredCook),
-          "SELECT CASE WHEN NOT EXISTS((SELECT TOP (20) [q0].[ID] "
+          "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS((SELECT TOP (20) [q0].[ID] "
           + "FROM (SELECT TOP (10) [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"
           + "[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],[t1].[KnifeID],[t1].[KnifeClassID]"
           + " FROM [CookTable] AS [t1]) AS [q0] "
-          + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]");
+          + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END) AS [value]");
 
       CheckQuery (
           () => (from s in Cooks select s.FirstName).Take (10).Take (20).All (s => s != null),
-          "SELECT CASE WHEN NOT EXISTS((SELECT TOP (20) [q0].[value] FROM (SELECT TOP (10) [t1].[FirstName] AS [value] "+
-          "FROM [CookTable] AS [t1]) AS [q0] WHERE NOT ([q0].[value] IS NOT NULL))) THEN 1 ELSE 0 END AS [value]");
+          "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS((SELECT TOP (20) [q0].[value] FROM (SELECT TOP (10) [t1].[FirstName] AS [value] "+
+          "FROM [CookTable] AS [t1]) AS [q0] WHERE NOT ([q0].[value] IS NOT NULL))) THEN 1 ELSE 0 END) AS [value]");
     }
 
     [Test]
@@ -171,11 +171,12 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => (from s in Cooks select s).DefaultIfEmpty().All (s => s.IsStarredCook),
-          "SELECT CASE WHEN NOT EXISTS((SELECT [q0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN (SELECT [t1].[ID],[t1].[FirstName],"
+          "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
+          + "SELECT [q0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN (SELECT [t1].[ID],[t1].[FirstName],"
           + "[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
           + "[t1].[KnifeID],[t1].[KnifeClassID] "
           + "FROM [CookTable] AS [t1]) AS [q0] ON (1 = 1) "
-          + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END AS [value]");
+          + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END) AS [value]");
     }
 
     [Test]
@@ -223,10 +224,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).All (name => name != null),
-          "SELECT CASE WHEN NOT EXISTS(("
+          "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
           + "SELECT [q0].[Key] FROM ("
           + "SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] FROM [CookTable] AS [t0]"
-          + ") AS [q0] WHERE (([q0].[Value] > @1) AND NOT ([q0].[Key] IS NOT NULL)))) THEN 1 ELSE 0 END AS [value]",
+          + ") AS [q0] WHERE (([q0].[Value] > @1) AND NOT ([q0].[Key] IS NOT NULL)))) THEN 1 ELSE 0 END) AS [value]",
           new CommandParameter ("@1", 100));
     }
 
@@ -261,18 +262,18 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     public void AnyAfterGroupBy ()
     {
       CheckQuery (() => (from c in Cooks group c.Name by c.FirstName).Any (group => group.Key != null),
-        "SELECT CASE WHEN EXISTS(("
+        "SELECT CONVERT(BIT, CASE WHEN EXISTS(("
             + "SELECT [q0].[key] AS [key] FROM (SELECT [t1].[FirstName] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[FirstName]) AS [q0] "
-            + "WHERE ([q0].[key] IS NOT NULL))) THEN 1 ELSE 0 END AS [value]");
+            + "WHERE ([q0].[key] IS NOT NULL))) THEN 1 ELSE 0 END) AS [value]");
     }
 
     [Test]
     public void AllAfterGroupBy ()
     {
       CheckQuery (() => (from c in Cooks group c.Name by c.FirstName).All (group => group.Key != null),
-       "SELECT CASE WHEN NOT EXISTS(("
+       "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
            + "SELECT [q0].[key] AS [key] FROM (SELECT [t1].[FirstName] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[FirstName]) AS [q0] "
-           + "WHERE NOT ([q0].[key] IS NOT NULL))) THEN 1 ELSE 0 END AS [value]");
+           + "WHERE NOT ([q0].[key] IS NOT NULL))) THEN 1 ELSE 0 END) AS [value]");
     }
 
     [Test]
@@ -280,11 +281,11 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
         () => Cooks.GroupBy (c => c.Name, c => c.ID, (key, group) => new { Name = key }).All (x => x.Name != null),
-        "SELECT CASE WHEN NOT EXISTS(("
+        "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
         + "SELECT [q0].[key] AS [Name] "
         + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
         + "WHERE NOT ([q0].[key] IS NOT NULL))) "
-        + "THEN 1 ELSE 0 END AS [value]");
+        + "THEN 1 ELSE 0 END) AS [value]");
     }
   }
 }

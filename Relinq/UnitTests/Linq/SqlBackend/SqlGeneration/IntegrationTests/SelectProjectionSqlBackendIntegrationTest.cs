@@ -82,11 +82,20 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    public void Null_Boolean ()
+    {
+      CheckQuery (
+          Kitchens.Select<Kitchen, bool?> (k => null),
+          "SELECT CONVERT(BIT, NULL) AS [value] FROM [KitchenTable] AS [t0]",
+          row => (object) row.GetValue<bool?> (new ColumnID ("value", 0)));
+    }
+
+    [Test]
     public void True ()
     {
       CheckQuery (
           from k in Kitchens select true,
-          "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
+          "SELECT CONVERT(BIT, @1) AS [value] FROM [KitchenTable] AS [t0]",
           row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 1));
     }
@@ -96,7 +105,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens select false,
-          "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
+          "SELECT CONVERT(BIT, @1) AS [value] FROM [KitchenTable] AS [t0]",
           row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 0));
     }
@@ -110,14 +119,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           row => (object) row.GetValue<bool> (new ColumnID ("value", 0)));
 
       CheckQuery (
-          from c in Cooks select true,
-          "SELECT @1 AS [value] FROM [CookTable] AS [t0]",
-          row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
-          new CommandParameter ("@1", 1));
-
-      CheckQuery (
           from c in Cooks select c.FirstName != null,
-          "SELECT CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [CookTable] AS [t0]",
+          "SELECT CONVERT(BIT, CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END) AS [value] FROM [CookTable] AS [t0]",
           row => (object) row.GetValue<bool> (new ColumnID ("value", 0)));
     }
 
@@ -378,7 +381,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook, True = true },
-          "SELECT [t0].[IsStarredCook] AS [IsStarredCook],@1 AS [True] FROM [CookTable] AS [t0]",
+          "SELECT [t0].[IsStarredCook] AS [IsStarredCook],CONVERT(BIT, @1) AS [True] FROM [CookTable] AS [t0]",
           row => (object) new 
           {
             IsStarredCook = row.GetValue<bool> (new ColumnID ("IsStarredCook", 0)),
@@ -389,7 +392,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks select new { c.IsStarredCook, True = true, HasFirstName = c.FirstName != null },
           "SELECT [t0].[IsStarredCook] AS [IsStarredCook]," 
-          + "@1 AS [True],CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END AS [HasFirstName] FROM [CookTable] AS [t0]",
+          + "CONVERT(BIT, @1) AS [True],"
+          + "CONVERT(BIT, CASE WHEN ([t0].[FirstName] IS NOT NULL) THEN 1 ELSE 0 END) AS [HasFirstName] FROM [CookTable] AS [t0]",
           row => (object) new
           {
               IsStarredCook = row.GetValue<bool> (new ColumnID ("IsStarredCook", 0)),

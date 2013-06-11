@@ -98,7 +98,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       bool? nullableValue = true;
       CheckQuery (
           from k in Kitchens select nullableValue,
-          "SELECT @1 AS [value] FROM [KitchenTable] AS [t0]",
+          "SELECT CONVERT(BIT, @1) AS [value] FROM [KitchenTable] AS [t0]",
           row => row.GetValue<bool?> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 1));
 
@@ -109,7 +109,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
               kitchenParameter);
       CheckQuery (
           Kitchens.Select (nullablePredicate),
-          "SELECT CASE WHEN ([t0].[LastInspectionScore] = @1) THEN 1 WHEN NOT ([t0].[LastInspectionScore] = @1) THEN 0 ELSE NULL END AS [value] "
+          "SELECT CONVERT(BIT, CASE WHEN ([t0].[LastInspectionScore] = @1) THEN 1 "
+          + "WHEN NOT ([t0].[LastInspectionScore] = @1) THEN 0 ELSE NULL END) AS [value] "
           + "FROM [KitchenTable] AS [t0]",
           row => row.GetValue<bool?> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", 0));
@@ -176,9 +177,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
       CheckQuery (
          Kitchens.Select (selector),
-         "SELECT CASE WHEN (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
+         "SELECT CONVERT(BIT, CASE WHEN (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
           + "THEN 1 WHEN NOT (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
-          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+          + "THEN 0 ELSE NULL END) AS [value] FROM [KitchenTable] AS [t0]");
 
       var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
       CheckQuery (
@@ -196,9 +197,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
       CheckQuery (
          Kitchens.Select (selector),
-         "SELECT CASE WHEN (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
+         "SELECT CONVERT(BIT, CASE WHEN (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
           + "THEN 1 WHEN NOT (([t0].[PassedLastInspection] = 1) AND ([t0].[PassedLastInspection] = 1)) "
-          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+          + "THEN 0 ELSE NULL END) AS [value] FROM [KitchenTable] AS [t0]");
 
       var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
       CheckQuery (
@@ -216,9 +217,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
       CheckQuery (
          Kitchens.Select (selector),
-         "SELECT CASE WHEN (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
+         "SELECT CONVERT(BIT, CASE WHEN (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
           + "THEN 1 WHEN NOT (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
-          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+          + "THEN 0 ELSE NULL END) AS [value] FROM [KitchenTable] AS [t0]");
 
       var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
       CheckQuery (
@@ -236,9 +237,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
       CheckQuery (
          Kitchens.Select (selector),
-         "SELECT CASE WHEN (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
+         "SELECT CONVERT(BIT, CASE WHEN (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
           + "THEN 1 WHEN NOT (([t0].[PassedLastInspection] = 1) OR ([t0].[PassedLastInspection] = 1)) "
-          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+          + "THEN 0 ELSE NULL END) AS [value] FROM [KitchenTable] AS [t0]");
 
       var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
       CheckQuery (
@@ -255,9 +256,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var selector = Expression.Lambda<Func<Kitchen, bool?>> (conjunction, kitchenParameter);
       CheckQuery (
          Kitchens.Select (selector),
-         "SELECT CASE WHEN NOT ([t0].[PassedLastInspection] = 1) "
+         "SELECT CONVERT(BIT, CASE WHEN NOT ([t0].[PassedLastInspection] = 1) "
           + "THEN 1 WHEN NOT NOT ([t0].[PassedLastInspection] = 1) "
-          + "THEN 0 ELSE NULL END AS [value] FROM [KitchenTable] AS [t0]");
+          + "THEN 0 ELSE NULL END) AS [value] FROM [KitchenTable] AS [t0]");
 
       var predicate = Expression.Lambda<Func<Kitchen, bool>> (Expression.Convert (conjunction, typeof (bool)), kitchenParameter);
       CheckQuery (
@@ -270,7 +271,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
          from k in Kitchens select k.PassedLastInspection ?? false,
-         "SELECT (COALESCE ([t0].[PassedLastInspection], @1)) AS [value] FROM [KitchenTable] AS [t0]",
+         "SELECT CONVERT(BIT, (COALESCE ([t0].[PassedLastInspection], @1))) AS [value] FROM [KitchenTable] AS [t0]",
          row => row.GetValue<bool>(new ColumnID ("value", 0)),
          new  CommandParameter ("@1", 0));
 
@@ -285,7 +286,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
               kitchenParameter);
       CheckQuery (
          Kitchens.Select (coalescedNullablePredicate),
-         "SELECT (COALESCE (CASE WHEN ([t0].[LastInspectionScore] = @1) THEN 1 WHEN NOT ([t0].[LastInspectionScore] = @1) THEN 0 ELSE NULL END, @2)) "
+         "SELECT CONVERT(BIT, (COALESCE (CASE WHEN ([t0].[LastInspectionScore] = @1) THEN 1 "
+          + "WHEN NOT ([t0].[LastInspectionScore] = @1) THEN 0 ELSE NULL END, @2))) "
           + "AS [value] FROM [KitchenTable] AS [t0]",
          row => row.GetValue<bool> (new ColumnID ("value", 0)),
          new CommandParameter ("@1", 0),
@@ -297,7 +299,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
          from k in Kitchens select k.PassedLastInspection ?? true,
-         "SELECT (COALESCE ([t0].[PassedLastInspection], @1)) AS [value] FROM [KitchenTable] AS [t0]",
+         "SELECT CONVERT(BIT, (COALESCE ([t0].[PassedLastInspection], @1))) AS [value] FROM [KitchenTable] AS [t0]",
          row => row.GetValue<bool>(new ColumnID ("value", 0)),
          new CommandParameter ("@1", 1));
 
@@ -312,7 +314,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
               kitchenParameter);
       CheckQuery (
          Kitchens.Select (coalescedNullablePredicate),
-         "SELECT (COALESCE (CASE WHEN ([t0].[LastInspectionScore] = @1) THEN 1 WHEN NOT ([t0].[LastInspectionScore] = @1) THEN 0 ELSE NULL END, @2))"
+         "SELECT CONVERT(BIT, (COALESCE (CASE WHEN ([t0].[LastInspectionScore] = @1) THEN 1 "
+          + "WHEN NOT ([t0].[LastInspectionScore] = @1) THEN 0 ELSE NULL END, @2)))"
           + " AS [value] FROM [KitchenTable] AS [t0]",
          row => row.GetValue<bool> (new ColumnID ("value", 0)),
          new CommandParameter ("@1", 0),

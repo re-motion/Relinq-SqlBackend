@@ -77,7 +77,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       var cook = new Cook { ID = 23, FirstName = "Hugo", Name = "Heinrich" };
       CheckQuery (
           ( () => (from s in Cooks select s).Contains(cook)),
-          "SELECT CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END AS [value]",
+          "SELECT CONVERT(BIT, CASE WHEN @1 IN (SELECT [t0].[ID] FROM [CookTable] AS [t0]) THEN 1 ELSE 0 END) AS [value]",
           row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
           new CommandParameter("@1", 23) );
     }

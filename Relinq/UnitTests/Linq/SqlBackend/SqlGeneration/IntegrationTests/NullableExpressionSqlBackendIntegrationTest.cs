@@ -28,10 +28,10 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens select k.LastCleaningDay.HasValue,
-          "SELECT CASE WHEN ([t0].[LastCleaningDay] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [KitchenTable] AS [t0]");
+          "SELECT CONVERT(BIT, CASE WHEN ([t0].[LastCleaningDay] IS NOT NULL) THEN 1 ELSE 0 END) AS [value] FROM [KitchenTable] AS [t0]");
       CheckQuery (
           from k in Kitchens select !k.LastCleaningDay.HasValue,
-          "SELECT CASE WHEN NOT ([t0].[LastCleaningDay] IS NOT NULL) THEN 1 ELSE 0 END AS [value] FROM [KitchenTable] AS [t0]");
+          "SELECT CONVERT(BIT, CASE WHEN NOT ([t0].[LastCleaningDay] IS NOT NULL) THEN 1 ELSE 0 END) AS [value] FROM [KitchenTable] AS [t0]");
     }
 
     [Test]

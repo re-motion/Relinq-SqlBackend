@@ -166,6 +166,24 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_OmitsSqlConversion_ForColumns ()
+    {
+      var namedIntColumnExpression = new NamedExpression ("col", SqlStatementModelObjectMother.CreateSqlColumn (typeof (int)));
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (namedIntColumnExpression);
+
+       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
+      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "col", 0, typeof (bool));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t0].[column] AS [col]"));
+    }
+
+    [Test]
     public void VisitSqlConvertedBooleanExpression_WithADifferentExpression_VisitsInnerExpressionAndReturnsInputExpression ()
     {
       var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (new SqlLiteralExpression (0));
