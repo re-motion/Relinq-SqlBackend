@@ -64,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       var newInMemoryProjectionBody = Expression.Call (
           CommandBuilder.InMemoryProjectionRowParameter,
           s_getValueMethod.MakeGenericMethod (expression.Type),
-          Expression.Constant (GetNextColumnID (expression.Name ?? "value")));
+          Expression.Constant (GetNextColumnID (expression.Name ?? NamedExpression.DefaultName)));
 
       CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
 

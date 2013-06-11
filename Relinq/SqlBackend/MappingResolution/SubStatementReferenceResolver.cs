@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.Utilities;
@@ -71,12 +72,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _context.AddSqlEntityMapping (reference, _sqlTable);
       return reference;
     }
-    
+
     public Expression VisitNamedExpression (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return new SqlColumnDefinitionExpression (expression.Type, _tableInfo.TableAlias, expression.Name ?? "value", false);
+      return new SqlColumnDefinitionExpression (
+          expression.Type,
+          _tableInfo.TableAlias,
+          expression.Name ?? NamedExpression.DefaultName,
+          false);
     }
 
     // NewExpressions are referenced by creating a new NewExpression holding references to the original arguments. We need to explicitly name each 

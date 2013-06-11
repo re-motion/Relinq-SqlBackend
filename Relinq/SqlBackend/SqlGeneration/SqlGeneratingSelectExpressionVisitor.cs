@@ -77,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       VisitExpression (expression.Expression);
       CommandBuilder.Append (" AS ");
-      CommandBuilder.AppendIdentifier (expression.Name ?? "value");
+      CommandBuilder.AppendIdentifier (expression.Name ?? NamedExpression.DefaultName);
       
       return expression;
     }

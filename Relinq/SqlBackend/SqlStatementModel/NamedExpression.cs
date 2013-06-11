@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -37,6 +39,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class NamedExpression : ExtensionExpression
   {
+    public const string DefaultName = "value";
+
     private readonly string _name;
     private readonly Expression _expression;
 
@@ -79,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       if (expressionAsNamedExpression != null && expressionAsNamedExpression.Name == memberName)
         return expressionAsNamedExpression;
 
-      return NamedExpression.CreateFromMemberName (memberName, argumentExpression);
+      return CreateFromMemberName (memberName, argumentExpression);
     }
 
     private static string GetMemberName (ReadOnlyCollection<MemberInfo> members, int index)
@@ -139,7 +143,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return string.Format ("{0} AS {1}", FormattingExpressionTreeVisitor.Format (_expression), _name ?? "value");
+      return String.Format ("{0} AS {1}", FormattingExpressionTreeVisitor.Format (_expression), _name ?? DefaultName);
     }
   }
 

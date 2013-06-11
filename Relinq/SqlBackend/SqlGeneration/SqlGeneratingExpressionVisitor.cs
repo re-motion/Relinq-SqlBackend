@@ -437,9 +437,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         _commandBuilder.AppendIdentifier (prefix);
         _commandBuilder.Append (".");
         if (referencedEntityName != null)
-          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + (columnName ?? "value"));
+          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + (columnName ?? NamedExpression.DefaultName));
         else
-          _commandBuilder.AppendIdentifier (columnName ?? "value");
+          _commandBuilder.AppendIdentifier (columnName ?? NamedExpression.DefaultName);
       }
     }
   }
