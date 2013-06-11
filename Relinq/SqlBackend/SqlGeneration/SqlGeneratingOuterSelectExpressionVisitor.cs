@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// <see cref="SqlStatement.SelectProjection"/> of the outermost <see cref="SqlStatement"/> in a query. For substatements, 
   /// <see cref="SqlGeneratingSelectExpressionVisitor"/> should be used instead.
   /// </summary>
-  public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor
+  public class SqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingSelectExpressionVisitor, ISqlConvertedBooleanExpressionVisitor
   {
     private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");
     private static readonly MethodInfo s_getEntityMethod = typeof (IDatabaseResultRow).GetMethod ("GetEntity");
@@ -60,15 +60,33 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var result = base.VisitNamedExpression (expression);
-
-      var newInMemoryProjectionBody = Expression.Call (
-          CommandBuilder.InMemoryProjectionRowParameter,
-          s_getValueMethod.MakeGenericMethod (expression.Type),
-          Expression.Constant (GetNextColumnID (expression.Name ?? "value")));
-
-      CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
+      SetInMemoryProjectionForNamedExpression (expression.Type, Expression.Constant (GetNextColumnID (expression.Name ?? NamedExpression.DefaultName)));
 
       return result;
+    }
+
+    public virtual Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      VisitExpression (expression.Expression);
+      var namedExpression = expression.Expression as NamedExpression;
+      if (namedExpression != null)
+      {
+        // This assumes that VisitNamedExpression always generates an in-memory projection like "row => row.GetValue<int/int?> (columnID)" for 
+        // NamedExpressions wrapped into SqlConvertedBooleanExpressions.
+
+        // Since ADO.NET returns bit values as actual boolean values (not as integer values), we need to change this to 
+        // be "row => row.GetValue<bool/bool?> (columnID)".
+
+        var inMemoryProjection = CommandBuilder.GetInMemoryProjectionBody() as MethodCallExpression;
+        Trace.Assert (inMemoryProjection != null);
+        Trace.Assert (inMemoryProjection.Method.IsGenericMethod);
+        Trace.Assert (inMemoryProjection.Method.GetGenericMethodDefinition() == s_getValueMethod);
+        SetInMemoryProjectionForNamedExpression (expression.Type, inMemoryProjection.Arguments.Single());
+      }
+
+      return expression;
     }
 
     public override Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -175,24 +193,40 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private Expression VisitArgumentOfLocalEvaluation (Expression argumentExpression)
     {
-      var namedExpression = argumentExpression as NamedExpression;
-      if (namedExpression != null && namedExpression.Expression is ConstantExpression)
+      try
       {
-        // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory projection.
-        // This enables us to use complex, local-only constants within a local expression.
-        VisitExpression (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
-        CommandBuilder.SetInMemoryProjectionBody (namedExpression.Expression);
+        var namedExpression = argumentExpression as NamedExpression;
+        if (namedExpression != null && namedExpression.Expression is ConstantExpression)
+        {
+          // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory projection.
+          // This enables us to use complex, local-only constants within a local expression.
+          VisitExpression (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
+          return namedExpression.Expression;
+        }
+        else
+        {
+          VisitExpression (argumentExpression);
+          var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
+          Debug.Assert (argumentInMemoryProjectionBody != null);
+
+          return argumentInMemoryProjectionBody;
+        }
       }
-      else
+      finally
       {
-        VisitExpression (argumentExpression);
+        CommandBuilder.SetInMemoryProjectionBody (null);
       }
-
-      var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
-      Debug.Assert (argumentInMemoryProjectionBody != null);
-      CommandBuilder.SetInMemoryProjectionBody (null);
-
-      return argumentInMemoryProjectionBody;
     }
+
+    private void SetInMemoryProjectionForNamedExpression (Type typeOfValue, Expression columnID)
+    {
+      var newInMemoryProjectionBody = Expression.Call (
+          CommandBuilder.InMemoryProjectionRowParameter,
+          s_getValueMethod.MakeGenericMethod (typeOfValue),
+          columnID);
+
+      CommandBuilder.SetInMemoryProjectionBody (newInMemoryProjectionBody);
+    }
+
   }
 }

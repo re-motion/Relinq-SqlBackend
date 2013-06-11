@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
@@ -107,6 +108,44 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 AS [outer]"));
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_AdjustsTheProjectionToUseBoolInsteadOfInt ()
+    {
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (_namedIntExpression);
+
+       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+
+      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+
+      var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (bool));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 AS [test]"));
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithAnInnerNamedExpression_ReturnsInputExpression ()
+    {
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (_namedIntExpression);
+
+      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      Assert.That (result, Is.SameAs (sqlConvertedBooleanExpression));
+    }
+
+    [Test]
+    public void VisitSqlConvertedBooleanExpression_WithADifferentExpression_VisitsInnerExpressionAndReturnsInputExpression ()
+    {
+      var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (new SqlLiteralExpression (0));
+
+      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("0"));
+      Assert.That (result, Is.SameAs (sqlConvertedBooleanExpression));
     }
 
     [Test]

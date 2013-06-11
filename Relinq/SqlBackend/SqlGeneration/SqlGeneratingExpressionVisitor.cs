@@ -25,7 +25,6 @@ using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
@@ -438,9 +437,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         _commandBuilder.AppendIdentifier (prefix);
         _commandBuilder.Append (".");
         if (referencedEntityName != null)
-          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + (columnName ?? "value"));
+          _commandBuilder.AppendIdentifier (referencedEntityName + "_" + (columnName ?? NamedExpression.DefaultName));
         else
-          _commandBuilder.AppendIdentifier (columnName ?? "value");
+          _commandBuilder.AppendIdentifier (columnName ?? NamedExpression.DefaultName);
       }
     }
   }
