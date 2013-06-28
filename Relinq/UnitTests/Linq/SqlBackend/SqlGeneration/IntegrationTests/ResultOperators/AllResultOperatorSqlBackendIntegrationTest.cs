@@ -30,8 +30,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Cooks.All (c => c.Name == "Hugo"),
-          "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
-          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
+          "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) "
+          + "THEN 1 ELSE 0 END) AS [value]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"));
     }
 
@@ -51,8 +52,9 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           () => Cooks.OrderBy (c => c.FirstName).All (c => c.Name == "Hugo"),
-          "SELECT CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) THEN 1 ELSE 0 END AS [value]",
-          row => (object) ConvertExpressionMarker (Convert.ToBoolean (row.GetValue<int> (new ColumnID ("value", 0)))),
+          "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS((SELECT [t0].[ID] FROM [CookTable] AS [t0] WHERE NOT ([t0].[Name] = @1))) "
+          + "THEN 1 ELSE 0 END) AS [value]",
+          row => (object) row.GetValue<bool> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"));
     }
   }
