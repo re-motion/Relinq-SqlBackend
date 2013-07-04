@@ -27,21 +27,21 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   public class DefaultSqlPreparationStage : ISqlPreparationStage
   {
     private readonly IMethodCallTransformerProvider _methodCallTransformerProvider;
-    private readonly UniqueIdentifierGenerator _generator;
+    private readonly UniqueIdentifierGenerator _uniqueIdentifierGenerator;
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry;
 
     public DefaultSqlPreparationStage (
         IMethodCallTransformerProvider methodCallTransformerProvider,
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
-        UniqueIdentifierGenerator generator)
+        UniqueIdentifierGenerator uniqueIdentifierGenerator)
     {
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("uniqueIdentifierGenerator", uniqueIdentifierGenerator);
 
       _methodCallTransformerProvider = methodCallTransformerProvider;
       _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
-      _generator = generator;
+      _uniqueIdentifierGenerator = uniqueIdentifierGenerator;
     }
 
     public IMethodCallTransformerProvider MethodCallTransformerProvider
@@ -52,6 +52,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     public ResultOperatorHandlerRegistry ResultOperatorHandlerRegistry
     {
       get { return _resultOperatorHandlerRegistry; }
+    }
+
+    public UniqueIdentifierGenerator UniqueIdentifierGenerator
+    {
+      get { return _uniqueIdentifierGenerator; }
     }
 
     public virtual Expression PrepareSelectExpression (Expression expression, ISqlPreparationContext context)
@@ -85,12 +90,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         Func<ITableInfo, SqlTableBase> tableGenerator)
     {
       return SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          fromExpression, this, _generator, _methodCallTransformerProvider, context, tableGenerator);
+          fromExpression, this, _uniqueIdentifierGenerator, _methodCallTransformerProvider, context, tableGenerator);
     }
 
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext)
     {
-      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, parentContext, this, _generator, _resultOperatorHandlerRegistry);
+      return SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, parentContext, this, _uniqueIdentifierGenerator, _resultOperatorHandlerRegistry);
     }
 
     protected virtual Expression PrepareExpression (Expression expression, ISqlPreparationContext context)
