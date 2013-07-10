@@ -155,6 +155,7 @@
     <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactory.cs" />
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlCollectionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlExistsExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlInExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlNullCheckExpressionVisitor.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="SqlStatementModel\Resolved\ResolvedJoinedGroupingTableInfo.cs" />
     <Compile Include="SqlStatementModel\SqlJoinedTable.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlSpecificExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCollectionExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlConvertExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlExistsExpression.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlFunctionExpression.cs" />
