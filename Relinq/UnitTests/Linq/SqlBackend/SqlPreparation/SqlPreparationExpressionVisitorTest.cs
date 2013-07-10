@@ -707,7 +707,29 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
-    private static MemberExpression CreateMemberExpressionWithInnerSqlCaseExpression<TMemberType> (Expression when, Expression then, Expression elseCase)
+    [Test]
+    public void VisitConstantExpression_WithNoCollection_LeavesExpressionUnchanged ()
+    {
+      var constantExpression = Expression.Constant ("string");
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (constantExpression, _context, _stageMock, _methodCallTransformerProvider);
+
+      Assert.That (result, Is.SameAs (constantExpression));
+    }
+
+    [Test]
+    public void VisitConstantExpression_WithCollection_ReturnsSqlCollectionExpression ()
+    {
+      var constantExpression = Expression.Constant (new[] { 1, 2, 3 });
+
+      var result = SqlPreparationExpressionVisitor.TranslateExpression (constantExpression, _context, _stageMock, _methodCallTransformerProvider);
+
+      var expectedExpression = new SqlCollectionExpression (
+          typeof (int[]), new[] { Expression.Constant (1), Expression.Constant (2), Expression.Constant (3) });
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+    }
+
+    private MemberExpression CreateMemberExpressionWithInnerSqlCaseExpression<TMemberType> (Expression when, Expression then, Expression elseCase)
     {
       var valueTypeCaseExpression = new SqlCaseExpression (
           typeof (TypeWithMember<TMemberType>),

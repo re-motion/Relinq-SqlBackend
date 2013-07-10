@@ -15,13 +15,13 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -255,6 +255,24 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (VisitExpression));
     }
 
+    public virtual Expression VisitPartialEvaluationExceptionExpression (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
+    {
+      ArgumentUtility.CheckNotNull ("partialEvaluationExceptionExpression", partialEvaluationExceptionExpression);
+      
+      return VisitExpression (partialEvaluationExceptionExpression.EvaluatedExpression);
+    }
+
+    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var collection = expression.Value as ICollection;
+      if (collection != null)
+        return new SqlCollectionExpression (expression.Type, collection.Cast<object>().Select (Expression.Constant).Cast<Expression>());
+
+      return base.VisitConstantExpression (expression);
+    }
+
     private bool IsNullConstant (Expression expression)
     {
       var constantExpression = expression as ConstantExpression;
@@ -264,11 +282,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           return true;
       }
       return false;
-    }
-
-    public Expression VisitPartialEvaluationExceptionExpression (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
-    {
-      return VisitExpression (partialEvaluationExceptionExpression.EvaluatedExpression);
     }
   }
 }

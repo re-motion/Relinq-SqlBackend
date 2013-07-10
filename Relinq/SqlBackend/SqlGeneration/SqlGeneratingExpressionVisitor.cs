@@ -40,7 +40,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
-        ISqlColumnExpressionVisitor
+        ISqlColumnExpressionVisitor,
+        ISqlCollectionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -71,10 +72,13 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       get { return _commandBuilder; }
     }
 
+    // ReSharper disable UnusedMember.Global
     protected ISqlGenerationStage Stage
     {
       get { return _stage; }
     }
+
+    // ReSharper restore UnusedMember.Global
 
     public virtual Expression VisitSqlEntityExpression (SqlEntityExpression expression)
     {
@@ -107,20 +111,13 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
       Debug.Assert (expression.Type != typeof (bool), "Boolean constants should have been removed by SqlContextExpressionVisitor.");
+      Debug.Assert (
+          !typeof (ICollection).IsAssignableFrom (expression.Type),
+          "Collections should have been replaced with SqlCollectionExpressions by SqlPreparationExpressionVisitor.");
 
       if (expression.Value == null)
-        _commandBuilder.Append ("NULL");
-      else if (expression.Value is ICollection)
       {
-        _commandBuilder.Append ("(");
-
-        var collection = (ICollection) expression.Value;
-        if (collection.Count == 0)
-          _commandBuilder.Append ("SELECT NULL WHERE 1 = 0");
-
-        var items = collection.Cast<object>();
-        _commandBuilder.AppendSeparated (", ", items, (cb, value) => cb.AppendParameter (value));
-        _commandBuilder.Append (")");
+        _commandBuilder.Append ("NULL");
       }
       else
       {
@@ -390,6 +387,21 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append ("(");
 
       VisitExpression (expression.Expression);
+      _commandBuilder.Append (")");
+
+      return expression;
+    }
+
+    public virtual Expression VisitSqlCollectionExpression (SqlCollectionExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _commandBuilder.Append ("(");
+
+      if (expression.Items.Count == 0)
+        _commandBuilder.Append ("SELECT NULL WHERE 1 = 0");
+
+      _commandBuilder.AppendSeparated (", ", expression.Items, (cb, item) => VisitExpression (item));
       _commandBuilder.Append (")");
 
       return expression;
