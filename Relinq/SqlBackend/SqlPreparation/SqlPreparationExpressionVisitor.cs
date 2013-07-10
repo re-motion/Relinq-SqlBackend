@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -93,6 +92,19 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       return base.VisitExpression (expression);
     }
+
+    // TODO RM-5684
+    //protected override Expression VisitConstantExpression (ConstantExpression expression)
+    //{
+    //  ArgumentUtility.CheckNotNull ("expression", expression);
+
+    //  var collection = expression.Value as ICollection;
+    //  if (collection != null)
+    //  {
+    //  }
+
+    //  return base.VisitConstantExpression (expression);
+    //}
 
     protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
     {

@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -27,7 +28,6 @@ using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
@@ -46,9 +46,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage>();
       _commandBuilder = new SqlCommandBuilder();
       _leftIntegerExpression = Expression.Constant (1);
-      Expression.Constant ("Left");
       _rightIntegerExpression = Expression.Constant (2);
-      Expression.Constant ("Right");
     }
 
     [Test]
@@ -74,8 +72,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     public void GenerateSql_VisitSqlColumnDefinitionExpression ()
     {
       var sqlColumnExpression = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          sqlColumnExpression, _commandBuilder, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[s].[ID]"));
     }
@@ -124,7 +121,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           "t",
           null,
           e => e,
-          new[]
+          new SqlColumnExpression[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
@@ -144,7 +141,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           "c",
           "Cook",
           e => e,
-          new[]
+          new SqlColumnExpression[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
               new SqlColumnDefinitionExpression (typeof (string), "t", "City", false)
@@ -164,7 +161,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           "t",
           "Test",
           e => e,
-          new[]
+          new SqlColumnExpression[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false),
@@ -748,6 +745,29 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
           Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
               "It is not supported to use a constant entity object in any other context than to compare it with another entity. "
               + "Expression: ENTITY(0) (of type: 'Remotion.Linq.UnitTests.Linq.Core.TestDomain.Cook')."));
+    }
+
+    [Test]
+    public void VisitSqlCollectionExpression ()
+     {
+       var items = new Expression[] { Expression.Constant (7), new SqlLiteralExpression ("Hello"), new SqlLiteralExpression (12) };
+       var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
+
+       SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock);
+
+       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1, 'Hello', 12)"));
+       Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { new CommandParameter ("@1", 7) }));
+    }
+
+    [Test]
+    public void VisitSqlCollectionExpression_Empty ()
+     {
+       var items = new Expression[0];
+       var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
+
+       SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock);
+
+       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(SELECT NULL WHERE 1 = 0)"));
     }
   }
 }

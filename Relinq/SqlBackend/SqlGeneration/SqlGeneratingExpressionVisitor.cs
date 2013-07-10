@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -40,7 +41,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         ISqlCustomTextGeneratorExpressionVisitor,
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
-        ISqlColumnExpressionVisitor
+        ISqlColumnExpressionVisitor,
+        ISqlCollectionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -390,6 +392,21 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append ("(");
 
       VisitExpression (expression.Expression);
+      _commandBuilder.Append (")");
+
+      return expression;
+    }
+
+    public virtual Expression VisitSqlCollectionExpression (SqlCollectionExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _commandBuilder.Append ("(");
+
+      if (expression.Items.Count == 0)
+        _commandBuilder.Append ("SELECT NULL WHERE 1 = 0");
+
+      _commandBuilder.AppendSeparated (", ", expression.Items, (cb, item) => VisitExpression (item));
       _commandBuilder.Append (")");
 
       return expression;
