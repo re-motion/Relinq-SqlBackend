@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -92,19 +93,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       return base.VisitExpression (expression);
     }
-
-    // TODO RM-5684
-    //protected override Expression VisitConstantExpression (ConstantExpression expression)
-    //{
-    //  ArgumentUtility.CheckNotNull ("expression", expression);
-
-    //  var collection = expression.Value as ICollection;
-    //  if (collection != null)
-    //  {
-    //  }
-
-    //  return base.VisitConstantExpression (expression);
-    //}
 
     protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
     {
@@ -267,6 +255,24 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (VisitExpression));
     }
 
+    public virtual Expression VisitPartialEvaluationExceptionExpression (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
+    {
+      ArgumentUtility.CheckNotNull ("partialEvaluationExceptionExpression", partialEvaluationExceptionExpression);
+      
+      return VisitExpression (partialEvaluationExceptionExpression.EvaluatedExpression);
+    }
+
+    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var collection = expression.Value as ICollection;
+      if (collection != null)
+        return new SqlCollectionExpression (expression.Type, collection.Cast<object>().Select (Expression.Constant).Cast<Expression>());
+
+      return base.VisitConstantExpression (expression);
+    }
+
     private bool IsNullConstant (Expression expression)
     {
       var constantExpression = expression as ConstantExpression;
@@ -276,11 +282,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           return true;
       }
       return false;
-    }
-
-    public Expression VisitPartialEvaluationExceptionExpression (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
-    {
-      return VisitExpression (partialEvaluationExceptionExpression.EvaluatedExpression);
     }
   }
 }

@@ -250,36 +250,6 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
     }
 
     [Test]
-    public void VisitConstantExpression_Collection ()
-    {
-      var collectionExpression = Expression.Constant (new[] { "Hugo", "Maier", "Markart" });
-      var sqlInExpression = new SqlInExpression (Expression.Constant ("Hubert"), collectionExpression);
-
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock);
-
-      var expectedParameters = new[]
-                               {
-                                   new CommandParameter ("@1", "Hubert"),
-                                   new CommandParameter ("@2", "Hugo"),
-                                   new CommandParameter ("@3", "Maier"),
-                                   new CommandParameter ("@4", "Markart")
-                               };
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (@2, @3, @4)"));
-      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (expectedParameters));
-    }
-
-    [Test]
-    public void VisitConstantExpression_EmptyCollection ()
-    {
-      var collectionExpression = Expression.Constant (new string[] { });
-      var sqlInExpression = new SqlInExpression (Expression.Constant ("Hubert"), collectionExpression);
-
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlInExpression, _commandBuilder, _stageMock);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 IN (SELECT NULL WHERE 1 = 0)"));
-    }
-    
-    [Test]
     public void VisitLiteralExpression ()
     {
       var expression = new SqlLiteralExpression (5);
@@ -749,14 +719,14 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 
     [Test]
     public void VisitSqlCollectionExpression ()
-     {
-       var items = new Expression[] { Expression.Constant (7), new SqlLiteralExpression ("Hello"), new SqlLiteralExpression (12) };
-       var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
+    {
+      var items = new Expression[] { Expression.Constant (7), new SqlLiteralExpression ("Hello"), new SqlLiteralExpression (12) };
+      var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
 
-       SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock);
 
-       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1, 'Hello', 12)"));
-       Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { new CommandParameter ("@1", 7) }));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1, 'Hello', 12)"));
+      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { new CommandParameter ("@1", 7) }));
     }
 
     [Test]

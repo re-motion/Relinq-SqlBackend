@@ -128,7 +128,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot be "
         + "translated to SQL: 'new MetaID(Value = [t0].[KnifeID] AS Value, ClassID = [t0].[KnifeClassID] AS ClassID) "
-        + "IN value(Remotion.Linq.UnitTests.Linq.Core.TestDomain.MetaID[])'.")]
+        + "IN (value(Remotion.Linq.UnitTests.Linq.Core.TestDomain.MetaID),value(Remotion.Linq.UnitTests.Linq.Core.TestDomain.MetaID))'.")]
     public void Contains_WithCompoundMember_IsNotSupported ()
     {
       var someIDs = new[] { new MetaID (0, "C0"), new MetaID (1, "C1") };
