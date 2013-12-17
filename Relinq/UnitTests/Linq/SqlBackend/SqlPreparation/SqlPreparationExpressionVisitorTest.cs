@@ -433,7 +433,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var binaryExpression = Expression.Equal (_cookQuerySourceReferenceExpression, _cookQuerySourceReferenceExpression);
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result, Is.AssignableTo (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlTableReferenceExpression)));
     }
@@ -497,7 +497,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result, Is.AssignableTo (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (SqlTableReferenceExpression)));
       Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (ConstantExpression)));
     }
@@ -510,7 +510,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (binaryExpression, _context, _stageMock, _methodCallTransformerProvider);
 
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result, Is.AssignableTo (typeof (BinaryExpression)));
       Assert.That (((BinaryExpression) result).Left, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((BinaryExpression) result).Right, Is.TypeOf (typeof (SqlTableReferenceExpression)));
     }
@@ -598,8 +598,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var expected = Expression.Call (
           new NamedExpression ("Object", Expression.Constant (0)), 
           ReflectionUtility.GetMethod (() => 0.ToString ("", null)), 
-          new NamedExpression ("Arg0", Expression.Constant ("")),
-          new NamedExpression ("Arg1", Expression.Constant (null, typeof (IFormatProvider))));
+          new[] { new NamedExpression ("Arg0", Expression.Constant ("")), new NamedExpression ("Arg1", Expression.Constant (null, typeof (IFormatProvider))) });
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
@@ -614,7 +613,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
 
       var expected = Expression.Call (
           ReflectionUtility.GetMethod (() => int.Parse ("")),
-          new NamedExpression ("Arg0", Expression.Constant ("")));
+          new[] { new NamedExpression ("Arg0", Expression.Constant ("")) });
       ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 

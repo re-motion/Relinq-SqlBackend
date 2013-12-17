@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Linq.UnitTests.Linq.Core;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
@@ -41,11 +42,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
     {
       var registryMock = MockRepository.GenerateStrictMock<IMethodCallTransformerProvider>();
       var methodCallTransformerRegistry = new CompoundMethodCallTransformerProvider (registryMock);
-      var methodCallExpression = Expression.Call (
-          Expression.Constant ("test"),
-          typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }),
-          Expression.Constant ("a"),
-          Expression.Constant ("b"));
+      var methodCallExpression = ExpressionHelper.CreateMethodCallExpression();
       var fakeTransformer = new ContainsFulltextMethodCallTransformer();
 
       registryMock

@@ -91,6 +91,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
           "SELECT ((CONVERT(NVARCHAR(MAX), [t0].[ID]) + CONVERT(NVARCHAR(MAX), [t0].[ID])) + [t0].[FirstName]) AS [value] FROM [CookTable] AS [t0]"
           );
 
+      // The overload with (object, object, object, object, __arglist) is not supported, but this call uses the params object[] overload anyway.
       CheckQuery (
           from c in Cooks select string.Concat (c.ID, c.ID, c.FirstName, c.Name),
           "SELECT (((CONVERT(NVARCHAR(MAX), [t0].[ID]) + CONVERT(NVARCHAR(MAX), [t0].[ID])) + [t0].[FirstName]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
@@ -122,6 +123,17 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks select string.Concat (new object[] { c.ID, c.Name }),
           "SELECT (CONVERT(NVARCHAR(MAX), [t0].[ID]) + [t0].[Name]) AS [value] FROM [CookTable] AS [t0]"
+          );
+
+      // IEnumerable<string> overload is not tested because it's not possible to call it using a constant or NewArray expression.
+      // - string.Concat (new[] { c.FirstName, c.Name }) would call the string[] overload.
+      // - string.Concat (constantEnumerable) would partially evaluate the whole expression.
+      // - string.Concat ((IEnumerable<string>) new[] { c.FirstName, c.Name }) is not currently supported.
+
+      // IEnumerable<T> overload
+      CheckQuery (
+          from c in Cooks select string.Concat (new[] { c.ID, c.ID }),
+          "SELECT (CONVERT(NVARCHAR(MAX), [t0].[ID]) + CONVERT(NVARCHAR(MAX), [t0].[ID])) AS [value] FROM [CookTable] AS [t0]"
           );
     }
 

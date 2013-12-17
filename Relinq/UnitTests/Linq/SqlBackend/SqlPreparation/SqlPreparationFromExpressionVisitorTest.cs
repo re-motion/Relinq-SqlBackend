@@ -352,7 +352,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (_visitor.FromExpressionInfo != null); // inline condition because of ReSharper
       var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
 
-      Assert.That (fromExpressionInfo.WhereCondition, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (fromExpressionInfo.WhereCondition, Is.AssignableTo (typeof (BinaryExpression)));
       Assert.That (fromExpressionInfo.WhereCondition.NodeType, Is.EqualTo(ExpressionType.AndAlso));
       Assert.That (((BinaryExpression) fromExpressionInfo.WhereCondition).Left, Is.TypeOf(typeof(JoinConditionExpression)));
       Assert.That (((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
@@ -414,7 +414,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
 
       Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo(1));
-      Assert.That (fromExpressionInfo.ExtractedOrderings[0].Expression, Is.TypeOf(typeof(MemberExpression)));
+      Assert.That (fromExpressionInfo.ExtractedOrderings[0].Expression, Is.AssignableTo(typeof(MemberExpression)));
       Assert.That (((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
       Assert.That (
           ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable, Is.TypeOf (typeof (SqlTable)));
@@ -425,7 +425,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation
       Assert.That (resolvedSubStatementtableInfo.SqlStatement.SelectProjection, Is.SameAs(fakeSelectExpression));
       Assert.That (resolvedSubStatementtableInfo.SqlStatement.Orderings.Count, Is.EqualTo (0));
       Assert.That (((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Member, Is.EqualTo(typeof(KeyValuePair<,>).MakeGenericType(typeof(string), typeof(int)).GetProperty("Value")));
-      Assert.That (fromExpressionInfo.ItemSelector, Is.TypeOf (typeof (MemberExpression)));
+      Assert.That (fromExpressionInfo.ItemSelector, Is.AssignableTo (typeof (MemberExpression)));
       Assert.That (((MemberExpression) fromExpressionInfo.ItemSelector).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ItemSelector).Expression).SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (

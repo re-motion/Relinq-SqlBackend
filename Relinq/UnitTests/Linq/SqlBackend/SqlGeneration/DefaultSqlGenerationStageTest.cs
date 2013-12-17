@@ -185,7 +185,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("SELECT [t].[ID],[t].[Name],[t].[City] FROM [Table] AS [t]"));
 
       var inMemoryProjection = _commandBuilder.GetInMemoryProjectionBody();
-      Assert.That (inMemoryProjection, Is.TypeOf (typeof (MethodCallExpression)));
+      Assert.That (inMemoryProjection, Is.AssignableTo (typeof (MethodCallExpression)));
 
       var methodCallExpression = (MethodCallExpression) inMemoryProjection;
       Assert.That (methodCallExpression.Method, Is.EqualTo ((typeof (IDatabaseResultRow).GetMethod ("GetEntity").MakeGenericMethod (sqlStatement.SelectProjection.Type))));

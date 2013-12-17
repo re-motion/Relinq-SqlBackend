@@ -162,7 +162,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
-      Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
+      Assert.That (result, Is.AssignableTo (typeof (MethodCallExpression)));
       Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
       Assert.That (((MethodCallExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NamedExpression) ((MethodCallExpression) result).Arguments[0]).Name, Is.EqualTo ("test"));
@@ -186,7 +186,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
-      Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
+      Assert.That (result, Is.AssignableTo (typeof (MethodCallExpression)));
       Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
       
       Assert.That (((MethodCallExpression) result).Arguments[0], Is.TypeOf (typeof (NamedExpression)));
@@ -209,7 +209,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
 
       var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
-      Assert.That (result, Is.TypeOf (typeof (MethodCallExpression)));
+      Assert.That (result, Is.AssignableTo (typeof (MethodCallExpression)));
       Assert.That (((MethodCallExpression) result).Arguments.Count, Is.EqualTo (1));
       Assert.That (((MethodCallExpression) result).Object, Is.Null);
     }

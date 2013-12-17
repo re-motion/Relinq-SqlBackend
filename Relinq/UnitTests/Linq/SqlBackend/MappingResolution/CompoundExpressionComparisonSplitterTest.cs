@@ -229,16 +229,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithOneMethodInfoMembers ()
     {
       var leftArgumentExpression = Expression.Constant (1);
-      var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetMethod ("get_A");
+      var leftArgumentMemberInfo = typeof (TypeForNewExpression).GetProperty ("A");
       var leftExpression = Expression.New (
-          TypeForNewExpression.GetConstructor (typeof (int)), new[] { leftArgumentExpression }, leftArgumentMemberInfo);
+          TypeForNewExpression.GetConstructor (typeof (int)), new[] { leftArgumentExpression }, new[] { leftArgumentMemberInfo });
       var rightExpression = new CustomExpression (typeof (TypeForNewExpression));
       var expression = Expression.Equal (leftExpression, rightExpression);
 
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
 
-      var expectedResult = Expression.Equal (
-          leftArgumentExpression, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A")));
+      var expectedResult = Expression.Equal (leftArgumentExpression, Expression.Property (rightExpression, "A"));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
@@ -247,8 +246,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var leftArgumentExpression1 = Expression.Constant (1);
       var leftArgumentExpression2 = Expression.Constant (2);
-      var leftArgumentMemberInfo1 = typeof (TypeForNewExpression).GetMethod ("get_A");
-      var leftArgumentMemberInfo2 = typeof (TypeForNewExpression).GetMethod ("get_B");
+      var leftArgumentMemberInfo1 = typeof (TypeForNewExpression).GetProperty ("A");
+      var leftArgumentMemberInfo2 = typeof (TypeForNewExpression).GetProperty ("B");
       var leftExpression = Expression.New (
           TypeForNewExpression.GetConstructor (typeof (int), typeof (int)),
           new[] { leftArgumentExpression1, leftArgumentExpression2 },
@@ -260,9 +259,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
 
       var expectedResult = Expression.AndAlso (
-          Expression.Equal (
-              leftArgumentExpression1, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_A"))),
-          Expression.Equal (leftArgumentExpression2, Expression.Call (rightExpression, typeof (TypeForNewExpression).GetMethod ("get_B"))));
+          Expression.Equal (leftArgumentExpression1, Expression.Property (rightExpression, "A")),
+          Expression.Equal (leftArgumentExpression2, Expression.Property (rightExpression, "B")));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 

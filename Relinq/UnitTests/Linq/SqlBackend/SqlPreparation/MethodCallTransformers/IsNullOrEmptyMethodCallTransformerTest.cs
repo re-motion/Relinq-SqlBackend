@@ -38,7 +38,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTrans
     {
       var method = typeof (string).GetMethod ("IsNullOrEmpty", new[] { typeof(string) });
       var objectExpression = Expression.Constant ("Test");
-      var expression = Expression.Call (objectExpression, method, objectExpression);
+      var expression = Expression.Call (method, objectExpression);
       var transformer = new IsNullOrEmptyMethodCallTransformer ();
 
       var result = transformer.Transform (expression);

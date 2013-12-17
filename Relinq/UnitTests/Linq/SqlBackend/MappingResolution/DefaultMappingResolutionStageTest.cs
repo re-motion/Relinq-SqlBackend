@@ -407,7 +407,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.MappingResolution
     {
       var result = _stage.ApplyContext (Expression.Constant (false), SqlExpressionContext.PredicateRequired, _mappingResolutionContext);
 
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      Assert.That (result, Is.AssignableTo (typeof (BinaryExpression)));
       Assert.That (((ConstantExpression) ((BinaryExpression) result).Left).Value, Is.EqualTo (0));
       Assert.That (((SqlLiteralExpression) ((BinaryExpression) result).Right).Value, Is.EqualTo (1));
     }

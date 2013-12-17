@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -42,12 +43,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object), typeof (object)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object), typeof (object), typeof (object)),
-        MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object), typeof (object), typeof (object), typeof (object)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string), typeof (string)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string), typeof (string), typeof (string)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string), typeof (string), typeof (string), typeof (string)),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (object[])),
         MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (string[])),
+        MethodCallTransformerUtility.GetStaticMethod (typeof (string), "Concat", typeof (IEnumerable<string>)),
+        typeof (string).GetMethods().Single (mi => mi.Name == "Concat" && mi.IsGenericMethod && mi.GetGenericArguments().Length == 1)
       };
 
     private static readonly MethodInfo s_standardConcatMethodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
@@ -64,7 +66,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     private IEnumerable<Expression> GetConcatenatedItems (MethodCallExpression methodCallExpression)
     {
-      if (methodCallExpression.Arguments.Count == 1 && methodCallExpression.Arguments[0].Type.IsArray)
+      if (methodCallExpression.Arguments.Count == 1
+          && (typeof (IEnumerable).IsAssignableFrom (methodCallExpression.Arguments[0].Type)
+              && methodCallExpression.Arguments[0].Type != typeof (string)))
       {
         ConstantExpression argumentAsConstantExpression;
         NewArrayExpression argumentAsNewArrayExpression;
