@@ -21,7 +21,7 @@ using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {

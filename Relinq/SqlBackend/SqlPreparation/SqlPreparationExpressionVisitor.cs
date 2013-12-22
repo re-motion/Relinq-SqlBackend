@@ -25,7 +25,7 @@ using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {

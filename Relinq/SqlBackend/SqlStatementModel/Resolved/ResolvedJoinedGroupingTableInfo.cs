@@ -16,7 +16,7 @@
 // 
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {

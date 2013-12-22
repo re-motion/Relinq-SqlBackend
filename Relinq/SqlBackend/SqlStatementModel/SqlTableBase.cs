@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {

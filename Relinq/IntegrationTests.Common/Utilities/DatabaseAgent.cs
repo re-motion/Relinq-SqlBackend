@@ -20,7 +20,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {

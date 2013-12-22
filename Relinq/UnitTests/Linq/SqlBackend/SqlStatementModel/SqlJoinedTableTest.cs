@@ -20,7 +20,6 @@ using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
@@ -42,12 +41,15 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Parameter 'value' has type 'Remotion.Linq.UnitTests.Linq.Core.TestDomain.Restaurant' "
+        + "when type 'Remotion.Linq.UnitTests.Linq.Core.TestDomain.Cook' was expected."
+        + "\r\nParameter name: value")]
     public void DifferentType ()
     {
-      var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
+      var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
-      var newJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenRestaurant ();
+      var newJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenRestaurant();
 
       sqlJoinedTable.JoinInfo = newJoinInfo;
     }

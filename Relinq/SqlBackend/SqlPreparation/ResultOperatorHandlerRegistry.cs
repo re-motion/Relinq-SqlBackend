@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {

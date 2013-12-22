@@ -24,6 +24,7 @@ using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
@@ -62,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("orderings", orderings);
 
       if (whereCondition != null && whereCondition.Type != typeof (bool))
-        throw new ArgumentTypeException ("whereCondition", typeof (bool), whereCondition.Type);
+        throw ArgumentUtility.CreateArgumentTypeException ("whereCondition", whereCondition.Type, typeof (bool));
 
       _dataInfo = dataInfo;
       _selectProjection = selectProjection;

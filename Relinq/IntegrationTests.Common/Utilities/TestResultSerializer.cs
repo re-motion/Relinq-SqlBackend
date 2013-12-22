@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {

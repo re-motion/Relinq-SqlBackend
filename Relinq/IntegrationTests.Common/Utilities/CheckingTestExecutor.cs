@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {

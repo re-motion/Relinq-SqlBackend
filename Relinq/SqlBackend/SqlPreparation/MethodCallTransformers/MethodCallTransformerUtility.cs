@@ -19,7 +19,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {

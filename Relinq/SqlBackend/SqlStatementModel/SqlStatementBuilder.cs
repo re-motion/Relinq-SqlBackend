@@ -22,7 +22,7 @@ using System.Text;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {

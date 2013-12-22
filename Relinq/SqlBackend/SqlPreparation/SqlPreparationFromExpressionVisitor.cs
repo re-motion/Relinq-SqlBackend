@@ -23,7 +23,7 @@ using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {

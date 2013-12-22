@@ -20,7 +20,7 @@ using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -37,7 +37,7 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Expected a type implementing IEnumerable<T>, but found 'Remotion.Linq.UnitTests.Linq.Core.TestDomain.Cook'.\r\nParameter name: memberInfo")]
     public void Initialization_CardinalityMany_NonEnumerable_Throws ()
     {

@@ -25,7 +25,7 @@ using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using MemberBinding = Remotion.Linq.Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution

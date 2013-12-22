@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {

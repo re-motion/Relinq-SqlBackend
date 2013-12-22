@@ -19,7 +19,7 @@ using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {

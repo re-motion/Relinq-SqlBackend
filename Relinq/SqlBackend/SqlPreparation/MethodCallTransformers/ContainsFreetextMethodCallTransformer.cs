@@ -20,7 +20,7 @@ using System.Reflection;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {

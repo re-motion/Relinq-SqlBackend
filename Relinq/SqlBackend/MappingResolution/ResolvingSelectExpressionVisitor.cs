@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
