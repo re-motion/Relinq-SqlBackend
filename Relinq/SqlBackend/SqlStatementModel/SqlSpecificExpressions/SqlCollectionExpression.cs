@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return "(" + SeparatedStringBuilder.Build (",", _items.Select (FormattingExpressionTreeVisitor.Format)) + ")";
+      return "(" + string.Join (",", _items.Select (FormattingExpressionTreeVisitor.Format)) + ")";
     }
   }
 }

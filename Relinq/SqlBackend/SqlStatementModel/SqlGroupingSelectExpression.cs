@@ -126,7 +126,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
           "GROUPING (KEY: {0}, ELEMENT: {1}, AGGREGATIONS: ({2}))", 
           FormattingExpressionTreeVisitor.Format (KeyExpression), 
           FormattingExpressionTreeVisitor.Format (ElementExpression),
-          SeparatedStringBuilder.Build (", ", AggregationExpressions.Select (expr => FormattingExpressionTreeVisitor.Format (expr))));
+          string.Join (", ", AggregationExpressions.Select (FormattingExpressionTreeVisitor.Format)));
     }
   }
 }

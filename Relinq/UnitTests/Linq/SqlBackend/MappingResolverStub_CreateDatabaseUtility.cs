@@ -117,8 +117,8 @@ LOG ON (
                             GetColumnValue (entity, mappingResolver, sqlEntityDefinition, columnName)
                         select new { columnName, columnValue }).ToArray();
 
-      var columnNames = SeparatedStringBuilder.Build (",", columnData.Select (d => d.columnName));
-      var columnValues = SeparatedStringBuilder.Build (",", columnData.Select (d => GetSqlValueString (d.columnValue)));
+      var columnNames = string.Join (",", columnData.Select (d => d.columnName));
+      var columnValues = string.Join (",", columnData.Select (d => GetSqlValueString (d.columnValue)));
 
       sb.AppendFormat ("INSERT INTO [{0}] ({1}) VALUES ({2});", resolvedTableInfo.TableName, columnNames, columnValues);
       sb.AppendLine();
@@ -132,14 +132,14 @@ LOG ON (
                 .SelectMany (p => TryResolveProperty (mappingResolver, sqlEntityDefinition, p, entity), (p, t) => new { Property = p, ColumnNameAndValue = t })
                 .ToArray();
       var matchingProperty = propertiesWithColumnName.FirstOrDefault (d => d.ColumnNameAndValue.Key == columnName);
-      // Assert.That (matchingProperties, Has.Length.LessThanOrEqualTo (1), entity.GetType().Name + ": " + SeparatedStringBuilder.Build (",", matchingProperties));
+      // Assert.That (matchingProperties, Has.Length.LessThanOrEqualTo (1), entity.GetType().Name + ": " + string.Join (",", matchingProperties));
 
       Assert.IsNotNull (
           matchingProperty,
           "No member found for column '{0}' on entity type '{1}'.\r\n(Found: {2})",
           columnName,
           entity.GetType().Name,
-          SeparatedStringBuilder.Build (",", propertiesWithColumnName));
+          string.Join (",", propertiesWithColumnName.Select (p=> p.ToString())));
       return matchingProperty.ColumnNameAndValue.Value;
     }
 
@@ -347,14 +347,14 @@ LOG ON (
       if (primaryKeyColumns.Length > 0)
       {
         primaryKeyConstraint = string.Format (
-            " CONSTRAINT PK_{0} PRIMARY KEY ({1})", tableInfo.TableName.Replace (".", "_"), SeparatedStringBuilder.Build (",", primaryKeyColumns));
+            " CONSTRAINT PK_{0} PRIMARY KEY ({1})", tableInfo.TableName.Replace (".", "_"), string.Join (",", primaryKeyColumns));
       }
 
       sb.AppendFormat (
           "CREATE TABLE [{0}]{1}({1}{2}{1} {3})",
           tableInfo.TableName,
           Environment.NewLine,
-          SeparatedStringBuilder.Build ("," + Environment.NewLine, columnDeclarations.Select (c => "  " + c)),
+          string.Join ("," + Environment.NewLine, columnDeclarations.Select (c => "  " + c)),
           primaryKeyConstraint);
       sb.AppendLine();
     }
