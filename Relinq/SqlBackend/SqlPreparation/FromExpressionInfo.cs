@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {

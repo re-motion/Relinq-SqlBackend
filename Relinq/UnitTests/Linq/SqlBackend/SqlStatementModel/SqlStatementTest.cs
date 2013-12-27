@@ -23,7 +23,6 @@ using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
 {
@@ -31,7 +30,8 @@ namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel
   public class SqlStatementTest
   {
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "Parameter 'whereCondition' has type 'System.Int32' when type 'System.Boolean' was expected.\r\nParameter name: whereCondition")]
     public void WhereCondition_ChecksType ()
     {
       new SqlStatement (

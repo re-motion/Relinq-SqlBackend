@@ -24,6 +24,7 @@ using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
@@ -69,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return "(" + SeparatedStringBuilder.Build (",", _items.Select (FormattingExpressionTreeVisitor.Format)) + ")";
+      return "(" + string.Join (",", _items.Select (FormattingExpressionTreeVisitor.Format)) + ")";
     }
   }
 }

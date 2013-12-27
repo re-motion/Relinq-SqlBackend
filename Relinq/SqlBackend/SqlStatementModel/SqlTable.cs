@@ -17,7 +17,7 @@
 using System.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
@@ -45,7 +45,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         if (_tableInfo != null)
         {
           if (_tableInfo.ItemType != value.ItemType)
-            throw new ArgumentTypeException ("value", _tableInfo.ItemType, value.ItemType);
+            throw ArgumentUtility.CreateArgumentTypeException ("value", value.ItemType, _tableInfo.ItemType);
         }
         _tableInfo = value;
       }

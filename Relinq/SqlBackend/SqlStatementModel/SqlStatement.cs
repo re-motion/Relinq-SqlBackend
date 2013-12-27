@@ -23,7 +23,7 @@ using System.Text;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
@@ -62,7 +62,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("orderings", orderings);
 
       if (whereCondition != null && whereCondition.Type != typeof (bool))
-        throw new ArgumentTypeException ("whereCondition", typeof (bool), whereCondition.Type);
+        throw ArgumentUtility.CreateArgumentTypeException ("whereCondition", whereCondition.Type, typeof (bool));
 
       _dataInfo = dataInfo;
       _selectProjection = selectProjection;
@@ -138,29 +138,30 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         return false;
 
       return (_dataInfo.Equals (statement._dataInfo))
-              && (_selectProjection == statement._selectProjection)
-              && (_sqlTables.SequenceEqual (statement._sqlTables))
-              && (_orderings.SequenceEqual (statement._orderings))
-              && (_whereCondition == statement._whereCondition)
-              && (_topExpression == statement._topExpression)
-              && (_isDistinctQuery == statement._isDistinctQuery)
-              && (_rowNumberSelector == statement._rowNumberSelector)
-              && (_currentRowNumberOffset == statement._currentRowNumberOffset)
-              && (_groupByExpression == statement._groupByExpression);
+             && (_selectProjection == statement._selectProjection)
+             && (_whereCondition == statement._whereCondition)
+             && (_topExpression == statement._topExpression)
+             && (_isDistinctQuery == statement._isDistinctQuery)
+             && (_rowNumberSelector == statement._rowNumberSelector)
+             && (_currentRowNumberOffset == statement._currentRowNumberOffset)
+             && (_groupByExpression == statement._groupByExpression)
+             && (_sqlTables.SequenceEqual (statement._sqlTables))
+             && (_orderings.SequenceEqual (statement._orderings));
     }
 
     public override int GetHashCode ()
     {
-      return HashCodeUtility.GetHashCodeOrZero (_dataInfo)
-             ^ HashCodeUtility.GetHashCodeOrZero (_selectProjection)
-             ^ HashCodeUtility.GetHashCodeForSequence (_sqlTables)
-             ^ HashCodeUtility.GetHashCodeForSequence (_orderings)
-             ^ HashCodeUtility.GetHashCodeOrZero (_whereCondition)
-             ^ HashCodeUtility.GetHashCodeOrZero (_topExpression)
-             ^ HashCodeUtility.GetHashCodeOrZero (_isDistinctQuery)
-             ^ HashCodeUtility.GetHashCodeOrZero (_rowNumberSelector)
-             ^ HashCodeUtility.GetHashCodeOrZero (_currentRowNumberOffset)
-             ^ HashCodeUtility.GetHashCodeOrZero (_groupByExpression);
+      return EqualityUtility.GetRotatedHashCode (
+          _dataInfo,
+          _selectProjection,
+          _whereCondition,
+          _topExpression,
+          _isDistinctQuery,
+          _rowNumberSelector,
+          _currentRowNumberOffset,
+          _groupByExpression)
+             ^ EqualityUtility.GetRotatedHashCode (_sqlTables)
+             ^ EqualityUtility.GetRotatedHashCode (_orderings);
     }
 
     public override string ToString ()

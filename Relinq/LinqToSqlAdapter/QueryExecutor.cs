@@ -23,6 +23,7 @@ using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.LinqToSqlAdapter
 {
@@ -110,7 +111,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       if (_showQuery)
       {
         Console.WriteLine (command.CommandText);
-        Console.WriteLine (SeparatedStringBuilder.Build (", ", command.Parameters.Select (p => p.Name + "=" + p.Value)));
+        Console.WriteLine (string.Join (", ", command.Parameters.Select (p => p.Name + "=" + p.Value)));
         Console.WriteLine (FormattingExpressionTreeVisitor.Format (command.GetInMemoryProjection<object>()));
       }
       return command;
