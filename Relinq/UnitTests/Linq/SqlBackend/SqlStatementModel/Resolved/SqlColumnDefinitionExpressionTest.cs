@@ -16,9 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {

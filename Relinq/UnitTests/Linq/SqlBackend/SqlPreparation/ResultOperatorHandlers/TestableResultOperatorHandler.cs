@@ -15,13 +15,12 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
-using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.UnitTests.Linq.Core.Clauses.ResultOperators;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {

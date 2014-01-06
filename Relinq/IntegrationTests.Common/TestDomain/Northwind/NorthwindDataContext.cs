@@ -28,16 +28,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Reflection;
 using System.Linq;
-using System.ComponentModel;
-using System;
+using System.Reflection;
 
 namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 {
-  [System.Data.Linq.Mapping.DatabaseAttribute (Name = "NORTHWND")]
+  [Database (Name = "NORTHWND")]
   public partial class NorthwindDataContext : System.Data.Linq.DataContext
   {
 

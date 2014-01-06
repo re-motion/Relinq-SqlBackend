@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {

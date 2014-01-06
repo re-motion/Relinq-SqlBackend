@@ -16,11 +16,11 @@
 // 
 using System;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 {

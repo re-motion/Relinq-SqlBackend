@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.LinqToSqlAdapter;
@@ -27,6 +26,7 @@ using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.LinqToSqlAdapter

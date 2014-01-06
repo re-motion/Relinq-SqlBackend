@@ -17,13 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
 using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
-using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration

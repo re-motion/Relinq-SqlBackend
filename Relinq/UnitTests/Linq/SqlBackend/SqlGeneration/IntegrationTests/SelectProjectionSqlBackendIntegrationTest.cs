@@ -22,11 +22,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
-using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeVisitorTests;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {

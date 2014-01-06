@@ -14,14 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Data;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.LinqToSqlAdapter

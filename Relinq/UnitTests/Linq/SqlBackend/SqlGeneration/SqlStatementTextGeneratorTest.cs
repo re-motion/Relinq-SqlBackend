@@ -17,12 +17,12 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
-using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.UnitTests.Linq.Core.Clauses.StreamedData;
+using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration

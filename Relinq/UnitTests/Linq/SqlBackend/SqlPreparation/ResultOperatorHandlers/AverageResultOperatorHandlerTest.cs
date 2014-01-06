@@ -16,14 +16,14 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.UnitTests.Linq.Core;
-using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.UnitTests.Linq.Core;
+using Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {

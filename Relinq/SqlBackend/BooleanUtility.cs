@@ -17,7 +17,6 @@
 
 using System;
 using System.Reflection;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend

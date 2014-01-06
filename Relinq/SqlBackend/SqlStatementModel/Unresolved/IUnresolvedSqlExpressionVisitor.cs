@@ -15,6 +15,8 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
+
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>

@@ -17,11 +17,9 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.VisualBasic.CompilerServices;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.Linq.Core;
-using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
 {

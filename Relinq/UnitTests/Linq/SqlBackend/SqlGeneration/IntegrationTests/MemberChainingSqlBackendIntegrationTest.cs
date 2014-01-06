@@ -20,9 +20,9 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation.PredefinedTransformations;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.UnitTests.Linq.Core.TestUtilities;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests

@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Linq.Expressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {

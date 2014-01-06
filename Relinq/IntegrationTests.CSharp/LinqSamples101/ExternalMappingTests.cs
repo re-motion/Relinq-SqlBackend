@@ -31,6 +31,7 @@
 //You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 //the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
+using System;
 using NUnit.Framework;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101

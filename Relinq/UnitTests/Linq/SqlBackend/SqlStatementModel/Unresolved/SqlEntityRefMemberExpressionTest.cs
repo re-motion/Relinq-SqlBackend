@@ -17,11 +17,11 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
-using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Unresolved

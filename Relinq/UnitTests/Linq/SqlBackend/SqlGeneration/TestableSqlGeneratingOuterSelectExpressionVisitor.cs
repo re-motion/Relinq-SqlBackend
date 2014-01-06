@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.UnitTests.Linq.Core.TestUtilities;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration

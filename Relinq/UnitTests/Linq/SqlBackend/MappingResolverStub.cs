@@ -19,11 +19,11 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.SqlBackend;
-using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend
 {
