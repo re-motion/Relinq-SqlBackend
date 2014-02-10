@@ -92,6 +92,10 @@
     <Compile Include="MiscTests\DateTimeAddTests.cs" />
     <Compile Include="MiscTests\DynamicLinqTest.cs" />
     <Compile Include="MiscTests\DynamicLinq\Dynamic.cs" />
+    <Content Include="SystemTests\Resources\SelectTests.WithMemberInitExpression_InOuterMostLevel.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="SystemTests\SelectTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="LinqSamples101\TopBottomTests.cs" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.cs" />

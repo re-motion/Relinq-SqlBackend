@@ -137,6 +137,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
+    <Compile Include="SystemTests\SelectTests.vb" />
     <None Include="..\Relinq MSPL.licenseheader">
       <Link>Relinq MSPL.licenseheader</Link>
     </None>
@@ -162,6 +163,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="SystemTests\Resources\SystemTests.Resources.SelectTests.WithMemberInitExpression_InOuterMostLevel.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

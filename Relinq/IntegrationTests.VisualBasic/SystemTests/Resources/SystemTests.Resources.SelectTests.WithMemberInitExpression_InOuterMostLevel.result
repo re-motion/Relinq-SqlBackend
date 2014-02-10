@@ -1,0 +1,387 @@
+﻿Enumerable {
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Chai'
+    ProductID: 1
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Chang'
+    ProductID: 2
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Aniseed Syrup'
+    ProductID: 3
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Chef Anton''s Cajun Seasoning'
+    ProductID: 4
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: False
+    Name: 'Chef Anton''s Gumbo Mix'
+    ProductID: 5
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Grandma''s Boysenberry Spread'
+    ProductID: 6
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Uncle Bob''s Organic Dried Pears'
+    ProductID: 7
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Northwoods Cranberry Sauce'
+    ProductID: 8
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: True
+    Name: 'Mishi Kobe Niku'
+    ProductID: 9
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Ikura'
+    ProductID: 10
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Queso Cabrales'
+    ProductID: 11
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Queso Manchego La Pastora'
+    ProductID: 12
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Konbu'
+    ProductID: 13
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Tofu'
+    ProductID: 14
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Genen Shouyu'
+    ProductID: 15
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Pavlova'
+    ProductID: 16
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: False
+    Name: 'Alice Mutton'
+    ProductID: 17
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Carnarvon Tigers'
+    ProductID: 18
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Teatime Chocolate Biscuits'
+    ProductID: 19
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Sir Rodney''s Marmalade'
+    ProductID: 20
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Sir Rodney''s Scones'
+    ProductID: 21
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Gustaf''s Knäckebröd'
+    ProductID: 22
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Tunnbröd'
+    ProductID: 23
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: True
+    Name: 'Guaraná Fantástica'
+    ProductID: 24
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'NuNuCa Nuß-Nougat-Creme'
+    ProductID: 25
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Gumbär Gummibärchen'
+    ProductID: 26
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Schoggi Schokolade'
+    ProductID: 27
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: True
+    Name: 'Rössle Sauerkraut'
+    ProductID: 28
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: False
+    Name: 'Thüringer Rostbratwurst'
+    ProductID: 29
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Nord-Ost Matjeshering'
+    ProductID: 30
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: False
+    Name: 'Gorgonzola Telino'
+    ProductID: 31
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Mascarpone Fabioli'
+    ProductID: 32
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Geitost'
+    ProductID: 33
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Sasquatch Ale'
+    ProductID: 34
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Steeleye Stout'
+    ProductID: 35
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Inlagd Sill'
+    ProductID: 36
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Gravad lax'
+    ProductID: 37
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Côte de Blaye'
+    ProductID: 38
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Chartreuse verte'
+    ProductID: 39
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Boston Crab Meat'
+    ProductID: 40
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Jack''s New England Clam Chowder'
+    ProductID: 41
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: True
+    Name: 'Singaporean Hokkien Fried Mee'
+    ProductID: 42
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Ipoh Coffee'
+    ProductID: 43
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Gula Malacca'
+    ProductID: 44
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Rogede sild'
+    ProductID: 45
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Spegesild'
+    ProductID: 46
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Zaanse koeken'
+    ProductID: 47
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Chocolade'
+    ProductID: 48
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Maxilaku'
+    ProductID: 49
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Valkoinen suklaa'
+    ProductID: 50
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Manjimup Dried Apples'
+    ProductID: 51
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Filo Mix'
+    ProductID: 52
+  ProductData
+    Discontinued: True
+    HasUnitsInStock: False
+    Name: 'Perth Pasties'
+    ProductID: 53
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Tourtière'
+    ProductID: 54
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Pâté chinois'
+    ProductID: 55
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Gnocchi di nonna Alice'
+    ProductID: 56
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Ravioli Angelo'
+    ProductID: 57
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Escargots de Bourgogne'
+    ProductID: 58
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Raclette Courdavault'
+    ProductID: 59
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Camembert Pierrot'
+    ProductID: 60
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Sirop d''érable'
+    ProductID: 61
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Tarte au sucre'
+    ProductID: 62
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Vegie-spread'
+    ProductID: 63
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Wimmers gute Semmelknödel'
+    ProductID: 64
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Louisiana Fiery Hot Pepper Sauce'
+    ProductID: 65
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Louisiana Hot Spiced Okra'
+    ProductID: 66
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Laughing Lumberjack Lager'
+    ProductID: 67
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Scottish Longbreads'
+    ProductID: 68
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Gudbrandsdalsost'
+    ProductID: 69
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Outback Lager'
+    ProductID: 70
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Flotemysost'
+    ProductID: 71
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Mozzarella di Giovanni'
+    ProductID: 72
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Röd Kaviar'
+    ProductID: 73
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Longlife Tofu'
+    ProductID: 74
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Rhönbräu Klosterbier'
+    ProductID: 75
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Lakkalikööri'
+    ProductID: 76
+  ProductData
+    Discontinued: False
+    HasUnitsInStock: True
+    Name: 'Original Frankfurter grüne Soße'
+    ProductID: 77
+}
