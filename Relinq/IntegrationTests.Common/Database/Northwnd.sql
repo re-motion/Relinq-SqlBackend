@@ -47,7 +47,8 @@ CREATE DATABASE [NorthwindRelinq] ON  PRIMARY
  LOG ON 
 ( NAME = N'NorthwindRelinq_log', FILENAME = N'C:\Databases\NorthwindRelinq_log.LDF' , SIZE = 504KB , MAXSIZE = UNLIMITED, FILEGROWTH = 10%)
 GO
-EXEC dbo.sp_dbcmptlevel @dbname=N'NorthwindRelinq', @new_cmptlevel=90
+/* Compatibility level has been set by export script. It is not actually needed. */
+/*EXEC dbo.sp_dbcmptlevel @dbname=N'NorthwindRelinq', @new_cmptlevel=90 */
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
 begin
