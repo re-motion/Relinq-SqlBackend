@@ -23,6 +23,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;

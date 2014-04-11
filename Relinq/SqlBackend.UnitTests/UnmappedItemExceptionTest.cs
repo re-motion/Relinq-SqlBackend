@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.MappingResolution;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {

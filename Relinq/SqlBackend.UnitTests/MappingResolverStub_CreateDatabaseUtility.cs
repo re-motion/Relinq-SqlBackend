@@ -22,6 +22,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;

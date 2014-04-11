@@ -116,6 +116,7 @@
     <Compile Include="MappingResolution\SqlContextSelectionAdjuster.cs" />
     <Compile Include="MappingResolution\SqlContextTableInfoVisitor.cs" />
     <Compile Include="MappingResolution\SubStatementReferenceResolver.cs" />
+    <Compile Include="MappingResolution\UnmappedItemException.cs" />
     <Compile Include="SqlGeneration\ColumnID.cs" />
     <Compile Include="SqlGeneration\IDatabaseResultRow.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingOuterSelectExpressionVisitor.cs" />

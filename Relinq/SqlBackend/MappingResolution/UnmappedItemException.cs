@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Runtime.Serialization;
 
-namespace Remotion.Linq
+namespace Remotion.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// TODO: add summary
+  /// The <see cref="UnmappedItemException"/> is thrown if the <see cref="IMappingResolver"/> implementation 
+  /// is unable to associate an part of the query model with the mapping.
   /// </summary>
   [Serializable]
   public class UnmappedItemException : Exception
