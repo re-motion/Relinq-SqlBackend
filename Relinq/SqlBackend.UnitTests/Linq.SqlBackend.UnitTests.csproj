@@ -1,0 +1,404 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0543C43E-D949-478B-AD85-583F3AE2A301}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Remotion.Linq.SqlBackend.UnitTests</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.Linq.SqlBackend.UnitTests</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\prereq\Assemblies\Rhino.Mocks-3.6\net-3.5\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>4.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\AssertionConditionAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\AssertionConditionAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\AssertionConditionType.cs">
+      <Link>SharedSource\ResharperAnnotations\AssertionConditionType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\AssertionMethodAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\AssertionMethodAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\ImplicitUseKindFlags.cs">
+      <Link>SharedSource\ResharperAnnotations\ImplicitUseKindFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\ImplicitUseTargetFlags.cs">
+      <Link>SharedSource\ResharperAnnotations\ImplicitUseTargetFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\InvokerParameterNameAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\InvokerParameterNameAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ReSharperAnnotations\MeansImplicitUseAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\MeansImplicitUseAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\NoEnumerationAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\NoEnumerationAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\ResharperAnnotations\UsedImplicitlyAttribute.cs">
+      <Link>SharedSource\ResharperAnnotations\UsedImplicitlyAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\Utilities\ArgumentUtility.cs">
+      <Link>SharedSource\Utilities\ArgumentUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\sharedsource\core\utilities\ExceptionUtility.cs">
+      <Link>SharedSource\Utilities\ExceptionUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Core\Utilities\NullableTypeUtility.cs">
+      <Link>SharedSource\Utilities\NullableTypeUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Development\UnitTesting\Dev.cs">
+      <Link>SharedSource\UnitTesting\Dev.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Development\UnitTesting\PrivateInvoke.cs">
+      <Link>SharedSource\UnitTesting\PrivateInvoke.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedSource\Development\UnitTesting\Serializer.cs">
+      <Link>SharedSource\UnitTesting\Serializer.cs</Link>
+    </Compile>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="BooleanUtilityTest.cs" />
+    <Compile Include="CustomCompositeExpression.cs" />
+    <Compile Include="ConversionUtilityTest.cs" />
+    <Compile Include="ExtensionExpressionTestHelper.cs" />
+    <Compile Include="MappingResolution\CompoundExpressionComparisonSplitterTest.cs" />
+    <Compile Include="MappingResolution\EntityIdentityResolverTest.cs" />
+    <Compile Include="MappingResolution\GroupAggregateSimplifierTest.cs" />
+    <Compile Include="MappingResolution\MappingResolutionContextTest.cs" />
+    <Compile Include="MappingResolution\MemberAccessResolverTest.cs" />
+    <Compile Include="MappingResolution\NamedExpressionCombinerTest.cs" />
+    <Compile Include="MappingResolution\ResolvingSelectExpressionVisitorTest.cs" />
+    <Compile Include="MappingResolution\SqlContextJoinInfoVisitorTest.cs" />
+    <Compile Include="MappingResolution\SqlContextSelectionAdjusterTest.cs" />
+    <Compile Include="MappingResolution\SqlContextTableInfoVisitorTest.cs" />
+    <Compile Include="MappingResolution\SubStatementReferenceResolverTest.cs" />
+    <Compile Include="MappingResolverStub_CreateDatabaseUtility.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ConditionalExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\CompoundMemberSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\ConversionMethodCallExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\DateTimeMethodCallExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\TransformedMethodCallExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\EqualsMethodCallExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\ContainsResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\AnyResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\AllResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\CastResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\SkipResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\AverageResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\SumResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\MinResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\MaxResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\OfTypeResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\TakeResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\DistinctResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\SingleResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\FirstResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\CountResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\NullableBoolExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\DelegateInvocationSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\GroupBySqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ExplicitJoinsSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\MediumTrustSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\NamedEntitiesSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\NullableExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\PartialEvaluationSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\TypeIsExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\VBSpecificSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\SqlCommandDataTest.cs" />
+    <Compile Include="SqlGeneration\SqlCompositeCustomTextGeneratorExpressionTest.cs" />
+    <Compile Include="SqlGeneration\SqlCustomTextExpressionTest.cs" />
+    <Compile Include="SqlGeneration\SqlCustomTextGeneratorExpressionBaseTest.cs" />
+    <Compile Include="SqlGeneration\SqlGeneratingOuterSelectExpressionVisitorTest.cs" />
+    <Compile Include="SqlGeneration\SqlGeneratingSelectExpressionVisitorTest.cs" />
+    <Compile Include="SqlGeneration\TestableSqlCustomTextGeneratorExpression.cs" />
+    <Compile Include="SqlGeneration\TestableSqlGeneratingOuterSelectExpressionVisitor.cs" />
+    <Compile Include="SqlGeneration\TestableSqlTableAndJoinTextGenerator.cs" />
+    <Compile Include="SqlGeneration\TestExtensionExpressionWithoutChildren.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ConcatMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFreetextMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ContainsFulltextMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ContainsMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ConvertMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\DateTimeAddMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\EndsWithMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\EqualsMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\IndexOfMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\InsertMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\IsNullOrEmptyMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\LikeMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\LowerMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\RemoveMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ReplaceMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\StartsWithMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\StringLengthMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\SubstringMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\ToStringMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\TrimMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformerTest.cs" />
+    <Compile Include="SqlPreparation\MethodInfoBasedMethodCallTransformerRegistryTest.cs" />
+    <Compile Include="SqlPreparation\NameBasedMethodCallTransformerRegistryTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlerRegistryTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\AggregationResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\AnyResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\AverageResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\CastResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\ContainsResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\CountResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\DefaultIfEmptyResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\DistinctResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\FirstResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\GroupResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\MaxResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\MinResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\OfTypeResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\ResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\SingleResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\SkipResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\SumResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\TakeResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\TestableAggregationResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\TestableResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\TestChoiceResultOperator.cs" />
+    <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactoryTest.cs" />
+    <Compile Include="SqlPreparation\TestableSqlPreparationExpressionVisitorTest.cs" />
+    <Compile Include="SqlPreparation\TestableSqlPreparationFromExpressionVisitor.cs" />
+    <Compile Include="SqlStatementModel\AggregationExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlConvertedBooleanExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\NamedExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ResolvedJoinedGroupingTableInfoTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ResolvedSubStatementTableInfoTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlColumnReferenceExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlEntityReferenceExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlGroupingSelectExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCollectionExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlConvertExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlExistsExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlFunctionExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNotNullExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlIsNullExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLengthExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLikeExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlCaseExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlRowNumberExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlStatementBuilderTest.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\JoinConditionExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlInExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\UnresolvedCollectionJoinInfoTest.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\UnresolvedGroupReferenceTableInfoTest.cs" />
+    <Compile Include="TestDomain\Chef.cs" />
+    <Compile Include="TestDomain\Company.cs" />
+    <Compile Include="TestDomain\Cook.cs" />
+    <Compile Include="TestDomain\ISpecificCook.cs" />
+    <Compile Include="TestDomain\Kitchen.cs" />
+    <Compile Include="TestDomain\Knife.cs" />
+    <Compile Include="TestDomain\MetaID.cs" />
+    <Compile Include="TestDomain\QueryableWithTooManyArguments.cs" />
+    <Compile Include="TestDomain\Restaurant.cs" />
+    <Compile Include="TypeForNewExpression.cs" />
+    <Compile Include="UnmappedItemExceptionTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MappingResolution\DefaultMappingResolutionStageTest.cs" />
+    <Compile Include="MappingResolution\ResolvingJoinInfoVisitorTest.cs" />
+    <Compile Include="MappingResolution\SqlStatementResolverTest.cs" />
+    <Compile Include="MappingResolution\TestableSqlStatementResolver.cs" />
+    <Compile Include="SqlGeneration\BinaryExpressionTextGeneratorTest.cs" />
+    <Compile Include="SqlGeneration\DefaultSqlGenerationStageTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\AdditionalFromClausesSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\OrderByClausesSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\SubQuerySqlBackendIntegrationTest.cs" />
+    <Compile Include="MappingResolution\SqlContextExpressionVisitorTest.cs" />
+    <Compile Include="SqlGeneration\TestableSqlContextExpressionVisitor.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\BinaryExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\ResultOperatorCombinationsSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\DefaultIfEmptyResultOperatorSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\StringMethodCallExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\UnaryExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\WhereConditionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\MemberChainingSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlPreparation\CompoundMethodCallTransformerProviderTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\SelectProjectionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\SqlBackendIntegrationTestBase.cs" />
+    <Compile Include="SqlGeneration\SqlCommandBuilderTest.cs" />
+    <Compile Include="SqlGeneration\SqlGeneratingExpressionVisitorTest.cs" />
+    <Compile Include="SqlGeneration\SqlStatementTextGeneratorTest.cs" />
+    <Compile Include="SqlGeneration\SqlTableAndJoinTextGeneratorTest.cs" />
+    <Compile Include="SqlGeneration\TestableSqlStatementTextGenerator.cs" />
+    <Compile Include="SqlPreparation\DefaultSqlPreparationStageTest.cs" />
+    <Compile Include="SqlPreparation\SqlPreparationFromExpressionVisitorTest.cs" />
+    <Compile Include="SqlPreparation\TestableSqlPreparationQueryModelVisitor.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlEntityConstantExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSpecificExpressions\SqlLiteralExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlSubStatementExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\SqlTableBaseTest.cs" />
+    <Compile Include="SqlStatementModel\SqlJoinedTableTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ResolvedJoinInfoTest.cs" />
+    <Compile Include="SqlStatementModel\SqlStatementTest.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\UnresolvedTableInfoTest.cs" />
+    <Compile Include="CustomExpression.cs" />
+    <Compile Include="MappingResolution\ResolvingExpressionVisitorTest.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\UnresolvedJoinInfoTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlEntityDefinitionExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\SqlColumnDefinitionExpressionTest.cs" />
+    <Compile Include="SqlPreparation\SqlPreparationContextTest.cs" />
+    <Compile Include="SqlPreparation\SqlPreparationQueryModelVisitorTest.cs" />
+    <Compile Include="SqlPreparation\SqlPreparationExpressionVisitorTest.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\SqlEntityRefMemberExpressionTest.cs" />
+    <Compile Include="MappingResolverStub.cs" />
+    <Compile Include="SqlStatementModel\SqlStatementModelObjectMother.cs" />
+    <Compile Include="SqlStatementModel\Unresolved\SqlTableReferenceExpressionTest.cs" />
+    <Compile Include="SqlStatementModel\Resolved\ResolvedSimpleTableInfoTest.cs" />
+    <Compile Include="SqlStatementModel\SqlTableTest.cs" />
+    <Compile Include="MappingResolution\ResolvingTableInfoVisitorTest.cs" />
+    <None Include="..\Relinq LGPL.licenseheader">
+      <Link>Relinq LGPL.licenseheader</Link>
+    </None>
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Linq.Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Linq.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Development\Linq.Development.csproj">
+      <Project>{31A1AE30-079F-489E-9757-4EFB4C457E43}</Project>
+      <Name>Linq.Development</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqlBackend\Linq.SqlBackend.csproj">
+      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
+      <Name>Linq.SqlBackend</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  -->
+  <Target Name="AfterBuild">
+    <Delete Files="@(TestDomain->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Directory)')" />
+    <Copy SourceFiles="@(TestDomain->'%(Fullpath)')" DestinationFiles="@(TestDomain->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
+  </Target>
+</Project>
