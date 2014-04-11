@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
-using System.Security;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -24,8 +24,6 @@ using System.Security;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle("Unit Tests for Remotion Data Linq Library")]
-[assembly: AssemblyDescription("Unit Tests for Remotion Data Linq Library")]
-[assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
-[assembly: AllowPartiallyTrustedCallers] // required for sandbox tests
+[assembly: AssemblyTitle ("Unit Tests for Remotion Linq Library's LinqToSqlAdapter")]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]
