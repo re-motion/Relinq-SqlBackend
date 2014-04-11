@@ -26,6 +26,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
+using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration

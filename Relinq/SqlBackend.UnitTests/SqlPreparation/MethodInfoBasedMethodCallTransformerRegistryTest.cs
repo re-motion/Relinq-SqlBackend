@@ -24,6 +24,7 @@ using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
+using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation

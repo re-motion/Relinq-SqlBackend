@@ -22,6 +22,7 @@ using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransformers
 {

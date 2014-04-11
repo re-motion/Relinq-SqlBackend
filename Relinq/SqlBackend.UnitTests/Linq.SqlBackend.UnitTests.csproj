@@ -360,6 +360,10 @@
     <Compile Include="SqlStatementModel\Resolved\ResolvedSimpleTableInfoTest.cs" />
     <Compile Include="SqlStatementModel\SqlTableTest.cs" />
     <Compile Include="MappingResolution\ResolvingTableInfoVisitorTest.cs" />
+    <Compile Include="Utilities\ITestRegistry.cs" />
+    <Compile Include="Utilities\RegistryBaseTest.cs" />
+    <Compile Include="Utilities\TestRegistry.cs" />
+    <Compile Include="Utilities\TestRegistryImplementation.cs" />
     <None Include="..\Relinq LGPL.licenseheader">
       <Link>Relinq LGPL.licenseheader</Link>
     </None>

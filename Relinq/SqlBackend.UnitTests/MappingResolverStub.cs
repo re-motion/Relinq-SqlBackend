@@ -24,6 +24,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
