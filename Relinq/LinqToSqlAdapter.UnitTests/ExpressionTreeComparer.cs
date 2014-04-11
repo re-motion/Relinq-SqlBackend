@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Linq;
@@ -22,10 +23,9 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Utilities;
 
-  // This class was copied from re-linq: Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeComparer
-namespace Remotion.Linq.UnitTests.Linq.Core.Parsing
+// This class was copied from re-linq: Remotion.Linq.UnitTests.Linq.Core.Parsing.ExpressionTreeComparer
+namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
   public class ExpressionTreeComparer
   {

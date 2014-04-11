@@ -14,21 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.LinqToSqlAdapter;
+using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.UnitTests.Linq.Core.Parsing;
-using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
   [TestFixture]
   public class MappingResolverTest
@@ -289,7 +288,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "Cannot resolve member: Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain.PersonTestClass.stub is not a mapped member")]
+        ExpectedMessage = "Cannot resolve member: Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.PersonTestClass.stub is not a mapped member")]
     public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForMember()
     {
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
@@ -371,7 +370,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Entities without identity members are not supported by re-linq. "
-        + "(Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+FakeClassWithoutPrimaryKey)")]
+        + "(Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.DataContextTestClass+FakeClassWithoutPrimaryKey)")]
     public void ResolveConstantExpression_NoPrimaryKey ()
     {
       var customer = new DataContextTestClass.FakeClassWithoutPrimaryKey { Name = "abc" };
@@ -407,7 +406,7 @@ namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
     [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
         "Cannot perform a type check for type "
-        + "Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain.DataContextTestClass+FakeClassWithoutInheritanceCode - there is no inheritance "
+        + "Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.DataContextTestClass+FakeClassWithoutInheritanceCode - there is no inheritance "
         + "code for this type.")]
     public void ResolveTypeCheck_ShouldThrowUnmappedItemException_WhenNoInheritanceCode()
     {

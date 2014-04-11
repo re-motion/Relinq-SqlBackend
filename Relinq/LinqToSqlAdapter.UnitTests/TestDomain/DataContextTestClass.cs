@@ -19,7 +19,7 @@ using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 
-namespace Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain
+namespace Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain
 {
   [Database (Name = "DATACONTEXT")]
   internal class DataContextTestClass : DataContext

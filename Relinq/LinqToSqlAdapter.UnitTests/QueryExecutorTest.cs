@@ -14,22 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
-using Remotion.Linq.LinqToSqlAdapter;
+using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
   [TestFixture]
   public class QueryExecutorTest

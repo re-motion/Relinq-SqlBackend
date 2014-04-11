@@ -18,12 +18,11 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-using Remotion.Linq.LinqToSqlAdapter;
+using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
-using Remotion.Linq.UnitTests.LinqToSqlAdapter.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
   [TestFixture]
   public class ScalarRowWrapperTest

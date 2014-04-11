@@ -18,10 +18,9 @@
 using System;
 using System.Data.Linq.Mapping;
 using NUnit.Framework;
-using Remotion.Linq.LinqToSqlAdapter;
 using Rhino.Mocks;
 
-namespace Remotion.Linq.UnitTests.LinqToSqlAdapter
+namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
   [TestFixture]
   public class MetaDataMemberComparerTest
