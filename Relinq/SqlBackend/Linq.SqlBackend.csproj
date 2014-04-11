@@ -267,6 +267,7 @@
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedJoinInfo.cs" />
     <Compile Include="SqlStatementModel\Unresolved\UnresolvedTableInfo.cs" />
     <Compile Include="StringExtensions.cs" />
+    <Compile Include="Utilities\RegistryBase.cs" />
     <None Include="..\Relinq LGPL.licenseheader">
       <Link>Relinq LGPL.licenseheader</Link>
     </None>
