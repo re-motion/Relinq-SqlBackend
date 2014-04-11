@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
-using Remotion.Linq.UnitTests.Linq.Core.Parsing;
 
 namespace Remotion.Linq.UnitTests.Linq.SqlBackend.SqlGeneration
 {

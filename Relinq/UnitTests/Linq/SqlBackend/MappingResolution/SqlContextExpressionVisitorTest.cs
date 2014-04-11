@@ -20,6 +20,7 @@ using System.Reflection;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
