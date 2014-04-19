@@ -36,6 +36,11 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       _dataContext = new NorthwindDataContext (connectionString);
     }
 
+    public IQueryable ProductsUntyped
+    {
+      get { return _dataContext.Products; }
+    }
+
     public IQueryable<Product> Products
     {
       get { return _dataContext.Products; }

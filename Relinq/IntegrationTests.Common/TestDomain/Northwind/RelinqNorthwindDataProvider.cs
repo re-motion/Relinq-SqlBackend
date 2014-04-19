@@ -81,6 +81,11 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       _executor = new QueryExecutor (_resolver, _retriever, _resultOperatorHandlerRegistry, _methodCallTransformerProvider, false);
     }
 
+    public IQueryable ProductsUntyped
+    {
+      get { return CreateQueryable<Product>(); }
+    }
+
     public IQueryable<Product> Products
     {
       get { return CreateQueryable<Product>(); }

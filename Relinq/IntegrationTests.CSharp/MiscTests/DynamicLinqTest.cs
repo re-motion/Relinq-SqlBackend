@@ -35,6 +35,7 @@ using System;
 using System.Linq.Dynamic;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.IntegrationTests.Common;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
 {
@@ -58,6 +59,17 @@ namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
       var query = DB.Products
           .GroupBy("new (it.CategoryID)", "it")
           .Select("new (Key as KeyGroup, Sum(UnitPrice) as MaxPrice)");
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void UntypedQuery ()
+    {
+      var query = DB.ProductsUntyped
+          .Where ("it.CategoryID == 1")
+          .OrderBy ("UnitPrice")
+          .Select ("UnitPrice");
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
