@@ -124,7 +124,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, Context, _generator);
       FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
-      Debug.Assert (FromExpressionInfo.Value.WhereCondition == null);
+      Assertion.DebugAssert (FromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (FromExpressionInfo.Value.SqlTable);
     }

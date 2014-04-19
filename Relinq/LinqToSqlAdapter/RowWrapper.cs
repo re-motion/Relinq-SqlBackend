@@ -20,6 +20,7 @@ using System.Data.Linq;
 using System.Diagnostics;
 using System.Linq;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.LinqToSqlAdapter
 {
@@ -52,7 +53,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
     {
       var entityMembers = _resolver.GetMetaDataMembers (typeof (T)); //get metadatamembers of subtypes
 
-      Debug.Assert (entityMembers.Length == columnIDs.Length);
+      Assertion.DebugAssert (entityMembers.Length == columnIDs.Length);
 
       var entityMembersWithColumnIDs = entityMembers.Select ((member, index) => new { Member = member, ColumnID = columnIDs[index] });
 

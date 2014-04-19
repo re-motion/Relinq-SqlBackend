@@ -179,7 +179,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var type = ReflectionUtility.GetMemberReturnType (_memberInfo);
       if (typeof (IEnumerable).IsAssignableFrom (type) && type != typeof (string))
       {
-        Debug.Assert (_memberInfo.DeclaringType != null, "Global members not supported.");
+        Assertion.DebugAssert (_memberInfo.DeclaringType != null, "Global members not supported.");
         var message = string.Format (
             "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed. Expression: '{2}'",
             _memberInfo.DeclaringType.Name,
@@ -206,7 +206,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       // Scenario: grouping.Key
-      Debug.Assert (_memberInfo.Equals (expression.Type.GetProperty ("Key")));
+      Assertion.DebugAssert (_memberInfo.Equals (expression.Type.GetProperty ("Key")));
 
       // No problem, just use the KeyExpression (without a name, we don't care about the original name of the expression when we resolve members).
 

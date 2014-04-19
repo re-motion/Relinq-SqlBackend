@@ -206,7 +206,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         {
           VisitExpression (argumentExpression);
           var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
-          Debug.Assert (argumentInMemoryProjectionBody != null);
+          Assertion.DebugAssert (argumentInMemoryProjectionBody != null);
 
           return argumentInMemoryProjectionBody;
         }

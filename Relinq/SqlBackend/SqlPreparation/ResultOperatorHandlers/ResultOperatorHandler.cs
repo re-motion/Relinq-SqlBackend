@@ -93,7 +93,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
       sqlStatementBuilder.SelectProjection = fromExpressionInfo.ItemSelector;
       sqlStatementBuilder.Orderings.AddRange (fromExpressionInfo.ExtractedOrderings);
-      Debug.Assert (fromExpressionInfo.WhereCondition == null);
+      Assertion.DebugAssert (fromExpressionInfo.WhereCondition == null);
 
       // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
       sqlStatementBuilder.DataInfo = oldStatement.DataInfo;
@@ -103,7 +103,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
     protected void AddMappingForItemExpression (ISqlPreparationContext context, IStreamedDataInfo dataInfo, Expression replacement)
     {
-      Debug.Assert (dataInfo is StreamedSequenceInfo);
+      Assertion.DebugAssert (dataInfo is StreamedSequenceInfo);
 
       // Later ResultOperatorHandlers might have expressions that access the value streaming out from this result operator. These expressions must 
       // be updated to get their input expression (the ItemExpression of sqlStatement.DataInfo) from the sub-statement table we just created.

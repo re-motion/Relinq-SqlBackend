@@ -125,7 +125,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     private void SerializeString (string value)
     {
-      Debug.Assert (value != null, "should be handled by caller");
+      Assertion.DebugAssert (value != null, "should be handled by caller");
 
       var escapedValue = value.Replace ("'", "''");
       _textWriter.WriteLine ("'" + escapedValue + "'");
@@ -133,7 +133,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     private void SerializeEnumerable (IEnumerable value)
     {
-      Debug.Assert (value != null, "should be handled by caller");
+      Assertion.DebugAssert (value != null, "should be handled by caller");
 
       _textWriter.Write ("Enumerable");
       _textWriter.WriteLine (" {");
@@ -148,7 +148,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     private void SerializeComplexValue (object value)
     {
-      Debug.Assert (value != null, "should be handled by caller");
+      Assertion.DebugAssert (value != null, "should be handled by caller");
       WriteTypeName(value);
       _textWriter.WriteLine();
 
