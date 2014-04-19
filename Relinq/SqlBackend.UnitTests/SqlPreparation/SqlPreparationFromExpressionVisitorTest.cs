@@ -373,7 +373,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var orderingExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("ID"));
       var sqlStatement = new SqlStatementBuilder
                          {
-                             DataInfo = new StreamedSequenceInfo(typeof(string), Expression.Constant('t')),
+                             DataInfo = new StreamedSequenceInfo(typeof (DateTime[]), Expression.Constant (new DateTime (2000, 1, 1))),
                              SelectProjection = selectProjection,
                              SqlTables = { sqlTable },
                              Orderings =
