@@ -35,7 +35,6 @@ using System;
 using System.Linq.Dynamic;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
 {

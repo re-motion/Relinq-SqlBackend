@@ -17,7 +17,6 @@
 using System;
 using System.Data;
 using System.Data.Linq;
-using System.Diagnostics;
 using System.Linq;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Utilities;
