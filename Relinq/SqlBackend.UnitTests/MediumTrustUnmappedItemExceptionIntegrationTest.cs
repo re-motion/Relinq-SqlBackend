@@ -1,4 +1,4 @@
-// This file is part of the re-linq project (relinq.codeplex.com)
+﻿// This file is part of the re-linq project (relinq.codeplex.com)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // re-linq is free software; you can redistribute it and/or modify it under 
@@ -17,34 +17,52 @@
 
 using System;
 using System.Linq;
+using System.Security;
 using System.Security.Permissions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting.Sandboxing;
 
-namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
+namespace Remotion.Linq.SqlBackend.UnitTests
 {
   [TestFixture]
-  public class MediumTrustSqlBackendIntegrationTest
+  [Ignore ("Serialization using ISafeSerializationData should actually work without the SerializationFormatter permission.")]
+  public class MediumTrustUnmappedItemExceptionIntegrationTest
   {
     [Test]
     public void MediumTrust ()
     {
       var permissions = PermissionSets
           .GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName)
-          .Concat (new[] { new ReflectionPermission (ReflectionPermissionFlag.MemberAccess) })
+          .Concat (
+              new IPermission[]
+              {
+                  new ReflectionPermission (ReflectionPermissionFlag.MemberAccess),
+                  // new SecurityPermission (SecurityPermissionFlag.SerializationFormatter)
+              })
           .ToArray();
 
-      var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
-                   where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 
-                       && t != typeof (MediumTrustSqlBackendIntegrationTest)
-                       && !t.IsAbstract && t.IsDefined(typeof(TestFixtureAttribute), false)
-                   select t).ToArray();
-
-      var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (types, permissions, null); 
+      var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (new[] { typeof (UnmappedItemExceptionTest) }, permissions, null);
       var testResults = testFixtureResults.SelectMany (r => r.TestResults).ToArray();
 
       foreach (var testResult in testResults)
-        testResult.EnsureNotFailed ();
+      {
+        try
+        {
+          testResult.EnsureNotFailed();
+        }
+        catch (TestFailedException)
+        {
+          var securityException = testResult.Exception as SecurityException;
+          if (securityException != null)
+          {
+            Console.WriteLine ("Action:");
+            Console.WriteLine (securityException.Action);
+            Console.WriteLine ("Demanded:");
+            Console.WriteLine (securityException.Demanded);
+          }
+          throw;
+        }
+      }
       Assert.That (testResults.Count (r => r.Status == SandboxTestStatus.Succeeded), Is.GreaterThan (0));
     }
   }

@@ -25,21 +25,32 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// is unable to associate an part of the query model with the mapping.
   /// </summary>
   [Serializable]
-  public class UnmappedItemException : Exception
+  public sealed class UnmappedItemException : Exception
   {
+    [NonSerialized]
+    private UnmappedItemExceptionState _state;
+
     public UnmappedItemException (string message)
-        : base(message)
+        : this (message, null)
     {
     }
 
     public UnmappedItemException (string message, Exception innerException)
-        : base(message, innerException)
+        : base (message, innerException)
     {
+      _state = new UnmappedItemExceptionState();
+      SerializeObjectState += (exception, eventArgs) => eventArgs.AddSerializedState (_state);
     }
 
-    protected UnmappedItemException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
+    [Serializable]
+    private struct UnmappedItemExceptionState : ISafeSerializationData
     {
+      void ISafeSerializationData.CompleteDeserialization
+          (object obj)
+      {
+        UnmappedItemException exception = (UnmappedItemException) obj;
+        exception._state = this;
+      }
     }
   }
 }
