@@ -15,7 +15,6 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
@@ -92,7 +91,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var itemType = ReflectionUtility.GetItemTypeOfIEnumerable (expression.Type, "from expression");
+      var itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (expression.Type, "from expression");
       var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       FromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null);
@@ -124,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, Context, _generator);
       FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
-      Debug.Assert (FromExpressionInfo.Value.WhereCondition == null);
+      Assertion.DebugAssert (FromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (FromExpressionInfo.Value.SqlTable);
     }

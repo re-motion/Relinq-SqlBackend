@@ -32,9 +32,9 @@
 // the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using NUnit.Framework;
 using Remotion.Linq.IntegrationTests.Common;
 
 namespace Remotion.Linq.IntegrationTests.CSharp
@@ -58,7 +58,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp
         {
           var commonNamespacePrefix = typeof (TestBase).Namespace + ".";
           var namespaceName = method.DeclaringType.Namespace;
-          Debug.Assert (namespaceName != null);
+          Assert.That (namespaceName != null);
           var partialResourceNamespace = namespaceName.Remove (0, commonNamespacePrefix.Length) + ".Resources";
           var resourceFolderPath = partialResourceNamespace.Replace (".", "/");
 

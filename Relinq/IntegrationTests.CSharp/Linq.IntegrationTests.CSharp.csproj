@@ -160,6 +160,9 @@
     <Content Include="MiscTests\Resources\DateTimeAddTests.Add_TimeSpan.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="MiscTests\Resources\DynamicLinqTest.UntypedQuery.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result">

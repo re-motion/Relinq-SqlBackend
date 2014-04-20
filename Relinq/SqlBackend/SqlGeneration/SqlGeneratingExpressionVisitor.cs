@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -110,8 +109,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected override Expression VisitConstantExpression (ConstantExpression expression)
     {
-      Debug.Assert (expression.Type != typeof (bool), "Boolean constants should have been removed by SqlContextExpressionVisitor.");
-      Debug.Assert (
+      Assertion.DebugAssert (expression.Type != typeof (bool), "Boolean constants should have been removed by SqlContextExpressionVisitor.");
+      Assertion.DebugAssert (
           !typeof (ICollection).IsAssignableFrom (expression.Type),
           "Collections should have been replaced with SqlCollectionExpressions by SqlPreparationExpressionVisitor.");
 

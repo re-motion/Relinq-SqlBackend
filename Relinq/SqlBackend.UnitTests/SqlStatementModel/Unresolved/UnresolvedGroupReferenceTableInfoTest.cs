@@ -45,7 +45,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "Expected a type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: referencedGroupSource")]
+        "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: referencedGroupSource")]
     public void Initialization_ThrowsWhenNoSequenceType ()
     {
       var invalidGroupSource = SqlStatementModelObjectMother.CreateSqlTable (typeof (int));

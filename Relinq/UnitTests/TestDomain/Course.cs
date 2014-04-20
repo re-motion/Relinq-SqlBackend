@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,16 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
-using System.Reflection;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-
-[assembly: AssemblyTitle("Unit Tests for Remotion Linq Library")]
-[assembly: AssemblyDescription("Unit Tests for Remotion Linq Library")]
-[assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
+namespace Remotion.Linq.UnitTests.TestDomain
+{
+  public class Course
+  {
+    public string Name { get; set; }
+  }
+}

@@ -15,7 +15,6 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -187,7 +186,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var sourceExpression = VisitExpression (expression.Expression);
       var resolved = _stage.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context);
 
-      Debug.Assert (resolved != expression);
+      Assertion.DebugAssert (resolved != expression);
       return VisitExpression (resolved);
     }
 

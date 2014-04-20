@@ -61,5 +61,16 @@ namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
+
+    [Test]
+    public void UntypedQuery ()
+    {
+      var query = DB.ProductsUntyped
+          .Where ("it.CategoryID == 1")
+          .OrderBy ("UnitPrice")
+          .Select ("UnitPrice");
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
   }
 }

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -206,7 +205,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         {
           VisitExpression (argumentExpression);
           var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
-          Debug.Assert (argumentInMemoryProjectionBody != null);
+          Assertion.DebugAssert (argumentInMemoryProjectionBody != null);
 
           return argumentInMemoryProjectionBody;
         }

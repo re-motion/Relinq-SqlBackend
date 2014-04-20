@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       _sourceExpression = sourceExpression;
 
       var memberReturnType = ReflectionUtility.GetMemberReturnType (memberInfo);
-      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (memberReturnType, "memberInfo");
+      _itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (memberReturnType, "memberInfo");
     }
 
     public Expression SourceExpression

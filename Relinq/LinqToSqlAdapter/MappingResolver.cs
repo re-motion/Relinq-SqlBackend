@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -64,7 +63,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       var metaType = GetMetaType (joinInfo.OriginatingEntity.Type);
       var metaAssociation = GetDataMember (metaType, joinInfo.MemberInfo).Association;
-      Debug.Assert (metaAssociation != null);
+      Assertion.DebugAssert (metaAssociation != null);
 
       IResolvedTableInfo resolvedTable = ResolveTableInfo (new UnresolvedTableInfo (joinInfo.ItemType), generator);
       return CreateResolvedJoinInfo (joinInfo.OriginatingEntity, metaAssociation, resolvedTable);
@@ -148,7 +147,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
         throw new UnmappedItemException ("Cannot perform a type check for type " + desiredType + " - there is no inheritance code for this type.");
 
       var discriminatorDataMember =  GetMetaType (expression.Type).Discriminator;
-      Debug.Assert (discriminatorDataMember != null);
+      Assertion.DebugAssert (discriminatorDataMember != null);
 
       // ReSharper disable PossibleNullReferenceException
       return Expression.Equal (
@@ -163,7 +162,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       var metaType = GetMetaType (entityRefMemberExpression.OriginatingEntity.Type);
       var metaAssociation = GetDataMember (metaType, entityRefMemberExpression.MemberInfo).Association;
-      Debug.Assert (metaAssociation != null);
+      Assertion.DebugAssert (metaAssociation != null);
 
       if (metaAssociation.IsForeignKey)
         return ResolveMember (entityRefMemberExpression.OriginatingEntity, metaAssociation.ThisKey);
@@ -319,7 +318,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       }
 
       var ctor = genericTupleType.MakeGenericType (primaryKeyValues.Select (e => e.Type).ToArray ()).GetConstructors ().Single ();
-      Debug.Assert (ctor != null);
+      Assertion.DebugAssert (ctor != null);
       var tupleConstructionExpression = Expression.New (
           ctor, 
           primaryKeyValues, 

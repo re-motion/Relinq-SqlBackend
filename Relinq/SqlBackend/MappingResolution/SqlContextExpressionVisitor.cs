@@ -15,7 +15,6 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
@@ -96,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newInner = ApplyValueContext (expression.Expression);
-      Debug.Assert (
+      Assertion.DebugAssert (
           newInner == expression.Expression,
           "There is currently no visit method that would change an int-typed expression with ValueRequired.");
 
@@ -178,9 +177,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         // We know that left and right must be ConvertedBooleanExpressions because Coalesce has single value semantics for its operands, and boolean
         // Coalesces must have booleans operands. Applying value semantics to boolean operands results in ConvertedBooleanExpression values.
         
-        Debug.Assert (childContext == SqlExpressionContext.SingleValueRequired);
-        Debug.Assert (left is SqlConvertedBooleanExpression);
-        Debug.Assert (right is SqlConvertedBooleanExpression);
+        Assertion.DebugAssert (childContext == SqlExpressionContext.SingleValueRequired);
+        Assertion.DebugAssert (left is SqlConvertedBooleanExpression);
+        Assertion.DebugAssert (right is SqlConvertedBooleanExpression);
         var newCoalesceExpression = Expression.Coalesce (((SqlConvertedBooleanExpression) left).Expression, ((SqlConvertedBooleanExpression) right).Expression);
         return new SqlConvertedBooleanExpression (newCoalesceExpression);
       }

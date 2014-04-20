@@ -16,16 +16,16 @@
 // 
 using System;
 using System.Reflection;
-using System.Security;
 
 //
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+using System.Security;
 
 [assembly: AssemblyTitle ("Remotion Linq LinqToSql Adapter")]
 [assembly: AssemblyDescription ("Provides an adapter between re-linq and LinqToSql.")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
-[assembly: AllowPartiallyTrustedCallers] // required for sandboxing
+[assembly: SecurityTransparent] // required to allow assembly to be linked from assemblies having the AllowPartiallyTrustedCallersAttribute applied

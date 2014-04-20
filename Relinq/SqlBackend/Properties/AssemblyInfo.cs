@@ -28,4 +28,4 @@ using System.Security;
 [assembly: AssemblyDescription ("Framework for calling linq queries on sql server.")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
-[assembly: AllowPartiallyTrustedCallers] // required for sandbox tests
+[assembly: SecurityTransparent] // required to allow assembly to be linked from assemblies having the AllowPartiallyTrustedCallersAttribute applied

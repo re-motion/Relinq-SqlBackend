@@ -38,7 +38,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Expected a type implementing IEnumerable<T>, but found 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook'.\r\nParameter name: memberInfo")]
+        "Expected a closed generic type implementing IEnumerable<T>, but found 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook'."
+        + "\r\nParameter name: memberInfo")]
     public void Initialization_CardinalityMany_NonEnumerable_Throws ()
     {
       new UnresolvedJoinInfo (_entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);

@@ -26,6 +26,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
   /// </summary>
   public interface INorthwindDataProvider
   {
+    IQueryable ProductsUntyped { get;  }
     IQueryable<Product> Products { get;  }
     IQueryable<Customer> Customers { get; }
     IQueryable<Employee> Employees { get; }

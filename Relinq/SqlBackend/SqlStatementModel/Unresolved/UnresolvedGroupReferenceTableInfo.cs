@@ -35,7 +35,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       ArgumentUtility.CheckNotNull ("referencedGroupSource", referencedGroupSource);
 
       _referencedGroupSource = referencedGroupSource;
-      _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (referencedGroupSource.ItemType, "referencedGroupSource");
+      _itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (referencedGroupSource.ItemType, "referencedGroupSource");
     }
 
     public Type ItemType

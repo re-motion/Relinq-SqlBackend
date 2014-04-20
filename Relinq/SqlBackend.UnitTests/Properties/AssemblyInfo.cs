@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using System.Security;
 
 //
 // General Information about an assembly is controlled through the following 

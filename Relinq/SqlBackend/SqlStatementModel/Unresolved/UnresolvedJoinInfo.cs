@@ -45,7 +45,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       if (Cardinality == JoinCardinality.One)
         _itemType = memberReturnType;
       else
-        _itemType = ReflectionUtility.GetItemTypeOfIEnumerable (memberReturnType, "memberInfo");
+        _itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (memberReturnType, "memberInfo");
     }
 
     public SqlEntityExpression OriginatingEntity
