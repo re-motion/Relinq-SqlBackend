@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using System.Security;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -26,6 +25,5 @@ using System.Security;
 
 [assembly: AssemblyTitle ("Common functionality for integration tests for the Remotion Data Linq library")]
 [assembly: AssemblyDescription ("Contains the common database and utility classes used by integration tests for re-linq.")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
-[assembly: AllowPartiallyTrustedCallers] // required for sandbox tests

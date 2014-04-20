@@ -13,6 +13,4 @@ Imports System.Security
 <Assembly: AssemblyDescription("Contains integration tests for re-linq written in Visual Basic.")> 
 <Assembly: AssemblyCulture("")> 
 <Assembly: CLSCompliant(True)> 
-<Assembly: AllowPartiallyTrustedCallers()>    ' required for sandbox tests
-
 <Assembly: ComVisible(False)> 
