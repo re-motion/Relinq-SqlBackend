@@ -88,6 +88,7 @@
     <Compile Include="LinqSamples101\SqlMethodsTests.cs" />
     <Compile Include="LinqSamples101\StoredProceduresTests.cs" />
     <Compile Include="LinqSamples101\StringDateFunctionsTests.cs" />
+    <Compile Include="MiscTests\DistinctTests.cs" />
     <Compile Include="MiscTests\GroupByTests.cs" />
     <Compile Include="MiscTests\DateTimeAddTests.cs" />
     <Compile Include="MiscTests\DynamicLinqTest.cs" />
@@ -161,6 +162,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MiscTests\Resources\DynamicLinqTest.UntypedQuery.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DistinctTests.Distinct_BeforeTake.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DistinctTests.Distinct_BeforeSkip.result">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MiscTests\Resources\DistinctTests.Distinct_BeforeSkipTake.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
