@@ -42,6 +42,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           "SELECT DISTINCT TOP (5) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0]");
     }
 
+    [Ignore ("RM-6195")]
+    [Test]
+    public void DistinctAndSkip()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Distinct().Skip (5),
+          "SELECT [q0].[Key] AS [value] FROM (SELECT [q0].[value] AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] FROM (SELECT DISTINCT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]) AS [q0] WHERE ([q0].[Value] > @2) ORDER BY [q0].[Value] ASC");
+    }
+
+    [Ignore ("RM-6195")]
+    [Test]
+    public void DistinctAndSkipAndTake()
+    {
+      CheckQuery (
+          () => (from c in Cooks select c.FirstName).Distinct().Skip (5).Take (10),
+          "SELECT [q0].[Key] AS [value] FROM (SELECT [q0].[value] AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] FROM (SELECT DISTINCT [t1].[FirstName] AS [value] FROM [CookTable] AS [t1]) AS [q0]) AS [q0] WHERE (([q0].[Value] > @2) AND ([q0].[Value] <= (@2 + @3))) ORDER BY [q0].[Value] ASC");
+    }
+
     [Test]
     public void DistinctAndFirst ()
     {
