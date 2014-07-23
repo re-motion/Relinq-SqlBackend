@@ -32,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
   [TestFixture]
   public class AggregationResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private ISqlPreparationStage _stage;
     private UniqueIdentifierGenerator _generator;
     private TestableAggregationResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     public void SetUp ()
     {
       _generator = new UniqueIdentifierGenerator ();
-      _stageMock = new DefaultSqlPreparationStage(CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
+      _stage = new DefaultSqlPreparationStage(CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
       _handler = new TestableAggregationResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -57,7 +57,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       var averageResultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Max));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
       var averageResultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
     }
@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _sqlStatementBuilder.Orderings.Add (ordering);
       var averageResultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
       Assert.That (
@@ -99,7 +99,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -112,7 +112,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -122,11 +122,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     public void HandleResultOperator_AfterDistinctExpression_CreatesSubStatement ()
     {
       _sqlStatementBuilder.IsDistinctQuery = true;
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
 
       var resultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
