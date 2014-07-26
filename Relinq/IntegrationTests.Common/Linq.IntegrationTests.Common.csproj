@@ -138,7 +138,7 @@
   <ItemGroup>
     <Content Include="Database\Northwnd License.txt" />
     <Content Include="Database\Northwnd.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
