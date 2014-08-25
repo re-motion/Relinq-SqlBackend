@@ -115,21 +115,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\sharedsource\core\utilities\ExceptionUtility.cs">
-      <Link>SharedSource\Utilities\ExceptionUtility.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedSource\Development\UnitTesting\Dev.cs">
-      <Link>SharedSource\UnitTesting\Dev.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedSource\Development\UnitTesting\PrivateInvoke.cs">
-      <Link>SharedSource\UnitTesting\PrivateInvoke.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedSource\Development\UnitTesting\Serializer.cs">
-      <Link>SharedSource\UnitTesting\Serializer.cs</Link>
-    </Compile>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="App_Packages\Remotion.Development.UnitTesting.PrivateInvoke.Sources.1.15.23.0\PrivateInvoke.cs" />
+    <Compile Include="App_Packages\Remotion.Development.UnitTesting.Serializer.Sources.1.15.23.0\Serializer.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
@@ -154,6 +144,7 @@
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\TerminatesProgramAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.15.23.0\ArgumentUtility.cs" />
+    <Compile Include="App_Packages\Remotion.Utilities.ExceptionUtility.Sources.1.15.23.0\ExceptionUtility.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BooleanUtilityTest.cs" />
     <Compile Include="CustomCompositeExpression.cs" />
@@ -361,6 +352,9 @@
     <None Include="..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="App_Packages\Remotion.Development.UnitTesting.PrivateInvoke.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
+    <None Include="App_Packages\Remotion.Development.UnitTesting.Serializer.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
+    <None Include="App_Packages\Remotion.Utilities.ExceptionUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>

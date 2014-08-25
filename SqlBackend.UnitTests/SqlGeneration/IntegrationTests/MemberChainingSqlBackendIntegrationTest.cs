@@ -19,7 +19,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation.PredefinedTransformations;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -285,10 +284,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           new CommandParameter ("@1", 10));
     }
 
+    // ReSharper disable once UnusedParameter.Local
     [MethodCallExpressionTransformer (typeof (GetNamedItemTransformer))]
     private T GetNamedItem<T> (T o)
     {
-      Dev.Null = o;
       throw new NotImplementedException ();
     }
 

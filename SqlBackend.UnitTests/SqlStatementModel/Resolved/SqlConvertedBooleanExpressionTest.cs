@@ -18,7 +18,6 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -58,12 +57,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The inner expression must be an expression of type Int32 or Nullable<Int32>.\r\nParameter name: expression")]
     public void Initialization_InnerTypeMustBeInt32 ()
     {
       var innerExpression = Expression.Constant ("1");
-      Dev.Null = new SqlConvertedBooleanExpression (innerExpression);
+      Assert.That (
+          () => new SqlConvertedBooleanExpression (innerExpression),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("The inner expression must be an expression of type Int32 or Nullable<Int32>.\r\nParameter name: expression"));
     }
 
     [Test]
