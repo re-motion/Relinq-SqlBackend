@@ -69,7 +69,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>
@@ -141,7 +141,7 @@
     <None Include="..\Relinq MSPL.licenseheader">
       <Link>Relinq MSPL.licenseheader</Link>
     </None>
-    <None Include="..\..\remotion.snk">
+    <None Include="..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="..\IntegrationTests.Common\App.config">
