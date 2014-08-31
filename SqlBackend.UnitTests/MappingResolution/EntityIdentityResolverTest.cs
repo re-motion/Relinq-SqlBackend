@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -66,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (_entityExpression.GetIdentityExpression(), result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (_entityExpression.GetIdentityExpression(), result);
     }
 
     [Test]
@@ -74,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (_entityExpression, typeof (object)));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (_entityExpression.GetIdentityExpression (), result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (_entityExpression.GetIdentityExpression (), result);
     }
 
     [Test]
@@ -129,7 +130,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
       _stageMock.VerifyAllExpectations();
-      ExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression(), result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression(), result);
     }
 
     [Test]
@@ -156,7 +157,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       Assert.That (result, Is.TypeOf<SqlSubStatementExpression>());
       var expectedSelectProjection = _entityExpression.GetIdentityExpression();
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, ((SqlSubStatementExpression) result).SqlStatement.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, ((SqlSubStatementExpression) result).SqlStatement.SelectProjection);
       Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo.DataType, Is.SameAs (typeof (IQueryable<int>)));
     }
 
@@ -170,7 +171,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntity (subStatementExpression);
 
       var expectedSelectProjection = _entityExpression.GetIdentityExpression ();
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, result);
     }
     
     [Test]
@@ -194,7 +195,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       Assert.That (result, Is.TypeOf<SqlSubStatementExpression> ());
       var expectedSelectProjection = _entityExpression.GetIdentityExpression ();
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, ((SqlSubStatementExpression) result).SqlStatement.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, ((SqlSubStatementExpression) result).SqlStatement.SelectProjection);
       Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo.DataType, Is.SameAs (typeof (IQueryable<int>)));
     }
 
@@ -213,7 +214,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var result = _entityIdentityResolver.ResolvePotentialEntity (new NamedExpression ("X", _entityConstantExpression));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression ("X", _entityConstantExpression.IdentityExpression), result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression ("X", _entityConstantExpression.IdentityExpression), result);
     }
 
     [Test]
@@ -244,7 +245,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
       var expected = Expression.Equal (_entityExpression.GetIdentityExpression(), _entityConstantExpression.IdentityExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -257,7 +258,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expected = Expression.Equal (
           Expression.Convert (_entityExpression.GetIdentityExpression(), typeof (object)),
           Expression.Convert (Expression.Constant (null, typeof (Cook)), typeof (object)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -270,7 +271,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expected = Expression.Equal (
           Expression.Convert (Expression.Constant (null, typeof (Cook)), typeof (object)),
           Expression.Convert (_entityExpression.GetIdentityExpression (), typeof (object)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -282,7 +283,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
       var expected = Expression.Equal (_entityExpression.GetIdentityExpression (), _entityConstantExpression.IdentityExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -303,7 +304,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlInExpression);
 
       var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), _entityConstantExpression.IdentityExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -314,7 +315,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlInExpression);
 
       var expected = new SqlInExpression (_entityExpression.GetIdentityExpression (), Expression.Constant (null, typeof (Cook)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -325,7 +326,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlInExpression);
 
       var expected = new SqlInExpression (Expression.Constant (null, typeof (Cook)), _entityExpression.GetIdentityExpression ());
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -346,7 +347,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlIsNullExpression);
 
       var expected = new SqlIsNullExpression (_entityExpression.GetIdentityExpression ());
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -367,7 +368,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (sqlIsNotNullExpression);
 
       var expected = new SqlIsNotNullExpression (_entityExpression.GetIdentityExpression ());
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]

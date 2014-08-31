@@ -20,6 +20,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -43,7 +44,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var result = transformer.Transform (expression);
 
       var expectedResult = new SqlLikeExpression (expression.Arguments[0], expression.Arguments[1], new SqlLiteralExpression (@"\"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

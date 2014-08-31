@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -125,7 +125,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           _sqlStatementBuilder.RowNumberSelector, Expression.Add (_sqlStatementBuilder.CurrentRowNumberOffset, resultOperator.Count));
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
     }
 
   }

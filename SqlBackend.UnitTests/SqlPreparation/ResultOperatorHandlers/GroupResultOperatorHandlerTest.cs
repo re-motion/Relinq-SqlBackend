@@ -23,7 +23,7 @@ using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -81,7 +81,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var expectedSelectProjection = new SqlGroupingSelectExpression (
           new NamedExpression ("key", keySelector), 
           new NamedExpression ("element", elementSelector));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
 
       Assert.That (
           _sqlStatementBuilder.DataInfo.DataType,
@@ -257,8 +257,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (groupKeyTableTableInfo.SqlStatement, Is.EqualTo (expectedStatement));
 
       var expectedGroupGyExpression = new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[1]);
-      ExpressionTreeComparer.CheckAreEqualTrees (_sqlStatementBuilder.GroupByExpression, expectedGroupGyExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (
+      SqlExpressionTreeComparer.CheckAreEqualTrees (_sqlStatementBuilder.GroupByExpression, expectedGroupGyExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
           _sqlStatementBuilder.SelectProjection, 
           SqlGroupingSelectExpression.CreateWithNames (expectedGroupGyExpression, elementSelector));
     }
@@ -289,7 +289,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       
       var groupKeyTableTableInfo = (ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[1]).TableInfo;
       var expectedSelectExpression = new NamedExpression (null, preparedConstantKeySelector);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectExpression, groupKeyTableTableInfo.SqlStatement.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectExpression, groupKeyTableTableInfo.SqlStatement.SelectProjection);
       
       var expectedStatement = new SqlStatementBuilder 
         {
@@ -300,8 +300,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (groupKeyTableTableInfo.SqlStatement, Is.EqualTo (expectedStatement));
 
       var expectedGroupGyExpression = new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[1]);
-      ExpressionTreeComparer.CheckAreEqualTrees (_sqlStatementBuilder.GroupByExpression, expectedGroupGyExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (
+      SqlExpressionTreeComparer.CheckAreEqualTrees (_sqlStatementBuilder.GroupByExpression, expectedGroupGyExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
           _sqlStatementBuilder.SelectProjection,
           SqlGroupingSelectExpression.CreateWithNames (expectedGroupGyExpression, elementSelector));
     }

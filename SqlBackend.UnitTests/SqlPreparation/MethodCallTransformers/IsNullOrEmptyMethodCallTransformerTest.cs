@@ -19,7 +19,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -48,7 +48,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var expectedLenExpression = new SqlLengthExpression (objectExpression);
       var expectedResult = Expression.OrElse (expectedIsNullExpression, Expression.Equal (expectedLenExpression, new SqlLiteralExpression(0)));
       
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

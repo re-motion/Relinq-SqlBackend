@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                Assert.That (selectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
 
                var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
-               ExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
+               SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
              })
          .Return (fakePreparedSelectProjection);
 

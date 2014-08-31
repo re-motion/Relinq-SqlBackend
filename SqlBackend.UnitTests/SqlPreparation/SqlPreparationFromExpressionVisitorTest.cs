@@ -23,7 +23,7 @@ using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -209,7 +209,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           ((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinInfo).MemberInfo,
           Is.EqualTo (memberExpression.Member));
       var expectedWherecondition = new JoinConditionExpression (((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedWherecondition, result.WhereCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWherecondition, result.WhereCondition);
     }
 
     [Test]
@@ -245,7 +245,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (result.ExtractedOrderings, Is.Empty);
 
       var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
 
       var tableInfo = ((SqlTable) result.SqlTable).TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (UnresolvedGroupReferenceTableInfo)));
@@ -295,7 +295,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches (e => e is BinaryExpression), Arg.Is (_context)))
           .WhenCalled (
               mi =>
-              ExpressionTreeComparer.CheckAreEqualTrees (
+              SqlExpressionTreeComparer.CheckAreEqualTrees (
                   Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
                   (Expression) mi.Arguments[0]))
           .Return (fakeWhereExpression);
@@ -308,10 +308,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (_visitor.FromExpressionInfo, Is.Not.Null);
       var fromExpressionInfo = (FromExpressionInfo) _visitor.FromExpressionInfo;
 
-      ExpressionTreeComparer.CheckAreEqualTrees (
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
           new SqlTableReferenceExpression (fromExpressionInfo.SqlTable),
           _context.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause)));
-      ExpressionTreeComparer.CheckAreEqualTrees (fromExpressionInfo.ItemSelector, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (fromExpressionInfo.ItemSelector, result);
       Assert.That (((UnresolvedTableInfo) ((SqlTable) fromExpressionInfo.SqlTable).TableInfo).ItemType, Is.EqualTo (typeof (Cook)));
       Assert.That (fromExpressionInfo.WhereCondition, Is.SameAs (fakeWhereExpression));
       Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo (0));
@@ -339,7 +339,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches (e => e is BinaryExpression), Arg.Is (_context)))
           .WhenCalled (
               mi =>
-              ExpressionTreeComparer.CheckAreEqualTrees (
+              SqlExpressionTreeComparer.CheckAreEqualTrees (
                   Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
                   (Expression) mi.Arguments[0]))
           .Return (fakeWhereExpression);
@@ -400,7 +400,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Expect (mock => mock.PrepareWhereExpression (Arg<Expression>.Matches (e => e is BinaryExpression), Arg.Is (_context)))
           .WhenCalled (
               mi =>
-              ExpressionTreeComparer.CheckAreEqualTrees (
+              SqlExpressionTreeComparer.CheckAreEqualTrees (
                   Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
                   (Expression) mi.Arguments[0]))
           .Return (fakeWhereExpression);

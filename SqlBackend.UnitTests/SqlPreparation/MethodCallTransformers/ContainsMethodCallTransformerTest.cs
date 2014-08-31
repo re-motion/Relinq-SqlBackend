@@ -19,7 +19,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var rightExpression = Expression.Constant (string.Format ("%{0}%", argument1.Value));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -90,7 +90,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
           rightExpression, new SqlLiteralExpression ("%"), typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -104,7 +104,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
 
       var result = transformer.Transform (expression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Constant (false), result);
     }
   }
 }

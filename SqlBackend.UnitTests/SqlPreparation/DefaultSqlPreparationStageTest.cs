@@ -22,6 +22,7 @@ using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -73,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var result = _stage.PrepareWhereExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -82,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var result = _stage.PrepareTopExpression (_querySourceReferenceExpression, _context);
 
       var expectedExpression = new SqlTableReferenceExpression (_sqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]

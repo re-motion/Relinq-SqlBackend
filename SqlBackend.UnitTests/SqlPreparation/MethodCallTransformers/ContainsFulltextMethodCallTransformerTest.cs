@@ -20,7 +20,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -59,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var rightExpression = Expression.Constant (string.Format ("{0}", argument1.Value));
       var expectedResult = new SqlFunctionExpression (typeof (bool), "CONTAINS", objectExpression, rightExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -88,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var expectedResult =
           new SqlFunctionExpression (typeof (bool), "CONTAINS", objectExpression, argumentExpression, compositeExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

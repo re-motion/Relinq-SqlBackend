@@ -19,7 +19,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -97,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
 
       var expectedResult = new SqlConvertExpression (typeof (int), Expression.Constant ("1"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

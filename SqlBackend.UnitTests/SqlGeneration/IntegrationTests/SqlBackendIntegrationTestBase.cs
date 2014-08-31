@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
@@ -210,7 +211,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           checkedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
           checkedInMemoryProjection = ReplaceConvertExpressionMarker (checkedInMemoryProjection);
         }
-        ExpressionTreeComparer.CheckAreEqualTrees (checkedInMemoryProjection, result.GetInMemoryProjection<object> ());
+        SqlExpressionTreeComparer.CheckAreEqualTrees (checkedInMemoryProjection, result.GetInMemoryProjection<object> ());
       }
     }
 

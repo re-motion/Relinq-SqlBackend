@@ -21,8 +21,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -85,7 +85,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var expectedOrderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t0");
       var expectedOrderForeignKey = new SqlColumnDefinitionExpression (typeof (string), expectedOrderTableInfo.TableAlias, "CustomerID", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (customerPrimaryKey, expectedOrderForeignKey), resolvedJoinInfo.JoinCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (customerPrimaryKey, expectedOrderForeignKey), resolvedJoinInfo.JoinCondition);
 
       Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (expectedOrderTableInfo.ItemType));
       Assert.That (resolvedJoinInfo.ForeignTableInfo.ItemType, Is.EqualTo (expectedOrderTableInfo.ItemType));
@@ -108,7 +108,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
       var expectedCustomerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t0");
       var expectedCustomerPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), expectedCustomerTableInfo.TableAlias, "CustomerID", true);
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (orderForeignKey, expectedCustomerPrimaryKey), resolvedJoinInfo.JoinCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (orderForeignKey, expectedCustomerPrimaryKey), resolvedJoinInfo.JoinCondition);
 
       Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));
       Assert.That (resolvedJoinInfo.ForeignTableInfo.ItemType, Is.EqualTo (expectedCustomerTableInfo.ItemType));
@@ -129,7 +129,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var regionPrimaryKey = new SqlColumnDefinitionExpression (typeof (int), regionTableInfo.TableAlias, "RegionID", true);
       var expectedTerritoryTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Territory), "dbo.Territories", "t0");
       var expectedTerritoryForeignKey = new SqlColumnDefinitionExpression (typeof (int?), expectedTerritoryTableInfo.TableAlias, "RegionID", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
           Expression.Equal (
             Expression.Convert (regionPrimaryKey, typeof (int?)), 
             expectedTerritoryForeignKey), resolvedJoinInfo.JoinCondition);
@@ -175,10 +175,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       Assert.That (resolvedExpr.Type, Is.SameAs (typeof (DataContextTestClass.Region)));
       Assert.That (resolvedExpr.TableAlias, Is.EqualTo ("t0"));
       Assert.That (resolvedExpr.Name, Is.Null);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedPrimaryColumn, resolvedExpr.GetIdentityExpression());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedPrimaryColumn, resolvedExpr.GetIdentityExpression());
       Assert.That (resolvedExpr.Columns, Has.Count.EqualTo (2));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedPrimaryColumn, resolvedExpr.Columns[0]);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedDescriptionColumn, resolvedExpr.Columns[1]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedPrimaryColumn, resolvedExpr.Columns[0]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedDescriptionColumn, resolvedExpr.Columns[1]);
     }
 
     [Test]
@@ -199,7 +199,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       Assert.That (resolvedExpr.Type, Is.SameAs (typeof (DataContextTestClass.ClassWithCompoundPrimaryKey)));
       Assert.That (resolvedExpr.TableAlias, Is.EqualTo ("t0"));
       Assert.That (resolvedExpr.Name, Is.Null);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedIdentityExpression, resolvedExpr.GetIdentityExpression ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedIdentityExpression, resolvedExpr.GetIdentityExpression ());
     }
 
     [Test]
@@ -233,7 +233,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
       var expectedExpression = new SqlColumnDefinitionExpression (typeof (string), "p", "FirstName", true);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -245,7 +245,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
       var expectedExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -257,7 +257,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       Expression result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
       var expectedExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CompanyName", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -271,7 +271,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var result = _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfo);
 
       var expectedExpression = new SqlEntityRefMemberExpression (sqlEntityExpression, memberInfo);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -318,7 +318,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var expectedExpression = columnExpression;
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -330,7 +330,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var result = _mappingResolver.ResolveConstantExpression (constantExpr);
 
       var expectedExpr = new SqlEntityConstantExpression (typeof (DataContextTestClass.Customer), customer, Expression.Constant (customer.CustomerID, typeof (string)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
     }
 
     [Test]
@@ -346,7 +346,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
           type.GetConstructors().Single(), 
           new[] { new NamedExpression ("Item1", Expression.Constant (1)), new NamedExpression ("Item2", Expression.Constant ("two")) },
           new[] { type.GetProperty ("Item1"), type.GetProperty ("Item2") }));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpr, result);
     }
 
     [Test]
@@ -390,7 +390,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       Expression result = _mappingResolver.ResolveTypeCheck (customerExpression, desiredType);
       
       Expression expectedExpression = Expression.Constant (true);
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]
@@ -402,7 +402,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       Expression result = _mappingResolver.ResolveTypeCheck (customerExpression, desiredType);
 
       Expression expectedExpression = Expression.Constant (false);
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]
@@ -432,7 +432,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
           Expression.MakeMemberAccess (contactExpression, discriminatorDataMember),
           Expression.Constant ("Customer")
           );
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]
@@ -463,7 +463,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var result = _mappingResolver.TryResolveOptimizedIdentity (entityRefMemberExpression);
 
       var orderForeignKey = new SqlColumnDefinitionExpression (typeof (int), tableInfo.TableAlias, "VirtualSideID", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, result);
     }
 
     [Test]
@@ -496,7 +496,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var result = _mappingResolver.TryResolveOptimizedMemberExpression (entityRefMemberExpression, identityMember);
 
       var orderForeignKey = new SqlColumnDefinitionExpression (typeof (int), tableInfo.TableAlias, "VirtualSideID", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (orderForeignKey, result);
     }
 
     [Test]

@@ -21,7 +21,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -220,7 +220,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeWhereCondition = Expression.Constant (false);
       _stageMock
           .Expect (mock => mock.ResolveWhereExpression (Arg<Expression>.Is.Anything, Arg.Is (_mappingResolutionContext)))
-          .WhenCalled (mi => ExpressionTreeComparer.CheckAreEqualTrees (expectedResultWhereCondition, (Expression) mi.Arguments[0]))
+          .WhenCalled (mi => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResultWhereCondition, (Expression) mi.Arguments[0]))
           .Return (fakeWhereCondition);
       _stageMock.Replay();
 
@@ -243,19 +243,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (resultSqlStatement.Orderings, Is.Empty);
       Assert.That (resultSqlStatement.GroupByExpression, Is.Null);
       
-      ExpressionTreeComparer.CheckAreEqualTrees (
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
           Expression.AndAlso (groupingSubStatement.WhereCondition, fakeWhereCondition), 
           resultSqlStatement.WhereCondition);
 
       var expectedResultSelectProjection =
           Expression.MakeMemberAccess (new SqlTableReferenceExpression (resultSqlStatement.SqlTables[0]), typeof (Cook).GetProperty ("ID"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResultSelectProjection, resultSqlStatement.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResultSelectProjection, resultSqlStatement.SelectProjection);
 
       Assert.That (resultSqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (resultSqlStatement.DataInfo.DataType, Is.SameAs (typeof (IQueryable<int>)));
 
       var expectedItemExpression = resultSqlStatement.SelectProjection;
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemExpression, ((StreamedSequenceInfo) resultSqlStatement.DataInfo).ItemExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemExpression, ((StreamedSequenceInfo) resultSqlStatement.DataInfo).ItemExpression);
     }
 
     [Test]

@@ -21,7 +21,7 @@ using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -80,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                 var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
                 var expectedExpression = Expression.Not (expectedExistsExpression);
 
-                ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
+                SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
               })
           .Return (fakePreparedSelectProjection);
       _stageMock.Replay();

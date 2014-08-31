@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -78,7 +78,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, _commandBuilder.GetInMemoryProjectionBody());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedFullProjection, _commandBuilder.GetInMemoryProjectionBody());
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 AS [test]"));
     }
@@ -107,7 +107,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "outer", 0, typeof (double));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1 AS [outer]"));
     }
@@ -124,7 +124,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (bool));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(BIT, @1) AS [test]"));
     }
@@ -137,7 +137,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
 
       var expectedResult = new NamedExpression (_namedIntExpression.Name, new SqlConvertExpression (typeof (bool), _namedIntExpression.Expression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -149,7 +149,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
 
       var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (bool?));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(BIT, @1) AS [test]"));
     }
@@ -164,7 +164,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       var expectedResult = new NamedExpression (
           namedNullableIntExpression.Name, new SqlConvertExpression (typeof (bool?), namedNullableIntExpression.Expression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -180,7 +180,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "col", 0, typeof (bool));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t0].[column] AS [col]"));
     }
@@ -206,7 +206,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (3));
 
       var expectedProjection = GetExpectedProjectionForEntityExpression (_commandBuilder.InMemoryProjectionRowParameter, 0);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
     }
@@ -235,7 +235,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (
           _commandBuilder.GetCommandText (), 
           Is.EqualTo ("NULL AS [test],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -260,7 +260,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression },
           keyValueType.GetProperty ("Key"), keyValueType.GetProperty ("Value"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -291,7 +291,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (
           _commandBuilder.GetCommandText (),
           Is.EqualTo ("NULL AS [test],[c].[Name] AS [Name]"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -318,7 +318,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (
           _commandBuilder.GetCommandText (),
           Is.EqualTo ("[c].[Name] AS [Name]"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -334,7 +334,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var expectedProjection = Expression.Call (methodCallExpression.Method);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("NULL"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -359,7 +359,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)),
           typeof (double),
           methodInfo);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
@@ -384,7 +384,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)),
           typeof (double),
           methodInfo);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]

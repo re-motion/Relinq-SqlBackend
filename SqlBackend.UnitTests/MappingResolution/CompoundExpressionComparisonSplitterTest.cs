@@ -19,7 +19,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -77,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
 
       var expectedResult = Expression.Equal (leftArgumentExpression, rightArgumentExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -98,7 +98,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedLeftSideExpression = Expression.Equal (leftArgumentExpression1, rightArgumentExpression1);
       var expectedRightSideExpression = Expression.Equal (leftArgumentExpression2, rightArgumentExpression2);
       var expectedResult = Expression.AndAlso (expectedLeftSideExpression, expectedRightSideExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -119,7 +119,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedLeftSideExpression = Expression.NotEqual (leftArgumentExpression1, rightArgumentExpression1);
       var expectedRightSideExpression = Expression.NotEqual (leftArgumentExpression2, rightArgumentExpression2);
       var expectedResult = Expression.OrElse (expectedLeftSideExpression, expectedRightSideExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
 
@@ -151,7 +151,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
 
       var expectedResult = Expression.Equal (leftArgumentExpression, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("A")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -178,7 +178,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
               Expression.Equal (
                   leftArgumentExpression2, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("B"))));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -205,7 +205,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
               Expression.NotEqual (
                   leftArgumentExpression2, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetProperty ("B"))));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -222,7 +222,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var expectedResult = Expression.Equal (
           leftArgumentExpression, Expression.MakeMemberAccess (rightExpression, typeof (TypeForNewExpression).GetField ("C")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -238,7 +238,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
 
       var expectedResult = Expression.Equal (leftArgumentExpression, Expression.Property (rightExpression, "A"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -261,7 +261,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedResult = Expression.AndAlso (
           Expression.Equal (leftArgumentExpression1, Expression.Property (rightExpression, "A")),
           Expression.Equal (leftArgumentExpression2, Expression.Property (rightExpression, "B")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -292,7 +292,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
 
       var expectedResult = Expression.Equal (rightArgumentExpression, Expression.MakeMemberAccess (leftExpression, typeof (TypeForNewExpression).GetProperty ("A")));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -334,7 +334,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNullExpression);
 
       var expected = Expression.AndAlso (new SqlIsNullExpression (arg1), new SqlIsNullExpression (arg2));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -347,7 +347,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNullExpression);
 
       var expected = new SqlIsNullExpression (arg1);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -359,7 +359,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNullExpression);
 
       var expected = Expression.Constant (false);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -384,7 +384,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNotNullExpression);
 
       var expected = Expression.OrElse (new SqlIsNotNullExpression (arg1), new SqlIsNotNullExpression (arg2));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -397,7 +397,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNotNullExpression);
 
       var expected = new SqlIsNotNullExpression (arg1);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -409,7 +409,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (sqlIsNotNullExpression);
 
       var expected = Expression.Constant (true);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
 

@@ -18,8 +18,8 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -117,7 +117,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var result = entityExpression.CreateReference("c1", typeof(Cook));
 
       var expectedResult = new SqlEntityReferenceExpression (typeof (Cook), "c1", null, entityExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -134,7 +134,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var result = entityExpression.Update (typeof (Kitchen), "f", null);
 
       var expectedResult = new SqlEntityDefinitionExpression (typeof (Kitchen), "f", null, entityExpression.IdentityExpressionGenerator, columns);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

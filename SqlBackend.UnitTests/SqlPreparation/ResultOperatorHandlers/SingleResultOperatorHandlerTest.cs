@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -109,7 +109,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
     }
   }
 }

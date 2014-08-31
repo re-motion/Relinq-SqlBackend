@@ -19,7 +19,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -53,7 +53,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var expectedThenExpression = Expression.Add (objectExpression, argument2, concatMethod);
       var expectedElseExpression = new SqlFunctionExpression (typeof (string), "STUFF", objectExpression, Expression.Add (argument1, new SqlLiteralExpression (1)), new SqlLiteralExpression(0), argument2);
       var expectedResult = Expression.Condition (expectedTestExpression, expectedThenExpression, expectedElseExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
   }

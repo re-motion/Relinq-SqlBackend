@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .WhenCalled (mi => 
           {
             var sqlStatement = ((SqlSubStatementExpression) mi.Arguments[0]).SqlStatement;
-            ExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression (null, originalStatement.SelectProjection), sqlStatement.SelectProjection);
+            SqlExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression (null, originalStatement.SelectProjection), sqlStatement.SelectProjection);
 
             Assert.That (sqlStatement.DataInfo, Is.SameAs (originalStatement.DataInfo));
             Assert.That (sqlStatement.WhereCondition, Is.SameAs (originalStatement.WhereCondition));

@@ -26,6 +26,7 @@ using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -275,7 +276,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var expectedResult = new SqlLengthExpression (stringExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -303,7 +304,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               new SqlCaseExpression.CaseWhenPair (testPredicate2, Expression.Property (value2, "Property"))
           },
           Expression.Property (elseValue, "Property"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -326,11 +327,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           referenceTypeMemberExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       var expectedValueTypeResult = CreateSqlCaseExpressionWithInnerMemberExpressionNoElse<int?> (predicate, valueTypeValue);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedValueTypeResult, valueTypeResult);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedValueTypeResult, valueTypeResult);
       var expectedNullableValueTypeResult = CreateSqlCaseExpressionWithInnerMemberExpressionNoElse<int?> (predicate, nullableValueTypeValue);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedNullableValueTypeResult, nullableValueTypeResult);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNullableValueTypeResult, nullableValueTypeResult);
       var expectedReferenceTypeResult = CreateSqlCaseExpressionWithInnerMemberExpressionNoElse<string> (predicate, referenceTypeValue);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferenceTypeResult, referenceTypeResult);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReferenceTypeResult, referenceTypeResult);
     }
 
     [Test]
@@ -349,7 +350,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           typeof (int),
           new[] { new SqlCaseExpression.CaseWhenPair (predicate, new SqlLengthExpression (value)) },
           new SqlLengthExpression (elseValue));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -368,7 +369,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           Expression.Property (coalesceExpression.Left, "Property"),
           Expression.Property (coalesceExpression.Right, "Property"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -387,7 +388,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           new SqlLengthExpression(coalesceExpression.Left), 
           new SqlLengthExpression (coalesceExpression.Right));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -413,7 +414,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       var expectedSelectProjection = new NamedExpression("test", Expression.MakeMemberAccess (selectProjection, memberInfo));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, ((SqlSubStatementExpression) result).SqlStatement.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, ((SqlSubStatementExpression) result).SqlStatement.SelectProjection);
       Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo.DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(string))));
     }
@@ -566,7 +567,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var expectedResult = Expression.Equal (
           leftExpression, SqlCaseExpression.CreateIfThenElse (typeof (string), testPredicate, ifTrueExpression, ifFalseExpression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -599,7 +600,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           new NamedExpression ("Object", Expression.Constant (0)), 
           ReflectionUtility.GetMethod (() => 0.ToString ("", null)), 
           new[] { new NamedExpression ("Arg0", Expression.Constant ("")), new NamedExpression ("Arg1", Expression.Constant (null, typeof (IFormatProvider))) });
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -614,7 +615,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var expected = Expression.Call (
           ReflectionUtility.GetMethod (() => int.Parse ("")),
           new[] { new NamedExpression ("Arg0", Expression.Constant ("")) });
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -704,7 +705,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock, _methodCallTransformerProvider);
 
       var expectedExpression = new SqlLengthExpression (evaluatedExpression.Expression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -726,7 +727,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var expectedExpression = new SqlCollectionExpression (
           typeof (int[]), new[] { Expression.Constant (1), Expression.Constant (2), Expression.Constant (3) });
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     private MemberExpression CreateMemberExpressionWithInnerSqlCaseExpression<TMemberType> (Expression when, Expression then, Expression elseCase)

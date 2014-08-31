@@ -20,8 +20,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
@@ -66,10 +66,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var result = SqlGroupingSelectExpression.CreateWithNames (_keyExpression, _elementExpression);
 
       var expectedKeyExpression = new NamedExpression ("key", _keyExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedKeyExpression, result.KeyExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedKeyExpression, result.KeyExpression);
 
       var expectedElementExpression = new NamedExpression ("element", _elementExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedElementExpression, result.ElementExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedElementExpression, result.ElementExpression);
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       Assert.That (name, Is.EqualTo ("a1"));
       var expectedNamedExpression = new NamedExpression ("a1", _aggregateExpression2);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedNamedExpression, _sqlGroupingSelectExpression.AggregationExpressions[1]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNamedExpression, _sqlGroupingSelectExpression.AggregationExpressions[1]);
     }
 
     [Test]

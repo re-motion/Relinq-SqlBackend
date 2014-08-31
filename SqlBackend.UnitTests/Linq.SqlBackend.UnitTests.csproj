@@ -371,6 +371,10 @@
       <Project>{31A1AE30-079F-489E-9757-4EFB4C457E43}</Project>
       <Name>Linq.Development</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SqlBackend.Development\Linq.SqlBackend.Development.csproj">
+      <Project>{E61B546E-29F2-4855-BD4D-45556E812FDE}</Project>
+      <Name>Linq.SqlBackend.Development</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SqlBackend\Linq.SqlBackend.csproj">
       <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
       <Name>Linq.SqlBackend</Name>

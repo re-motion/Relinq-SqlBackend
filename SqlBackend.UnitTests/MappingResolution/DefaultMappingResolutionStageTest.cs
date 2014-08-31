@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -284,7 +284,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock.VerifyAllExpectations ();
 
       var expected = Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]

@@ -18,8 +18,8 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Rhino.Mocks;
 
@@ -129,7 +129,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var result = convertedExpression.Reduce();
 
       var expectedResult = Expression.Convert (innerExpression, typeof (bool), typeof (Convert).GetMethod ("ToBoolean", new[] { typeof (int) }));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 
       var expectedResult = Expression.Convert (
           innerExpression, typeof (bool?), typeof (BooleanUtility).GetMethod ("ConvertNullableIntToNullableBool", new[] { typeof (int?) }));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

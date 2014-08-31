@@ -21,7 +21,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var result = _transformer.Transform (expression);
 
       var expectedExpression = new SqlConvertExpression (typeof (string), argument0);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
 
       var result = _transformer.Transform (expression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (argument0, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (argument0, result);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
           new SqlConvertExpression (typeof (string), argument0), 
           new SqlConvertExpression (typeof (string), argument1),
           _twoStringConcatMethod);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -108,7 +108,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   _twoStringConcatMethod),
               new SqlConvertExpression (typeof (string), argument2),
               _twoStringConcatMethod);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -133,7 +133,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   _twoStringConcatMethod), 
               argument2, 
               _twoStringConcatMethod);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -159,7 +159,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   _twoStringConcatMethod),
               element2,
               _twoStringConcatMethod);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -185,7 +185,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   _twoStringConcatMethod),
               element2,
               _twoStringConcatMethod);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -208,7 +208,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   _twoStringConcatMethod),
               Expression.Constant (elements[2]),
               _twoStringConcatMethod);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]

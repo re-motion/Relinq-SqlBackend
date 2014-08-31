@@ -21,6 +21,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -130,7 +131,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var expectedResult = Expression.New (
           TypeForNewExpression.GetConstructor (typeof (int)), new[] { new NamedExpression ("A", innerExpression) }, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -148,7 +149,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var expectedResult = Expression.New (
           TypeForNewExpression.GetConstructor (typeof (int)), new[] { new NamedExpression ("A", innerExpression) }, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -166,7 +167,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var expectedResult = Expression.New (
           TypeForNewExpression.GetConstructor (typeof (int)), new[] { new NamedExpression ("get_", innerExpression) }, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -192,7 +193,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
            TypeForNewExpression.GetConstructor (typeof (int)), new[] { new NamedExpression ("m0", innerExpression) });
 
       Assert.That (result, Is.Not.SameAs (expression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -233,7 +234,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var expectedResult = Expression.New (
           TypeForNewExpression.GetConstructor (typeof (int)), new[] { new NamedExpression ("A", processedArgument) }, memberInfo);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
     
   }

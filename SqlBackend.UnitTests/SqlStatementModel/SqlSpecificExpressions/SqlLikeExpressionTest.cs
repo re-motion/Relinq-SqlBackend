@@ -18,8 +18,8 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -51,7 +51,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var rightExpression = Expression.Constant (string.Format ("%{0}%", argument1.Value));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
           rightExpression, new SqlLiteralExpression ("%"), typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }));
       var expectedResult = new SqlLikeExpression (objectExpression, rightExpression, new SqlLiteralExpression (@"\"));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);  
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);  
     }
 
     [Test]
@@ -143,7 +143,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
                     new SqlLiteralExpression ("_"), new SqlLiteralExpression (@"\_")),
                       new SqlLiteralExpression ("["), new SqlLiteralExpression (@"\["));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

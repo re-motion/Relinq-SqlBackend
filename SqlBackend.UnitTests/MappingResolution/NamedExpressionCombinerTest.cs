@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -232,7 +233,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var result = _namedExpressionCombiner.ProcessNames (expression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
       Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
 
@@ -244,7 +245,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       var expectedResult = Expression.Convert (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -263,7 +264,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       var expectedResult = Expression.Convert (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double), convertMethod);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -277,7 +278,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = _namedExpressionCombiner.ProcessNames (namedExpression);
 
       var expectedResult = Expression.ConvertChecked (new NamedExpression ("outer_inner", Expression.Constant (1)), typeof (double));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
 }

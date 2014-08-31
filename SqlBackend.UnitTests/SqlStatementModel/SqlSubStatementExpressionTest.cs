@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -154,7 +154,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
         TopExpression = newSubStatement.TopExpression
       }.GetSqlStatement();
 
-      ExpressionTreeComparer.CheckAreEqualTrees (new SqlLiteralExpression (1), newSubStatement.TopExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (new SqlLiteralExpression (1), newSubStatement.TopExpression);
       Assert.That (newSubStatement, Is.EqualTo (expectedSubStatement));
     }
 
@@ -209,7 +209,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
         TopExpression = newSubStatement.TopExpression
       }.GetSqlStatement ();
 
-      ExpressionTreeComparer.CheckAreEqualTrees (new SqlLiteralExpression (1), newSubStatement.TopExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (new SqlLiteralExpression (1), newSubStatement.TopExpression);
       Assert.That (newSubStatement, Is.EqualTo (expectedSubStatement));
     }
   }

@@ -18,8 +18,8 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
@@ -334,7 +334,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .WhenCalled (mi =>
           {
             var expr = (BinaryExpression) mi.Arguments[0];
-            ExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
+            SqlExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
             _commandBuilder.Append ("XOR SIMULATION");
           })
           .Return (null);
@@ -360,7 +360,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .WhenCalled (mi =>
           {
             var expr = (BinaryExpression) mi.Arguments[0];
-            ExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
+            SqlExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
             _commandBuilder.Append ("XOR SIMULATION");
           })
           .Return (null);

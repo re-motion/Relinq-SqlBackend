@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
@@ -80,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_sqlCommandBuilder.GetCommandParameters (), Is.EqualTo (new[] { expectedCommandParameter }));
 
       var expectedInMemoryProjection = Expression.Lambda<Func<IDatabaseResultRow, int>> (body, _sqlCommandBuilder.InMemoryProjectionRowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedInMemoryProjection, data.GetInMemoryProjection<int> ());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedInMemoryProjection, data.GetInMemoryProjection<int> ());
     }
 
     [Test]

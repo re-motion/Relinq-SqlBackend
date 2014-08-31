@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -54,7 +54,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           referencedExpression, tableInfo, sqlTable, _context);
 
       var expectedResult = new SqlColumnDefinitionExpression (typeof (int), "q0", "test", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
    [Test]
@@ -77,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new Expression[] { new NamedExpression ("A", new SqlColumnDefinitionExpression (typeof (int), "q0", "const", false) ) },
           newExpression.Members);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -98,7 +98,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           TypeForNewExpression.GetConstructor (typeof (int)),
           new Expression[] { new NamedExpression ("m0", new SqlColumnDefinitionExpression (typeof (int), "q0", "const", false)) });
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -119,7 +119,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityReferenceExpression) result), Is.SameAs (sqlTable));
 
       var expectedResult = entityDefinitionExpression.CreateReference ("q0", tableInfo.SqlStatement.SelectProjection.Type);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -147,16 +147,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           "q0", 
           null, 
           (SqlEntityExpression) groupingSelectExpression.KeyExpression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedKeyExpression, referencedKeyExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedKeyExpression, referencedKeyExpression);
 
       var referencedElementExpression = ((SqlGroupingSelectExpression) result).ElementExpression;
       var expectedReferencedElementExpression = new NamedExpression("element", new SqlColumnDefinitionExpression (typeof (int), "q0", "element", false));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedElementExpression, referencedElementExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedElementExpression, referencedElementExpression);
 
       Assert.That (((SqlGroupingSelectExpression) result).AggregationExpressions.Count, Is.EqualTo (1));
       var referencedAggregationExpression = ((SqlGroupingSelectExpression) result).AggregationExpressions[0];
       var expectedReferencedAggregationExpression = new NamedExpression("a0", new SqlColumnDefinitionExpression (typeof (int), "q0", "a0", false));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedAggregationExpression, referencedAggregationExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReferencedAggregationExpression, referencedAggregationExpression);
 
       Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
@@ -176,7 +176,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var result = SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (expression, tableInfo, sqlTable, _context);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, exprectedResult);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, exprectedResult);
       Assert.That (_context.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
     }
 
@@ -208,7 +208,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           referencedExpression, tableInfo, sqlTable, _context);
 
       var expectedResult = new SqlConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "q0", "test", false));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

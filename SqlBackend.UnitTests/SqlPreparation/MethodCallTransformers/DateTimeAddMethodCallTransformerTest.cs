@@ -18,7 +18,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -76,7 +76,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
               Expression.Divide (
                   Expression.Divide (Expression.Constant (123456789L), new SqlLiteralExpression (10000L)), new SqlLiteralExpression (86400000L)),
               _dateTimeInstance));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -118,7 +118,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (86400000.0))),
                   new SqlLiteralExpression (86400000L)),
               _dateTimeInstance));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -146,7 +146,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (3600000.0))),
                   new SqlLiteralExpression (86400000L)),
               _dateTimeInstance));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -173,7 +173,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   new SqlConvertExpression (typeof (long), value),
                   new SqlLiteralExpression (86400000L)),
               _dateTimeInstance));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -201,7 +201,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (60000.0))),
                   new SqlLiteralExpression (86400000L)),
               _dateTimeInstance));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -219,7 +219,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
           new SqlCustomTextExpression ("month", typeof (string)),
           value,
           _dateTimeInstance);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -247,7 +247,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                   new SqlConvertExpression (typeof (long), Expression.Multiply (value, new SqlLiteralExpression (1000.0))),
                   new SqlLiteralExpression (86400000L)),
               _dateTimeInstance));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -272,7 +272,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
               Expression.Divide (
                   Expression.Divide (value, new SqlLiteralExpression (10000L)), new SqlLiteralExpression (86400000L)),
               _dateTimeInstance));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
@@ -290,7 +290,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
           new SqlCustomTextExpression ("year", typeof (string)),
           value,
           _dateTimeInstance);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

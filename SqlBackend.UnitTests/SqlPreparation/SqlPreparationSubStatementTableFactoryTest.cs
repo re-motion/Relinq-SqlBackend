@@ -22,7 +22,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -79,7 +79,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (result.ExtractedOrderings, Is.Empty);
 
       var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
     }
 
     [Test]
@@ -131,7 +131,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var expectedItemSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (result.SqlTable),
           result.SqlTable.ItemType.GetProperty ("Key"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
     }
 
     [Test]
@@ -153,11 +153,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           new SqlTableReferenceExpression (result.SqlTable),
           result.SqlTable.ItemType.GetProperty ("Value"));
       var expectedOrdering1 = Expression.MakeMemberAccess (valueMemberAccess1, valueMemberAccess1.Type.GetProperty ("Key"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedOrdering1, result.ExtractedOrderings[0].Expression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedOrdering1, result.ExtractedOrderings[0].Expression);
       Assert.That (result.ExtractedOrderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Desc));
 
       var expectedOrdering2 = Expression.MakeMemberAccess (valueMemberAccess1, valueMemberAccess1.Type.GetProperty ("Value"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedOrdering2, result.ExtractedOrderings[1].Expression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedOrdering2, result.ExtractedOrderings[1].Expression);
       Assert.That (result.ExtractedOrderings[1].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
     }
 
@@ -191,7 +191,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Expect (mock => mock.PrepareSelectExpression (
               Arg<Expression>.Is.Anything, 
               Arg.Is (_context)))
-          .WhenCalled (mi => ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, (Expression) mi.Arguments[0]))
+          .WhenCalled (mi => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, (Expression) mi.Arguments[0]))
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 

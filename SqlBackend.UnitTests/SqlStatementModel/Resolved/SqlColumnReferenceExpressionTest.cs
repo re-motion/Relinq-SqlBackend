@@ -17,7 +17,7 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 
       var expectedResult = new SqlColumnReferenceExpression (typeof (char), "f", "test", false, _entityExpression);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedResult);
     }
 
     [Test]

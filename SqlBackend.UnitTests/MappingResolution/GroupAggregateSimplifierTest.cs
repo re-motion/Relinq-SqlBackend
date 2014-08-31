@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -258,7 +258,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                 typeof (int),
                 ((NamedExpression) _associatedGroupingSelectExpression.ElementExpression).Expression, 
                 AggregationModifier.Count);
-            ExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, (Expression) mi.Arguments[0]);
+            SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, (Expression) mi.Arguments[0]);
           });
       _stageMock.Replay();
 
@@ -272,7 +272,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           Is.SameAs (preparedResolvedAggregate));
 
       var expected = new SqlColumnDefinitionExpression (typeof (int), "q0", "a0", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -291,7 +291,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock.VerifyAllExpectations ();
 
       var expected = new SqlSubStatementExpression (_simplifiableResolvedSqlStatement);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
 
       Assert.That (_associatedGroupingSelectExpression.AggregationExpressions.Count, Is.EqualTo (0));
     }
@@ -334,7 +334,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedResult = Expression.Equal (
           _associatedGroupingSelectExpression.ElementExpression,
           _associatedGroupingSelectExpression.ElementExpression);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]

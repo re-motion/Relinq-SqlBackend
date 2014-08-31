@@ -18,7 +18,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
@@ -43,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var result = sqlCommandData.GetInMemoryProjection<int> ();
 
       var expectedExpression = Expression.Lambda<Func<IDatabaseResultRow, int>> (body, _rowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var result = sqlCommandData.GetInMemoryProjection<object> ();
 
       var expectedExpression = Expression.Lambda<Func<IDatabaseResultRow, object>> (Expression.Convert (body, typeof (object)), _rowParameter);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
   }
 }

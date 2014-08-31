@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -165,7 +165,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           binary, _resolverMock, _stageMock, _mappingResolutionContext, _generator, sqlStatementBuilder);
 
       var expected = Expression.Equal (fakeOptimizedRefIdentity, entity.GetIdentityExpression ());
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]

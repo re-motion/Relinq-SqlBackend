@@ -24,6 +24,7 @@ using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -719,7 +720,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitor.AddPreparedFromExpression (preparedFromExpressionInfo);
 
       var expectedCombinedWhereCondition = Expression.AndAlso (originalWhereCondition, whereCondition);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedCombinedWhereCondition, _visitor.SqlStatementBuilder.WhereCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedCombinedWhereCondition, _visitor.SqlStatementBuilder.WhereCondition);
     }
 
     [Test]

@@ -18,8 +18,8 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Rhino.Mocks;
 
@@ -128,9 +128,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       Assert.That (result.Cases, Has.Count.EqualTo (2));
       Assert.That (result.Cases[0].When, Is.SameAs (_predicate1));
       Assert.That (result.Cases[0].Then, Is.SameAs (_value1));
-      ExpressionTreeComparer.CheckAreEqualTrees (result.Cases[1].When, Expression.Not (_predicate1));
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result.Cases[1].When, Expression.Not (_predicate1));
       Assert.That (result.Cases[1].Then, Is.SameAs (_value2));
-      ExpressionTreeComparer.CheckAreEqualTrees (result.ElseCase, Expression.Constant (null, typeof (int?)));
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result.ElseCase, Expression.Constant (null, typeof (int?)));
     }
 
     [Test]

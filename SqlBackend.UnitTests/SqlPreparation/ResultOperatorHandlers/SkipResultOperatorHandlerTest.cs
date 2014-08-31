@@ -24,7 +24,7 @@ using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -89,7 +89,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
-          .WhenCalled (mi => ExpressionTreeComparer.CheckAreEqualTrees (expectedNewProjection, (Expression) mi.Arguments[0]))
+          .WhenCalled (mi => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNewProjection, (Expression) mi.Arguments[0]))
           .Return (fakePreparedProjection);
       _stageMock.Replay();
 
@@ -123,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
             var selectProjection = (NewExpression) mi.Arguments[0];
             var rowNumberExpression = (SqlRowNumberExpression) selectProjection.Arguments[1];
             var ordering = rowNumberExpression.Orderings[0];
-            ExpressionTreeComparer.CheckAreEqualTrees (ordering.Expression, Expression.Constant (1));
+            SqlExpressionTreeComparer.CheckAreEqualTrees (ordering.Expression, Expression.Constant (1));
           })
           .Return (fakePreparedProjection);
       _stageMock.Replay ();
@@ -187,7 +187,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var expectedSelectProjection = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), _tupleCtor.DeclaringType.GetProperty ("Key"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
     }
 
     [Test]
@@ -202,7 +202,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), 
           _tupleCtor.DeclaringType.GetProperty ("Value"));
       var expectedWhereCondition = Expression.GreaterThan (expectedRowNumberSelector, resultOperator.Count);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
     }
 
     [Test]
@@ -220,7 +220,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
       Assert.That (_sqlStatementBuilder.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.Orderings[0].Expression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.Orderings[0].Expression);
     }
 
     [Test]
@@ -247,7 +247,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
           _tupleCtor.DeclaringType.GetProperty ("Value"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.RowNumberSelector);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.RowNumberSelector);
     }
 
     [Test]
