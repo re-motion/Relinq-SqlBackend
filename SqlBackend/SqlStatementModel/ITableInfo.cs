@@ -22,6 +22,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="ITableInfo"/> represents the actual data in a <see cref="SqlTable"/>.
   /// </summary>
+  /// <remarks>This is the mutable part of the <see cref="SqlTable"/>. See <see cref="SqlTable.TableInfo"/>.</remarks>
   public interface ITableInfo
   {
     Type ItemType { get; }

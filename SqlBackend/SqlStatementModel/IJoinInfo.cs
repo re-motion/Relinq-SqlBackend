@@ -22,6 +22,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="IJoinInfo"/> defines the details about a <see cref="SqlJoinedTable"/>.
   /// </summary>
+  /// <remarks>This is the mutable part of the <see cref="SqlJoinedTable"/>. See <see cref="SqlJoinedTable.JoinInfo"/>.</remarks>
   public interface IJoinInfo
   {
     Type ItemType { get; }

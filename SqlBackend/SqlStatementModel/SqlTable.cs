@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
@@ -38,6 +39,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       _tableInfo = tableInfo;
     }
 
+    /// <remarks>The property is currently mutable because of a missing refactoring. It could be made immutable by using the 
+    /// <see cref="IMappingResolutionContext"/> to map <see cref="SqlTableReferenceExpression"/> instances pointing to old <see cref="SqlTableBase"/>
+    /// objects to those pointing to the new <see cref="SqlTableBase"/> instances.</remarks>
     public ITableInfo TableInfo
     {
       get { return _tableInfo; }
