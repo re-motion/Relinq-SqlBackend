@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
@@ -27,6 +28,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="SqlJoinedTable"/> represents a joined data source in a <see cref="SqlStatement"/>.
   /// </summary>
+  /// <remarks>
+  /// <see cref="SqlJoinedTable"/> implements <see cref="ITableInfo"/> because in 
+  /// <see cref="SqlPreparationFromExpressionVisitor.VisitMemberExpression"/>, a <see cref="SqlTable"/> is created that needs to preserve all 
+  /// information about a join (causes by a member access in a from expression). The <see cref="SqlJoinedTable"/> is used as an adapter between
+  /// <see cref="IJoinInfo"/> and <see cref="ITableInfo"/>. (Refactoring this is definitely possible, e.g., by writing a dedicated adapter class.)
+  /// </remarks>
   public class SqlJoinedTable : SqlTableBase, ITableInfo
   {
     private IJoinInfo _joinInfo;
