@@ -44,6 +44,13 @@
     <AssemblyOriginatorKeyFile>..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Remotion.Linq, Version=1.15.22.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha00001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.Development, Version=1.15.22.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Remotion.Linq.Development.2.0.0-alpha00001\lib\net45\Remotion.Linq.Development.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -91,14 +98,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Linq.Core.csproj">
-      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Development\Linq.Development.csproj">
-      <Project>{31A1AE30-079F-489E-9757-4EFB4C457E43}</Project>
-      <Name>Linq.Development</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SqlBackend\Linq.SqlBackend.csproj">
       <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
       <Name>Linq.SqlBackend</Name>

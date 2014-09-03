@@ -59,6 +59,10 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Linq, Version=1.15.22.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha00001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -553,10 +557,6 @@
     <Content Include="License.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Linq.Core.csproj">
-      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj">
       <Project>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</Project>
       <Name>Linq.IntegrationTests.Common</Name>
