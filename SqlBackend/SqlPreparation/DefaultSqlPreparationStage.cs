@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     public virtual FromExpressionInfo PrepareFromExpression (
         Expression fromExpression,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTableBase> tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator)
     {
       return SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           fromExpression, this, _uniqueIdentifierGenerator, _methodCallTransformerProvider, context, tableGenerator);

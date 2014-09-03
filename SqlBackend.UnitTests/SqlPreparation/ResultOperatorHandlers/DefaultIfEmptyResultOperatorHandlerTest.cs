@@ -62,14 +62,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (_sqlStatementBuilder.SqlTables[0], Is.TypeOf (typeof (SqlJoinedTable)));
       Assert.That (_sqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Left));
       
-      var joinInfo = (ResolvedJoinInfo)((SqlJoinedTable) _sqlStatementBuilder.SqlTables[0]).JoinInfo;
-      Assert.That (joinInfo, Is.TypeOf (typeof (ResolvedJoinInfo)));
-      Assert.That (joinInfo.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)), joinInfo.JoinCondition);
-      Assert.That (joinInfo.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo))); // moved to sub-statement
+      var tableInfo = _sqlStatementBuilder.SqlTables[0].TableInfo;
+      Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (_context.GetExpressionMapping (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).ItemExpression), Is.Not.Null);
     }
   }

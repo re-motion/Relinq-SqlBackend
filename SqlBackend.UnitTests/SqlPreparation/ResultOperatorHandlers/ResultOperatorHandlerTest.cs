@@ -59,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var originalStatement = _statementBuilder.GetSqlStatement ();
 
       var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
-      Func<ITableInfo, SqlTableBase> tableGenerator = info => new SqlTable (info, JoinSemantics.Inner);
+      Func<ITableInfo, SqlTable> tableGenerator = info => new SqlTable (info, JoinSemantics.Inner);
 
       _stageMock
           .Expect (mock => mock.PrepareFromExpression (
@@ -99,7 +99,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
@@ -117,7 +117,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
@@ -127,7 +127,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
       Assert.That (_statementBuilder.TopExpression, Is.Null);
       
-      var sqlTable = (SqlTable) _statementBuilder.SqlTables[0];
+      var sqlTable = _statementBuilder.SqlTables[0];
       Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
@@ -161,7 +161,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
@@ -171,7 +171,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
       Assert.That (_statementBuilder.GroupByExpression, Is.Null);
 
-      var sqlTable = (SqlTable) _statementBuilder.SqlTables[0];
+      var sqlTable = _statementBuilder.SqlTables[0];
       Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
@@ -185,7 +185,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
@@ -195,7 +195,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
       Assert.That (_statementBuilder.IsDistinctQuery, Is.False);
 
-      var sqlTable = (SqlTable) _statementBuilder.SqlTables[0];
+      var sqlTable = _statementBuilder.SqlTables[0];
       Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }

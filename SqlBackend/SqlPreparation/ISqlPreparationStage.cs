@@ -30,7 +30,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     Expression PrepareTopExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareOrderByExpression (Expression expression, ISqlPreparationContext context);
     Expression PrepareResultOperatorItemExpression (Expression expression, ISqlPreparationContext context);
-    FromExpressionInfo PrepareFromExpression (Expression fromExpression, ISqlPreparationContext context, Func<ITableInfo, SqlTableBase> tableGenerator);
+    FromExpressionInfo PrepareFromExpression (Expression fromExpression, ISqlPreparationContext context, Func<ITableInfo, SqlTable> tableGenerator);
     SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext);
   }
 }

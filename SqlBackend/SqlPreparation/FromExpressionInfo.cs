@@ -28,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public struct FromExpressionInfo
   {
-    public FromExpressionInfo (SqlTableBase sqlTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition)
+    public FromExpressionInfo (SqlTable sqlTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("extractedOrderings", extractedOrderings);
@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       WhereCondition = whereCondition;
     }
 
-    public readonly SqlTableBase SqlTable;
+    public readonly SqlTable SqlTable;
     public readonly ReadOnlyCollection<Ordering> ExtractedOrderings;
     public readonly Expression ItemSelector;
     public readonly Expression WhereCondition;

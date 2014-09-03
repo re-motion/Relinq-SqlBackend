@@ -78,18 +78,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       // from c in r.Cooks => MemberExpression (QSRExpression (r), "Cooks") => Join: sqlTable.Cooks
 
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (memberInfo.DeclaringType);
       var memberExpression = Expression.MakeMemberAccess (Expression.Constant (new Restaurant()), memberInfo);
 
       var result = SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
           memberExpression, _stageMock, _generator, _methodCallTransformerProvider, _context, info => new SqlTable (info, JoinSemantics.Inner));
 
-      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
-      Assert.That (((SqlTable) result.SqlTable).TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (sqlTable.JoinedTables.ToArray().Contains (result.SqlTable), Is.False);
-      Assert.That (((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.SqlTable.TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
+      Assert.That (((SqlJoinedTable) result.SqlTable.TableInfo).JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
 
-      var joinInfo = ((SqlJoinedTable) ((SqlTable) result.SqlTable).TableInfo).JoinInfo;
+      var joinInfo = ((SqlJoinedTable) result.SqlTable.TableInfo).JoinInfo;
 
       Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
 

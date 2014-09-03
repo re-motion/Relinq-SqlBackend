@@ -59,11 +59,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       _mapping[original] = replacement;
     }
 
-    public void AddSqlTable (SqlTableBase sqlTableBase)
+    public void AddSqlTable (SqlTable sqlTable)
     {
-      ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      _sqlStatementBuilder.SqlTables.Add (sqlTableBase);
+      _sqlStatementBuilder.SqlTables.Add (sqlTable);
     }
 
     public Expression GetExpressionMapping (Expression original)

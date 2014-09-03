@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       _context = context;
     }
 
-    public FromExpressionInfo CreateSqlTableForStatement (SqlStatement sqlStatement, Func<ITableInfo, SqlTableBase> tableCreator)
+    public FromExpressionInfo CreateSqlTableForStatement (SqlStatement sqlStatement, Func<ITableInfo, SqlTable> tableCreator)
     {
       if (sqlStatement.Orderings.Count == 0)
       {
@@ -76,10 +76,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return preparedTupleExpression;
     }
 
-    private SqlTableBase CreateSqlCompatibleSubStatementTable (
+    private SqlTable CreateSqlCompatibleSubStatementTable (
         SqlStatement originalStatement, 
         Expression newSelectProjection, 
-        Func<ITableInfo, SqlTableBase> tableCreator)
+        Func<ITableInfo, SqlTable> tableCreator)
     {
       // create a new statement equal to the original one, but with the tuple as its select projection
       var builder = new SqlStatementBuilder (originalStatement) { SelectProjection = newSelectProjection };
@@ -96,9 +96,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return tableCreator (subStatementTableInfo);
     }
 
-    private FromExpressionInfo GetFromExpressionInfoForSubStatement (SqlStatement originalSqlStatement, SqlTableBase tableWithSubStatement)
+    private FromExpressionInfo GetFromExpressionInfoForSubStatement (SqlStatement originalSqlStatement, SqlTable tableWithSubStatement)
     {
-      var expressionsFromSubStatement = TupleExpressionBuilder.GetExpressionsFromTuple (new SqlTableReferenceExpression (tableWithSubStatement));
+      var expressionsFromSubStatement = 
+          TupleExpressionBuilder.GetExpressionsFromTuple (new SqlTableReferenceExpression (tableWithSubStatement)).ToArray();
 
       var projectionFromSubStatement = expressionsFromSubStatement.First (); // this was the original projection
       var orderingsFromSubStatement = expressionsFromSubStatement

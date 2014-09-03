@@ -39,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         UniqueIdentifierGenerator generator,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTableBase> tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -60,14 +60,14 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     }
 
     private readonly UniqueIdentifierGenerator _generator;
-    private readonly Func<ITableInfo, SqlTableBase> _tableGenerator;
+    private readonly Func<ITableInfo, SqlTable> _tableGenerator;
 
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTableBase> tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator)
         : base (context, stage, provider)
     {
       _generator = generator;
@@ -82,7 +82,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       get { return _generator; }
     }
 
-    public Func<ITableInfo, SqlTableBase> TableGenerator
+    public Func<ITableInfo, SqlTable> TableGenerator
     {
       get { return _tableGenerator; }
     }

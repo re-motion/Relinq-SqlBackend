@@ -110,7 +110,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo);
       _stageMock
           .Expect (mock => mock.PrepareWhereExpression (

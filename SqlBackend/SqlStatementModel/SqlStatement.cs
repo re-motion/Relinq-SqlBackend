@@ -35,7 +35,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   {
     private readonly IStreamedDataInfo _dataInfo;
     private readonly Expression _selectProjection;
-    private readonly SqlTableBase[] _sqlTables;
+    private readonly SqlTable[] _sqlTables;
     private readonly Expression _groupByExpression;
     private readonly Ordering[] _orderings;
     private readonly Expression _whereCondition;
@@ -47,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public SqlStatement (
         IStreamedDataInfo dataInfo,
         Expression selectProjection,
-        IEnumerable<SqlTableBase> sqlTables,
+        IEnumerable<SqlTable> sqlTables,
         Expression whereCondition,
         Expression groupByExpression,
         IEnumerable<Ordering> orderings,
@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _selectProjection; }
     }
 
-    public ReadOnlyCollection<SqlTableBase> SqlTables
+    public ReadOnlyCollection<SqlTable> SqlTables
     {
       get { return Array.AsReadOnly (_sqlTables); }
     }

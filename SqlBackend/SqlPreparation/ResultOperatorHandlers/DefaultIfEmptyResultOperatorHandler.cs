@@ -16,11 +16,8 @@
 // 
 
 using System;
-using System.Linq.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -44,15 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      MoveCurrentStatementToSqlTable (
-          sqlStatementBuilder,
-          generator,
-          context,
-          info =>
-          new SqlJoinedTable (
-              new ResolvedJoinInfo ((IResolvedTableInfo) info, Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1))),
-              JoinSemantics.Left),
-          stage);
+      MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Left), stage);
     }
   }
 }

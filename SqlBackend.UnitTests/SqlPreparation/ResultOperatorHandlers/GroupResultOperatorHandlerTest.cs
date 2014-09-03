@@ -112,7 +112,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Return (elementSelector);
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo)
           .WhenCalled (mi =>
           {
@@ -155,7 +155,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Return (elementSelector);
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo)
           .WhenCalled (
               mi =>
@@ -200,7 +200,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Return (elementSelector);
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTableBase>>.Is.Anything))
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
           .Return (fakeFromExpressionInfo)
           .WhenCalled (
               mi =>

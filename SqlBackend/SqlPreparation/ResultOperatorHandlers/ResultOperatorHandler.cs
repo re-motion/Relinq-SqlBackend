@@ -80,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         SqlStatementBuilder sqlStatementBuilder,
         UniqueIdentifierGenerator generator,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTableBase> tableGenerator,
+        Func<ITableInfo, SqlTable> tableGenerator,
         ISqlPreparationStage stage)
     {
       // Ensure that select clause is named - usually SqlPreparationQueryModelVisitor would do this, but it hasn't done it yet

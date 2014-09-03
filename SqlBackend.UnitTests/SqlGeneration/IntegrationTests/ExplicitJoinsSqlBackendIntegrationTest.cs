@@ -230,10 +230,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           "SELECT [q1].[Name] AS [value] FROM [KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t4] ON ([t2].[ID] = [t4].[KitchenID]) "
           + "CROSS APPLY (SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],"
           + "[q0].[KitchenID],[q0].[KnifeID],[q0].[KnifeClassID] " 
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY "
           + "(SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
           + "[t3].[KnifeID],[t3].[KnifeClassID] "
-          + "FROM [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID])) AS [q0] ON (1 = 1)) AS [q1]");
+          + "FROM [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID])) AS [q0]) AS [q1]");
     }
 
     [Test]

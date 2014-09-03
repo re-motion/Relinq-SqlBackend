@@ -106,12 +106,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return newSqlGroupingSelectExpression;
     }
 
-    public void AddSqlTable (SqlTableBase sqlTableBase, SqlStatementBuilder sqlStatementBuilder)
+    public void AddSqlTable (SqlTable sqlTable, SqlStatementBuilder sqlStatementBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlTableBase", sqlTableBase);
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
 
-      sqlStatementBuilder.SqlTables.Add (sqlTableBase);
+      sqlStatementBuilder.SqlTables.Add (sqlTable);
     }
 
     public Expression RemoveNamesAndUpdateMapping (Expression expression)

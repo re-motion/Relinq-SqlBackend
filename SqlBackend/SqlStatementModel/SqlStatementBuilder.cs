@@ -69,7 +69,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       set { _valueHolder.SelectProjection = value; }
     }
 
-    public List<SqlTableBase> SqlTables
+    public List<SqlTable> SqlTables
     {
       get { return _valueHolder.SqlTables; }
     }
@@ -183,7 +183,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       public ValueHolder ()
       {
-        SqlTables = new List<SqlTableBase>();
+        SqlTables = new List<SqlTable>();
         Orderings = new List<Ordering>();
       }
 
@@ -198,7 +198,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         RowNumberSelector = sqlStatement.RowNumberSelector;
         CurrentRowNumberOffset = sqlStatement.CurrentRowNumberOffset;
 
-        SqlTables = new List<SqlTableBase> (sqlStatement.SqlTables);
+        SqlTables = new List<SqlTable> (sqlStatement.SqlTables);
         Orderings = new List<Ordering> (sqlStatement.Orderings);
       }
 
@@ -206,7 +206,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       public bool IsDistinctQuery { get; set; }
       public Expression TopExpression { get; set; }
       public Expression SelectProjection { get; set; }
-      public List<SqlTableBase> SqlTables { get; private set; }
+      public List<SqlTable> SqlTables { get; private set; }
       public Expression WhereCondition { get; set; }
       public Expression GroupByExpression { get; set; }
       public List<Ordering> Orderings { get; private set; }
