@@ -736,7 +736,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var sqlTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Left);
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant (10);
@@ -745,8 +746,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
-          new[] { sqlTable },
+          true,
+          new[] { sqlTable1, sqlTable2 },
           whereCondition,
           groupExpression,
           new[] { ordering },
@@ -757,7 +758,35 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       var result = sqlStatement.ToString();
 
-      Assert.That (result, Is.EqualTo ("SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
+      Assert.That (
+          result,
+          Is.EqualTo (
+              "SELECT DISTINCT TOP (10) 1 FROM (ALWAYS OUTER) [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
+    }
+
+    [Test]
+    public void ToString_SingleTable_NoAlwaysUseOuterJoinSemantics ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+
+      var sqlStatement = new SqlStatement (
+          dataInfo,
+          selectProjection,
+          false,
+          new[] { sqlTable },
+          null,
+          null,
+          new Ordering[0],
+          null,
+          false,
+          null,
+          null);
+
+      var result = sqlStatement.ToString ();
+
+      Assert.That (result, Is.EqualTo ("SELECT 1 FROM [CookTable] [c]"));
     }
 
     [Test]

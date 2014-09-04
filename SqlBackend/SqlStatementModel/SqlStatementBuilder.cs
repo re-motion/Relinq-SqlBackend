@@ -134,7 +134,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       if (SqlTables.Count > 0)
       {
         sb.Append (" FROM ");
-        SqlTables.Aggregate (sb, (builder, table) => builder.Append (table));
+        if (AlwaysUseOuterJoinSemantics)
+          sb.Append ("(ALWAYS OUTER) ");
+        sb.Append (SqlTables.First());
+        SqlTables.Skip (1).Aggregate (sb, (builder, table) => builder.Append (", ").Append (table));
       }
       if (WhereCondition != null)
         sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));

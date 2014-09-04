@@ -322,27 +322,52 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var sqlTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Left);
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant (10);
       var groupExpression = Expression.Constant ("group");
 
       var builder = new SqlStatementBuilder
+                    {
+                        DataInfo = dataInfo,
+                        SelectProjection = selectProjection,
+                        AlwaysUseOuterJoinSemantics = true,
+                        SqlTables = { sqlTable1, sqlTable2 },
+                        Orderings = { ordering },
+                        WhereCondition = whereCondition,
+                        TopExpression = topExpression,
+                        IsDistinctQuery = true,
+                        GroupByExpression = groupExpression
+                    };
+
+      var result = builder.ToString();
+
+      Assert.That (
+          result,
+          Is.EqualTo (
+              "SELECT DISTINCT TOP (10) 1 FROM (ALWAYS OUTER) [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
+    }
+
+    [Test]
+    public void ToString_SingleTable_NoAlwaysUseOuterJoinSemantics ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (int));
+      var selectProjection = Expression.Constant (1);
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+
+      var builder = new SqlStatementBuilder
       {
         DataInfo = dataInfo,
         SelectProjection = selectProjection,
+        AlwaysUseOuterJoinSemantics = false,
         SqlTables = { sqlTable },
-        Orderings = { ordering },
-        WhereCondition = whereCondition,
-        TopExpression = topExpression,
-        IsDistinctQuery = true,
-        GroupByExpression = groupExpression
       };
 
       var result = builder.ToString ();
 
-      Assert.That (result, Is.EqualTo ("SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
+      Assert.That (result, Is.EqualTo ("SELECT 1 FROM [CookTable] [c]"));
     }
 
     [Test]
