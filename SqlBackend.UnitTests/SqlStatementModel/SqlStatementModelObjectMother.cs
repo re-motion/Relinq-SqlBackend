@@ -46,7 +46,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           selectProjection,
-          sqlTables, null, null, new Ordering[] { }, null, false, null, null);
+          false,
+          sqlTables,
+          null,
+          null,
+          new Ordering[] { },
+          null,
+          false,
+          null,
+          null);
     }
 
     public static SqlStatement CreateSqlStatementWithCook ()
@@ -55,7 +63,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           new SqlTableReferenceExpression (sqlTable),
-          new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
+          false,
+          new[] { sqlTable },
+          null,
+          null,
+          new Ordering[] { },
+          null,
+          false,
+          null,
+          null);
     }
 
     public static SqlStatement CreateSqlStatement ()
@@ -64,7 +80,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0, typeof (int))),
           new SqlTableReferenceExpression (sqlTable),
-          new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
+          false,
+          new[] { sqlTable },
+          null,
+          null,
+          new Ordering[] { },
+          null,
+          false,
+          null,
+          null);
     }
 
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
@@ -72,21 +96,34 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlTable = CreateSqlTable_WithResolvedTableInfo (type);
       return new SqlStatement (
           new StreamedSequenceInfo (
-              typeof (IQueryable<>).MakeGenericType (type), 
+              typeof (IQueryable<>).MakeGenericType (type),
               Expression.Constant (type.IsValueType ? Activator.CreateInstance (type) : null, type)),
           CreateSqlEntityDefinitionExpression (type),
-          new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
+          false,
+          new[] { sqlTable },
+          null,
+          null,
+          new Ordering[] { },
+          null,
+          false,
+          null,
+          null);
     }
 
     public static SqlStatement CreateSqlStatement_Single ()
     {
-      var selectProjection = Expression.Constant (0);
-      return new SqlStatementBuilder
-      {
-        DataInfo = new StreamedSingleValueInfo (selectProjection.Type, false),
-        SelectProjection = selectProjection,
-        TopExpression = new SqlLiteralExpression (1)
-      }.GetSqlStatement ();
+      return new SqlStatement (
+          new StreamedSingleValueInfo (typeof (int), false),
+          Expression.Constant (0),
+          false,
+          new SqlTable[0],
+          null,
+          null,
+          new Ordering[0],
+          new SqlLiteralExpression (1),
+          false,
+          null,
+          null);
     }
 
     public static SqlStatement CreateSqlStatement_Scalar ()

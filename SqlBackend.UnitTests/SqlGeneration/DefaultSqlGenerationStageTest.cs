@@ -54,7 +54,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           });
 
       _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)), _entityExpression, new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
+          new TestStreamedValueInfo (typeof (int)),
+          _entityExpression,
+          false,
+          new[] { sqlTable },
+          null,
+          null,
+          new Ordering[] { },
+          null,
+          false,
+          null,
+          null);
       _commandBuilder = new SqlCommandBuilder();
 
       _stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
@@ -114,24 +124,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void GenerateTextForWhereExpression ()
     {
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new SqlTable[] { },
-          Expression.AndAlso (Expression.Constant (true), Expression.Constant (true)),
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
+      var whereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
 
       _stageMock
-          .Expect (mock => CallGenerateTextForNonSelectExpression (mock, sqlStatement.WhereCondition))
+          .Expect (mock => CallGenerateTextForNonSelectExpression (mock, whereCondition))
           .WhenCalled (c => _commandBuilder.Append ("test"));
       _stageMock.Replay();
 
-      _stageMock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition);
+      _stageMock.GenerateTextForWhereExpression (_commandBuilder, whereCondition);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));

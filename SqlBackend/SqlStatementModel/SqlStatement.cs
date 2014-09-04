@@ -35,6 +35,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   {
     private readonly IStreamedDataInfo _dataInfo;
     private readonly Expression _selectProjection;
+    private readonly bool _alwaysUseOuterJoinSemantics;
     private readonly SqlTable[] _sqlTables;
     private readonly Expression _groupByExpression;
     private readonly Ordering[] _orderings;
@@ -47,6 +48,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public SqlStatement (
         IStreamedDataInfo dataInfo,
         Expression selectProjection,
+        bool alwaysUseOuterJoinSemantics,
         IEnumerable<SqlTable> sqlTables,
         Expression whereCondition,
         Expression groupByExpression,
@@ -66,6 +68,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       _dataInfo = dataInfo;
       _selectProjection = selectProjection;
+      _alwaysUseOuterJoinSemantics = alwaysUseOuterJoinSemantics;
       _sqlTables = sqlTables.ToArray();
       _orderings = orderings.ToArray();
       _whereCondition = whereCondition;
@@ -94,6 +97,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public Expression SelectProjection
     {
       get { return _selectProjection; }
+    }
+
+    public bool AlwaysUseOuterJoinSemantics
+    {
+      get { return _alwaysUseOuterJoinSemantics; }
     }
 
     public ReadOnlyCollection<SqlTable> SqlTables
@@ -139,6 +147,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       return (_dataInfo.Equals (statement._dataInfo))
              && (_selectProjection == statement._selectProjection)
+             && (_alwaysUseOuterJoinSemantics == statement._alwaysUseOuterJoinSemantics)
              && (_whereCondition == statement._whereCondition)
              && (_topExpression == statement._topExpression)
              && (_isDistinctQuery == statement._isDistinctQuery)
@@ -154,6 +163,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return EqualityUtility.GetRotatedHashCode (
           _dataInfo,
           _selectProjection,
+          _alwaysUseOuterJoinSemantics,
           _whereCondition,
           _topExpression,
           _isDistinctQuery,

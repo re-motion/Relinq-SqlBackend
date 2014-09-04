@@ -19,8 +19,10 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -42,32 +44,62 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void Initialization_WithExistingSqlStatement ()
     {
+      var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
       var selectProjection = Expression.Constant ("select");
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant ("top");
+      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
       var rowNumberSelector = Expression.Constant("selector");
       var currentRowNumberOffset = Expression.Constant(1);
       var groupExpression = Expression.Constant ("group");
-      
+
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           selectProjection,
-          new [] { sqlTable }, whereCondition, groupExpression, new [] { ordering }, topExpression, false, rowNumberSelector, currentRowNumberOffset);
+          alwaysUseOuterJoinSemantics,
+          new[] { sqlTable },
+          whereCondition,
+          groupExpression,
+          new[] { ordering },
+          topExpression,
+          isDistinctQuery,
+          rowNumberSelector,
+          currentRowNumberOffset);
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
       Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
+      Assert.That (testedBuilder.AlwaysUseOuterJoinSemantics, Is.EqualTo (alwaysUseOuterJoinSemantics));
       Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
       Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
-      Assert.That (testedBuilder.IsDistinctQuery, Is.False);
+      Assert.That (testedBuilder.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
       Assert.That (testedBuilder.RowNumberSelector, Is.SameAs (sqlStatement.RowNumberSelector));
       Assert.That (testedBuilder.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
       Assert.That (testedBuilder.GroupByExpression, Is.SameAs (groupExpression));
+    }
+
+    [Test]
+    public void Initialization_WithDefaultValues ()
+    {
+      var statementBuilder = new SqlStatementBuilder();
+
+      Assert.That (statementBuilder.DataInfo, Is.Null);
+      Assert.That (statementBuilder.TopExpression, Is.Null);
+      Assert.That (statementBuilder.IsDistinctQuery, Is.False);
+      Assert.That (statementBuilder.SelectProjection, Is.Null);
+      Assert.That (statementBuilder.AlwaysUseOuterJoinSemantics, Is.False);
+      Assert.That (statementBuilder.SqlTables, Is.Empty);
+      Assert.That (statementBuilder.Orderings, Is.Empty);
+      Assert.That (statementBuilder.WhereCondition, Is.Null);
+      Assert.That (statementBuilder.RowNumberSelector, Is.Null);
+      Assert.That (statementBuilder.CurrentRowNumberOffset, Is.Null);
+      Assert.That (statementBuilder.GroupByExpression, Is.Null);
+
     }
 
     [Test]
@@ -102,6 +134,88 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     }
 
     [Test]
+    public void GetSqlStatement_CheckProperties ()
+    {
+      var dataInfo = new TestStreamedValueInfo (typeof (Cook));
+      var topExpression = ExpressionHelper.CreateExpression();
+      var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
+      var selectProjection = new AggregationExpression (typeof (int), Expression.Constant (1), AggregationModifier.Min);
+      var whereCondition = Expression.Constant (true);
+      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
+      var rowNumberSelector = Expression.Constant ("selector");
+      var currentRowNumberOffset = Expression.Constant (1);
+      var groupExpression = Expression.Constant ("group");
+
+      var statementBuilder = new SqlStatementBuilder
+                             {
+                                 DataInfo = dataInfo,
+                                 TopExpression = topExpression,
+                                 IsDistinctQuery = isDistinctQuery,
+                                 SelectProjection = selectProjection,
+                                 SqlTables = { sqlTable },
+                                 AlwaysUseOuterJoinSemantics = alwaysUseOuterJoinSemantics,
+                                 WhereCondition = whereCondition,
+                                 RowNumberSelector = rowNumberSelector,
+                                 CurrentRowNumberOffset = currentRowNumberOffset,
+                                 GroupByExpression = groupExpression,
+                                 Orderings = { ordering }
+                             };
+
+      var sqlStatement = statementBuilder.GetSqlStatement();
+
+      Assert.That (sqlStatement.DataInfo, Is.SameAs (dataInfo));
+      Assert.That (sqlStatement.TopExpression, Is.SameAs (topExpression));
+      Assert.That (sqlStatement.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
+      Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
+      Assert.That (sqlStatement.AlwaysUseOuterJoinSemantics, Is.EqualTo (alwaysUseOuterJoinSemantics));
+      Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
+      Assert.That (sqlStatement.WhereCondition, Is.SameAs (whereCondition));
+      Assert.That (sqlStatement.RowNumberSelector, Is.SameAs (rowNumberSelector));
+      Assert.That (sqlStatement.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
+      Assert.That (sqlStatement.GroupByExpression, Is.SameAs (groupExpression));
+    }
+
+    [Test]
+    public void GetStatementAndResetBuilder ()
+    {
+      var statementBuilder = new SqlStatementBuilder
+                             {
+                                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
+                                 TopExpression =  ExpressionHelper.CreateExpression(),
+                                 IsDistinctQuery = true,
+                                 SelectProjection = new AggregationExpression(typeof(int), Expression.Constant (1),AggregationModifier.Min),
+                                 SqlTables = { new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner) },
+                                 AlwaysUseOuterJoinSemantics = true,
+                                 WhereCondition = Expression.Constant (true),
+                                 RowNumberSelector = Expression.Constant ("selector"),
+                                 CurrentRowNumberOffset = Expression.Constant (1),
+                                 GroupByExpression = Expression.Constant ("group"),
+                                 Orderings = { new Ordering (Expression.Constant ("order"), OrderingDirection.Desc) }
+                             };
+      var sqlStatement = statementBuilder.GetSqlStatement();
+
+      var result = statementBuilder.GetStatementAndResetBuilder();
+
+      Assert.That (result, Is.Not.SameAs (sqlStatement));
+      Assert.That (result, Is.EqualTo (sqlStatement));
+
+      Assert.That (statementBuilder.DataInfo, Is.Null);
+      Assert.That (statementBuilder.TopExpression, Is.Null);
+      Assert.That (statementBuilder.IsDistinctQuery, Is.False);
+      Assert.That (statementBuilder.SelectProjection, Is.Null);
+      Assert.That (statementBuilder.AlwaysUseOuterJoinSemantics, Is.False);
+      Assert.That (statementBuilder.SqlTables, Is.Empty);
+      Assert.That (statementBuilder.Orderings, Is.Empty);
+      Assert.That (statementBuilder.WhereCondition, Is.Null);
+      Assert.That (statementBuilder.RowNumberSelector, Is.Null);
+      Assert.That (statementBuilder.CurrentRowNumberOffset, Is.Null);
+      Assert.That (statementBuilder.GroupByExpression, Is.Null);
+    }
+
+    [Test]
     public void AddWhereCondition_SingleWhereCondition ()
     {
       var expression = Expression.Constant ("whereTest");
@@ -121,64 +235,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (((BinaryExpression) _statementBuilder.WhereCondition).Left, Is.EqualTo (expression1));
       Assert.That (((BinaryExpression) _statementBuilder.WhereCondition).Right, Is.EqualTo (expression2));
       Assert.That (_statementBuilder.WhereCondition.NodeType, Is.EqualTo (ExpressionType.AndAlso));
-    }
-
-    [Test]
-    public void GetSqlStatement_CheckProperties ()
-    {
-      var selectProjection = new AggregationExpression(typeof(int), Expression.Constant (1),AggregationModifier.Min);
-      var whereCondition = Expression.Constant (true);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
-      var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
-      var rowNumberSelector = Expression.Constant ("selector");
-      var currentRowNumberOffset = Expression.Constant (1);
-      var groupExpression = Expression.Constant ("group");
-
-      var statementBuilder = new SqlStatementBuilder
-                             {
-                                 DataInfo = new TestStreamedValueInfo (typeof (Cook)),
-                                 SelectProjection = selectProjection,
-                                 WhereCondition = whereCondition,
-                                 TopExpression = null,
-                                 IsDistinctQuery = false,
-                                 RowNumberSelector = rowNumberSelector,
-                                 CurrentRowNumberOffset = currentRowNumberOffset,
-                                 GroupByExpression = groupExpression
-                             };
-      statementBuilder.SqlTables.Add (sqlTable);
-      statementBuilder.Orderings.Add (ordering);
-
-      var sqlStatement = statementBuilder.GetSqlStatement();
-
-      Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (sqlStatement.TopExpression, Is.Null);
-      Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
-      Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
-      Assert.That (sqlStatement.WhereCondition, Is.SameAs(whereCondition));
-      Assert.That (sqlStatement.IsDistinctQuery, Is.False);
-      Assert.That (((AggregationExpression) sqlStatement.SelectProjection).AggregationModifier, Is.EqualTo(AggregationModifier.Min));
-      Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo(typeof(int)));
-      Assert.That (sqlStatement.DataInfo, Is.TypeOf (typeof (TestStreamedValueInfo)));
-      Assert.That (sqlStatement.RowNumberSelector, Is.SameAs (rowNumberSelector));
-      Assert.That (sqlStatement.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
-      Assert.That (sqlStatement.GroupByExpression, Is.SameAs (groupExpression));
-    }
-
-    [Test]
-    public void GetStatementAndResetBuilder ()
-    {
-      var selectProjection = new AggregationExpression(typeof(int), Expression.Constant ("select"),AggregationModifier.Count);
-      var originalBuilder = new SqlStatementBuilder
-                            {
-                                DataInfo = new TestStreamedValueInfo (typeof (Cook)),
-                                SelectProjection = selectProjection,
-                                IsDistinctQuery = true
-                            };
-      var sqlStatement = originalBuilder.GetSqlStatement();
-
-      var result = originalBuilder.GetStatementAndResetBuilder();
-
-      Assert.That (result, Is.Not.SameAs (sqlStatement));
     }
 
     [Test]
