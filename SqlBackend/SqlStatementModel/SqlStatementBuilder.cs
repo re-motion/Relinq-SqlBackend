@@ -29,88 +29,57 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="SqlStatementBuilder"/> holds the specific SQL statement data and populates a build method.
   /// </summary>
-  public class SqlStatementBuilder
+  public sealed class SqlStatementBuilder
   {
-    private ValueHolder _valueHolder;
+    public IStreamedDataInfo DataInfo { get; set; }
+    public bool IsDistinctQuery { get; set; }
+    public Expression TopExpression { get; set; }
+    public Expression SelectProjection { get; set; }
+    public List<SqlTable> SqlTables { get; private set; }
+    public Expression WhereCondition { get; set; }
+    public Expression GroupByExpression { get; set; }
+    public List<Ordering> Orderings { get; private set; }
+    public Expression RowNumberSelector { get; set; }
+    public Expression CurrentRowNumberOffset { get; set; }
 
     public SqlStatementBuilder ()
     {
-      _valueHolder = new ValueHolder();
+      Reset();
     }
 
     public SqlStatementBuilder (SqlStatement sqlStatement)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      _valueHolder = new ValueHolder (sqlStatement);
-    }
+      DataInfo = sqlStatement.DataInfo;
+      SelectProjection = sqlStatement.SelectProjection;
+      WhereCondition = sqlStatement.WhereCondition;
+      IsDistinctQuery = sqlStatement.IsDistinctQuery;
+      TopExpression = sqlStatement.TopExpression;
+      GroupByExpression = sqlStatement.GroupByExpression;
+      RowNumberSelector = sqlStatement.RowNumberSelector;
+      CurrentRowNumberOffset = sqlStatement.CurrentRowNumberOffset;
 
-    public IStreamedDataInfo DataInfo
-    {
-      get { return _valueHolder.DataInfo; }
-      set { _valueHolder.DataInfo = value; }
-    }
-
-    public bool IsDistinctQuery
-    {
-      get { return _valueHolder.IsDistinctQuery; }
-      set { _valueHolder.IsDistinctQuery = value; }
-    }
-
-    public Expression TopExpression
-    {
-      get { return _valueHolder.TopExpression; }
-      set { _valueHolder.TopExpression = value; }
-    }
-
-    public Expression SelectProjection
-    {
-      get { return _valueHolder.SelectProjection; }
-      set { _valueHolder.SelectProjection = value; }
-    }
-
-    public List<SqlTable> SqlTables
-    {
-      get { return _valueHolder.SqlTables; }
-    }
-
-    public Expression WhereCondition
-    {
-      get { return _valueHolder.WhereCondition; }
-      set { _valueHolder.WhereCondition = value; }
-    }
-
-    public Expression GroupByExpression
-    {
-      get { return _valueHolder.GroupByExpression; }
-      set { _valueHolder.GroupByExpression = value; }
-    }
-
-    public List<Ordering> Orderings
-    {
-      get { return _valueHolder.Orderings; }
-    }
-
-    public Expression RowNumberSelector
-    {
-      get { return _valueHolder.RowNumberSelector; }
-      set { _valueHolder.RowNumberSelector = value; }
-    }
-
-    public Expression CurrentRowNumberOffset
-    {
-      get { return _valueHolder.CurrentRowNumberOffset; }
-      set { _valueHolder.CurrentRowNumberOffset = value; }
+      SqlTables = new List<SqlTable> (sqlStatement.SqlTables);
+      Orderings = new List<Ordering> (sqlStatement.Orderings);
     }
 
     public SqlStatement GetSqlStatement ()
     {
       if (DataInfo == null)
         throw new InvalidOperationException ("A DataInfo must be set before the SqlStatement can be retrieved.");
+
       return new SqlStatement (
           DataInfo,
           SelectProjection,
-          SqlTables, WhereCondition, GroupByExpression, Orderings, TopExpression, IsDistinctQuery, RowNumberSelector, CurrentRowNumberOffset);
+          SqlTables,
+          WhereCondition,
+          GroupByExpression,
+          Orderings,
+          TopExpression,
+          IsDistinctQuery,
+          RowNumberSelector,
+          CurrentRowNumberOffset);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -124,7 +93,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public SqlStatement GetStatementAndResetBuilder ()
     {
       var sqlSubStatement = GetSqlStatement();
-      _valueHolder = new ValueHolder();
+
+      Reset();
+
       return sqlSubStatement;
     }
 
@@ -166,6 +137,21 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return sb.ToString();
     }
 
+    private void Reset ()
+    {
+      DataInfo = null;
+      SelectProjection = null;
+      WhereCondition = null;
+      IsDistinctQuery = false;
+      TopExpression = null;
+      GroupByExpression = null;
+      RowNumberSelector = null;
+      CurrentRowNumberOffset = null;
+
+      SqlTables = new List<SqlTable>();
+      Orderings = new List<Ordering>();
+    }
+
     private IStreamedDataInfo GetNewDataInfo ()
     {
       var sequenceInfo = DataInfo as StreamedSequenceInfo;
@@ -177,41 +163,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         return new StreamedSingleValueInfo (SelectProjection.Type, singleValueInfo.ReturnDefaultWhenEmpty);
 
       return DataInfo;
-    }
-
-    private class ValueHolder
-    {
-      public ValueHolder ()
-      {
-        SqlTables = new List<SqlTable>();
-        Orderings = new List<Ordering>();
-      }
-
-      public ValueHolder (SqlStatement sqlStatement)
-      {
-        DataInfo = sqlStatement.DataInfo;
-        SelectProjection = sqlStatement.SelectProjection;
-        WhereCondition = sqlStatement.WhereCondition;
-        IsDistinctQuery = sqlStatement.IsDistinctQuery;
-        TopExpression = sqlStatement.TopExpression;
-        GroupByExpression = sqlStatement.GroupByExpression;
-        RowNumberSelector = sqlStatement.RowNumberSelector;
-        CurrentRowNumberOffset = sqlStatement.CurrentRowNumberOffset;
-
-        SqlTables = new List<SqlTable> (sqlStatement.SqlTables);
-        Orderings = new List<Ordering> (sqlStatement.Orderings);
-      }
-
-      public IStreamedDataInfo DataInfo { get; set; }
-      public bool IsDistinctQuery { get; set; }
-      public Expression TopExpression { get; set; }
-      public Expression SelectProjection { get; set; }
-      public List<SqlTable> SqlTables { get; private set; }
-      public Expression WhereCondition { get; set; }
-      public Expression GroupByExpression { get; set; }
-      public List<Ordering> Orderings { get; private set; }
-      public Expression RowNumberSelector { get; set; }
-      public Expression CurrentRowNumberOffset { get; set; }
     }
   }
 }
