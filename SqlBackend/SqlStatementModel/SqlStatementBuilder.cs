@@ -71,6 +71,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       if (DataInfo == null)
         throw new InvalidOperationException ("A DataInfo must be set before the SqlStatement can be retrieved.");
 
+      if (SelectProjection == null)
+        throw new InvalidOperationException ("A SelectProjection must be set before the SqlStatement can be retrieved.");
+
+
       return new SqlStatement (
           DataInfo,
           SelectProjection,
@@ -105,7 +109,17 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public void RecalculateDataInfo (Expression previousSelectProjection)
     {
       if (SelectProjection.Type != previousSelectProjection.Type) // TODO: Consider removing this check and the parameter
-        DataInfo = GetNewDataInfo();
+      {
+        var sequenceInfo = DataInfo as StreamedSequenceInfo;
+        if (sequenceInfo != null)
+          DataInfo = new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (SelectProjection.Type), SelectProjection);
+
+        var singleValueInfo = DataInfo as StreamedSingleValueInfo;
+        if (singleValueInfo != null)
+          DataInfo = new StreamedSingleValueInfo (SelectProjection.Type, singleValueInfo.ReturnDefaultWhenEmpty);
+
+        // For scalar queries, the DataInfo never needs to be recalculated.
+      }
     }
 
     public override string ToString ()
@@ -154,19 +168,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       SqlTables = new List<SqlTable>();
       Orderings = new List<Ordering>();
-    }
-
-    private IStreamedDataInfo GetNewDataInfo ()
-    {
-      var sequenceInfo = DataInfo as StreamedSequenceInfo;
-      if (sequenceInfo != null)
-        return new StreamedSequenceInfo (typeof (IQueryable<>).MakeGenericType (SelectProjection.Type), SelectProjection);
-
-      var singleValueInfo = DataInfo as StreamedSingleValueInfo;
-      if (singleValueInfo != null)
-        return new StreamedSingleValueInfo (SelectProjection.Type, singleValueInfo.ReturnDefaultWhenEmpty);
-
-      return DataInfo;
     }
   }
 }
