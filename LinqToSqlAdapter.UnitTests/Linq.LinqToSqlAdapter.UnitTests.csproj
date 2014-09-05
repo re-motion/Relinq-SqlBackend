@@ -141,8 +141,8 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="..\Relinq LGPL.licenseheader">
-      <Link>Relinq LGPL.licenseheader</Link>
+    <None Include="..\LGPL.licenseheader">
+      <Link>LGPL.licenseheader</Link>
     </None>
     <None Include="..\remotion.snk">
       <Link>remotion.snk</Link>

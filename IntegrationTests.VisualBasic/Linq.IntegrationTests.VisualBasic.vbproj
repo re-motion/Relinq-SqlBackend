@@ -140,8 +140,8 @@
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
     <Compile Include="SystemTests\SelectTests.vb" />
-    <None Include="..\Relinq MSPL.licenseheader">
-      <Link>Relinq MSPL.licenseheader</Link>
+    <None Include="..\MSPL.licenseheader">
+      <Link>MSPL.licenseheader</Link>
     </None>
     <None Include="..\remotion.snk">
       <Link>remotion.snk</Link>

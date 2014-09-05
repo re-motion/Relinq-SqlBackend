@@ -109,8 +109,8 @@
     <Compile Include="LinqSamples101\Name.cs" />
     <Compile Include="MiscTests\ConvertTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="..\Relinq MSPL.licenseheader">
-      <Link>Relinq MSPL.licenseheader</Link>
+    <None Include="..\MSPL.licenseheader">
+      <Link>MSPL.licenseheader</Link>
     </None>
     <None Include="..\remotion.snk">
       <Link>remotion.snk</Link>
