@@ -176,36 +176,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      var sb = new StringBuilder ("SELECT ");
-      if (IsDistinctQuery)
-        sb.Append ("DISTINCT ");
-      if (TopExpression != null)
-        sb.Append ("TOP (").Append (FormattingExpressionTreeVisitor.Format (TopExpression)).Append (") ");
-      sb.Append (FormattingExpressionTreeVisitor.Format (SelectProjection));
-      if (SqlTables.Count > 0)
-      {
-        sb.Append (" FROM ");
-        if (AlwaysUseOuterJoinSemantics)
-          sb.Append ("(ALWAYS OUTER) ");
-        sb.Append (SqlTables.First());
-        SqlTables.Skip (1).Aggregate (sb, (builder, table) => builder.Append (", ").Append (table));
-      }
-      if (WhereCondition != null)
-        sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));
-      if (GroupByExpression != null)
-        sb.Append (" GROUP BY ").Append (FormattingExpressionTreeVisitor.Format (GroupByExpression));
-      if (Orderings.Count > 0)
-      {
-        sb.Append (" ORDER BY ");
-        Orderings.Aggregate (
-            sb,
-            (builder, ordering) => builder
-                                       .Append (FormattingExpressionTreeVisitor.Format (ordering.Expression))
-                                       .Append (" ")
-                                       .Append (ordering.OrderingDirection.ToString().ToUpper()));
-      }
-
-      return sb.ToString();
+      var statementBuilder = new SqlStatementBuilder (this);
+      return statementBuilder.ToString();
     }
   }
 }
