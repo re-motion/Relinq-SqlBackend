@@ -56,7 +56,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", tableContext);
+      ArgumentUtility.CheckNotNull ("tableContext", tableContext);
 
       _commandBuilder = commandBuilder;
       _stage = stage;
