@@ -28,13 +28,23 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor
   {
-    public static void GenerateSql (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
+    public static void GenerateSql (
+        SqlTable sqlTable,
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        bool isFirstTable,
+        bool alwaysUseOuterJoinSemantics = false)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      GenerateTextForSqlTable (new SqlTableAndJoinTextGenerator (commandBuilder, stage), sqlTable, commandBuilder, isFirstTable);
+      GenerateTextForSqlTable (
+          new SqlTableAndJoinTextGenerator (commandBuilder, stage),
+          sqlTable,
+          commandBuilder,
+          isFirstTable,
+          alwaysUseOuterJoinSemantics);
       GenerateSqlForJoins (sqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage));
     }
 
@@ -47,9 +57,20 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlTable sqlTable, ISqlCommandBuilder commandBuilder, bool isFirstTable)
+    private static void GenerateTextForSqlTable (
+        ITableInfoVisitor visitor,
+        SqlTable sqlTable,
+        ISqlCommandBuilder commandBuilder,
+        bool isFirstTable,
+        bool alwaysUseOuterJoinSemantics)
     {
-      if (sqlTable.JoinSemantics == JoinSemantics.Inner)
+      if (alwaysUseOuterJoinSemantics || sqlTable.JoinSemantics == JoinSemantics.Left)
+      {
+        if (isFirstTable)
+          commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
+        commandBuilder.Append (" OUTER APPLY ");
+      }
+      else
       {
         if (!isFirstTable)
         {
@@ -60,12 +81,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
             commandBuilder.Append ("APPLY ");
         }
       }
-      else if (sqlTable.JoinSemantics == JoinSemantics.Left)
-      {
-        if (isFirstTable)
-          commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
-        commandBuilder.Append (" OUTER APPLY ");
-      }
 
       sqlTable.TableInfo.Accept (visitor);
     }
@@ -74,11 +89,11 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      if (joinedTable.JoinSemantics == JoinSemantics.Left)
-        commandBuilder.Append (" LEFT OUTER JOIN ");
-      // TODO RMLNQSQL-4: This branch can be removed.
-      else
-        commandBuilder.Append (" INNER JOIN ");
+      // TODO RMLNQSQL-4: This check can be removed.
+      if (joinedTable.JoinSemantics == JoinSemantics.Inner)
+        throw new NotSupportedException ("SqlJoinedTables with INNER JoinSemantics are currently not supported. (RMLNQSQL-4)");
+
+      commandBuilder.Append (" LEFT OUTER JOIN ");
 
       joinedTable.JoinInfo.Accept (visitor);
     }

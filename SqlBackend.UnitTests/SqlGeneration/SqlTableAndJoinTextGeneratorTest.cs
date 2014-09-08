@@ -160,6 +160,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_AlwaysUseOuterJoinSemantics_FirstTable ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true, alwaysUseOuterJoinSemantics: true);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [Table] AS [t]"));
+    }
+
+    [Test]
+    public void GenerateSql_AlwaysUseOuterJoinSemantics_NonFirstTable ()
+    {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: false, alwaysUseOuterJoinSemantics: true);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" OUTER APPLY [Table] AS [t]"));
+    }
+
+    [Test]
     public void GenerateSql_LeftJoinSemantics_FirstTable ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
@@ -208,13 +230,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       var sqlTable = new SqlTable (new SqlJoinedTable (joinInfo, JoinSemantics.Inner), JoinSemantics.Inner);
 
-      _stageMock
-        .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
-        .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("condition"));
-
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true);
-
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" INNER JOIN [CookTable] AS [c] ON condition"));
+      Assert.That (
+          () => SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true),
+          Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]
