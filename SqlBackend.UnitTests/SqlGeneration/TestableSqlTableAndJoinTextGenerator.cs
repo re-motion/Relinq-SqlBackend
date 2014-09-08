@@ -22,8 +22,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
   public class TestableSqlTableAndJoinTextGenerator : SqlTableAndJoinTextGenerator
   {
-    public TestableSqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, TableContextKind tableContext)
-        : base(commandBuilder, stage, tableContext)
+    public TestableSqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+        : base(commandBuilder, stage)
     {
       
     }

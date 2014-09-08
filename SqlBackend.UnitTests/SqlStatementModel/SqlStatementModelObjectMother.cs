@@ -179,10 +179,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return CreateSqlTable_WithResolvedTableInfo (type, "Table", "t");
     }
 
-    public static SqlTable CreateSqlTable_WithResolvedTableInfo (string tableName, string tableAlias)
+    public static SqlTable CreateSqlTable_WithResolvedTableInfo (
+        string tableName,
+        string tableAlias,
+        JoinSemantics joinSemantics = JoinSemantics.Inner)
     {
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (string), tableName, tableAlias);
-      var sqlTable = new SqlTable (resolvedTableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (resolvedTableInfo, joinSemantics);
       return sqlTable;
     }
 

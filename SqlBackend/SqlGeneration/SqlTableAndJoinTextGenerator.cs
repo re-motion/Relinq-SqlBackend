@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -27,40 +26,72 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// <summary>
   /// <see cref="SqlTableAndJoinTextGenerator"/> generates sql-text for <see cref="ResolvedSimpleTableInfo"/> and <see cref="ResolvedJoinInfo"/>.
   /// </summary>
-  public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor, ISqlTableBaseVisitor
+  public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor
   {
-    public enum TableContextKind
-    {
-      FirstTable,
-      NonFirstTable,
-      JoinedTable
-    } 
-    
-    private readonly ISqlCommandBuilder _commandBuilder;
-    private readonly ISqlGenerationStage _stage;
-    private readonly TableContextKind _tableContext;
-
-    public static void GenerateSql (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool first)
+    public static void GenerateSql (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var visitor = new SqlTableAndJoinTextGenerator (commandBuilder, stage, first ? TableContextKind.FirstTable : TableContextKind.NonFirstTable);
-
-      sqlTable.Accept (visitor);
-      GenerateSqlForJoins (sqlTable, new SqlTableAndJoinTextGenerator (commandBuilder, stage, TableContextKind.JoinedTable));
+      GenerateTextForSqlTable(new SqlTableAndJoinTextGenerator (commandBuilder, stage), sqlTable, commandBuilder, isFirstTable);
+      GenerateSqlForJoins (sqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage));
     }
 
-    protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, TableContextKind tableContext)
+    private static void GenerateSqlForJoins (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, IJoinInfoVisitor visitor)
+    {
+      foreach (var joinedTable in sqlTable.JoinedTables)
+      {
+        GenerateTextForSqlJoinedTable(visitor, joinedTable, commandBuilder);
+        GenerateSqlForJoins (joinedTable, commandBuilder, visitor);
+      }
+    }
+
+    private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlTable sqlTable, ISqlCommandBuilder commandBuilder, bool isFirstTable)
+    {
+      if (sqlTable.JoinSemantics == JoinSemantics.Inner)
+      {
+        if (!isFirstTable)
+        {
+          commandBuilder.Append (" CROSS ");
+          if (sqlTable.TableInfo is ResolvedSimpleTableInfo)
+            commandBuilder.Append ("JOIN ");
+          else
+            commandBuilder.Append ("APPLY ");
+        }
+      }
+      else if (sqlTable.JoinSemantics == JoinSemantics.Left)
+      {
+        if (isFirstTable)
+          commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
+        commandBuilder.Append (" OUTER APPLY ");
+      }
+
+      sqlTable.TableInfo.Accept (visitor);
+    }
+
+    private static void GenerateTextForSqlJoinedTable (IJoinInfoVisitor visitor, SqlJoinedTable joinedTable, ISqlCommandBuilder commandBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+
+      if (joinedTable.JoinSemantics == JoinSemantics.Left)
+        commandBuilder.Append (" LEFT OUTER JOIN ");
+      else
+        commandBuilder.Append (" INNER JOIN ");
+
+      joinedTable.JoinInfo.Accept (visitor);
+    }
+
+    private readonly ISqlCommandBuilder _commandBuilder;
+    private readonly ISqlGenerationStage _stage;
+
+    protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("tableContext", tableContext);
 
       _commandBuilder = commandBuilder;
       _stage = stage;
-      _tableContext = tableContext;
     }
 
     public ISqlCommandBuilder CommandBuilder
@@ -71,56 +102,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     public ISqlGenerationStage Stage
     {
       get { return _stage; }
-    }
-
-    public TableContextKind TableContext
-    {
-      get { return _tableContext; }
-    }
-
-    public void VisitSqlTable (SqlTable sqlTable)
-    {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
-
-      if (sqlTable.JoinSemantics == JoinSemantics.Inner)
-      {
-        if (_tableContext == TableContextKind.NonFirstTable)
-        {
-          _commandBuilder.Append (" CROSS ");
-          if (sqlTable.TableInfo is ResolvedSimpleTableInfo)
-            _commandBuilder.Append ("JOIN ");
-          else
-            _commandBuilder.Append ("APPLY ");
-        }
-      }
-      else if (sqlTable.JoinSemantics == JoinSemantics.Left)
-      {
-        if (_tableContext == TableContextKind.FirstTable)
-          _commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
-        _commandBuilder.Append (" OUTER APPLY ");
-      }
-
-      sqlTable.TableInfo.Accept (this);
-    }
-
-    public void VisitSqlJoinedTable (SqlJoinedTable joinedTable)
-    {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
-
-      if (joinedTable.JoinSemantics == JoinSemantics.Left)
-      {
-        if (_tableContext == TableContextKind.FirstTable)
-          _commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
-
-        _commandBuilder.Append (" LEFT OUTER JOIN ");
-      }
-      else
-      {
-        if (_tableContext != TableContextKind.FirstTable)
-          _commandBuilder.Append (" INNER JOIN ");
-      }
-
-      joinedTable.JoinInfo.Accept (this);
     }
 
     ITableInfo ITableInfoVisitor.VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
@@ -177,7 +158,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      VisitSqlJoinedTable (joinedTable);
+      GenerateTextForSqlJoinedTable (this, joinedTable, _commandBuilder);
       return joinedTable;
     }
 
@@ -195,15 +176,5 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       throw new InvalidOperationException ("UnresolvedCollectionJoinInfo is not valid at this point.");
     }
-
-    protected static void GenerateSqlForJoins (SqlTableBase sqlTable, SqlTableAndJoinTextGenerator visitor)
-    {
-      foreach (var joinedTable in sqlTable.JoinedTables)
-      {
-        joinedTable.Accept (visitor);
-        GenerateSqlForJoins (joinedTable, visitor);
-      }
-    }
-    
   }
 }

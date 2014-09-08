@@ -86,11 +86,11 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       {
         commandBuilder.Append (" FROM ");
 
-        bool first = true;
+        bool isFirstTable = true;
         foreach (var sqlTable in sqlStatement.SqlTables)
         {
-          _stage.GenerateTextForFromTable (commandBuilder, sqlTable, first);
-          first = false;
+          _stage.GenerateTextForFromTable (commandBuilder, sqlTable, isFirstTable);
+          isFirstTable = false;
         }
       }
     }
