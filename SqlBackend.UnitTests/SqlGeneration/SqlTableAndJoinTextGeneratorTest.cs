@@ -199,16 +199,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [k] LEFT OUTER JOIN [CookTable] AS [c] ON condition"));
     }
 
+    // TODO RMLNQSQL-4: This test can be removed.
     [Test]
-    [Ignore("RMLNQSQL-1: GetOrAddInnerJoin...")]
     public void GenerateSql_JoinedTable_WithInnerJoinSemantics ()
     {
       var condition = Expression.Constant (true);
       var joinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), condition);
 
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo("KitchenTable", "k", JoinSemantics.Inner);
-      // TODO RMLNQSQL-1: GetOrAddInnerJoin...
-      sqlTable.GetOrAddLeftJoin (joinInfo, ExpressionHelper.GetMember<Kitchen> (k => k.Cook));
+      var sqlTable = new SqlTable (new SqlJoinedTable (joinInfo, JoinSemantics.Inner), JoinSemantics.Inner);
 
       _stageMock
         .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
@@ -216,7 +214,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [k] INNER JOIN [CookTable] AS [c] ON condition"));
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" INNER JOIN [CookTable] AS [c] ON condition"));
     }
 
     [Test]

@@ -34,7 +34,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      GenerateTextForSqlTable(new SqlTableAndJoinTextGenerator (commandBuilder, stage), sqlTable, commandBuilder, isFirstTable);
+      GenerateTextForSqlTable (new SqlTableAndJoinTextGenerator (commandBuilder, stage), sqlTable, commandBuilder, isFirstTable);
       GenerateSqlForJoins (sqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage));
     }
 
@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       foreach (var joinedTable in sqlTable.JoinedTables)
       {
-        GenerateTextForSqlJoinedTable(visitor, joinedTable, commandBuilder);
+        GenerateTextForSqlJoinedTable (visitor, joinedTable, commandBuilder);
         GenerateSqlForJoins (joinedTable, commandBuilder, visitor);
       }
     }
@@ -76,6 +76,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       if (joinedTable.JoinSemantics == JoinSemantics.Left)
         commandBuilder.Append (" LEFT OUTER JOIN ");
+      // TODO RMLNQSQL-4: This branch can be removed.
       else
         commandBuilder.Append (" INNER JOIN ");
 
@@ -154,6 +155,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return joinInfo;
     }
 
+    // TODO RMLNQSQL-4: This method can be removed.
     ITableInfo ITableInfoVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
