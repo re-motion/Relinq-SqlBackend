@@ -198,24 +198,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [k] LEFT OUTER JOIN [CookTable] AS [c] ON condition"));
     }
 
-    // TODO RMLNQSQL-4: This test can be removed.
-    [Test]
-    public void GenerateSql_JoinedTable_WithInnerJoinSemantics ()
-    {
-      var condition = Expression.Constant (true);
-      var joinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), condition);
-
-      var sqlTable = new SqlTable (new SqlJoinedTable (joinInfo, JoinSemantics.Inner), JoinSemantics.Inner);
-
-      Assert.That (
-          () => SqlTableAndJoinTextGenerator.GenerateSql (
-              sqlTable,
-              _commandBuilder,
-              _stageMock,
-              isFirstTable: true),
-          Throws.TypeOf<NotSupportedException>());
-    }
-
     [Test]
     public void VisitSimpleTableInfo ()
     {
@@ -292,18 +274,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c] ON condition"));
     }
-    
+
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedTableInfo is not valid at this point.")
-    ]
-    public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
+    public void GenerateSql_JoinedTable_WithInnerJoinSemantics ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false);
+      var condition = Expression.Constant (true);
+      var joinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), condition);
+
+      var sqlTable = new SqlTable (new SqlJoinedTable (joinInfo, JoinSemantics.Inner), JoinSemantics.Inner);
+
+      Assert.That (
+          () => SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true),
+          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("SqlJoinedTable as TableInfo is not valid at this point."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedJoinInfo is not valid at this point.")]
+    public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
+      Assert.That (
+          () => SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false),
+          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedTableInfo is not valid at this point."));
+    }
+
+    [Test]
     public void GenerateSql_WithUnresolvedJoinInfo ()
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
@@ -313,11 +307,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       originalTable.GetOrAddLeftJoin (unresolvedJoinInfo, kitchenCookMember);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false);
+      Assert.That (
+          () => SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false),
+          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedJoinInfo is not valid at this point."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedCollectionJoinInfo is not valid at this point.")]
     public void GenerateSql_WithUnresolvedCollectionJoinInfo ()
     {
       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
@@ -326,20 +321,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       originalTable.GetOrAddLeftJoin (collectionJoinInfo, memberInfo);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false);
+      Assert.That (
+          () => SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false),
+          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedCollectionJoinInfo is not valid at this point."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedGroupReferenceTableInfo is not valid at this point.")]
     public void GenerateSql_WithUnresolvedGroupReferenceTableInfo ()
     {
       var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo();
 
-      SqlTableAndJoinTextGenerator.GenerateSql (
-          new SqlTable (tableInfo, JoinSemantics.Inner),
-          _commandBuilder,
-          _stageMock,
-          false);
+      Assert.That (
+          () => SqlTableAndJoinTextGenerator.GenerateSql (new SqlTable (tableInfo, JoinSemantics.Inner), _commandBuilder, _stageMock, false),
+          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedGroupReferenceTableInfo is not valid at this point."));
     }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (

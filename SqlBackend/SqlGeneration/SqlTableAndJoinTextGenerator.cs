@@ -158,10 +158,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     // TODO RMLNQSQL-4: This method can be removed.
     ITableInfo ITableInfoVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
-
-      GenerateTextForSqlJoinedTable (this, joinedTable, _commandBuilder);
-      return joinedTable;
+      throw new InvalidOperationException ("SqlJoinedTable as TableInfo is not valid at this point.");
     }
 
     ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
