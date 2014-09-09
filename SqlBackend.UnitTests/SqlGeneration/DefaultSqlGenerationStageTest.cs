@@ -45,7 +45,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           "t",
           null,
           e => e.GetColumn (typeof (string), "ID", true),
-          new[]
+          new SqlColumnExpression[]
           {
               new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
               new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false),
@@ -55,7 +55,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           _entityExpression,
-          false,
           new[] { sqlTable },
           null,
           null,
@@ -68,25 +67,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateTextForFromTable_WithDefaultJoinSemantics ()
+    public void GenerateTextForFromTable ()
     {
       var stage = new DefaultSqlGenerationStage();
 
-      stage.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true, alwaysUseOuterJoinSemantics: false);
+      stage.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
     }
 
-
-    [Test]
-    public void GenerateTextForFromTable_WithAlwaysUseOuterJoinSemantics ()
-    {
-      var stage = new DefaultSqlGenerationStage();
-
-      stage.GenerateTextForFromTable (_commandBuilder, _sqlStatement.SqlTables[0], true, alwaysUseOuterJoinSemantics: true);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [Table] AS [t]"));
-    }
 
     [Test]
     public void GenerateTextForSelectExpression ()

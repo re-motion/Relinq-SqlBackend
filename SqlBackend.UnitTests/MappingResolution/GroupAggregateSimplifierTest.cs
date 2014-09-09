@@ -73,7 +73,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _simplifiableResolvedSqlStatement = new SqlStatement (
           _dataInfo,
           _resolvedSelectProjection,
-          false,
           new[] { _resolvedJoinedGroupingTable },
           null,
           null,

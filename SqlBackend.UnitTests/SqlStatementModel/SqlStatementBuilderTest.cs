@@ -40,7 +40,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var selectProjection = Expression.Constant ("select");
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant ("top");
-      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
       var rowNumberSelector = Expression.Constant("selector");
@@ -50,7 +49,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           selectProjection,
-          alwaysUseOuterJoinSemantics,
           new[] { sqlTable },
           whereCondition,
           groupExpression,
@@ -64,7 +62,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
-      Assert.That (testedBuilder.AlwaysUseOuterJoinSemantics, Is.EqualTo (alwaysUseOuterJoinSemantics));
       Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
       Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
@@ -84,7 +81,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (statementBuilder.TopExpression, Is.Null);
       Assert.That (statementBuilder.IsDistinctQuery, Is.False);
       Assert.That (statementBuilder.SelectProjection, Is.Null);
-      Assert.That (statementBuilder.AlwaysUseOuterJoinSemantics, Is.False);
       Assert.That (statementBuilder.SqlTables, Is.Empty);
       Assert.That (statementBuilder.Orderings, Is.Empty);
       Assert.That (statementBuilder.WhereCondition, Is.Null);
@@ -142,7 +138,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
       var selectProjection = new AggregationExpression (typeof (int), Expression.Constant (1), AggregationModifier.Min);
       var whereCondition = Expression.Constant (true);
-      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
       var rowNumberSelector = Expression.Constant ("selector");
@@ -156,7 +151,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                                  IsDistinctQuery = isDistinctQuery,
                                  SelectProjection = selectProjection,
                                  SqlTables = { sqlTable },
-                                 AlwaysUseOuterJoinSemantics = alwaysUseOuterJoinSemantics,
                                  WhereCondition = whereCondition,
                                  RowNumberSelector = rowNumberSelector,
                                  CurrentRowNumberOffset = currentRowNumberOffset,
@@ -170,7 +164,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (sqlStatement.TopExpression, Is.SameAs (topExpression));
       Assert.That (sqlStatement.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
       Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (sqlStatement.AlwaysUseOuterJoinSemantics, Is.EqualTo (alwaysUseOuterJoinSemantics));
       Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
       Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
       Assert.That (sqlStatement.WhereCondition, Is.SameAs (whereCondition));
@@ -189,7 +182,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                                  IsDistinctQuery = true,
                                  SelectProjection = new AggregationExpression(typeof(int), Expression.Constant (1),AggregationModifier.Min),
                                  SqlTables = { new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner) },
-                                 AlwaysUseOuterJoinSemantics = true,
                                  WhereCondition = Expression.Constant (true),
                                  RowNumberSelector = Expression.Constant ("selector"),
                                  CurrentRowNumberOffset = Expression.Constant (1),
@@ -207,7 +199,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (statementBuilder.TopExpression, Is.Null);
       Assert.That (statementBuilder.IsDistinctQuery, Is.False);
       Assert.That (statementBuilder.SelectProjection, Is.Null);
-      Assert.That (statementBuilder.AlwaysUseOuterJoinSemantics, Is.False);
       Assert.That (statementBuilder.SqlTables, Is.Empty);
       Assert.That (statementBuilder.Orderings, Is.Empty);
       Assert.That (statementBuilder.WhereCondition, Is.Null);
@@ -333,7 +324,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                     {
                         DataInfo = dataInfo,
                         SelectProjection = selectProjection,
-                        AlwaysUseOuterJoinSemantics = true,
                         SqlTables = { sqlTable1, sqlTable2 },
                         Orderings = { ordering },
                         WhereCondition = whereCondition,
@@ -347,11 +337,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (
           result,
           Is.EqualTo (
-              "SELECT DISTINCT TOP (10) 1 FROM (ALWAYS OUTER) [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
+              "SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
     }
 
     [Test]
-    public void ToString_SingleTable_NoAlwaysUseOuterJoinSemantics ()
+    public void ToString_SingleTable ()
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
@@ -361,7 +351,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       {
         DataInfo = dataInfo,
         SelectProjection = selectProjection,
-        AlwaysUseOuterJoinSemantics = false,
         SqlTables = { sqlTable },
       };
 

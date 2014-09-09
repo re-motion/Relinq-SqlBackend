@@ -35,7 +35,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public bool IsDistinctQuery { get; set; }
     public Expression TopExpression { get; set; }
     public Expression SelectProjection { get; set; }
-    public bool AlwaysUseOuterJoinSemantics { get; set; }
     public List<SqlTable> SqlTables { get; private set; }
     public Expression WhereCondition { get; set; }
     public Expression GroupByExpression { get; set; }
@@ -54,7 +53,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       DataInfo = sqlStatement.DataInfo;
       SelectProjection = sqlStatement.SelectProjection;
-      AlwaysUseOuterJoinSemantics = sqlStatement.AlwaysUseOuterJoinSemantics;
       WhereCondition = sqlStatement.WhereCondition;
       IsDistinctQuery = sqlStatement.IsDistinctQuery;
       TopExpression = sqlStatement.TopExpression;
@@ -78,7 +76,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return new SqlStatement (
           DataInfo,
           SelectProjection,
-          AlwaysUseOuterJoinSemantics,
           SqlTables,
           WhereCondition,
           GroupByExpression,
@@ -134,8 +131,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       if (SqlTables.Count > 0)
       {
         sb.Append (" FROM ");
-        if (AlwaysUseOuterJoinSemantics)
-          sb.Append ("(ALWAYS OUTER) ");
         sb.Append (SqlTables.First());
         SqlTables.Skip (1).Aggregate (sb, (builder, table) => builder.Append (", ").Append (table));
       }
@@ -161,7 +156,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       DataInfo = null;
       SelectProjection = null;
-      AlwaysUseOuterJoinSemantics = false;
       WhereCondition = null;
       IsDistinctQuery = false;
       TopExpression = null;

@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var singleDataInfo = new StreamedSingleValueInfo (typeof (int), false);
       var selectProjection = Expression.Constant (0);
-      var subStatement = new SqlStatement (singleDataInfo, selectProjection, false, new SqlTable[0], null, null, new Ordering[0], null, false, null, null);
+      var subStatement = new SqlStatement (singleDataInfo, selectProjection, new SqlTable[0], null, null, new Ordering[0], null, false, null, null);
       var expressionWithSubStatement = new SqlSubStatementExpression (subStatement);
 
       var result = _stage.PrepareSelectExpression (expressionWithSubStatement, _context);

@@ -46,7 +46,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           selectProjection,
-          false,
           sqlTables,
           null,
           null,
@@ -63,7 +62,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           new SqlTableReferenceExpression (sqlTable),
-          false,
           new[] { sqlTable },
           null,
           null,
@@ -80,7 +78,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0, typeof (int))),
           new SqlTableReferenceExpression (sqlTable),
-          false,
           new[] { sqlTable },
           null,
           null,
@@ -99,7 +96,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
               typeof (IQueryable<>).MakeGenericType (type),
               Expression.Constant (type.IsValueType ? Activator.CreateInstance (type) : null, type)),
           CreateSqlEntityDefinitionExpression (type),
-          false,
           new[] { sqlTable },
           null,
           null,
@@ -115,7 +111,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSingleValueInfo (typeof (int), false),
           Expression.Constant (0),
-          false,
           new SqlTable[0],
           null,
           null,

@@ -39,7 +39,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           Expression.Constant (1),
-          false,
           new SqlTable[] { },
           Expression.Constant (1),
           null,
@@ -56,7 +55,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           Expression.Constant (1),
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -75,7 +73,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
       var selectProjection = Expression.Constant (1);
-      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
@@ -87,7 +84,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          alwaysUseOuterJoinSemantics,
           new[] { sqlTable },
           whereCondition,
           groupByExpression,
@@ -100,7 +96,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          alwaysUseOuterJoinSemantics,
           new[] { sqlTable },
           whereCondition,
           groupByExpression,
@@ -122,7 +117,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -135,7 +129,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -158,7 +151,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo1,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -171,7 +163,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo2,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -194,7 +185,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection1,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -207,43 +197,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection2,
-          false,
-          new SqlTable[] { },
-          null,
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
-
-      Assert.That (sqlStatement1.Equals (sqlStatement2), Is.False);
-    }
-
-    [Test]
-    public void Equals_DifferentAlwaysUseOuterJoinSemanticsCondition ()
-    {
-      var dataInfo = new TestStreamedValueInfo (typeof (int));
-      var selectProjection = Expression.Constant (1);
-      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
-
-      var sqlStatement1 = new SqlStatement (
-          dataInfo,
-          selectProjection,
-          alwaysUseOuterJoinSemantics,
-          new SqlTable[] { },
-          null,
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
-
-      var sqlStatement2 = new SqlStatement (
-          dataInfo,
-          selectProjection,
-          !alwaysUseOuterJoinSemantics,
           new SqlTable[] { },
           null,
           null,
@@ -267,7 +220,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new[] { sqlTable1 },
           null,
           null,
@@ -280,7 +232,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new[] { sqlTable2 },
           null,
           null,
@@ -304,7 +255,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -317,7 +267,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -341,7 +290,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           whereCondition1,
           null,
@@ -354,7 +302,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           whereCondition2,
           null,
@@ -378,7 +325,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -391,7 +337,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -414,7 +359,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjectionWithCountAggregation,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -427,7 +371,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -450,7 +393,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -463,7 +405,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -487,7 +428,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -500,7 +440,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -524,7 +463,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -537,7 +475,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -561,7 +498,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           groupByExpression1,
@@ -574,7 +510,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           groupByExpression2,
@@ -595,7 +530,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -616,7 +550,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new SqlTable[] { },
           null,
           null,
@@ -632,7 +565,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void Equals_AssertPropertyCount ()
     {
-      Assert.That (typeof (SqlStatement).GetProperties().Count(), Is.EqualTo (11), "The implementation of Equals and GetHashCode has to be adapted.");
+      Assert.That (typeof (SqlStatement).GetProperties().Count(), Is.EqualTo (10), "The implementation of Equals and GetHashCode has to be adapted.");
     }
 
     [Test]
@@ -641,7 +574,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
       var selectProjection = Expression.Constant (1);
-      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
@@ -653,7 +585,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          alwaysUseOuterJoinSemantics,
           new[] { sqlTable },
           whereCondition,
           groupByExpression,
@@ -666,7 +597,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          alwaysUseOuterJoinSemantics,
           new[] { sqlTable },
           whereCondition,
           groupByExpression,
@@ -746,7 +676,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           dataInfo,
           selectProjection,
-          true,
           new[] { sqlTable1, sqlTable2 },
           whereCondition,
           groupExpression,
@@ -761,11 +690,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (
           result,
           Is.EqualTo (
-              "SELECT DISTINCT TOP (10) 1 FROM (ALWAYS OUTER) [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
+              "SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
     }
 
     [Test]
-    public void ToString_SingleTable_NoAlwaysUseOuterJoinSemantics ()
+    public void ToString_SingleTable ()
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
@@ -774,7 +703,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           dataInfo,
           selectProjection,
-          false,
           new[] { sqlTable },
           null,
           null,
@@ -795,7 +723,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
 
-      var sqlStatement = new SqlStatement (dataInfo, selectProjection, false, new SqlTable[0], null, null, new Ordering[0], null, false, null, null);
+      var sqlStatement = new SqlStatement (dataInfo, selectProjection, new SqlTable[0], null, null, new Ordering[0], null, false, null, null);
 
       var result = sqlStatement.ToString();
 
