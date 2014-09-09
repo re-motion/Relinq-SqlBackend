@@ -89,7 +89,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         bool isFirstTable = true;
         foreach (var sqlTable in sqlStatement.SqlTables)
         {
-          _stage.GenerateTextForFromTable (commandBuilder, sqlTable, isFirstTable);
+          _stage.GenerateTextForFromTable (commandBuilder, sqlTable, isFirstTable, sqlStatement.AlwaysUseOuterJoinSemantics);
           isFirstTable = false;
         }
       }

@@ -29,12 +29,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class DefaultSqlGenerationStage : ISqlGenerationStage
   {
-    public virtual void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable)
+    public virtual void GenerateTextForFromTable (
+        ISqlCommandBuilder commandBuilder,
+        SqlTable table,
+        bool isFirstTable,
+        bool alwaysUseOuterJoinSemantics)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("table", table);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (table, commandBuilder, this, isFirstTable);
+      SqlTableAndJoinTextGenerator.GenerateSql (table, commandBuilder, this, isFirstTable, alwaysUseOuterJoinSemantics);
     }
 
     public virtual void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)

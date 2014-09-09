@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
@@ -52,7 +51,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
       sqlTable.TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, true);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, true, alwaysUseOuterJoinSemantics: false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
     }
@@ -63,9 +62,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var sqlTable1 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("Table1", "t1");
       var sqlTable2 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("Table2", "t2");
       var sqlTable3 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("Table3", "t3");
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable1, _commandBuilder, _stageMock, true);
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable2, _commandBuilder, _stageMock, false);
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable3, _commandBuilder, _stageMock, false);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable1, _commandBuilder, _stageMock, true, alwaysUseOuterJoinSemantics: false);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable2, _commandBuilder, _stageMock, false, alwaysUseOuterJoinSemantics: false);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable3, _commandBuilder, _stageMock, false, alwaysUseOuterJoinSemantics: false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table1] AS [t1] CROSS JOIN [Table2] AS [t2] CROSS JOIN [Table3] AS [t3]"));
     }
@@ -84,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("([t1].[ID] = [t2].[FK])"));
       _stageMock.Replay();
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true);
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true, alwaysUseOuterJoinSemantics: false);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (
@@ -108,7 +107,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("Y"));
       _stageMock.Replay();
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true);
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true, alwaysUseOuterJoinSemantics: false);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (
@@ -125,7 +124,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true, alwaysUseOuterJoinSemantics: false);
       
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[Table] AS [t]"));
     }
@@ -136,7 +135,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: false);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: false, alwaysUseOuterJoinSemantics: false);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS JOIN [Table] AS [t]"));
     }
@@ -153,7 +152,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
         .WhenCalled(mi=> ((ISqlCommandBuilder) mi.Arguments[0]).Append("[Table] AS [t]"));
       _stageMock.Replay();
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: false);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: false, alwaysUseOuterJoinSemantics: false);
 
       _stageMock.VerifyAllExpectations();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" CROSS APPLY ([Table] AS [t]) AS [q0]"));
@@ -187,7 +186,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true, alwaysUseOuterJoinSemantics: false);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [Table] AS [t]"));
     }
@@ -198,7 +197,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: false);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: false, alwaysUseOuterJoinSemantics: false);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" OUTER APPLY [Table] AS [t]"));
     }
@@ -216,7 +215,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
         .Expect (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
         .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("condition"));
 
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true, alwaysUseOuterJoinSemantics: false);
       
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[KitchenTable] AS [k] LEFT OUTER JOIN [CookTable] AS [c] ON condition"));
     }
@@ -231,7 +230,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var sqlTable = new SqlTable (new SqlJoinedTable (joinInfo, JoinSemantics.Inner), JoinSemantics.Inner);
 
       Assert.That (
-          () => SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, isFirstTable: true),
+          () => SqlTableAndJoinTextGenerator.GenerateSql (
+              sqlTable,
+              _commandBuilder,
+              _stageMock,
+              isFirstTable: true,
+              alwaysUseOuterJoinSemantics: false),
           Throws.TypeOf<NotSupportedException>());
     }
 
@@ -318,7 +322,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo ();
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false);
+      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock, false, alwaysUseOuterJoinSemantics: false);
     }
 
     [Test]
@@ -332,7 +336,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       originalTable.GetOrAddLeftJoin (unresolvedJoinInfo, kitchenCookMember);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false);
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false, alwaysUseOuterJoinSemantics: false);
     }
 
     [Test]
@@ -345,7 +349,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       originalTable.GetOrAddLeftJoin (collectionJoinInfo, memberInfo);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false);
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, false, alwaysUseOuterJoinSemantics: false);
     }
 
     [Test]
@@ -354,7 +358,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo();
 
-      SqlTableAndJoinTextGenerator.GenerateSql (new SqlTable(tableInfo, JoinSemantics.Inner), _commandBuilder, _stageMock, false);
+      SqlTableAndJoinTextGenerator.GenerateSql (
+          new SqlTable (tableInfo, JoinSemantics.Inner),
+          _commandBuilder,
+          _stageMock,
+          false,
+          alwaysUseOuterJoinSemantics: false);
     }
 
     private ResolvedJoinInfo CreateResolvedJoinInfo (

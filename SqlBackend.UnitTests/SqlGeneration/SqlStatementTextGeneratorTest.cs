@@ -18,6 +18,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -91,9 +92,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildFromPart_WithFrom ()
     {
-      var sqlStatement = CreateSqlStatement();
+      var alwaysUseOuterJoinSemantics = BooleanObjectMother.GetRandomBoolean();
+      var sqlStatement = CreateSqlStatement (alwaysUseOuterJoinSemantics: alwaysUseOuterJoinSemantics);
 
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true, alwaysUseOuterJoinSemantics))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
       _stageMock.Replay();
 
@@ -330,7 +332,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true, false))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
       _stageMock.Replay();
 
@@ -382,7 +384,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true, false))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
       _stageMock.Expect (
           mock => mock.GenerateTextForGroupByExpression (_commandBuilder, sqlStatement.GroupByExpression))
@@ -414,7 +416,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true, false))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
       _stageMock.Expect (mock => mock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("(@1 = 1)"));
@@ -451,7 +453,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID],[t].[Name],[t].[City]"));
-      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
+      _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true, false))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
       _stageMock.Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, sqlStatement.Orderings[0]))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name] ASC"));
@@ -466,12 +468,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.VerifyAllExpectations();
     }
 
-    private SqlStatement CreateSqlStatement ()
+    private SqlStatement CreateSqlStatement (bool alwaysUseOuterJoinSemantics = false)
     {
       return new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           _entityExpression,
-          false,
+          alwaysUseOuterJoinSemantics,
           new[] { _sqlTable },
           null,
           null,

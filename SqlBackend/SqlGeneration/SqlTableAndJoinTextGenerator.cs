@@ -33,7 +33,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         ISqlCommandBuilder commandBuilder,
         ISqlGenerationStage stage,
         bool isFirstTable,
-        bool alwaysUseOuterJoinSemantics = false)
+        bool alwaysUseOuterJoinSemantics)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
