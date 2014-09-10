@@ -26,9 +26,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public class ResolvedJoinInfo : IJoinInfo
   {
+    //TODO RMLNQSQL-1: Change to ITableInfo
     private readonly IResolvedTableInfo _foreignTableInfo;
     private readonly Expression _joinCondition;
 
+    //TODO RMLNQSQL-1: Change to ITableInfo
     public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, Expression joinCondition)
     {
       ArgumentUtility.CheckNotNull ("foreignTableInfo", foreignTableInfo);
@@ -46,6 +48,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _foreignTableInfo.ItemType; }
     }
 
+    //TODO RMLNQSQL-1: Change to ITableInfo
     public IResolvedTableInfo ForeignTableInfo
     {
       get { return _foreignTableInfo; }

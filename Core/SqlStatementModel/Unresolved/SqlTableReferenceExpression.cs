@@ -84,7 +84,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       if (sqlTableBaseAsSqlJoinedTable != null)
       {
         if (sqlTableBaseAsSqlJoinedTable.JoinInfo is ResolvedJoinInfo)
-          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetResolvedJoinInfo ().ForeignTableInfo.TableAlias + ")";
+          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetResolvedJoinInfo ().ForeignTableInfo.TableAlias + ")"; //TODO RMLNQSQL-1: Drop TableAlias
         else
           return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetType().Name + "(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.ItemType.Name + "))";
       }

@@ -74,6 +74,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override IResolvedTableInfo GetResolvedTableInfo ()
     {
+      //TODO RMLNQSQL-1: return JoinInfo.GetResolvedJoinInfo().ForeignTableInfo.GetResolvedTableInfo();
       return JoinInfo.GetResolvedJoinInfo().ForeignTableInfo;
     }
 

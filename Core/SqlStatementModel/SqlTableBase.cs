@@ -63,6 +63,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
+      //TODO RMLNQSQL-1: use dummy-property
+      //if (memberInfo == null)
+      //  memberInfo = typeof (Dummy).GetProperty ("Prop");
+
       if (!_joinedTables.ContainsKey (memberInfo))
         _joinedTables.Add (memberInfo, new SqlJoinedTable (joinInfo, JoinSemantics.Left));
 
@@ -75,6 +79,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       return _joinedTables[relationMember];
     }
-    
+
+    //TODO RMLNQSQL-1: use dummy-property
+    //private class Dummy
+    //{
+    //  public object Prop { get; set; }
+    //}
   }
 }
