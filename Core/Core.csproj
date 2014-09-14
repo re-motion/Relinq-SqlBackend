@@ -284,8 +284,8 @@
     <None Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.EqualityUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
+    <None Include="Core.nuspec" />
     <None Include="Doc\include\GettingStarted.aml" />
-    <None Include="Linq.SqlBackend.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

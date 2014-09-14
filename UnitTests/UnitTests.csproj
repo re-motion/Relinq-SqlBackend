@@ -373,13 +373,13 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SqlBackend.Development\Linq.SqlBackend.Development.csproj">
+    <ProjectReference Include="..\Development\Development.csproj">
       <Project>{E61B546E-29F2-4855-BD4D-45556E812FDE}</Project>
-      <Name>Linq.SqlBackend.Development</Name>
+      <Name>Development</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SqlBackend\Linq.SqlBackend.csproj">
+    <ProjectReference Include="..\Core\Core.csproj">
       <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
-      <Name>Linq.SqlBackend</Name>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

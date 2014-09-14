@@ -533,7 +533,6 @@
     <Content Include="LinqSamples101\Resources\LinqSamples101.Resources.WhereTests.LinqToSqlWhere08.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="LinqSamples101\Original\VS 2008 SP1 VBSamples.zip" />
     <Content Include="LinqSamples101\Resources\LinqSamples101.Resources.UnionAllIntersectTests.LinqToSqlUnion01.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -605,9 +604,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj">
+    <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj">
       <Project>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</Project>
-      <Name>Linq.IntegrationTests.Common</Name>
+      <Name>IntegrationTests.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

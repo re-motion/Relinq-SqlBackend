@@ -155,17 +155,17 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinqToSqlAdapter\Linq.LinqToSqlAdapter.csproj">
+    <ProjectReference Include="..\LinqToSqlAdapter\LinqToSqlAdapter.csproj">
       <Project>{6A28082C-F2B7-40A3-9E32-0AB28E7DA46E}</Project>
-      <Name>Linq.LinqToSqlAdapter</Name>
+      <Name>LinqToSqlAdapter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SqlBackend.Development\Linq.SqlBackend.Development.csproj">
+    <ProjectReference Include="..\Development\Development.csproj">
       <Project>{E61B546E-29F2-4855-BD4D-45556E812FDE}</Project>
-      <Name>Linq.SqlBackend.Development</Name>
+      <Name>Development</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SqlBackend\Linq.SqlBackend.csproj">
+    <ProjectReference Include="..\Core\Core.csproj">
       <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
-      <Name>Linq.SqlBackend</Name>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

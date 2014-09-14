@@ -506,7 +506,6 @@
     <Content Include="LinqSamples101\Resources\ViewTests.LinqToSqlView02.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="LinqSamples101\Original\2008c#.zip" />
     <Content Include="LinqSamples101\Resources\AggregatesTests.LinqToSqlCount07.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -557,9 +556,9 @@
     <Content Include="License.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj">
+    <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj">
       <Project>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</Project>
-      <Name>Linq.IntegrationTests.Common</Name>
+      <Name>IntegrationTests.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
