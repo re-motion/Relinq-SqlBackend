@@ -121,15 +121,19 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("sqlJoinedTable", sqlJoinedTable);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // TODO RMLNQSQL-1: Split resolution of join info in two parts: ResolveJoinedTableOfJoinInfo and ResolveJoinConditionOfJoinInfo. In between,
-      // the resolved join info must be set into the joinedTable.
-      // Step 2: Implement ResolveSqlJoinedTable in two steps:
-      //joinedTable.JoinInfo = _stage.ResolveTablePartOfJoinInfo (joinedTable.JoinInfo, _context);
-      //joinedTable.JoinInfo = _stage.ResolveConditionPartOfJoinInfo (joinedTable.JoinInfo, _context);
+      var joinInfoWithResolvedTable = ResolvingJoinInfoVisitor.ResolveJoinInfo (sqlJoinedTable.JoinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
+      
+      // TODO RMLNQSQL-1: Set the resolvedInfo into sqlJoinedTable before resolving the join condition.
+      // sqlJoinedTable.JoinInfo = joinInfoWithResolvedTable;
 
-      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (sqlJoinedTable.JoinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
-      resolvedJoinInfo = (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
-      sqlJoinedTable.JoinInfo = resolvedJoinInfo;
+      var resolvedJoinCondition = ResolveJoinCondition (joinInfoWithResolvedTable.JoinCondition, context);
+      ResolvedJoinInfo completelyResolvedJoinInfo;
+      if (resolvedJoinCondition != joinInfoWithResolvedTable.JoinCondition)
+        completelyResolvedJoinInfo = new ResolvedJoinInfo (joinInfoWithResolvedTable.ForeignTableInfo, resolvedJoinCondition);
+      else
+        completelyResolvedJoinInfo = joinInfoWithResolvedTable;
+
+      sqlJoinedTable.JoinInfo = ApplyContext (completelyResolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
     }
 
     public Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext)

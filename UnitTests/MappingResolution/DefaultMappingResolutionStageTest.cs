@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -255,11 +256,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void ResolveSqlJoinedTable ()
+    public void ResolveSqlJoinedTable_WithJoinConditionNotChangedByResolution ()
     {
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
 
-      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
+      var alreadyResolvedJoinCondition = Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook), alreadyResolvedJoinCondition);
 
       _resolverMock
           .Setup (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
@@ -272,6 +274,42 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       _resolverMock.Verify();
       Assert.That (sqlJoinedTable.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
+    }
+
+    [Test]
+    public void ResolveSqlJoinedTable_WithJoinConditionChangedByResolution_ResolvesExpression_AndAppliesValueContext ()
+    {
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
+      
+      var joinCondition = Expression.Constant (true);
+      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook), joinCondition);
+      
+      var fakeResolvedJoinCondition = Expression.Constant (false);
+
+      // This is performed by the first step: ResolvingJoinInfoVisitor.ResolveJoinInfo.
+      _resolverMock
+          .Expect (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
+          .Return (fakeResolvedJoinInfo);
+      // This is performed by the second step: ResolveJoinCondition.
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (joinCondition))
+          .Return (fakeResolvedJoinCondition);
+      // Terminate re-visitation of constant expressions.
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (fakeResolvedJoinCondition))
+          .Return (fakeResolvedJoinCondition);
+      _resolverMock.Replay();
+
+      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
+
+      _stage.ResolveSqlJoinedTable (sqlJoinedTable, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations();
+      Assert.That (sqlJoinedTable.JoinInfo, Is.Not.SameAs (fakeResolvedJoinInfo));
+      Assert.That (((ResolvedJoinInfo) sqlJoinedTable.JoinInfo).ForeignTableInfo, Is.SameAs (fakeResolvedJoinInfo.ForeignTableInfo));
+      // This is performed by the third step: ApplyContext.
+      var expectedJoinConditionWithPredicateContext = ExpressionObjectMother.CreateExpectedPredicateExpressionForBooleanFalse();
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedJoinConditionWithPredicateContext, ((ResolvedJoinInfo) sqlJoinedTable.JoinInfo).JoinCondition);
     }
 
     [Test]
