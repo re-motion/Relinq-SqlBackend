@@ -313,6 +313,31 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
+    public void ResolveSqlJoinedTable_TemporarilySetsPreresolvedJoinInfoWhileJoinConditionIsResolved ()
+    {
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
+
+      var constantExpression = Expression.Constant (1);
+      var joinCondition = Expression.Equal (constantExpression, new SqlLiteralExpression (1));
+      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook), joinCondition);
+
+      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
+
+      _resolverMock
+          .Expect (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
+          .Return (fakeResolvedJoinInfo);
+      _resolverMock
+          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
+          .Return (constantExpression)
+          .WhenCalled(mi => Assert.That (sqlJoinedTable.JoinInfo, Is.SameAs (fakeResolvedJoinInfo)));
+      _resolverMock.Replay();
+
+      _stage.ResolveSqlJoinedTable (sqlJoinedTable, _mappingResolutionContext);
+
+      _resolverMock.VerifyAllExpectations();
+    }
+
+    [Test]
     public void ResolveJoinCondition_ResolvesExpression_AndAppliesPredicateContext ()
     {
       var expression = Expression.Constant (true);

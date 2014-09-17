@@ -123,8 +123,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var joinInfoWithResolvedTable = ResolvingJoinInfoVisitor.ResolveJoinInfo (sqlJoinedTable.JoinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
       
-      // TODO RMLNQSQL-1: Set the resolvedInfo into sqlJoinedTable before resolving the join condition.
-      // sqlJoinedTable.JoinInfo = joinInfoWithResolvedTable;
+      // Temporarily set the joinInfoWithResolvedTable into the sqlJoinedTable; that way, the join condition can reference the joined table without 
+      // raising an exception (because the referenced SqlJoinedTable hasn't been resolved yet).
+      sqlJoinedTable.JoinInfo = joinInfoWithResolvedTable;
 
       var resolvedJoinCondition = ResolveJoinCondition (joinInfoWithResolvedTable.JoinCondition, context);
       ResolvedJoinInfo completelyResolvedJoinInfo;
