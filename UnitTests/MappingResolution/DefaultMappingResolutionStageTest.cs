@@ -101,7 +101,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedSqlStatement = new SqlStatementBuilder (sqlStatement) { DataInfo = expectedDataInfo }.GetSqlStatement ();
 
       Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((ResolvedSubStatementTableInfo) ((SqlTable) sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement, Is.EqualTo (expectedSqlStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement, Is.EqualTo (expectedSqlStatement));
       Assert.That (result, Is.SameAs (sqlStatement.SelectProjection));
     }
 
