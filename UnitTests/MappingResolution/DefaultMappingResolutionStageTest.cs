@@ -293,7 +293,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       _resolverMock.Verify();
 
-      var expected = Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1));
+      var expected = ExpressionObjectMother.CreateExpectedPredicateExpressionForBooleanFalse();
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
