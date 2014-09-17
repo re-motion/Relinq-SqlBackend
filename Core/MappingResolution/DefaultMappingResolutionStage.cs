@@ -116,13 +116,20 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return (IResolvedTableInfo) ApplyContext (resolvedTableInfo, SqlExpressionContext.ValueRequired, context);
     }
 
-    public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolutionContext context)
+    public virtual void ResolveSqlJoinedTable (SqlJoinedTable sqlJoinedTable, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull ("sqlJoinedTable", sqlJoinedTable);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
-      return (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
+      // TODO RMLNQSQL-1: Split resolution of join info in two parts: ResolveJoinedTableOfJoinInfo and ResolveJoinConditionOfJoinInfo. In between,
+      // the resolved join info must be set into the joinedTable.
+      // Step 2: Implement ResolveSqlJoinedTable in two steps:
+      //joinedTable.JoinInfo = _stage.ResolveTablePartOfJoinInfo (joinedTable.JoinInfo, _context);
+      //joinedTable.JoinInfo = _stage.ResolveConditionPartOfJoinInfo (joinedTable.JoinInfo, _context);
+
+      var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (sqlJoinedTable.JoinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
+      resolvedJoinInfo = (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
+      sqlJoinedTable.JoinInfo = resolvedJoinInfo;
     }
 
     public Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext)
@@ -159,7 +166,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var originatingSqlTable = context.GetSqlTableForEntityExpression (expression.OriginatingEntity);
       var join = originatingSqlTable.GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
-      join.JoinInfo = ResolveJoinInfo (join.JoinInfo, context);
+      ResolveSqlJoinedTable (join, context);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
       
       return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression, context);

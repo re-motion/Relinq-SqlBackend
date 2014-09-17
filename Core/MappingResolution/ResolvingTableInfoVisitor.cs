@@ -125,8 +125,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      var resolvedJoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo, _context);
-      joinedTable.JoinInfo = resolvedJoinInfo;
+      _stage.ResolveSqlJoinedTable (joinedTable, _context);
 
       return joinedTable.GetResolvedTableInfo ();
     }

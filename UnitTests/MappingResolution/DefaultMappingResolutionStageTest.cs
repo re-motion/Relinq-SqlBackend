@@ -255,7 +255,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void ResolveJoinInfo ()
+    public void ResolveSqlJoinedTable ()
     {
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
 
@@ -266,10 +266,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Returns (fakeResolvedJoinInfo)
           .Verifiable();
 
-      var result = _stage.ResolveJoinInfo (joinInfo, _mappingResolutionContext);
+      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
+
+      _stage.ResolveSqlJoinedTable (sqlJoinedTable, _mappingResolutionContext);
 
       _resolverMock.Verify();
-      Assert.That (result, Is.SameAs (fakeResolvedJoinInfo));
+      Assert.That (sqlJoinedTable.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
     }
 
     [Test]

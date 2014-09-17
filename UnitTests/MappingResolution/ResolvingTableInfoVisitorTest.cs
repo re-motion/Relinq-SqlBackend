@@ -173,14 +173,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
 
       _stageMock
-          .Setup (mock => mock.ResolveJoinInfo(joinInfo, _mappingResolutionContext))
-          .Returns(joinInfo)
+          .Setup (mock => mock.ResolveSqlJoinedTable(sqlJoinedTable, _mappingResolutionContext))
           .Verifiable();
 
-      var result = ResolvingTableInfoVisitor.ResolveTableInfo (sqlJoinedTable, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
+      ResolvingTableInfoVisitor.ResolveTableInfo (sqlJoinedTable, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
       _stageMock.Verify();
-      Assert.That (result, Is.SameAs (joinInfo.ForeignTableInfo));
     }
 
     [Test]

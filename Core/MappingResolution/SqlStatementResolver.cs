@@ -69,17 +69,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      // TODO RMLNQSQL-1: Split resolution of join info in two parts: ResolveJoinedTableOfJoinInfo and ResolveJoinConditionOfJoinInfo. In between,
-      // the resolved join info must be set into the joinedTable.
-      //
-      // Step 1:
-      //_stage.ResolveSqlJoinedTable (joinedTable, _context);
-      //
-      // Step 2: Implement ResolveSqlJoinedTable in two steps:
-      //joinedTable.JoinInfo = _stage.ResolveTablePartOfJoinInfo (joinedTable.JoinInfo, _context);
-      //joinedTable.JoinInfo = _stage.ResolveConditionPartOfJoinInfo (joinedTable.JoinInfo, _context);
-
-      joinedTable.JoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo, _context);
+      _stage.ResolveSqlJoinedTable (joinedTable, _context);
 
       foreach (var table in joinedTable.JoinedTables)
         ResolveJoinedTable (table);

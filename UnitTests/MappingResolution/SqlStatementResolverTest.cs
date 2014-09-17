@@ -77,8 +77,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
       var join = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
 
-      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
-
       var sequence = new MockSequence();
       _stageMock
             .InSequence (sequence)
@@ -87,14 +85,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
             .Verifiable();
       _stageMock
             .InSequence (sequence)
-            .Setup (mock => mock.ResolveJoinInfo (join.JoinInfo, _mappingResolutionContext))
-            .Returns (fakeResolvedJoinInfo)
+            .Setup (mock => mock.ResolveSqlJoinedTable (join, _mappingResolutionContext))
             .Verifiable();
 
       _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.Verify();
-      Assert.That (join.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
     }
 
     [Test]
@@ -109,9 +105,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var join1 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
       var join2 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
 
-      var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
-      var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Restaurant));
-
       var sequence = new MockSequence();
       _stageMock
             .InSequence (sequence)
@@ -120,20 +113,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
             .Verifiable();
       _stageMock
             .InSequence (sequence)
-            .Setup (mock => mock.ResolveJoinInfo (join1.JoinInfo, _mappingResolutionContext))
-            .Returns (fakeResolvedJoinInfo1)
+            .Setup (mock => mock.ResolveSqlJoinedTable (join1, _mappingResolutionContext))
             .Verifiable();
       _stageMock
             .InSequence (sequence)
-            .Setup (mock => mock.ResolveJoinInfo (join2.JoinInfo, _mappingResolutionContext))
-            .Returns (fakeResolvedJoinInfo2)
+            .Setup (mock => mock.ResolveSqlJoinedTable (join2, _mappingResolutionContext))
             .Verifiable();
 
       _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.Verify();
-      Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
-      Assert.That (join2.JoinInfo, Is.SameAs (fakeResolvedJoinInfo2));
     }
 
     [Test]
@@ -153,38 +142,27 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var join2 = join1.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
       var join3 = join1.GetOrAddLeftJoin (unresolvedJoinInfo3, memberInfo3);
 
-      var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
-      var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
-      var fakeResolvedJoinInfo3 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (string));
-
       var sequence = new MockSequence();
       _stageMock
             .InSequence (sequence)
             .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
-            .Returns (_fakeResolvedSimpleTableInfo)
             .Verifiable();
       _stageMock
             .InSequence (sequence)
-            .Setup (mock => mock.ResolveJoinInfo (join1.JoinInfo, _mappingResolutionContext))
-            .Returns (fakeResolvedJoinInfo1)
+            .Setup (mock => mock.ResolveSqlJoinedTable (join1, _mappingResolutionContext))
             .Verifiable();
       _stageMock
             .InSequence (sequence)
-            .Setup (mock => mock.ResolveJoinInfo (join2.JoinInfo, _mappingResolutionContext))
-            .Returns (fakeResolvedJoinInfo2)
+            .Setup (mock => mock.ResolveSqlJoinedTable (join2, _mappingResolutionContext))
             .Verifiable();
       _stageMock
             .InSequence (sequence)
-            .Setup (mock => mock.ResolveJoinInfo (join3.JoinInfo, _mappingResolutionContext))
-            .Returns (fakeResolvedJoinInfo3)
+            .Setup (mock => mock.ResolveSqlJoinedTable (join3, _mappingResolutionContext))
             .Verifiable();
 
       _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.Verify();
-      Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
-      Assert.That (join2.JoinInfo, Is.SameAs (fakeResolvedJoinInfo2));
-      Assert.That (join3.JoinInfo, Is.SameAs (fakeResolvedJoinInfo3));
     }
 
     [Test]
@@ -284,16 +262,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
 
-      var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
-      
       _stageMock
-          .Setup (mock => mock.ResolveJoinInfo (joinInfo, _mappingResolutionContext))
-          .Returns (fakeJoinInfo)
+          .Setup (mock => mock.ResolveSqlJoinedTable (joinedTable, _mappingResolutionContext))
           .Verifiable();
 
       _visitor.ResolveJoinedTable (joinedTable);
 
-      Assert.That (joinedTable.JoinInfo, Is.SameAs (fakeJoinInfo));
+      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
