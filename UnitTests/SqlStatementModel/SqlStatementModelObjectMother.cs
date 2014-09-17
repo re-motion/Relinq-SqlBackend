@@ -262,12 +262,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return CreateResolvedJoinInfo (typeof (Cook));
     }
 
-    public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type)
+    public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type, Expression joinCondition = null)
     {
-      var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
-      var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
+      if (joinCondition == null)
+      {
+        var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
+        var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
+        joinCondition = Expression.Equal (primaryColumn, foreignColumn);
+      }
+
       var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
-      return new ResolvedJoinInfo (foreignTableInfo, Expression.Equal (primaryColumn, foreignColumn));
+      return new ResolvedJoinInfo (foreignTableInfo, joinCondition);
     }
 
     public static SqlColumnExpression CreateSqlColumn (Type type = null, string owningTableAlias = null, string column = null, bool isPrimaryKey = false)
