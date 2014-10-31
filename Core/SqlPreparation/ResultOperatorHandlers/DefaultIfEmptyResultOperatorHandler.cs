@@ -47,33 +47,32 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      //TODO RMLNQSQL-1: Implementation of join optimization
+      ////TODO RMLNQSQL-1: Implementation of join optimization
       //if (sqlStatementBuilder.SqlTables.Count == 1)
       //{
-      //// If there is exactly one top-level table in this statement, "DefaultIfEmpty" can be implemented simply by converting this table into the 
-      //// right part of a left join with a dummy table. It's important to convert the WHERE condition into a JOIN condition, otherwise it would
-      //// be applied _after_ the left join rather than _during_ the left join.
-      ////TODO RMLNQSQL-1: Check if there is an integration test with a WHERE condition as well as one without one.
+      //  // If there is exactly one top-level table in this statement, "DefaultIfEmpty" can be implemented simply by converting this table into the 
+      //  // right part of a left join with a dummy table. It's important to convert the WHERE condition into a JOIN condition, otherwise it would
+      //  // be applied _after_ the left join rather than _during_ the left join.
+      //  //TODO RMLNQSQL-1: Check if there is an integration test with a WHERE condition as well as one without one.
 
       //  var nullIfEmptyStatementBuilder = new SqlStatementBuilder();
       //  nullIfEmptyStatementBuilder.SelectProjection = new NamedExpression ("Empty", new SqlCustomTextExpression("NULL", typeof (object)));
-      //  nullIfEmptyStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<object>), new SqlCustomTextExpression("NULL", typeof (object)));
+      //  nullIfEmptyStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<object>), nullIfEmptyStatementBuilder.SelectProjection);
 
-      //  var newSqlTable = new SqlTable (new ResolvedSubStatementTableInfo("Empty", nullIfEmptyStatementBuilder.GetSqlStatement()), JoinSemantics.Inner);
+      //  var nullIfEmptySqlTable = new SqlTable (new ResolvedSubStatementTableInfo("Empty", nullIfEmptyStatementBuilder.GetSqlStatement()), JoinSemantics.Inner);
       //  var originalSqlTable = sqlStatementBuilder.SqlTables[0];
 
-      //  // TODO: Add a GetOrAddLeftJoin variant for joins without a member.
-      //  var newJoinedTable = newSqlTable.GetOrAddLeftJoin (
-      //      // TODO: Rename ResolvedJoinInfo to TableBasedJoinInfo, rename other "Unresolved...JoinInfo" classes to "SingleItemMemberBasedJoinInfo" and "CollectionMemberBasedJoinInfo", move out of Unresolved/Resolved namespaces.
-      //      // TODO: Change TableBasedJoinInfo to work with arbitrary ITableInfos, not only IResolvedTableInfos.
+      //  // TODO RMLNQSQL-1: Add AddLeftJoin for joins without a member.
+      //  var newJoinedTable = nullIfEmptySqlTable.AddLeftJoin (
+      //      // TODO RMLNQSQL-1: Rename ResolvedJoinInfo to TableBasedJoinInfo, rename other "Unresolved...JoinInfo" classes to "SingleItemMemberBasedJoinInfo" and "CollectionMemberBasedJoinInfo", move out of Unresolved/Resolved namespaces.
+      //      // TODO RMLNQSQL-1: Change TableBasedJoinInfo to work with arbitrary ITableInfos, not only IResolvedTableInfos.
       //      new ResolvedJoinInfo (
       //          originalSqlTable.TableInfo,
-      //          sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1))),
-      //      null);
+      //          sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1))));
       //  sqlStatementBuilder.WhereCondition = null;
 
-      //  // Will be changed when TableInfo is no longer mutable.
-      //  originalSqlTable.TableInfo = newJoinedTable;
+      //  sqlStatementBuilder.SqlTables.Clear();
+      //  sqlStatementBuilder.SqlTables.Add (nullIfEmptySqlTable);
 
       //  // Further TODOs:
       //  // TODO: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
@@ -83,10 +82,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       //else
       //{
       //// Otherwise, we need to move the whole statement up to now into a subquery and put that into a left join.
-      MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
+      //  // TODO RMLNQSQL-1: Refactor to build exact join here as well, using nullIfEmptySqlTable; then eliminate SqlTable.JoinSemantics.
+      //  MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
       //}
 
-      //TODO RMLNQSQL-1: Also add integration tests with more than one table to see that this still works.
+      ////TODO RMLNQSQL-1: Also add integration tests with more than one table to see that this still works.
     }
   }
 }
