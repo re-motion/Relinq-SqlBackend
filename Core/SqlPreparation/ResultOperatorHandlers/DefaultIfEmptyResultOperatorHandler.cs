@@ -53,6 +53,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       //// If there is exactly one top-level table in this statement, "DefaultIfEmpty" can be implemented simply by converting this table into the 
       //// right part of a left join with a dummy table. It's important to convert the WHERE condition into a JOIN condition, otherwise it would
       //// be applied _after_ the left join rather than _during_ the left join.
+      ////TODO RMLNQSQL-1: Check if there is an integration test with a WHERE condition as well as one without one.
 
       //  var nullIfEmptyStatementBuilder = new SqlStatementBuilder();
       //  nullIfEmptyStatementBuilder.SelectProjection = new NamedExpression ("Empty", new SqlCustomTextExpression("NULL", typeof (object)));
@@ -84,6 +85,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       //// Otherwise, we need to move the whole statement up to now into a subquery and put that into a left join.
       MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
       //}
+
+      //TODO RMLNQSQL-1: Also add integration tests with more than one table to see that this still works.
     }
   }
 }
