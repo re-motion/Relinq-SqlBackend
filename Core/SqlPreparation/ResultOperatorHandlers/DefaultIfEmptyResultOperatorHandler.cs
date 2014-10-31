@@ -50,6 +50,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       //TODO RMLNQSQL-1: Implementation of join optimization
       //if (sqlStatementBuilder.SqlTables.Count == 1)
       //{
+      //// If there is exactly one top-level table in this statement, "DefaultIfEmpty" can be implemented simply by converting this table into the 
+      //// right part of a left join with a dummy table. It's important to convert the WHERE condition into a JOIN condition, otherwise it would
+      //// be applied _after_ the left join rather than _during_ the left join.
+
       //  var nullIfEmptyStatementBuilder = new SqlStatementBuilder();
       //  nullIfEmptyStatementBuilder.SelectProjection = new NamedExpression ("Empty", new SqlCustomTextExpression("NULL", typeof (object)));
       //  nullIfEmptyStatementBuilder.DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<object>), new SqlCustomTextExpression("NULL", typeof (object)));
@@ -75,8 +79,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       //  // TODO: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
       //  // TODO: When refactoring mutability of SqlTable/SqlJoinedTable/SqlTableBase, consider changing SqlTableReferenceExpression [and all other references to SqlTableBases] to no longer point to the SqlTableBase object, but instead needs to look up the associated table (in the SqlStatementBuilder or SqlStatement, exposed via context).
       //}
-
+      //else
+      //{
+      //// Otherwise, we need to move the whole statement up to now into a subquery and put that into a left join.
       MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
+      //}
     }
   }
 }
