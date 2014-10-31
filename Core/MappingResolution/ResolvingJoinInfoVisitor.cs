@@ -97,13 +97,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {
-      //TODO RMLNQSQL-1: Options for resolving the SqlJoinTable
-      // 0) After the SqlTable mapping refactoring, temporarily map the currently resolved SqlJoinedTable to a new SqlJoinedTable with the newForeignTableInfo but the old join condition while the join condition is resolved 
-      // 1) Remember newForeignTableInfo for the currently resolved SqlJoinedTable in the _context and use it in DefaultMappingResolutionStage.ResolveTableReferenceExpression.
-      // 2) Replace all SqlTableReferenceExpressions in the join condition with resolved newForeignTableInfo.ResolveReference().
-      // 3) After the SqlTable mapping refactoring, temporarily map the currently resolved SqlJoinedTable to a new SqlTable with the newForeignTableInfo while the join condition is resolved 
-      // 4) In ResolveTableReferenceExpression, do not reuse the newForeignTableInfo, but re-resolve it.
-
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       var newForeignTableInfo = _stage.ResolveTableInfo (joinInfo.ForeignTableInfo, _context);
       if (newForeignTableInfo != joinInfo.ForeignTableInfo)
