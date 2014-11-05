@@ -30,13 +30,63 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     public void Union_OnTopLevel ()
     {
       CheckQuery (
-          () => Cooks.Where(c => c.FirstName == "Hugo").Select(c => c.ID).Union (Cooks.Where (c => c.Name == "Boss").Select(c => c.ID)),
-          "SELECT [t0].[ID] AS [ID] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
-          + "UNION SELECT [t1].[ID] AS [ID] FROM [CookTable] AS [t1] WHERE ([t1].[FirstName] = @2)",
-          row => (object) row.GetValue<int> (new ColumnID ("ID", 0)),
+          () => Cooks.Where (c => c.FirstName == "Hugo").Select (c => c.ID).Union (Cooks.Where (c => c.Name == "Boss").Select (c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "Boss"));
+
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").Select (c => c.ID)
+              .Union (Cooks.Where (c => c.Name == "Boss").Select (c => c.ID))
+              .Union (Cooks.Where (c => c.ID == 100).Select (c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2)) "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"),
+          new CommandParameter ("@3", 100));
+
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").Select (c => c.ID)
+              .Union (
+                  Cooks.Where (c => c.Name == "Boss").Select (c => c.ID)
+                      .Union (Cooks.Where (c => c.ID == 100).Select (c => c.ID))),
+          // The difference is in the parentheses.
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2) "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3)))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"),
+          new CommandParameter ("@3", 100));
     }
+
+    [Test]
+    [Ignore("TODO RMLNQSQL-30")]
+    public void Union_WithDifferentTypes ()
+    {
+      CheckQuery (
+          () => Cooks.Where(c => c.FirstName == "Hugo").Select(c => c.ID).Union (Chefs.Where (c => c.Name == "Boss").Select(c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [dbo].[ChefTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
+
+      CheckQuery (
+          () => Cooks.Where(c => c.FirstName == "Hugo").Select(c => c.ID).Union (Kitchens.Where (c => c.Name == "Nino's Kitchen").Select(c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [KitchenTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Nino's Kitchen"));
+    }
+
+    // TODO RMLNQSQL-30: Error cases? E.g., when selecting Cook and Chef as entities, when producing different projections, etc.
+    // TODO RMLNQSQL-30: Not supported: Union with non-sub-query.
 
     [Test]
     [Ignore("TODO RMLNQSQL-30")]
@@ -47,8 +97,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
                 from x in (Cooks.Where(c => c.FirstName == "Hugo").Select(c => c.ID).Union (Cooks.Where (c => c.Name == "Boss").Select(c => c.ID)))
                 where k.ID == x
                 select x,
-          "TODO",
-          row => (object) row.GetValue<int> (new ColumnID ("ID", 0)),
+          "SELECT [q0].[value] AS [value] " 
+          + "FROM [CookTable] AS [t1] " 
+          + "CROSS APPLY ("
+          + "SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[FirstName] = @1) "
+          + "UNION (SELECT [t3].[ID] AS [value] FROM [CookTable] AS [t3] WHERE ([t3].[Name] = @2))) " 
+          + "AS [q0] "
+          + "WHERE ([t1].[ID] = [q0].[value])",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "Boss"));
     }
