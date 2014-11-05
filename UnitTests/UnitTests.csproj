@@ -179,6 +179,7 @@
     <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\DateTimeMethodCallExpressionSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\TransformedMethodCallExpressionSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\EqualsMethodCallExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\UnionResultOperatorSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\ContainsResultOperatorSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\AnyResultOperatorSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\AllResultOperatorSqlBackendIntegrationTest.cs" />
