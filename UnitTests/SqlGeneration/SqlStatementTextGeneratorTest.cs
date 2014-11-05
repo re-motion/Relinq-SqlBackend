@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildSelectPart_WithSelect ()
     {
-      var sqlStatement = CreateSqlStatement();
+      var sqlStatement = CreateValidSqlStatement();
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -76,7 +76,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildSelectPart_NoEntityExpression ()
     {
-      var sqlStatement = new SqlStatementBuilder { SelectProjection = new SqlColumnDefinitionExpression (typeof (string), "t", "FirstName", false), DataInfo = new TestStreamedValueInfo (typeof (object)) }.GetSqlStatement ();
+      var sqlStatement = CreateValidSqlStatement();
+
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[FirstName]"));
@@ -91,7 +92,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildFromPart_WithFrom ()
     {
-      var sqlStatement = CreateSqlStatement();
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { SqlTables = { _sqlTable } });
 
       _stageMock.Expect (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[Table] AS [t]"));
@@ -107,7 +108,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void BuildSelectPart_WithAggregation ()
     {
       var aggregationExpression = new AggregationExpression (typeof(int), _entityExpression,AggregationModifier.Count);
-      var sqlStatement = new SqlStatementBuilder { SelectProjection = aggregationExpression, DataInfo = new TestStreamedValueInfo (typeof (object)) }.GetSqlStatement ();
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { SelectProjection = aggregationExpression });
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression))
@@ -122,9 +123,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildSelectPart_WithDistinctIsTrue ()
     {
-      var sqlStatement =
-          new SqlStatementBuilder
-          { DataInfo = new TestStreamedValueInfo (typeof (int)), SelectProjection = _entityExpression, IsDistinctQuery = true }.GetSqlStatement();
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { IsDistinctQuery = true });
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -140,10 +139,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildSelectPart_WithTopExpression ()
     {
-      var sqlStatement =
-          new SqlStatementBuilder
-          { DataInfo = new TestStreamedValueInfo (typeof (int)), SelectProjection = _entityExpression, TopExpression = Expression.Constant (1) }.
-              GetSqlStatement();
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { TopExpression = Expression.Constant (1) });
 
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
@@ -161,15 +157,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildSelectPart_WithDistinctAndTopExpression ()
     {
-      var sqlStatement =
-          new SqlStatementBuilder
-          {
-              DataInfo = new TestStreamedValueInfo (typeof (int)),
-              SelectProjection = _entityExpression,
-              TopExpression = Expression.Constant (5),
-              IsDistinctQuery = true
-          }.
-              GetSqlStatement();
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { TopExpression = Expression.Constant (5), IsDistinctQuery = true });
 
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("@1"));
@@ -187,14 +175,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildWhere_WithSingleWhereCondition ()
     {
-      var sqlStatement = 
-          new SqlStatementBuilder
-          {
-              DataInfo = new TestStreamedValueInfo (typeof (int)),
-              SelectProjection = _entityExpression,
-              WhereCondition = Expression.Constant (true)
-          }
-          .GetSqlStatement();
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { WhereCondition = Expression.Constant (true) });
 
       _stageMock.Expect (mock => mock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("(@1 = 1)"));
@@ -212,17 +193,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false);
       var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
 
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          null,
-          null,
-          new[] { orderByClause },
-          null,
-          false,
-          null,
-          null);
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { Orderings = { orderByClause } });
 
       _stageMock.Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, orderByClause))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[Name] ASC"));
@@ -230,7 +201,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _generator.BuildOrderByPart (sqlStatement, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" ORDER BY [t].[Name] ASC"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo (" ORDER BY [t].[Name] ASC"));
       _stageMock.VerifyAllExpectations();
     }
 
@@ -244,17 +215,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var columnExpression3 = new SqlColumnDefinitionExpression (typeof (string), "t", "City", false);
       var orderByClause3 = new Ordering (columnExpression3, OrderingDirection.Desc);
 
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          null,
-          null,
-          new[] { orderByClause1, orderByClause2, orderByClause3 },
-          null,
-          false,
-          null,
-          null);
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { Orderings = { orderByClause1, orderByClause2, orderByClause3 } });
 
       _stageMock.Expect (mock => mock.GenerateTextForOrdering (_commandBuilder, sqlStatement.Orderings[0]))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[ID] ASC"));
@@ -273,39 +234,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void BuildDistinctPart ()
     {
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          null,
-          null,
-          new Ordering[] { },
-          null,
-          true,
-          null,
-          null);
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { IsDistinctQuery = true });
 
       _generator.BuildDistinctPart (sqlStatement, _commandBuilder);
 
-      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("DISTINCT "));
-      _stageMock.VerifyAllExpectations ();
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("DISTINCT "));
+      _stageMock.VerifyAllExpectations();
     }
 
     [Test]
     public void BuildTopPart ()
     {
-      var topExpression = Expression.Constant("top");
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          null,
-          null,
-          new Ordering[] { },
-          topExpression,
-          false,
-          null,
-          null);
+      var topExpression = Expression.Constant ("top");
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { TopExpression = topExpression });
 
       _stageMock.Expect (mock => mock.GenerateTextForTopExpression (_commandBuilder, topExpression))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("top"));
@@ -321,7 +262,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void Build_WithSelectAndFrom ()
     {
-      var sqlStatement = CreateSqlStatement();
+      var sqlStatement = CreateValidSqlStatement(new SqlStatementBuilder { SqlTables = { _sqlTable }});
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -342,7 +283,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void Build_WithSelectAndNoFrom ()
     {
-      var sqlStatement = new SqlStatementBuilder { SelectProjection = Expression.Constant (null), DataInfo = new TestStreamedValueInfo (typeof (object)) }.GetSqlStatement ();
+      var sqlStatement = CreateValidSqlStatement ();
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -362,17 +303,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       sqlGroupExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation1"));
       sqlGroupExpression.AddAggregationExpressionWithName (Expression.Constant ("aggregation2"));
 
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          null,
-          sqlGroupExpression,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { SqlTables = {_sqlTable }, GroupByExpression = sqlGroupExpression });
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -393,17 +324,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void Build_WithWhereCondition ()
     {
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          Expression.Constant (true),
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { SqlTables = {_sqlTable }, WhereCondition = Expression.Constant(true) });
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -427,19 +348,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void Build_WithOrderByClause ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false);
-      var orderByClause = new Ordering (columnExpression, OrderingDirection.Asc);
+      var ordering = new Ordering (columnExpression, OrderingDirection.Asc);
 
-      var sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          null,
-          null,
-          new[] { orderByClause },
-          null,
-          false,
-          null,
-          null);
+      var sqlStatement = CreateValidSqlStatement (new SqlStatementBuilder { SqlTables = {_sqlTable }, Orderings = { ordering } });
 
       _stageMock.Expect (
           mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
@@ -459,19 +370,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.VerifyAllExpectations();
     }
 
-    private SqlStatement CreateSqlStatement ()
+    private SqlStatement CreateValidSqlStatement (SqlStatementBuilder builder)
     {
-      return new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { _sqlTable },
-          null,
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
+      if (builder.SelectProjection == null)
+        builder.SelectProjection = _entityExpression;
+      if (builder.DataInfo == null)
+        builder.DataInfo = new TestStreamedValueInfo (builder.SelectProjection.Type);
+      return builder.GetSqlStatement();
+    }
+
+    private SqlStatement CreateValidSqlStatement ()
+    {
+      return CreateValidSqlStatement (new SqlStatementBuilder());
     }
   }
 }
