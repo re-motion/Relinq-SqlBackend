@@ -129,9 +129,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         for (int i = 0; i < sqlStatementBuilder.Orderings.Count; ++i)
         {
-          var newOrderingExpression = _stage.ResolveOrderingExpression (sqlStatementBuilder.Orderings[i].Expression, _context);
-          if (newOrderingExpression != sqlStatementBuilder.Orderings[i].Expression)
-            sqlStatementBuilder.Orderings[i] = new Ordering (newOrderingExpression, sqlStatementBuilder.Orderings[i].OrderingDirection);
+          var resolvedOrderingExpression = _stage.ResolveOrderingExpression (sqlStatementBuilder.Orderings[i].Expression, _context);
+          if (resolvedOrderingExpression != sqlStatementBuilder.Orderings[i].Expression)
+            sqlStatementBuilder.Orderings[i] = new Ordering (resolvedOrderingExpression, sqlStatementBuilder.Orderings[i].OrderingDirection);
         }
       }
       
