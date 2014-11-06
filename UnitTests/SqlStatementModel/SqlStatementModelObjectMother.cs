@@ -136,6 +136,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       }.GetSqlStatement ();
     }
 
+    public static SqlStatement CreateMinimalSqlStatement (SqlStatementBuilder builder)
+    {
+      if (builder.SelectProjection == null)
+        builder.SelectProjection = ExpressionHelper.CreateExpression();
+      if (builder.DataInfo == null)
+        builder.DataInfo = new TestStreamedValueInfo (builder.SelectProjection.Type);
+      return builder.GetSqlStatement();
+    }
+
     public static SqlTable CreateSqlTable ()
     {
       return CreateSqlTable (typeof (Cook));
