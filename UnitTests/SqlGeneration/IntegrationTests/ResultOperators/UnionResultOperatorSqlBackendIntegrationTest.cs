@@ -26,7 +26,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
   public class UnionResultOperatorSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [Ignore("TODO RMLNQSQL-30")]
     public void Union_OnTopLevel ()
     {
       CheckQuery (
@@ -65,7 +64,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore("TODO RMLNQSQL-30")]
     public void Union_WithDifferentTypes ()
     {
       CheckQuery (
@@ -89,7 +87,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     // TODO RMLNQSQL-30: Not supported: Union with non-sub-query.
 
     [Test]
-    [Ignore("TODO RMLNQSQL-30")]
     public void Union_InSubQuery ()
     {
       CheckQuery (

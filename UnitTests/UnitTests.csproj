@@ -240,6 +240,7 @@
     <Compile Include="SqlPreparation\NameBasedMethodCallTransformerRegistryTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlerRegistryTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AggregationResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\UnionResultOperatorHandlerTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandlerTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AnyResultOperatorHandlerTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AverageResultOperatorHandlerTest.cs" />

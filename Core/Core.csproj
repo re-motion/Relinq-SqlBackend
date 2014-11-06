@@ -165,6 +165,7 @@
     <Compile Include="SqlPreparation\NameBasedMethodCallTransformerRegistry.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlerRegistry.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AggregationResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\UnionResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AnyResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AverageResultOperatorHandler.cs" />
