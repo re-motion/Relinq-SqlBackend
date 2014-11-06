@@ -57,5 +57,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       base.BuildTopPart (sqlStatement, commandBuilder);
     }
+
+    public new void BuildSetOperationCombinedStatementsPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      base.BuildSetOperationCombinedStatementsPart (sqlStatement, commandBuilder);
+    }
   }
 }

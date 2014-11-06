@@ -53,6 +53,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       BuildWherePart (sqlStatement, commandBuilder);
       BuildGroupByPart (sqlStatement, commandBuilder);
       BuildOrderByPart (sqlStatement, commandBuilder);
+      BuildSetOperationCombinedStatementsPart (sqlStatement, commandBuilder);
     }
 
     protected virtual void BuildSelectPart (
@@ -148,6 +149,28 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       if (sqlStatement.IsDistinctQuery)
         commandBuilder.Append ("DISTINCT ");
     }
-    
+
+    protected virtual void BuildSetOperationCombinedStatementsPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+
+      foreach (var combinedStatement in sqlStatement.SetOperationCombinedStatements)
+      {
+        switch (combinedStatement.SetOperation)
+        {
+          case SetOperation.Union:
+            commandBuilder.Append (" UNION (");
+            break;
+
+          default:
+            throw new InvalidOperationException ("Invalid enum value: " + combinedStatement.SetOperation);
+        }
+
+        _stage.GenerateTextForSqlStatement (commandBuilder, combinedStatement.SqlStatement);
+        commandBuilder.Append (")");
+      }
+    }
+   
   }
 }
