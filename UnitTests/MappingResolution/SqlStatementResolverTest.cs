@@ -331,16 +331,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"));
       _stageMock.Replay();
 
-      var resolveSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
+      var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
 
       _stageMock.VerifyAllExpectations();
-      Assert.That (resolveSqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
-      Assert.That (((StreamedSequenceInfo) resolveSqlStatement.DataInfo).DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(Cook))));
-      Assert.That (resolveSqlStatement.SelectProjection, Is.SameAs(fakeExpression));
-      Assert.That (resolveSqlStatement.WhereCondition, Is.SameAs (fakeWhereCondition));
-      Assert.That (resolveSqlStatement.TopExpression, Is.SameAs (fakeTopExpression));
-      Assert.That (resolveSqlStatement.GroupByExpression, Is.SameAs (fakeGroupExpression));
-      Assert.That (resolveSqlStatement.Orderings[0].Expression, Is.SameAs (fakeOrderExpression));
+      Assert.That (resolvedSqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) resolvedSqlStatement.DataInfo).DataType, Is.EqualTo(typeof (IQueryable<>).MakeGenericType(typeof(Cook))));
+      Assert.That (resolvedSqlStatement.SelectProjection, Is.SameAs(fakeExpression));
+      Assert.That (resolvedSqlStatement.WhereCondition, Is.SameAs (fakeWhereCondition));
+      Assert.That (resolvedSqlStatement.TopExpression, Is.SameAs (fakeTopExpression));
+      Assert.That (resolvedSqlStatement.GroupByExpression, Is.SameAs (fakeGroupExpression));
+      Assert.That (resolvedSqlStatement.Orderings[0].Expression, Is.SameAs (fakeOrderExpression));
       Assert.That (sqlStatement.Orderings[0].Expression, Is.SameAs (ordering.Expression));
    }
   
