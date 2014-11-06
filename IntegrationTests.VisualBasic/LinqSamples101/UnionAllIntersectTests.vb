@@ -77,7 +77,6 @@ Namespace LinqSamples101
     'This sample uses Union to return a sequence of all countries that either 
     'Customers or Employees live in.
     <Test()> _
-    <Ignore("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlUnion03()
       Dim countries = (From cust In DB.Customers _
                        Select cust.Country).Union(From emp In DB.Employees _

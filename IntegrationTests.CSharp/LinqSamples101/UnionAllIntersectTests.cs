@@ -84,7 +84,6 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Union to return a sequence of all countries that either Customers or Employees are in.
     /// </summary>
     [Test]
-    [Ignore ("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")]
     public void LinqToSqlUnion03 ()
     {
       var q = (
