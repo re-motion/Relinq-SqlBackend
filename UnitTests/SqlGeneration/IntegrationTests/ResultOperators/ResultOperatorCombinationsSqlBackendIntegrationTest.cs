@@ -306,6 +306,85 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
         + "THEN 1 ELSE 0 END) AS [value]");
     }
 
-    // TODO RMLNQSQL-30: Any result operator after a set operator (apart from other set operators) must wrap.
+    [Test]
+    [Ignore ("TODO RMLNQ-30")]
+    public void ResultOperatorAfterSetOperation_CausesSubQuery ()
+    {
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).All(i => i > 10),
+          "TODO");
+      
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Any(i => i > 10),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Average(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Contains(10),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Count(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).DefaultIfEmpty(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Distinct(),
+          "SELECT DISTINCT [q0].[value] AS [value] "
+          + "FROM (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])) AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).First(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).GroupBy(i => i % 3),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Max(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Min(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c).Union (Cooks.Select (c => c)).OfType<Chef>(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Single(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Skip(10),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Sum(),
+          "TODO");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Take(3),
+          "TODO");
+    }
+
+    [Test]
+    public void SetOperationAfterSetOperation_CausesNoSubQuery ()
+    {
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Union (Restaurants.Select (r => r.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [KitchenTable] AS [t1]) "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [RestaurantTable] AS [t2])");
+    }
   }
 }
