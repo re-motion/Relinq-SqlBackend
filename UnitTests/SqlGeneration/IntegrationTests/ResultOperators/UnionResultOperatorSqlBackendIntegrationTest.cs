@@ -84,8 +84,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     // TODO RMLNQSQL-30: Error cases? E.g., when selecting Cook and Chef as entities, when producing different projections, etc.
-    // TODO RMLNQSQL-30: Not supported: Union with non-sub-query.
 
+    [Test]
+    [ExpectedException(typeof (NotSupportedException), ExpectedMessage = 
+        "The Union result operator is only supported for combining two query results, but a 'ConstantExpression' was supplied as the second sequence: "
+        + "value(System.Int32[])")]
+    public void Union_WithCollection ()
+    {
+      CheckQuery (
+          () => Cooks.Select(c => c.ID).Union (new[] { 1, 2, 3}),
+          "not supported");
+    }
+    
     [Test]
     public void Union_InSubQuery ()
     {
