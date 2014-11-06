@@ -305,5 +305,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
         + "WHERE NOT ([q0].[key] IS NOT NULL))) "
         + "THEN 1 ELSE 0 END) AS [value]");
     }
+
+    // TODO RMLNQSQL-30: Any result operator after a set operator (apart from other set operators) must wrap.
   }
 }
