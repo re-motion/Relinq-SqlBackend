@@ -83,7 +83,33 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           new CommandParameter ("@2", "Nino's Kitchen"));
     }
 
-    // TODO RMLNQSQL-30: Error cases? E.g., when selecting Cook and Chef as entities, when producing different projections, etc.
+    [Test]
+    [Ignore("TODO RMLNQSQL-30: This should really throw an error, but it generates invalid SQL.")]
+    public void Union_WithDifferentColumnLists ()
+    {
+      CheckQuery (
+          () => Cooks.Union (Chefs.Select (c => c)),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "FROM [CookTable] AS [t0] "
+          + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[LetterOfRecommendation] "
+          + "FROM [dbo].[ChefTable] AS [t1])");
+    }
+
+    [Test]
+    [Ignore("TODO RMLNQSQL-30: This should really throw an error, but it generates an invalid in-memory projection.")]
+    public void Union_WithDifferentInMemoryProjections ()
+    {
+      CheckQuery (
+          () => Cooks.Select(c => InMemoryToUpper (c.Name)).Union (Kitchens.Select (c => c.Name)),
+          "SELECT [t0].[Name] AS [Arg0] FROM [CookTable] AS [t0] UNION (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1])");
+    }
+
+    private static string InMemoryToUpper (string id)
+    {
+      return id.ToUpper();
+    }
 
     [Test]
     [ExpectedException(typeof (NotSupportedException), ExpectedMessage = 
