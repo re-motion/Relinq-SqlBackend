@@ -86,8 +86,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf(typeof(ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
 
     [Test]
@@ -99,8 +98,25 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    [Test]
+    public void HandleResultOperator_DistinctAfterSetOperation ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add (SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var resultOperator = new DistinctResultOperator();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    private void AssertStatementWasMovedToSubStatement (SqlStatementBuilder sqlStatementBuilder)
+    {
+      Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
+      Assert.That (sqlStatementBuilder.SqlTables[0].TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
   }
 }

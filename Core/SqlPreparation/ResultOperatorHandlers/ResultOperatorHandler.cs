@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
@@ -73,6 +74,17 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       if (sqlStatementBuilder.GroupByExpression != null)
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
+    }
+
+    protected void EnsureNoSetOperations (
+        SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
+    {
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+
+      if (sqlStatementBuilder.SetOperationCombinedStatements.Any())
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
     }
 

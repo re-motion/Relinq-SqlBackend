@@ -201,12 +201,47 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     }
 
     [Test]
-    public void EnsureDistinctQuery_NoDistinctQuery ()
+    public void EnsureNoDistinctQuery_NoDistinctQuery ()
     {
       _statementBuilder.IsDistinctQuery = false;
       var sqlStatement = _statementBuilder.GetSqlStatement ();
 
       _handler.EnsureNoDistinctQuery(_statementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
+    }
+
+    [Test]
+    public void EnsureNoSetOperations_WithSetOperations ()
+    {
+      _statementBuilder.SetOperationCombinedStatements.Add(SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+      
+      var originalStatement = _statementBuilder.GetSqlStatement ();
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo (new Ordering[0]);
+
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
+      _handler.EnsureNoSetOperations (_statementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
+      Assert.That (_statementBuilder.SetOperationCombinedStatements, Is.Empty);
+
+      var sqlTable = _statementBuilder.SqlTables[0];
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+    }
+
+    [Test]
+    public void EnsureNoSetOperations_NoSetOperations ()
+    {
+      var sqlStatement = _statementBuilder.GetSqlStatement ();
+
+      _handler.EnsureNoSetOperations(_statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
     }
