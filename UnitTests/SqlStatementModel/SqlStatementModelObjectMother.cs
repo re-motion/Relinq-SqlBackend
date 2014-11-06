@@ -21,6 +21,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -53,7 +55,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           null,
           false,
           null,
-          null);
+          null,
+          new SetOperationCombinedStatement[0]);
     }
 
     public static SqlStatement CreateSqlStatementWithCook ()
@@ -69,7 +72,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           null,
           false,
           null,
-          null);
+          null,
+          new SetOperationCombinedStatement[0]);
     }
 
     public static SqlStatement CreateSqlStatement ()
@@ -85,7 +89,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           null,
           false,
           null,
-          null);
+          null,
+          new SetOperationCombinedStatement[0]);
     }
 
     public static SqlStatement CreateSqlStatement_Resolved (Type type)
@@ -103,7 +108,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           null,
           false,
           null,
-          null);
+          null,
+          new SetOperationCombinedStatement[0]);
     }
 
     public static SqlStatement CreateSqlStatement_Single ()
@@ -118,7 +124,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           new SqlLiteralExpression (1),
           false,
           null,
-          null);
+          null,
+          new SetOperationCombinedStatement[0]);
     }
 
     public static SqlStatement CreateSqlStatement_Scalar ()
@@ -316,6 +323,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var originatingEntity = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var memberInfo = typeof (Kitchen).GetProperty ("Cook");
       return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+    }
+
+    public static SetOperationCombinedStatement CreateSetOperationCombinedStatement ()
+    {
+      return new SetOperationCombinedStatement (
+          CreateSqlStatement(),
+          SetOperation.Union);
     }
   }
 }

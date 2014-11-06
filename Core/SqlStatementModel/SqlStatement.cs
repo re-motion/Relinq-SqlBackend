@@ -41,6 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     private readonly bool _isDistinctQuery;
     private readonly Expression _rowNumberSelector;
     private readonly Expression _currentRowNumberOffset;
+    private readonly SetOperationCombinedStatement[] _setOperationCombinedStatements;
 
     public SqlStatement (
         IStreamedDataInfo dataInfo,
@@ -52,13 +53,15 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         Expression topExpression,
         bool isDistinctQuery,
         Expression rowNumberSelector,
-        Expression currentRowNumberOffset)
+        Expression currentRowNumberOffset,
+        IEnumerable<SetOperationCombinedStatement> setOperationCombinedStatements)
     {
       ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
       ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
       ArgumentUtility.CheckNotNull ("sqlTables", sqlTables);
       ArgumentUtility.CheckNotNull ("orderings", orderings);
-
+      ArgumentUtility.CheckNotNull ("setOperationCombinedStatements", setOperationCombinedStatements);
+      
       if (whereCondition != null && whereCondition.Type != typeof (bool))
         throw ArgumentUtility.CreateArgumentTypeException ("whereCondition", whereCondition.Type, typeof (bool));
 
@@ -72,6 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       _rowNumberSelector = rowNumberSelector;
       _currentRowNumberOffset = currentRowNumberOffset;
       _groupByExpression = groupByExpression;
+      _setOperationCombinedStatements = setOperationCombinedStatements.ToArray();
     }
 
     public IStreamedDataInfo DataInfo
@@ -124,6 +128,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _currentRowNumberOffset; }
     }
 
+    public ReadOnlyCollection<SetOperationCombinedStatement> SetOperationCombinedStatements
+    {
+      get { return Array.AsReadOnly (_setOperationCombinedStatements); }
+    }
+
     public Expression CreateExpression ()
     {
       return SqlTables.Count == 0 && !IsDistinctQuery ? SelectProjection : new SqlSubStatementExpression (this);
@@ -143,8 +152,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
              && (_rowNumberSelector == statement._rowNumberSelector)
              && (_currentRowNumberOffset == statement._currentRowNumberOffset)
              && (_groupByExpression == statement._groupByExpression)
+             // Note: These items are all compared by reference, which is okay because the visitors take care to reuse the objects if their contents
+             // don't change.
              && (_sqlTables.SequenceEqual (statement._sqlTables))
-             && (_orderings.SequenceEqual (statement._orderings));
+             && (_orderings.SequenceEqual (statement._orderings))
+             && (_setOperationCombinedStatements.SequenceEqual(statement.SetOperationCombinedStatements));
     }
 
     public override int GetHashCode ()
@@ -159,7 +171,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
           _currentRowNumberOffset,
           _groupByExpression)
              ^ EqualityUtility.GetRotatedHashCode (_sqlTables)
-             ^ EqualityUtility.GetRotatedHashCode (_orderings);
+             ^ EqualityUtility.GetRotatedHashCode (_orderings)
+             ^ EqualityUtility.GetRotatedHashCode (_setOperationCombinedStatements);
     }
 
     public override string ToString ()
