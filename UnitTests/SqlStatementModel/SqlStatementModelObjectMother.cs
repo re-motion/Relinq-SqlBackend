@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           sqlTables,
           null,
           null,
-          new Ordering[] { },
+          new Ordering[0],
           null,
           false,
           null,
