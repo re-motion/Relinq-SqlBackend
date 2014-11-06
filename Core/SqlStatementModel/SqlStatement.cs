@@ -113,6 +113,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _groupByExpression; }
     }
 
+    // IDEA: When refactoring for full immutability, also change to no longer use Ordering here - it's not immutable!
     public ReadOnlyCollection<Ordering> Orderings
     {
       get { return Array.AsReadOnly (_orderings); }
