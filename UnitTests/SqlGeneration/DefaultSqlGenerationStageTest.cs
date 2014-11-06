@@ -52,17 +52,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
               new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
 
-      _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { sqlTable },
-          null,
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
+      _sqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement (
+          new SqlStatementBuilder
+          {
+              SelectProjection = _entityExpression,
+              SqlTables = { sqlTable }
+          });
       _commandBuilder = new SqlCommandBuilder();
     }
 
@@ -75,8 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
     }
-
-
+    
     [Test]
     public void GenerateTextForSelectExpression ()
     {
