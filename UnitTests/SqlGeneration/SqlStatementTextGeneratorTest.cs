@@ -75,22 +75,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void BuildSelectPart_NoEntityExpression ()
-    {
-      var sqlStatement = SqlStatementModelObjectMother.CreateValidSqlStatement();
-
-      _stageMock.Expect (
-          mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("[t].[FirstName]"));
-      _stageMock.Replay();
-
-      _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT [t].[FirstName]"));
-      _stageMock.VerifyAllExpectations();
-    }
-
-    [Test]
     public void BuildFromPart_WithFrom ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement (new SqlStatementBuilder { SqlTables = { _sqlTable } });
