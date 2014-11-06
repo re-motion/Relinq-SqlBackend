@@ -187,6 +187,8 @@
     <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactory.cs" />
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
+    <Compile Include="SqlStatementModel\SetOperation.cs" />
+    <Compile Include="SqlStatementModel\SetOperationCombinedStatement.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlCollectionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlExistsExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlInExpressionVisitor.cs" />
