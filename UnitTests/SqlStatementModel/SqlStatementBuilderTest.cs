@@ -62,8 +62,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
-      Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
-      Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
+      Assert.That (testedBuilder.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (testedBuilder.Orderings, Is.EqualTo (new[] { ordering }));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
@@ -164,8 +164,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (sqlStatement.TopExpression, Is.SameAs (topExpression));
       Assert.That (sqlStatement.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
       Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
-      Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
+      Assert.That (sqlStatement.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (sqlStatement.Orderings, Is.EqualTo (new[] { ordering }));
       Assert.That (sqlStatement.WhereCondition, Is.SameAs (whereCondition));
       Assert.That (sqlStatement.RowNumberSelector, Is.SameAs (rowNumberSelector));
       Assert.That (sqlStatement.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
