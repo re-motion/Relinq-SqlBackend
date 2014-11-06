@@ -134,7 +134,19 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             sqlStatementBuilder.Orderings[i] = new Ordering (resolvedOrderingExpression, sqlStatementBuilder.Orderings[i].OrderingDirection);
         }
       }
-      
+
+      for (int i = 0; i < sqlStatement.SetOperationCombinedStatements.Count; i++)
+      {
+        var combinedStatement = sqlStatement.SetOperationCombinedStatements[i];
+        var resolvedSqlStatement = _stage.ResolveSqlStatement (combinedStatement.SqlStatement, _context);
+        if (!Equals (resolvedSqlStatement, combinedStatement.SqlStatement))
+        {
+          sqlStatementBuilder.SetOperationCombinedStatements[i] = new SetOperationCombinedStatement (
+              resolvedSqlStatement,
+              combinedStatement.SetOperation);
+        }
+      }
+
       return sqlStatementBuilder.GetSqlStatement();
     }
 

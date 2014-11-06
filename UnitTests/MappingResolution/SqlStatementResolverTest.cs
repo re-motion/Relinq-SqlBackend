@@ -295,6 +295,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var topExpression = Expression.Constant("top");
       var groupExpression = Expression.Constant ("group");
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Desc);
+      var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
                                 {
                                     SelectProjection = constantExpression,
@@ -302,6 +303,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                                     WhereCondition = whereCondition,
                                     GroupByExpression =  groupExpression,
                                     TopExpression = topExpression,
+                                    SetOperationCombinedStatements = { setOperationCombinedStatement }
                                 };
       builder.Orderings.Add (ordering);
       var sqlStatement = builder.GetSqlStatement();
@@ -310,6 +312,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeGroupExpression = Expression.Constant ("group");
       var fakeTopExpression = Expression.Constant ("top");
       var fakeOrderExpression = Expression.Constant ("order");
+      var fakeSqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
+      Assert.That (fakeSqlStatement, Is.Not.EqualTo (setOperationCombinedStatement.SqlStatement), "This is important for the test below.");
 
       _stageMock
           .Expect (mock => mock.ResolveSelectExpression (Arg.Is(constantExpression), Arg<SqlStatementBuilder>.Is.Anything, Arg.Is(_mappingResolutionContext)))
@@ -327,8 +331,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Expect (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
           .Return (fakeOrderExpression);
       _stageMock
-          .Expect (mock => mock.ResolveTableInfo(((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _mappingResolutionContext))
+          .Expect (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
           .Return (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"));
+      _stageMock
+          .Expect (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
+          .Return (fakeSqlStatement);
+
       _stageMock.Replay();
 
       var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
@@ -342,8 +350,59 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (resolvedSqlStatement.GroupByExpression, Is.SameAs (fakeGroupExpression));
       Assert.That (resolvedSqlStatement.Orderings[0].Expression, Is.SameAs (fakeOrderExpression));
       Assert.That (sqlStatement.Orderings[0].Expression, Is.SameAs (ordering.Expression));
-   }
-  
+      Assert.That (resolvedSqlStatement.SetOperationCombinedStatements.Single().SqlStatement, Is.SameAs (fakeSqlStatement));
+    }
 
+    [Test]
+    public void ResolveSqlStatement_WithNoChanges_ShouldLeaveAllObjectsTheSame ()
+    {
+      var constantExpression = Expression.Constant(new Restaurant());
+      var whereCondition = Expression.Constant(true);
+      var topExpression = Expression.Constant("top");
+      var groupExpression = Expression.Constant ("group");
+      var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Desc);
+      var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+                                {
+                                    SelectProjection = constantExpression,
+                                    DataInfo = new StreamedSequenceInfo(typeof(Restaurant[]), constantExpression),
+                                    WhereCondition = whereCondition,
+                                    GroupByExpression =  groupExpression,
+                                    TopExpression = topExpression,
+                                    SetOperationCombinedStatements = { setOperationCombinedStatement }
+                                };
+      builder.Orderings.Add (ordering);
+      var sqlStatement = builder.GetSqlStatement();
+
+      _stageMock
+          .Expect (mock => mock.ResolveSelectExpression (Arg.Is(constantExpression), Arg<SqlStatementBuilder>.Is.Anything, Arg.Is(_mappingResolutionContext)))
+          .Return (constantExpression);
+      _stageMock
+          .Expect (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))
+          .Return (whereCondition);
+      _stageMock
+          .Expect (mock => mock.ResolveGroupByExpression (groupExpression, _mappingResolutionContext))
+          .Return (groupExpression);
+      _stageMock
+          .Expect (mock => mock.ResolveTopExpression(topExpression, _mappingResolutionContext))
+          .Return (topExpression);
+      _stageMock
+          .Expect (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
+          .Return (ordering.Expression);
+      _stageMock
+          .Expect (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
+          .Return ((IResolvedTableInfo) sqlStatement.SqlTables[0].TableInfo);
+      _stageMock
+          .Expect (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
+          .Return (setOperationCombinedStatement.SqlStatement);
+
+      _stageMock.Replay();
+
+      var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
+
+      _stageMock.VerifyAllExpectations();
+
+      Assert.That (resolvedSqlStatement, Is.EqualTo (sqlStatement));
+    }
   }
 }
