@@ -692,42 +692,5 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           Is.EqualTo (
               "SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
     }
-
-    [Test]
-    public void ToString_SingleTable ()
-    {
-      var dataInfo = new TestStreamedValueInfo (typeof (int));
-      var selectProjection = Expression.Constant (1);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
-
-      var sqlStatement = new SqlStatement (
-          dataInfo,
-          selectProjection,
-          new[] { sqlTable },
-          null,
-          null,
-          new Ordering[0],
-          null,
-          false,
-          null,
-          null);
-
-      var result = sqlStatement.ToString ();
-
-      Assert.That (result, Is.EqualTo ("SELECT 1 FROM [CookTable] [c]"));
-    }
-
-    [Test]
-    public void ToString_MandatoryProperties ()
-    {
-      var dataInfo = new TestStreamedValueInfo (typeof (int));
-      var selectProjection = Expression.Constant (1);
-
-      var sqlStatement = new SqlStatement (dataInfo, selectProjection, new SqlTable[0], null, null, new Ordering[0], null, false, null, null);
-
-      var result = sqlStatement.ToString();
-
-      Assert.That (result, Is.EqualTo ("SELECT 1"));
-    }
   }
 }
