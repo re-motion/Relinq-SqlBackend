@@ -322,7 +322,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Any(i => i > 10),
-          "TODO");
+          "SELECT CONVERT(BIT, CASE WHEN EXISTS(("
+          + "SELECT [q0].[value] FROM ("
+          + "SELECT [t1].[ID] AS [value] "
+          + "FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0] "
+          + "WHERE ([q0].[value] > @1)"
+          + ")) THEN 1 ELSE 0 END) AS [value]",
+          new CommandParameter("@1", 10));
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Average(),
