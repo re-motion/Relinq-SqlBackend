@@ -307,7 +307,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore ("TODO RMLNQSQL-30")]
     public void ResultOperatorAfterSetOperation_CausesSubQuery ()
     {
       CheckQuery (
@@ -420,13 +419,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Skip(10),
-          "SELECT [q0].[Key] AS [value] "
+          "SELECT [q1].[Key] AS [value] "
           + "FROM ("
           + "SELECT [q0].[value] AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] "
           + "FROM ("
-          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
-          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
-          + ") AS [q0]) AS [q0] WHERE ([q0].[Value] > @2) ORDER BY [q0].[Value] ASC");
+          + "SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] "
+          + "UNION (SELECT [t3].[ID] AS [value] FROM [KitchenTable] AS [t3])"
+          + ") AS [q0]) AS [q1] WHERE ([q1].[Value] > @2) ORDER BY [q1].[Value] ASC",
+          new CommandParameter("@1", 1),
+          new CommandParameter("@2", 10));
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Sum(),
@@ -437,11 +438,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Take(3),
-          "SELECT TOP (@1) [q0].[value] AS [value] FROM ("
+          "SELECT TOP (3) [q0].[value] AS [value] FROM ("
           + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
           + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
-          + ") AS [q0]",
-          new CommandParameter("@1", 3));
+          + ") AS [q0]");
     }
 
     [Test]
