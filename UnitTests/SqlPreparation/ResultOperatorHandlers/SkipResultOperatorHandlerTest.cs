@@ -39,10 +39,9 @@ using Rhino.Mocks;
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class SkipResultOperatorHandlerTest
+  public class SkipResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
     private ISqlPreparationStage _stageMock;
-    private UniqueIdentifierGenerator _generator;
     private ISqlPreparationContext _context;
     private SkipResultOperatorHandler _handler;
     private SqlTable _sqlTable;
@@ -51,11 +50,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     private SqlStatementBuilder _sqlStatementBuilder;
     private ConstructorInfo _tupleCtor;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
-      _generator = new UniqueIdentifierGenerator ();
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
 
       _handler = new SkipResultOperatorHandler ();
@@ -94,7 +93,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Return (fakePreparedProjection);
       _stageMock.Replay();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
 
@@ -129,7 +128,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Return (fakePreparedProjection);
       _stageMock.Replay ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations ();
     }
@@ -143,7 +142,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_sqlStatementBuilder.TopExpression, Is.Null);
       StubStageMock_PrepareSelectExpression();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       var subStatement = GetSubStatement(_sqlStatementBuilder.SqlTables[0]);
       Assert.That (subStatement.Orderings, Is.Empty);
@@ -158,7 +157,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _sqlStatementBuilder.TopExpression = Expression.Constant (20);
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0]);
       Assert.That (subStatement.Orderings, Is.Not.Empty);
@@ -171,7 +170,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (0));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0]);
       Assert.That (subStatement.DataInfo, Is.InstanceOf (typeof (StreamedSequenceInfo)));
@@ -184,7 +183,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (0));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       var expectedSelectProjection = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), GetTupleProperty ("Key"));
@@ -197,7 +196,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (10));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), 
@@ -212,7 +211,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (10));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
@@ -232,7 +231,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (10));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.SameAs (originalDataInfo));
     }
@@ -243,7 +242,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (10));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
@@ -257,7 +256,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (10));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       Assert.That (_sqlStatementBuilder.CurrentRowNumberOffset, Is.SameAs (resultOperator.Count));
     }
@@ -270,7 +269,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new SkipResultOperator (Expression.Constant (10));
       StubStageMock_PrepareSelectExpression ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       Assert.That (_context.GetExpressionMapping (originalItemExpression), Is.EqualTo (_sqlStatementBuilder.SelectProjection));
     }
