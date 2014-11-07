@@ -16,9 +16,12 @@
 // 
 
 using System;
+using System.Linq;
+using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -38,6 +41,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
+
       var preparedSubStatement = stage.PrepareResultOperatorItemExpression (resultOperator.Source2, context) as SqlSubStatementExpression;
       if (preparedSubStatement == null)
       {
@@ -50,6 +55,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       sqlStatementBuilder.SetOperationCombinedStatements.Add (
           new SetOperationCombinedStatement (preparedSubStatement.SqlStatement, SetOperation.Union));
+
+      // The UnionResultOperator acts as an IQuerySource, i.e., subsequent result operators can refer to its output.
+      // When a result operator references the UnionResultOperator's output, it should simply refer to the outer statement's select projection instead. 
+      AddMappingForItemExpression(context, sqlStatementBuilder.DataInfo, sqlStatementBuilder.SelectProjection);
     }
   }
 }

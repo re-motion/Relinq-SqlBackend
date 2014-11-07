@@ -16,8 +16,10 @@
 // 
 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.Development.UnitTesting;
@@ -25,7 +27,6 @@ using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
-using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
@@ -45,9 +46,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
       _handler = new UnionResultOperatorHandler ();
-      _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
+      
+      var selectProjection = ExpressionHelper.CreateExpression(typeof (int));
+      _sqlStatementBuilder = new SqlStatementBuilder 
       {
-        DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ()))
+        DataInfo = new StreamedSequenceInfo (typeof (int[]), selectProjection),
+        SelectProjection = selectProjection
       };
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
     }
@@ -65,9 +69,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
+      
+      // Main functionality
       Assert.That (_sqlStatementBuilder.SetOperationCombinedStatements, Has.Count.EqualTo (1));
       Assert.That (_sqlStatementBuilder.SetOperationCombinedStatements[0].SetOperation, Is.EqualTo(SetOperation.Union));
       Assert.That (_sqlStatementBuilder.SetOperationCombinedStatements[0].SqlStatement, Is.SameAs (preparedSource2Statement));
+
+      // Data info
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof(IQueryable<>).MakeGenericType(typeof(int))));
+      Assert.That (
+          ((StreamedSequenceInfo) _sqlStatementBuilder.DataInfo).ItemExpression,
+          Is.EqualTo (new QuerySourceReferenceExpression (resultOperator)));
+
+      // Everyone referencing the result operator should reference the (outer) select projection instead.
+      Assert.That (
+          _context.GetExpressionMapping (new QuerySourceReferenceExpression (resultOperator)),
+          Is.SameAs (_sqlStatementBuilder.SelectProjection));
     }
 
     [Test]
