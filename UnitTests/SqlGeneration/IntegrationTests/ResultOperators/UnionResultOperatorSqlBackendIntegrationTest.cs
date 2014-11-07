@@ -84,6 +84,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
+    [Ignore("TODO RMLNQSQL-30: Union should swallow Orderings.")]
+    public void Union_CausesOrderToBeIgnored ()
+    {
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").OrderBy (c => c.ID).Select (c => c.ID)
+              .Union (Chefs.Where (c => c.Name == "Boss").OrderBy (c => c.ID).Select (c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [dbo].[ChefTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
+    }
+
+    [Test]
     [Ignore("TODO RMLNQSQL-30: This should really throw an error, but it generates invalid SQL.")]
     public void Union_WithDifferentColumnLists ()
     {
