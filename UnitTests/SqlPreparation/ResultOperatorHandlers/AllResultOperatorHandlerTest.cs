@@ -109,6 +109,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       AssertStatementWasMovedToSubStatement (innerStatementOfExistsExpression);
     }
 
+    [Test]
+    public void HandleResultOperator_AllAfterSetOperation ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add(SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var stage = CreateDefaultSqlPreparationStage();
+      
+      var predicate = Expression.Constant (true);
+      var resultOperator = new AllResultOperator (predicate);
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
+
+      var innerStatementOfExistsExpression = GetInnerStatementAfterExistsTransformation(_sqlStatementBuilder);
+      AssertStatementWasMovedToSubStatement (innerStatementOfExistsExpression);
+    }
 
     private SqlStatement GetInnerStatementAfterExistsTransformation (SqlStatementBuilder sqlStatementBuilder)
     {

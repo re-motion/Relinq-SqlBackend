@@ -35,6 +35,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoSetOperations (sqlStatementBuilder, generator, stage, context);
 
       sqlStatementBuilder.AddWhereCondition (stage.PrepareWhereExpression (Expression.Not (resultOperator.Predicate), context));
       // No name required for the select projection inside of an EXISTS expression
