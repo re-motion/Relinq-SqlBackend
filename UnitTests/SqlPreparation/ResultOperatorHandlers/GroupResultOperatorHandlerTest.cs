@@ -137,6 +137,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     }
 
     [Test]
+    public void HandleResultOperator_GroupByAfterSetOperations ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add(SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var keySelector = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
+      var elementSelector = Expression.Constant ("elementSelector");
+      var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
+
+      var stage = CreateDefaultSqlPreparationStage();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    [Test]
     public void HandleResultOperator_TransformSubqueriesUsedAsGroupByKeys ()
     {
       var keySelector = Expression.Constant ("keySelector");

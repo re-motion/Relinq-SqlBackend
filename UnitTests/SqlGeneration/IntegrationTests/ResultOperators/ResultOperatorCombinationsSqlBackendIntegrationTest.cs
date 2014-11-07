@@ -377,8 +377,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + ") AS [q0]");
 
       CheckQuery (
-          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).GroupBy(i => i % 3),
-          "TODO");
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).GroupBy (i => i % 3).Select (g => new { g.Key, Count = g.Count() }),
+          "SELECT [q1].[key] AS [Key],[q1].[a0] AS [Count] FROM (SELECT ([q0].[value] % @1) AS [key], COUNT(*) AS [a0] "
+          + "FROM ("
+          + "SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] "
+          + "UNION (SELECT [t3].[ID] AS [value] FROM [KitchenTable] AS [t3])"
+          + ") AS [q0] GROUP BY ([q0].[value] % @1)) AS [q1]",
+          new CommandParameter("@1", 3));
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Max(),
