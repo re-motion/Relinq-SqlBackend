@@ -178,6 +178,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     }
 
     [Test]
+    public void HandleResultOperator_SkipAfterSetOperations_MovesStatementToSubStatement ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add (SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var resultOperator = new SkipResultOperator (Expression.Constant (0));
+
+      var stage = CreateDefaultSqlPreparationStage();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
+
+      AssertStatementWasMovedToSubStatement (GetSubStatement (_sqlStatementBuilder.SqlTables[0]));
+    }
+
+    [Test]
     public void HandleResultOperator_SetsOuterSelect_ToOriginalProjectionSelector ()
     {
       var resultOperator = new SkipResultOperator (Expression.Constant (0));

@@ -420,7 +420,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Skip(10),
-          "TODO");
+          "SELECT [q0].[Key] AS [value] "
+          + "FROM ("
+          + "SELECT [q0].[value] AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] "
+          + "FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]) AS [q0] WHERE ([q0].[Value] > @2) ORDER BY [q0].[Value] ASC");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Sum(),
