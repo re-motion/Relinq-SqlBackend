@@ -400,8 +400,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + ") AS [q0]");
 
       CheckQuery (
-          () => Cooks.Select (c => c).Union (Cooks.Select (c => c)).OfType<Chef>(),
-          "TODO");
+          () => Cooks.Select (c => c).Union (Cooks.Select (c => c)).OfType<Chef>().Select(c => c.LetterOfRecommendation),
+          "SELECT [q1].[LetterOfRecommendation] AS [value] FROM ("
+          + "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID],"
+          + "[q0].[KnifeID],[q0].[KnifeClassID] "
+          + "FROM ("
+          + "SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
+          + "[t2].[KnifeID],[t2].[KnifeClassID] FROM [CookTable] AS [t2] "
+          + "UNION (SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
+          + "[t3].[KnifeID],[t3].[KnifeClassID] FROM [CookTable] AS [t3])"
+          + ") AS [q0] WHERE ([q0].[IsStarredCook] = 1)) AS [q1]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Single(),
