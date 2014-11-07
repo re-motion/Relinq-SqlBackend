@@ -341,18 +341,27 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Contains(10),
-          "TODO");
+          "SELECT CONVERT(BIT, CASE WHEN @1 IN ("
+          + "SELECT [t0].[ID] FROM [CookTable] AS [t0] "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [KitchenTable] AS [t1])"
+          + ") THEN 1 ELSE 0 END) AS [value]",
+          new CommandParameter("@1", 10));
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Count(),
-          "SELECT COUNT([q0].[value]) AS [value] FROM (" 
+          "SELECT COUNT(*) AS [value] FROM (" 
           +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
           + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
           + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).DefaultIfEmpty(),
-          "TODO");
+          "SELECT [q0].[value] AS [value] FROM ("
+          + "SELECT NULL AS [Empty]) AS [Empty] "
+          + "OUTER APPLY ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Distinct(),
