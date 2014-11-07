@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -83,7 +84,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var expectedNewProjection = Expression.New (
           _tupleCtor, 
           new Expression[] { _selectProjection, new SqlRowNumberExpression (new[] { _ordering }) }, 
-          new MemberInfo[] { _tupleCtor.DeclaringType.GetMethod ("get_Key"), _tupleCtor.DeclaringType.GetMethod ("get_Value") });
+          new MemberInfo[] { GetTupleMethod ("get_Key"), GetTupleMethod ("get_Value") });
 
       var fakePreparedProjection = GetFakePreparedProjection();
 
@@ -98,7 +99,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock.VerifyAllExpectations();
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      var sqlTable = ((SqlTable) _sqlStatementBuilder.SqlTables[0]);
+      var sqlTable = _sqlStatementBuilder.SqlTables[0];
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
 
@@ -186,7 +187,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
       var expectedSelectProjection = Expression.MakeMemberAccess (
-          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), _tupleCtor.DeclaringType.GetProperty ("Key"));
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), GetTupleProperty ("Key"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
     }
 
@@ -200,7 +201,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), 
-          _tupleCtor.DeclaringType.GetProperty ("Value"));
+          GetTupleProperty ("Value"));
       var expectedWhereCondition = Expression.GreaterThan (expectedRowNumberSelector, resultOperator.Count);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
     }
@@ -215,7 +216,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
-          _tupleCtor.DeclaringType.GetProperty ("Value"));
+          GetTupleProperty ("Value"));
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
       Assert.That (_sqlStatementBuilder.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
@@ -246,7 +247,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
-          _tupleCtor.DeclaringType.GetProperty ("Value"));
+          GetTupleProperty ("Value"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.RowNumberSelector);
     }
 
@@ -288,12 +289,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       return Expression.New (
           _tupleCtor,
           new Expression[] { _selectProjection, new SqlRowNumberExpression (new[] { _ordering }) },
-          new MemberInfo[] { _tupleCtor.DeclaringType.GetMethod ("get_Key"), _tupleCtor.DeclaringType.GetMethod ("get_Value") });
+          new MemberInfo[] { GetTupleMethod ("get_Key"), GetTupleMethod ("get_Value") });
     }
 
     private SqlStatement GetSubStatement (SqlTableBase sqlTableBase)
     {
       return ((ResolvedSubStatementTableInfo) ((SqlTable) sqlTableBase).TableInfo).SqlStatement;
+    }
+
+    private MethodInfo GetTupleMethod(string name)
+    {
+      Debug.Assert (_tupleCtor.DeclaringType != null);
+      return _tupleCtor.DeclaringType.GetMethod(name);
+    }
+
+    private PropertyInfo GetTupleProperty(string name)
+    {
+      Debug.Assert (_tupleCtor.DeclaringType != null);
+      return _tupleCtor.DeclaringType.GetProperty(name);
     }
   }
 }
