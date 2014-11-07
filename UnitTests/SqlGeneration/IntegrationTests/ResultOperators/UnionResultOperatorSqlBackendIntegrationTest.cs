@@ -85,13 +85,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
     [Test]
     [Ignore("TODO RMLNQSQL-30: Union should swallow Orderings.")]
-    public void Union_CausesOrderToBeIgnored ()
+    public void Union_CausesOrderByToBeIgnored ()
     {
       CheckQuery (
           () => Cooks.Where (c => c.FirstName == "Hugo").OrderBy (c => c.ID).Select (c => c.ID)
-              .Union (Chefs.Where (c => c.Name == "Boss").OrderBy (c => c.ID).Select (c => c.ID)),
+              .Union (Cooks.Where (c => c.Name == "Boss").OrderBy (c => c.ID).Select (c => c.ID)),
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
-          + "UNION (SELECT [t1].[ID] AS [value] FROM [dbo].[ChefTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
+    }
+
+    [Test]
+    [Ignore("TODO RMLNQSQL-30: Union should wrap UNION statement with TOP and ORDER BY.")]
+    public void Union_CausesOrderByWithTakeToWork ()
+    {
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").OrderBy (c => c.ID).Select (c => c.ID).Take(3)
+              .Union (Cooks.Where (c => c.Name == "Boss").OrderBy (c => c.ID).Select (c => c.ID).Take(2)),
+          "SELECT [q0].[value] AS [value] "
+          + "FROM ("
+          + "SELECT TOP (3) [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[FirstName] = @1) ORDER BY [t1].[ID] ASC "
+          + "UNION (SELECT TOP (2) [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[Name] = @2) ORDER BY [t2].[ID] ASC)"
+          + ") AS [q0]",
           row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "Boss"));
