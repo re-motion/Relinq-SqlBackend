@@ -371,7 +371,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).First(),
-          "TODO");
+          "SELECT TOP (1) [q0].[value] AS [value] FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).GroupBy(i => i % 3),
@@ -397,7 +400,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Single(),
-          "TODO");
+          "SELECT TOP (2) [q0].[value] AS [value] FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Skip(10),
@@ -412,7 +418,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Take(3),
-          "TODO");
+          "SELECT TOP (@1) [q0].[value] AS [value] FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]",
+          new CommandParameter("@1", 3));
     }
 
     [Test]

@@ -106,6 +106,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     }
 
     [Test]
+    public void HandleResultOperator_TakeAfterSetOperation ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add(SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var takeExpression = Expression.Constant (2);
+      var resultOperator = new TakeResultOperator (takeExpression);
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    [Test]
     public void HandleResultOperator_TakeAfterSkipExpression ()
     {
       _sqlStatementBuilder.WhereCondition = null;
