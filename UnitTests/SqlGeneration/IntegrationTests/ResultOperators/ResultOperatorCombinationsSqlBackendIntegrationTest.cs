@@ -307,7 +307,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore ("TODO RMLNQ-30")]
+    [Ignore ("TODO RMLNQSQL-30")]
     public void ResultOperatorAfterSetOperation_CausesSubQuery ()
     {
       CheckQuery (
