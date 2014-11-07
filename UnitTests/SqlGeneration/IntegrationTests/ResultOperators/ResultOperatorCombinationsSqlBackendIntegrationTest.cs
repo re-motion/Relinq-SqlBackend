@@ -334,7 +334,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Average(),
-          "TODO");
+          "SELECT AVG(CONVERT(FLOAT, [q0].[value])) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Contains(10),
@@ -342,7 +345,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Count(),
-          "TODO");
+          "SELECT COUNT([q0].[value]) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).DefaultIfEmpty(),
@@ -364,11 +370,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Max(),
-          "TODO");
+          "SELECT MAX([q0].[value]) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Min(),
-          "TODO");
+          "SELECT MIN([q0].[value]) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c).Union (Cooks.Select (c => c)).OfType<Chef>(),
@@ -384,7 +396,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Sum(),
-          "TODO");
+          "SELECT SUM([q0].[value]) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Take(3),

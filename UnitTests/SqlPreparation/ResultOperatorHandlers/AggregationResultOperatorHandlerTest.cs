@@ -126,5 +126,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
+
+    [Test]
+    public void HandleResultOperator_AfterSetOperation_CreatesSubStatement ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add (SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var resultOperator = new MaxResultOperator ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
   }
 }
