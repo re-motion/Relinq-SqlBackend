@@ -18,12 +18,9 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -84,24 +81,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       if (sqlStatementBuilder.Orderings.Any() || combinedStatement.SqlStatement.Orderings.Any())
       {
-        // TODO RMLNQSQL-30: This is nearly the same as "MoveCurrentStatementToSqlTable", but it requires the OrderBy columns _not_ to be moved
-        // to the projection. Refactor to avoid code duplication.
-
-        // MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, ti => new SqlTable (ti, JoinSemantics.Inner), stage);
-
-        // Ensure that select clause is named - usually SqlPreparationQueryModelVisitor would do this, but it hasn't done it yet
-        sqlStatementBuilder.SelectProjection = new NamedExpression (null, sqlStatementBuilder.SelectProjection);
-
-        var oldStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
-
-        var subStatementTable = new SqlTable(new ResolvedSubStatementTableInfo(generator.GetUniqueIdentifier("q"), oldStatement), JoinSemantics.Inner);
-        sqlStatementBuilder.SqlTables.Add (subStatementTable);
-        sqlStatementBuilder.SelectProjection = new SqlTableReferenceExpression (subStatementTable);
-
-        // the new statement is an identity query that selects the result of its subquery, so it starts with the same data type
-        sqlStatementBuilder.DataInfo = oldStatement.DataInfo;
-
-        AddMappingForItemExpression(context, oldStatement.DataInfo, new SqlTableReferenceExpression (subStatementTable));
+        MoveCurrentStatementToSqlTable (
+            sqlStatementBuilder,
+            context,
+            ti => new SqlTable (ti, JoinSemantics.Inner),
+            stage,
+            OrderingExtractionPolicy.DoNotExtractOrderings);
       }
     }
   }
