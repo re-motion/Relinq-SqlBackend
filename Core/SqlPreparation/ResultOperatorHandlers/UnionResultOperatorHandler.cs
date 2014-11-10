@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.ResultOperators;
@@ -65,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         sqlStatementBuilder.Orderings.Clear();
       
       // For the second source, removal of unneeded orderings is already performed by PrepareResultOperatorItemExpression.
-      Debug.Assert (!combinedStatement.SqlStatement.Orderings.Any() || combinedStatement.SqlStatement.TopExpression != null);
+      Assertion.DebugAssert (!combinedStatement.SqlStatement.Orderings.Any() || combinedStatement.SqlStatement.TopExpression != null);
 
       // However, if an ORDER BY _is_ included together with a TOP, then the ORDER BY is allowed again as long as the whole set-combined statement is 
       // moved to a substatement.
