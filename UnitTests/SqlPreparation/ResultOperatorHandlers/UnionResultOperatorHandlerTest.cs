@@ -26,25 +26,25 @@ using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class UnionResultOperatorHandlerTest
+  public class UnionResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
     private ISqlPreparationStage _stageMock;
-    private UniqueIdentifierGenerator _generator;
     private UnionResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
-      _generator = new UniqueIdentifierGenerator ();
       _handler = new UnionResultOperatorHandler ();
       
       var selectProjection = ExpressionHelper.CreateExpression(typeof (int));
@@ -66,7 +66,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Expect (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
           .Return(preparedSource2Expression);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations();
       
@@ -97,11 +97,77 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Expect (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
           .Return(preparedSource2Expression);
 
-      Assert.That(() =>_handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context),
+      Assert.That(() =>_handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context),
           Throws.TypeOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "The Union result operator is only supported for combining two query results, but a 'ConstantExpression' was supplied as the "
                   + "second sequence: value(System.Int32[])"));
+    }
+
+    [Test]
+    public void HandleResultOperator_OrderingsWithoutTopInMainSqlStatement_ShouldBeRemoved ()
+    {
+      _sqlStatementBuilder.Orderings.Add (SqlStatementModelObjectMother.CreateOrdering());
+      var originalSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      _sqlStatementBuilder.SqlTables.Add (originalSqlTable);
+
+      var stage = CreateDefaultSqlPreparationStage();
+
+      var resultOperator = CreateValidResultOperator();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
+
+      Assert.That (_sqlStatementBuilder.Orderings, Is.Empty);
+      Assert.That (_sqlStatementBuilder.SqlTables, Is.EqualTo (new[] { originalSqlTable }), "Query was not moved to a substatement.");
+    }
+
+    [Test]
+    public void HandleResultOperator_OrderingsWithTopInMainSqlStatement_ShouldBeMovedToSubStatement_WithoutAffectingProjectionOrOuterOrderings ()
+    {
+      var originalOrdering = SqlStatementModelObjectMother.CreateOrdering();
+      _sqlStatementBuilder.Orderings.Add (originalOrdering);
+      _sqlStatementBuilder.TopExpression = ExpressionHelper.CreateExpression();
+      var originalSelectProjection = _sqlStatementBuilder.SelectProjection;
+
+      var resultOperator = CreateValidResultOperator();
+      
+      var stage = CreateDefaultSqlPreparationStage();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+
+      // Statement was moved to substatement as is, without affecting select projection (apart from NamedExpression) 
+      // and leaving the orderings in place.
+      var subStatement = ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement;
+      Assert.That (((NamedExpression) subStatement.SelectProjection).Expression, Is.SameAs (originalSelectProjection));
+      Assert.That (subStatement.Orderings, Is.EqualTo (new[] { originalOrdering }));
+
+      // Outer statement has no orderings.
+      Assert.That (_sqlStatementBuilder.Orderings, Is.Empty);
+    }
+
+     [Test]
+    public void HandleResultOperator_OrderingsWithTopInSource2_CausesMainStatementToBeMovedToSubStatement ()
+    {
+       var sqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement (new SqlStatementBuilder 
+       {
+         Orderings = { SqlStatementModelObjectMother.CreateOrdering() },
+         TopExpression = Expression.Constant(10)
+       });
+       var resultOperator = new UnionResultOperator ("x", typeof (int), new SqlSubStatementExpression (sqlStatement));
+      
+      var stage = CreateDefaultSqlPreparationStage();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    private static UnionResultOperator CreateValidResultOperator ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement(Expression.Constant(0));
+      return new UnionResultOperator ("x", typeof (int), new SqlSubStatementExpression (sqlStatement));
     }
   }
 }

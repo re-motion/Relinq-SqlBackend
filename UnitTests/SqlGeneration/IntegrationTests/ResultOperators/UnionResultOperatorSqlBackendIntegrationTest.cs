@@ -84,7 +84,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore("TODO RMLNQSQL-30: Union should swallow Orderings.")]
     public void Union_CausesOrderByToBeIgnored ()
     {
       CheckQuery (
@@ -98,7 +97,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore("TODO RMLNQSQL-30: Union should wrap UNION statement with TOP and ORDER BY.")]
     public void Union_CausesOrderByWithTakeToWork ()
     {
       CheckQuery (

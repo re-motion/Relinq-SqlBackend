@@ -331,5 +331,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           CreateSqlStatement(),
           SetOperation.Union);
     }
+
+    public static Ordering CreateOrdering ()
+    {
+      return new Ordering (ExpressionHelper.CreateExpression(), OrderingDirection.Asc);
+    }
   }
 }
