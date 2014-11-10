@@ -39,7 +39,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         UniqueIdentifierGenerator generator,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator,
+        OrderingExtractionPolicy orderingExtractionPolicy)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -47,7 +48,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator);
+      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator, orderingExtractionPolicy);
       visitor.VisitExpression (fromExpression);
       if (visitor.FromExpressionInfo != null)
         return visitor.FromExpressionInfo.Value;
@@ -61,18 +62,25 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     private readonly UniqueIdentifierGenerator _generator;
     private readonly Func<ITableInfo, SqlTable> _tableGenerator;
+    private readonly OrderingExtractionPolicy _orderingExtractionPolicy;
 
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator, 
+        OrderingExtractionPolicy orderingExtractionPolicy)
         : base (context, stage, provider)
     {
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("tableGenerator", tableGenerator);
+
       _generator = generator;
-      FromExpressionInfo = null;
       _tableGenerator = tableGenerator;
+      _orderingExtractionPolicy = orderingExtractionPolicy;
+
+      FromExpressionInfo = null;
     }
 
     protected FromExpressionInfo? FromExpressionInfo { get; set; }
@@ -122,7 +130,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var sqlStatement = expression.SqlStatement;
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, Context, _generator);
-      FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
+      FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator, _orderingExtractionPolicy);
       Assertion.DebugAssert (FromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (FromExpressionInfo.Value.SqlTable);
@@ -150,7 +158,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
             _generator,
             MethodCallTransformerProvider,
             Context,
-            _tableGenerator);
+            _tableGenerator,
+            _orderingExtractionPolicy);
 
         Context.AddExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause), fromExpressionInfo.ItemSelector);
 

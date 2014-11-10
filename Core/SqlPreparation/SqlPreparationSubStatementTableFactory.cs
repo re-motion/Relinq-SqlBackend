@@ -52,9 +52,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     public FromExpressionInfo CreateSqlTableForStatement (
         SqlStatement sqlStatement,
         Func<ITableInfo, SqlTable> tableCreator,
-        // TODO RMLNQSQL-30: Remove default value.
-        OrderingExtractionPolicy orderingExtractionPolicy = OrderingExtractionPolicy.ExtractOrderingsIntoProjection)
+        OrderingExtractionPolicy orderingExtractionPolicy)
     {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull ("tableCreator", tableCreator);
+
       if (sqlStatement.Orderings.Count == 0)
       {
         var tableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), sqlStatement);

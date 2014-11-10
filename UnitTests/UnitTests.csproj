@@ -357,6 +357,7 @@
     <Compile Include="MappingResolution\ResolvingTableInfoVisitorTest.cs" />
     <Compile Include="Utilities\ITestRegistry.cs" />
     <Compile Include="Utilities\RegistryBaseTest.cs" />
+    <Compile Include="Utilities\Some.cs" />
     <Compile Include="Utilities\TestRegistry.cs" />
     <Compile Include="Utilities\TestRegistryImplementation.cs" />
     <None Include="..\LGPL.licenseheader">

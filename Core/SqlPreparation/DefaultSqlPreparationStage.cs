@@ -89,8 +89,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTable> tableGenerator)
     {
+      // TODO RMLNQSQL-30
       return SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          fromExpression, this, _uniqueIdentifierGenerator, _methodCallTransformerProvider, context, tableGenerator);
+          fromExpression, this, _uniqueIdentifierGenerator, _methodCallTransformerProvider, context, tableGenerator, OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
     }
 
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext)
