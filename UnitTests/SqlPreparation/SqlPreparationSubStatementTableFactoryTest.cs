@@ -17,8 +17,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
@@ -69,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       _stageMock.VerifyAllExpectations ();
 
-      var tableInfo = ((SqlTable) result.SqlTable).TableInfo;
+      var tableInfo = result.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
@@ -95,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       _stageMock.VerifyAllExpectations ();
 
-      var tableInfo = ((SqlTable) result.SqlTable).TableInfo;
+      var tableInfo = result.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
@@ -164,20 +166,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void CreateSqlTableForSubStatement_WithOrderings_NewProjection_ContainsOrderings ()
     {
-      var _outerTupleCtor = typeof (KeyValuePair<Cook, KeyValuePair<string, string>>).GetConstructor (new[] { typeof (Cook), typeof (KeyValuePair<string, string>) });
-      var _middleTupleCtor = typeof (KeyValuePair<string, string>).GetConstructor (new[] { typeof (string), typeof (string) });
+      var outerTupleCtor = typeof (KeyValuePair<Cook, KeyValuePair<string, string>>).GetConstructor (new[] { typeof (Cook), typeof (KeyValuePair<string, string>) });
+      Debug.Assert (outerTupleCtor != null);
+      var middleTupleCtor = typeof (KeyValuePair<string, string>).GetConstructor (new[] { typeof (string), typeof (string) });
+      Debug.Assert (middleTupleCtor != null);
 
-      var _middleTupleKeyGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Key");
-      var _middleTupleValueGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Value");
-      var _outerTupleKeyGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Key");
-      var _outerTupleValueGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Value");
+      var _middleTupleKeyGetter = GetTupleMethod (middleTupleCtor, "get_Key");
+      var _middleTupleValueGetter = GetTupleMethod (middleTupleCtor, "get_Value");
+      var _outerTupleKeyGetter = GetTupleMethod (outerTupleCtor, "get_Key");
+      var _outerTupleValueGetter = GetTupleMethod (outerTupleCtor, "get_Value");
 
       var expectedSelectProjection = Expression.New (
-          _outerTupleCtor,
+          outerTupleCtor,
           new[] {
               _statementWithOrderings.SelectProjection,
               Expression.New (
-                  _middleTupleCtor,
+                  middleTupleCtor,
                   new[] { 
                       _statementWithOrderings.Orderings[0].Expression,
                       _statementWithOrderings.Orderings[1].Expression},
@@ -220,7 +224,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       _stageMock.VerifyAllExpectations ();
 
-      var sqlTable = (SqlTable) result.SqlTable;
+      var sqlTable = result.SqlTable;
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
       Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
@@ -238,6 +242,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock.Replay ();
 
       _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
+    }
+
+    private static MethodInfo GetTupleMethod (ConstructorInfo _middleTupleCtor, string methodName)
+    {
+      Debug.Assert (_middleTupleCtor.DeclaringType != null, "_middleTupleCtor.DeclaringType != null");
+      return _middleTupleCtor.DeclaringType.GetMethod (methodName);
     }
   }
 }
