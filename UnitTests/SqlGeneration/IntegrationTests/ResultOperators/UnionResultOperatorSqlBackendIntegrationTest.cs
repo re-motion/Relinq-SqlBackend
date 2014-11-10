@@ -128,11 +128,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
     [Test]
     [Ignore("TODO RMLNQSQL-30: This should really throw an error, but it generates an invalid in-memory projection.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "X")]
     public void Union_WithDifferentInMemoryProjections ()
     {
       CheckQuery (
           () => Cooks.Select(c => InMemoryToUpper (c.Name)).Union (Kitchens.Select (c => c.Name)),
           "SELECT [t0].[Name] AS [Arg0] FROM [CookTable] AS [t0] UNION (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1])");
+    }
+
+    [Test]
+    public void Union_WithSubsequentInMemoryProjection ()
+    {
+      CheckQuery (
+          () => Cooks.Select (c => c.Name).Union (Kitchens.Select (c => c.Name)).Select (n => InMemoryToUpper (n)),
+          "SELECT [q0].[value] AS [Arg0] FROM ("
+          + "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t1] UNION (SELECT [t2].[Name] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]",
+          row => (object) InMemoryToUpper (row.GetValue<string> (new ColumnID("Arg0", 0))));
     }
 
     private static string InMemoryToUpper (string id)
