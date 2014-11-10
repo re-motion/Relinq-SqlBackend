@@ -92,13 +92,18 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         SqlStatementBuilder sqlStatementBuilder,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTable> tableGenerator,
-        ISqlPreparationStage stage)
+        ISqlPreparationStage stage,
+        OrderingExtractionPolicy orderingExtractionPolicy = OrderingExtractionPolicy.ExtractOrderingsIntoProjection)
     {
       // Ensure that select clause is named - usually SqlPreparationQueryModelVisitor would do this, but it hasn't done it yet
       sqlStatementBuilder.SelectProjection = new NamedExpression (null, sqlStatementBuilder.SelectProjection);
 
       var oldStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
-      var fromExpressionInfo = stage.PrepareFromExpression (new SqlSubStatementExpression(oldStatement), context, tableGenerator);
+      var fromExpressionInfo = stage.PrepareFromExpression (
+          new SqlSubStatementExpression (oldStatement),
+          context,
+          tableGenerator,
+          orderingExtractionPolicy);
 
       sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
       sqlStatementBuilder.SelectProjection = fromExpressionInfo.ItemSelector;

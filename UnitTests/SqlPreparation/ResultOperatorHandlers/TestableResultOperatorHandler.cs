@@ -71,9 +71,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     public new void MoveCurrentStatementToSqlTable (
        SqlStatementBuilder sqlStatementBuilder,
        ISqlPreparationContext context,
-       Func<ITableInfo, SqlTable> tableGenerator, ISqlPreparationStage stage)
+       Func<ITableInfo, SqlTable> tableGenerator,
+       ISqlPreparationStage stage,
+       OrderingExtractionPolicy orderingExtractionPolicy)
     {
-      base.MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, tableGenerator, stage);
+      base.MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, tableGenerator, stage, orderingExtractionPolicy);
     }
 
     public new void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)
