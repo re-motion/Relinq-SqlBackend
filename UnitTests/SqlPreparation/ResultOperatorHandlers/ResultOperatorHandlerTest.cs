@@ -77,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           });
       _stageMock.Replay ();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, tableGenerator, _stageMock);
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _context, tableGenerator, _stageMock);
 
       _stageMock.VerifyAllExpectations();
 
@@ -103,7 +103,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info, JoinSemantics.Inner), _stageMock);
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _context, info => new SqlTable (info, JoinSemantics.Inner), _stageMock);
 
       Assert.That (_statementBuilder.Orderings[0], Is.SameAs (ordering));
     }
