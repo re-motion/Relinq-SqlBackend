@@ -50,6 +50,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
+      // TODO RMLNQSQL-61: This should visit all nested expressions of the SqlStatement and build a new one if necessary.
+
       return this;
     }
 
