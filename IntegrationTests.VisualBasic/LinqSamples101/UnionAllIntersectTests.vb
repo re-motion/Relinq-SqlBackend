@@ -48,7 +48,6 @@ Namespace LinqSamples101
     'This sample uses Concat to return a sequence of all Customer and Employee
     'phone/fax numbers
     <Test()> _
-    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlUnion01()
       Dim phoneNumbers = (From cust In DB.Customers Select cust.Phone).Concat( _
                           From cust In DB.Customers Select cust.Fax).Concat( _
@@ -61,7 +60,6 @@ Namespace LinqSamples101
     'This sample uses Concat to return a sequence of all Customer and Employee
     'name and phone number mappings.
     <Test()> _
-    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlUnion02()
       Dim custPhones = From cust In DB.Customers _
                        Select Name = cust.CompanyName, _
@@ -77,7 +75,6 @@ Namespace LinqSamples101
     'This sample uses Union to return a sequence of all countries that either 
     'Customers or Employees live in.
     <Test()> _
-    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlUnion03()
       Dim countries = (From cust In DB.Customers _
                        Select cust.Country).Union(From emp In DB.Employees _
@@ -89,7 +86,7 @@ Namespace LinqSamples101
     'This sample uses Intersect to return a sequence of all countries that both
     'Customers and Employees live in.
     <Test()> _
-    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")> _
+    <Ignore("RMLNQSQL-62: Support for the Intersect and Except query operators")> _
     Public Sub LinqToSqlUnion04()
       Dim countries = (From cust In DB.Customers _
                        Select cust.Country).Intersect(From emp In DB.Employees _
@@ -101,7 +98,7 @@ Namespace LinqSamples101
     'This sample uses Except to return a sequence of all countries that
     'Customers live in but no Employees live in.
     <Test()> _
-    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")> _
+    <Ignore("RMLNQSQL-62: Support for the Intersect and Except query operators")> _
     Public Sub LinqToSqlUnion05()
       Dim countries = (From cust In DB.Customers _
             Select cust.Country).Except(From emp In DB.Employees _

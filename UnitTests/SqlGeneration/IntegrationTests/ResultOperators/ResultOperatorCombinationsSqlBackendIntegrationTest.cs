@@ -211,8 +211,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Take(5),
-          "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
-          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + @2))) ORDER BY [q0].[Value] ASC",
+          "SELECT [q0].[Key] AS [value] FROM (SELECT [t1].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t1].[Name] ASC) AS [Value] " +
+          "FROM [CookTable] AS [t1]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + @2))) ORDER BY [q0].[Value] ASC",
           new CommandParameter("@1", 100),
           new CommandParameter("@2", 5));
     }
@@ -222,8 +222,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Single(),
-          "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
-          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + 2))) ORDER BY [q0].[Value] ASC",
+          "SELECT [q0].[Key] AS [value] FROM (SELECT [t1].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t1].[Name] ASC) AS [Value] " +
+          "FROM [CookTable] AS [t1]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + 2))) ORDER BY [q0].[Value] ASC",
           new CommandParameter ("@1", 100));
     }
 
@@ -232,8 +232,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).First(),
-          "SELECT [q0].[Key] AS [value] FROM (SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] " +
-          "FROM [CookTable] AS [t0]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + 1))) ORDER BY [q0].[Value] ASC",
+          "SELECT [q0].[Key] AS [value] FROM (SELECT [t1].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t1].[Name] ASC) AS [Value] " +
+          "FROM [CookTable] AS [t1]) AS [q0] WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + 1))) ORDER BY [q0].[Value] ASC",
           new CommandParameter ("@1", 100));
     }
 
@@ -244,7 +244,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).All (name => name != null),
           "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
           + "SELECT [q0].[Key] FROM ("
-          + "SELECT [t0].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] FROM [CookTable] AS [t0]"
+          + "SELECT [t1].[FirstName] AS [Key],ROW_NUMBER() OVER (ORDER BY [t1].[Name] ASC) AS [Value] FROM [CookTable] AS [t1]"
           + ") AS [q0] WHERE (([q0].[Value] > @1) AND NOT ([q0].[Key] IS NOT NULL)))) THEN 1 ELSE 0 END) AS [value]",
           new CommandParameter ("@1", 100));
     }
@@ -255,8 +255,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Take (10).Skip(100),
           "SELECT [q1].[Key] AS [value] FROM (SELECT [q0].[Key] AS [Key],"+
-          "ROW_NUMBER() OVER (ORDER BY [q0].[Value] ASC) AS [Value] FROM (SELECT [t0].[FirstName] AS [Key],"+
-          "ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] FROM [CookTable] AS [t0]) AS [q0] "+
+          "ROW_NUMBER() OVER (ORDER BY [q0].[Value] ASC) AS [Value] FROM (SELECT [t2].[FirstName] AS [Key],"+
+          "ROW_NUMBER() OVER (ORDER BY [t2].[Name] ASC) AS [Value] FROM [CookTable] AS [t2]) AS [q0] "+
           "WHERE (([q0].[Value] > @1) AND ([q0].[Value] <= (@1 + @2)))) AS [q1] WHERE ([q1].[Value] > @3) ORDER BY [q1].[Value] ASC",
           new CommandParameter ("@1", 100),
           new CommandParameter ("@2", 10),
@@ -269,8 +269,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           () => (from c in Cooks orderby c.Name select c.FirstName).Skip (100).Skip (10),
           "SELECT [q1].[Key] AS [value] FROM (SELECT [q0].[Key] AS [Key],"+
-          "ROW_NUMBER() OVER (ORDER BY [q0].[Value] ASC) AS [Value] FROM (SELECT [t0].[FirstName] AS [Key],"+
-          "ROW_NUMBER() OVER (ORDER BY [t0].[Name] ASC) AS [Value] FROM [CookTable] AS [t0]) AS [q0] WHERE ([q0].[Value] > @1)) AS [q1] "+
+          "ROW_NUMBER() OVER (ORDER BY [q0].[Value] ASC) AS [Value] FROM (SELECT [t2].[FirstName] AS [Key],"+
+          "ROW_NUMBER() OVER (ORDER BY [t2].[Name] ASC) AS [Value] FROM [CookTable] AS [t2]) AS [q0] WHERE ([q0].[Value] > @1)) AS [q1] "+
           "WHERE ([q1].[Value] > @2) ORDER BY [q1].[Value] ASC",
           new CommandParameter ("@1", 100),
           new CommandParameter ("@2", 10));
@@ -304,6 +304,154 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
         + "FROM (SELECT [t1].[Name] AS [key] FROM [CookTable] AS [t1] GROUP BY [t1].[Name]) AS [q0] "
         + "WHERE NOT ([q0].[key] IS NOT NULL))) "
         + "THEN 1 ELSE 0 END) AS [value]");
+    }
+
+    [Test]
+    public void ResultOperatorAfterSetOperation_CausesSubQuery ()
+    {
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).All(i => i > 10),
+          "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
+          + "SELECT [q0].[value] FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0] " 
+          + "WHERE NOT ([q0].[value] > @1))) THEN 1 ELSE 0 END) AS [value]",
+          new CommandParameter("@1", 10));
+      
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Any(i => i > 10),
+          "SELECT CONVERT(BIT, CASE WHEN EXISTS(("
+          + "SELECT [q0].[value] FROM ("
+          + "SELECT [t1].[ID] AS [value] "
+          + "FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0] "
+          + "WHERE ([q0].[value] > @1)"
+          + ")) THEN 1 ELSE 0 END) AS [value]",
+          new CommandParameter("@1", 10));
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Average(),
+          "SELECT AVG(CONVERT(FLOAT, [q0].[value])) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Contains(10),
+          "SELECT CONVERT(BIT, CASE WHEN @1 IN ("
+          + "SELECT [t0].[ID] FROM [CookTable] AS [t0] "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [KitchenTable] AS [t1])"
+          + ") THEN 1 ELSE 0 END) AS [value]",
+          new CommandParameter("@1", 10));
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Count(),
+          "SELECT COUNT(*) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).DefaultIfEmpty(),
+          "SELECT [q0].[value] AS [value] FROM ("
+          + "SELECT NULL AS [Empty]) AS [Empty] "
+          + "OUTER APPLY ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Distinct(),
+          "SELECT DISTINCT [q0].[value] AS [value] "
+          + "FROM (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])) AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).First(),
+          "SELECT TOP (1) [q0].[value] AS [value] FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).GroupBy (i => i % 3).Select (g => new { g.Key, Count = g.Count() }),
+          "SELECT [q1].[key] AS [Key],[q1].[a0] AS [Count] FROM (SELECT ([q0].[value] % @1) AS [key], COUNT(*) AS [a0] "
+          + "FROM ("
+          + "SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] "
+          + "UNION (SELECT [t3].[ID] AS [value] FROM [KitchenTable] AS [t3])"
+          + ") AS [q0] GROUP BY ([q0].[value] % @1)) AS [q1]",
+          new CommandParameter("@1", 3));
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Max(),
+          "SELECT MAX([q0].[value]) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Min(),
+          "SELECT MIN([q0].[value]) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c).Union (Cooks.Select (c => c)).OfType<Chef>().Select(c => c.LetterOfRecommendation),
+          "SELECT [q1].[LetterOfRecommendation] AS [value] FROM ("
+          + "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID],"
+          + "[q0].[KnifeID],[q0].[KnifeClassID] "
+          + "FROM ("
+          + "SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
+          + "[t2].[KnifeID],[t2].[KnifeClassID] FROM [CookTable] AS [t2] "
+          + "UNION (SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
+          + "[t3].[KnifeID],[t3].[KnifeClassID] FROM [CookTable] AS [t3])"
+          + ") AS [q0] WHERE ([q0].[IsStarredCook] = 1)) AS [q1]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Single(),
+          "SELECT TOP (2) [q0].[value] AS [value] FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Skip(10),
+          "SELECT [q1].[Key] AS [value] "
+          + "FROM ("
+          + "SELECT [q0].[value] AS [Key],ROW_NUMBER() OVER (ORDER BY (SELECT @1) ASC) AS [Value] "
+          + "FROM ("
+          + "SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] "
+          + "UNION (SELECT [t3].[ID] AS [value] FROM [KitchenTable] AS [t3])"
+          + ") AS [q0]) AS [q1] WHERE ([q1].[Value] > @2) ORDER BY [q1].[Value] ASC",
+          new CommandParameter("@1", 1),
+          new CommandParameter("@2", 10));
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Sum(),
+          "SELECT SUM([q0].[value]) AS [value] FROM (" 
+          +  "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])" 
+          + ") AS [q0]");
+
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Take(3),
+          "SELECT TOP (3) [q0].[value] AS [value] FROM ("
+          + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
+          + ") AS [q0]");
+    }
+
+    [Test]
+    public void SetOperationAfterSetOperation_CausesNoSubQuery ()
+    {
+      CheckQuery (
+          () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Union (Restaurants.Select (r => r.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [KitchenTable] AS [t1]) "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [RestaurantTable] AS [t2])");
     }
   }
 }

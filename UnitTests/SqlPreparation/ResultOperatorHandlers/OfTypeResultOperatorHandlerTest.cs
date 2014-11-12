@@ -32,20 +32,18 @@ using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class OfTypeResultOperatorHandlerTest
+  public class OfTypeResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
-    private ISqlPreparationStage _stageMock;
-    private UniqueIdentifierGenerator _generator;
+    private ISqlPreparationStage _stage;
     private OfTypeResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      _generator = new UniqueIdentifierGenerator ();
-      _stageMock = new DefaultSqlPreparationStage (
-          CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
+      base.SetUp();
+
+      _stage = CreateDefaultSqlPreparationStage();
       _handler = new OfTypeResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook());
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
@@ -57,7 +55,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var originalSelectProjection = _sqlStatementBuilder.SelectProjection;
       var resultOperator = new OfTypeResultOperator (typeof (Chef));
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.WhereCondition, Is.TypeOf (typeof (TypeBinaryExpression)));
       Assert.That (((TypeBinaryExpression) _sqlStatementBuilder.WhereCondition).TypeOperand, Is.EqualTo (typeof (Chef)));
@@ -76,10 +74,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new OfTypeResultOperator(typeof(Chef));
 
-      _handler.HandleResultOperator(resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator(resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    [Test]
+    public void HandleResultOperator_AfterSetOperations_CreatesSubStatement ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add(SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var resultOperator = new OfTypeResultOperator(typeof(Chef));
+
+      _handler.HandleResultOperator(resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
   }
 }

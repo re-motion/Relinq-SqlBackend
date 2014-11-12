@@ -36,7 +36,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");
     private static readonly MethodInfo s_getEntityMethod = typeof (IDatabaseResultRow).GetMethod ("GetEntity");
 
-    public new static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    private readonly SetOperationsMode _setOperationsMode;
+
+    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SetOperationsMode setOperationsMode)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -44,13 +46,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       EnsureNoCollectionExpression (expression);
 
-      var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage);
+      var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage, setOperationsMode);
       visitor.VisitExpression (expression);
     }
 
-    protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SetOperationsMode setOperationsMode)
         : base (commandBuilder, stage)
     {
+      _setOperationsMode = setOperationsMode;
     }
 
     protected int ColumnPosition { get; set; }
@@ -128,6 +131,21 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (_setOperationsMode == SetOperationsMode.StatementIsSetCombined)
+      {
+        var message = "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "
+                      + "Rewrite the query to perform the in-memory operation after the set operation has been performed."
+                      + Environment.NewLine
+                      + "For example, instead of the following query:"
+                      + Environment.NewLine
+                      + "    SomeOrders.Select (o => SomeMethod (o.ID)).Concat (OtherOrders.Select (o => SomeMethod (o.ID)))"
+                      + Environment.NewLine
+                      + "Try the following query:"
+                      + Environment.NewLine
+                      + "    SomeOrders.Select (o => o.ID).Concat (OtherOrders.Select (o => o.ID)).Select (i => SomeMethod (i))";
+        throw new NotSupportedException (message);
+      }
 
       var allItems = expression.Object != null ? new[] { expression.Object }.Concat (expression.Arguments) : expression.Arguments;
       var projectionItems = new List<Expression>();

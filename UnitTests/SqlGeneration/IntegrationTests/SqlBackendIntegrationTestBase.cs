@@ -26,7 +26,6 @@ using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
@@ -38,7 +37,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     private IQueryable<Kitchen> _kitchens;
     private IQueryable<Restaurant> _restaurants;
     private IQueryable<Company> _companies;
-    private UniqueIdentifierGenerator _generator;
     private IQueryable<Chef> _chefs;
 
     public IQueryable<Cook> Cooks
@@ -80,24 +78,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       _restaurants = ExpressionHelper.CreateQueryable<Restaurant>();
       _chefs = ExpressionHelper.CreateQueryable<Chef>();
       _companies = ExpressionHelper.CreateQueryable<Company>();
-
-      _generator = new UniqueIdentifierGenerator();
     }
 
     protected SqlCommandData GenerateSql (QueryModel queryModel)
     {
-      var preparationContext = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
-      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
+      var generator = new UniqueIdentifierGenerator();
+
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
-      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
-          queryModel,
-          preparationContext,
-          new DefaultSqlPreparationStage (CompoundMethodCallTransformerProvider.CreateDefault(), resultOperatorHandlerRegistry, uniqueIdentifierGenerator),
-          _generator,
-          resultOperatorHandlerRegistry);
+      var defaultSqlPreparationStage = new DefaultSqlPreparationStage (CompoundMethodCallTransformerProvider.CreateDefault(), resultOperatorHandlerRegistry, generator);
+      var sqlStatement = defaultSqlPreparationStage.PrepareSqlStatement (queryModel, null);
 
       var resolver = new MappingResolverStub();
-      var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
+      var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       var mappingResolutionContext = new MappingResolutionContext();
       var newSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement, mappingResolutionContext);
 

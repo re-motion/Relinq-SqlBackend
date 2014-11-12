@@ -23,8 +23,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
   public class TestableSqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingOuterSelectExpressionVisitor
   {
-    public TestableSqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
-        : base(commandBuilder, stage)
+    public TestableSqlGeneratingOuterSelectExpressionVisitor (
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        SetOperationsMode setOperationsMode)
+        : base(commandBuilder, stage, setOperationsMode)
     {
 
     }

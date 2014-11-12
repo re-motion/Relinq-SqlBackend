@@ -18,15 +18,14 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -34,19 +33,18 @@ using Rhino.Mocks;
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class AllResultOperatorHandlerTest
+  public class AllResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
     private ISqlPreparationStage _stageMock;
-    private UniqueIdentifierGenerator _generator;
     private AllResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
-      _generator = new UniqueIdentifierGenerator ();
       _handler = new AllResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -85,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Return (fakePreparedSelectProjection);
       _stageMock.Replay();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
 
       _stageMock.VerifyAllExpectations ();
 
@@ -99,40 +97,40 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     public void HandleResultOperator_AllAfterGroupExpression ()
     {
       _sqlStatementBuilder.GroupByExpression = Expression.Constant ("group");
+
+      var stage = CreateDefaultSqlPreparationStage();
       
       var predicate = Expression.Constant (true);
-      var preparedPredicate = Expression.Constant (false);
       var resultOperator = new AllResultOperator (predicate);
-      var sqlStatement = _sqlStatementBuilder.GetSqlStatement ();
-      var fakePreparedSelectProjection = Expression.Constant (false);
-      var sqlTable = _sqlStatementBuilder.SqlTables[0];
-      var fakeFromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
 
-      _stageMock
-          .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg.Is (_context), Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
-          .Return (fakeFromExpressionInfo);
-      _stageMock
-          .Expect (mock => mock.PrepareWhereExpression (
-              Arg<Expression>.Matches (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)),
-              Arg<ISqlPreparationContext>.Matches (c => c == _context)))
-          .Return (preparedPredicate);
-      _stageMock
-          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Matches (e => e.NodeType == ExpressionType.Not), Arg.Is (_context)))
-          .WhenCalled (
-              mi =>
-              {
-                var selectProjection = (Expression) mi.Arguments[0];
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
 
-                Assert.That (selectProjection, Is.TypeOf (typeof (UnaryExpression)));
-                Assert.That (selectProjection.NodeType, Is.EqualTo(ExpressionType.Not));
-                Assert.That (((UnaryExpression) selectProjection).Operand, Is.TypeOf (typeof (SqlExistsExpression)));
-                Assert.That (((SqlExistsExpression) ((UnaryExpression) selectProjection).Operand).Expression, Is.TypeOf (typeof (SqlSubStatementExpression)));
-              })
-          .Return (fakePreparedSelectProjection);
-      _stageMock.Replay ();
+      var innerStatementOfExistsExpression = GetInnerStatementAfterExistsTransformation(_sqlStatementBuilder);
+      AssertStatementWasMovedToSubStatement (innerStatementOfExistsExpression);
+    }
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+    [Test]
+    public void HandleResultOperator_AllAfterSetOperation ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add(SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var stage = CreateDefaultSqlPreparationStage();
+      
+      var predicate = Expression.Constant (true);
+      var resultOperator = new AllResultOperator (predicate);
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
+
+      var innerStatementOfExistsExpression = GetInnerStatementAfterExistsTransformation(_sqlStatementBuilder);
+      AssertStatementWasMovedToSubStatement (innerStatementOfExistsExpression);
+    }
+
+    private SqlStatement GetInnerStatementAfterExistsTransformation (SqlStatementBuilder sqlStatementBuilder)
+    {
+      var notExpression = (UnaryExpression) sqlStatementBuilder.SelectProjection;
+      var existsExpression = (SqlExistsExpression) notExpression.Operand;
+      var innerStatementOfExistsExpression = ((SqlSubStatementExpression) existsExpression.Expression).SqlStatement;
+      return innerStatementOfExistsExpression;
     }
   }
 }

@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
@@ -50,7 +51,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.TopExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
     }
 
     protected void EnsureNoDistinctQuery (
@@ -61,7 +62,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.IsDistinctQuery)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
     }
 
     protected void EnsureNoGroupExpression (
@@ -73,21 +74,36 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       if (sqlStatementBuilder.GroupByExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
+    }
+
+    protected void EnsureNoSetOperations (
+        SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
+    {
+      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("stage", stage);
+
+      if (sqlStatementBuilder.SetOperationCombinedStatements.Any())
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
     }
 
     protected void MoveCurrentStatementToSqlTable (
         SqlStatementBuilder sqlStatementBuilder,
-        UniqueIdentifierGenerator generator,
         ISqlPreparationContext context,
         Func<ITableInfo, SqlTable> tableGenerator,
-        ISqlPreparationStage stage)
+        ISqlPreparationStage stage,
+        OrderingExtractionPolicy orderingExtractionPolicy = OrderingExtractionPolicy.ExtractOrderingsIntoProjection)
     {
       // Ensure that select clause is named - usually SqlPreparationQueryModelVisitor would do this, but it hasn't done it yet
       sqlStatementBuilder.SelectProjection = new NamedExpression (null, sqlStatementBuilder.SelectProjection);
 
       var oldStatement = sqlStatementBuilder.GetStatementAndResetBuilder();
-      var fromExpressionInfo = stage.PrepareFromExpression (new SqlSubStatementExpression(oldStatement), context, tableGenerator);
+      var fromExpressionInfo = stage.PrepareFromExpression (
+          new SqlSubStatementExpression (oldStatement),
+          context,
+          tableGenerator,
+          orderingExtractionPolicy);
 
       sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
       sqlStatementBuilder.SelectProjection = fromExpressionInfo.ItemSelector;

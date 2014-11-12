@@ -30,8 +30,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
         ISqlPreparationStage stage,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator)
-        : base (generator, stage, provider, context, tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator,
+        OrderingExtractionPolicy orderingExtractionPolicy)
+        : base (generator, stage, provider, context, tableGenerator, orderingExtractionPolicy)
     {
     }
 

@@ -41,6 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public List<Ordering> Orderings { get; private set; }
     public Expression RowNumberSelector { get; set; }
     public Expression CurrentRowNumberOffset { get; set; }
+    public List<SetOperationCombinedStatement> SetOperationCombinedStatements { get; private set; }
 
     public SqlStatementBuilder ()
     {
@@ -62,6 +63,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       SqlTables = new List<SqlTable> (sqlStatement.SqlTables);
       Orderings = new List<Ordering> (sqlStatement.Orderings);
+      SetOperationCombinedStatements = new List<SetOperationCombinedStatement> (sqlStatement.SetOperationCombinedStatements);
     }
 
     public SqlStatement GetSqlStatement ()
@@ -71,8 +73,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       if (SelectProjection == null)
         throw new InvalidOperationException ("A SelectProjection must be set before the SqlStatement can be retrieved.");
-
-
+      
       return new SqlStatement (
           DataInfo,
           SelectProjection,
@@ -83,7 +84,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
           TopExpression,
           IsDistinctQuery,
           RowNumberSelector,
-          CurrentRowNumberOffset);
+          CurrentRowNumberOffset,
+          SetOperationCombinedStatements);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -149,6 +151,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
                                        .Append (ordering.OrderingDirection.ToString().ToUpper()));
       }
 
+      foreach (var combinedStatement in SetOperationCombinedStatements)
+      {
+        sb
+            .Append (" ")
+            .Append (combinedStatement.SetOperation.ToString().ToUpper())
+            .Append (" (")
+            .Append (combinedStatement.SqlStatement)
+            .Append (")");
+      }
+
       return sb.ToString();
     }
 
@@ -165,6 +177,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       SqlTables = new List<SqlTable>();
       Orderings = new List<Ordering>();
+      SetOperationCombinedStatements = new List<SetOperationCombinedStatement>();
     }
   }
 }

@@ -29,7 +29,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   {
     void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable);
     void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression);
-    void GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression);
+    void GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression, SetOperationsMode setOperationsMode);
     void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForOrderByExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression);

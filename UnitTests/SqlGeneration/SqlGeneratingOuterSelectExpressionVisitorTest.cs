@@ -26,6 +26,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
+using Remotion.Linq.SqlBackend.UnitTests.Utilities;
 using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
@@ -36,6 +37,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
   {
     private NamedExpression _namedIntExpression;
     private SqlEntityDefinitionExpression _entityExpression;
+    private SetOperationsMode _someSetOperationsMode;
     private TestableSqlGeneratingOuterSelectExpressionVisitor _visitor;
     private ISqlGenerationStage _stageMock;
     private SqlCommandBuilder _commandBuilder;
@@ -46,7 +48,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
       _commandBuilder = new SqlCommandBuilder ();
-      _visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock);
+      _someSetOperationsMode = Some.Item (SetOperationsMode.StatementIsSetCombined, SetOperationsMode.StatementIsNotSetCombined);
+      _visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, _someSetOperationsMode);
 
       _namedIntExpression = new NamedExpression ("test", Expression.Constant (0));
       _nameColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
@@ -68,13 +71,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void GenerateSql_Collection ()
     {
       var expression = Expression.Constant (new Cook[] { });
-      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, _someSetOperationsMode);
     }
 
     [Test]
     public void GenerateSql_CreatesFullInMemoryProjectionLambda ()
     {
-       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedIntExpression, _commandBuilder, _stageMock);
+       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedIntExpression, _commandBuilder, _stageMock, _someSetOperationsMode);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
@@ -264,9 +267,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void VisitMethodCallExpression ()
+    public void VisitMethodCallExpression_NoSetOperations ()
     {
-      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsNotSetCombined);
+
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
       var namedStringExpression = new NamedExpression ("Name", _nameColumnExpression);
 
@@ -274,9 +279,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           _namedIntExpression,
           ReflectionUtility.GetMethod (() => 0.ToString ("")),
           new Expression[] { namedStringExpression });
-      _visitor.VisitMethodCallExpression (methodCallExpression);
+      visitor.VisitMethodCallExpression (methodCallExpression);
 
-      Assert.That (_visitor.ColumnPosition, Is.EqualTo (2));
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (2));
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       // Constants are used as is in the projection, whereas columns are taken from the SQL result
@@ -295,18 +300,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void VisitMethodCallExpression_WithoutObject ()
+    public void VisitMethodCallExpression_NoSetOperations_WithoutObject ()
     {
-      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsNotSetCombined);
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
       var namedStringExpression = new NamedExpression ("Name", _nameColumnExpression);
 
       var methodCallExpression = Expression.Call (
           ReflectionUtility.GetMethod (() => int.Parse ("")),
           new Expression[] { namedStringExpression });
-      _visitor.VisitMethodCallExpression (methodCallExpression);
+      visitor.VisitMethodCallExpression (methodCallExpression);
 
-      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       var expectedProjectionForArgumentExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "Name", 0, typeof (string));
@@ -322,19 +328,33 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void VisitMethodCallExpression_NoObjectsOrArguments ()
+    public void VisitMethodCallExpression_NoSetOperations_NoObjectsOrArguments ()
     {
-      Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
+      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsNotSetCombined);
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
       var methodCallExpression = Expression.Call (ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments()));
-      _visitor.VisitMethodCallExpression (methodCallExpression);
+      visitor.VisitMethodCallExpression (methodCallExpression);
 
-      Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedProjection = Expression.Call (methodCallExpression.Method);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("NULL"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
+    }
+
+    [Test]
+    public void VisitMethodCallExpression_WithSetOperations ()
+    {
+      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsSetCombined);
+
+      var methodCallExpression = Expression.Call (ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments()));
+      Assert.That (
+          () => visitor.VisitMethodCallExpression (methodCallExpression),
+          Throws.TypeOf<NotSupportedException>().With.Message.StringContaining (
+              "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. Rewrite "
+              + "the query to perform the in-memory operation after the set operation has been performed."));
     }
 
     [Test]

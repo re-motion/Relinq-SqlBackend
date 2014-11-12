@@ -59,9 +59,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Linq, Version=1.15.22.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha00001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+      <HintPath>..\packages\Remotion.Linq.2.0.0-x0-9-141112-141031\lib\portable-net45+wp80+win\Remotion.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -99,6 +99,7 @@
     <Content Include="SystemTests\Resources\SelectTests.WithMemberInitExpression_InOuterMostLevel.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="SystemTests\SetOperationsTests.cs" />
     <Compile Include="SystemTests\SelectTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="LinqSamples101\TopBottomTests.cs" />
@@ -177,6 +178,66 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_SubQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_TopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_WithDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_WithNonDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_WithNonDiscardedOrderByWithTake.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_SubQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_TopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_WithDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_WithNonDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_WithNonDiscardedOrderByWithTake.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_SubQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_TopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_WithDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_WithNonDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Concat_WithNonDiscardedOrderByWithTake.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_SubQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_TopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_WithDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_WithNonDiscardedOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SetOperationsTests.Union_WithNonDiscardedOrderByWithTake.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result">

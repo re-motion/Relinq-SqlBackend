@@ -62,9 +62,9 @@
     <DocumentationFile>bin\Release\Remotion.Linq.SqlBackend.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Remotion.Linq, Version=1.15.22.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha00001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+      <HintPath>..\packages\Remotion.Linq.2.0.0-x0-9-141112-141031\lib\portable-net45+wp80+win\Remotion.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -126,6 +126,7 @@
     <Compile Include="MappingResolution\UnmappedItemException.cs" />
     <Compile Include="SqlGeneration\ColumnID.cs" />
     <Compile Include="SqlGeneration\IDatabaseResultRow.cs" />
+    <Compile Include="SqlGeneration\SetOperationsMode.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingOuterSelectExpressionVisitor.cs" />
     <Compile Include="SqlGeneration\SqlGeneratingSelectExpressionVisitor.cs" />
     <Compile Include="SqlPreparation\FromExpressionInfo.cs" />
@@ -163,8 +164,12 @@
     <Compile Include="SqlPreparation\MethodCallTransformers\UpperMethodCallTransformer.cs" />
     <Compile Include="SqlPreparation\MethodInfoBasedMethodCallTransformerRegistry.cs" />
     <Compile Include="SqlPreparation\NameBasedMethodCallTransformerRegistry.cs" />
+    <Compile Include="SqlPreparation\OrderingExtractionPolicy.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlerRegistry.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AggregationResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\SetOperationResultOperatorHandlerBase.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\ConcatResultOperatorHandler.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\UnionResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AnyResultOperatorHandler.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AverageResultOperatorHandler.cs" />
@@ -187,6 +192,8 @@
     <Compile Include="SqlPreparation\SqlPreparationSubStatementTableFactory.cs" />
     <Compile Include="SqlStatementModel\AggregationExpression.cs" />
     <Compile Include="SqlStatementModel\AggregationModifier.cs" />
+    <Compile Include="SqlStatementModel\SetOperation.cs" />
+    <Compile Include="SqlStatementModel\SetOperationCombinedStatement.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlCollectionExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlExistsExpressionVisitor.cs" />
     <Compile Include="SqlStatementModel\SqlSpecificExpressions\ISqlInExpressionVisitor.cs" />

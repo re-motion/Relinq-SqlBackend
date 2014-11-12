@@ -26,6 +26,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
+using Remotion.Linq.SqlBackend.UnitTests.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
@@ -61,11 +62,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
       Func<ITableInfo, SqlTable> tableGenerator = info => new SqlTable (info, JoinSemantics.Inner);
 
+      var someOrderingExtractionPolicy = Some.Item (
+          OrderingExtractionPolicy.DoNotExtractOrderings,
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
+
       _stageMock
           .Expect (mock => mock.PrepareFromExpression (
               Arg<SqlSubStatementExpression>.Is.TypeOf,
               Arg.Is (_context),
-              Arg.Is (tableGenerator)))
+              Arg.Is (tableGenerator),
+              Arg.Is (someOrderingExtractionPolicy)))
           .Return (fakeFromExpressionInfo)
           .WhenCalled (mi => 
           {
@@ -77,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           });
       _stageMock.Replay ();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, tableGenerator, _stageMock);
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _context, tableGenerator, _stageMock, someOrderingExtractionPolicy);
 
       _stageMock.VerifyAllExpectations();
 
@@ -99,11 +105,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+              mock => mock.PrepareFromExpression (
+                  Arg<Expression>.Is.Anything,
+                  Arg<ISqlPreparationContext>.Is.Anything,
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg<OrderingExtractionPolicy>.Is.Anything))
           .Return (fakeFromExpressionInfo);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _generator, _context, info => new SqlTable (info, JoinSemantics.Inner), _stageMock);
+      _handler.MoveCurrentStatementToSqlTable (
+          _statementBuilder,
+          _context,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          _stageMock,
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       Assert.That (_statementBuilder.Orderings[0], Is.SameAs (ordering));
     }
@@ -117,9 +132,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+              mock => mock.PrepareFromExpression (
+                  Arg<Expression>.Is.Anything,
+                  Arg<ISqlPreparationContext>.Is.Anything,
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is (OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (fakeFromExpressionInfo);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       _handler.EnsureNoTopExpression (_statementBuilder, _generator, _stageMock, _context);
 
@@ -161,7 +180,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+              mock => mock.PrepareFromExpression (
+                  Arg<Expression>.Is.Anything,
+                  Arg<ISqlPreparationContext>.Is.Anything,
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is (OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (fakeFromExpressionInfo);
       _stageMock.Replay ();
 
@@ -185,9 +208,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
           .Expect (
-              mock => mock.PrepareFromExpression (Arg<Expression>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything, Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+              mock => mock.PrepareFromExpression (
+                  Arg<Expression>.Is.Anything,
+                  Arg<ISqlPreparationContext>.Is.Anything,
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is (OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (fakeFromExpressionInfo);
-      _stageMock.Replay ();
+      _stageMock.Replay();
 
       _handler.EnsureNoDistinctQuery (_statementBuilder, _generator, _stageMock, _context);
 
@@ -201,12 +228,51 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     }
 
     [Test]
-    public void EnsureDistinctQuery_NoDistinctQuery ()
+    public void EnsureNoDistinctQuery_NoDistinctQuery ()
     {
       _statementBuilder.IsDistinctQuery = false;
       var sqlStatement = _statementBuilder.GetSqlStatement ();
 
       _handler.EnsureNoDistinctQuery(_statementBuilder, _generator, _stageMock, _context);
+
+      Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
+    }
+
+    [Test]
+    public void EnsureNoSetOperations_WithSetOperations ()
+    {
+      _statementBuilder.SetOperationCombinedStatements.Add(SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+      
+      var originalStatement = _statementBuilder.GetSqlStatement ();
+      var fakeFromExpressionInfo = CreateFakeFromExpressionInfo (new Ordering[0]);
+
+      _stageMock
+          .Expect (
+              mock => mock.PrepareFromExpression (
+                  Arg<Expression>.Is.Anything,
+                  Arg<ISqlPreparationContext>.Is.Anything,
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is (OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+          .Return (fakeFromExpressionInfo);
+      _stageMock.Replay ();
+
+      _handler.EnsureNoSetOperations (_statementBuilder, _generator, _stageMock, _context);
+
+      _stageMock.VerifyAllExpectations ();
+      Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
+      Assert.That (_statementBuilder.SetOperationCombinedStatements, Is.Empty);
+
+      var sqlTable = _statementBuilder.SqlTables[0];
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+    }
+
+    [Test]
+    public void EnsureNoSetOperations_NoSetOperations ()
+    {
+      var sqlStatement = _statementBuilder.GetSqlStatement ();
+
+      _handler.EnsureNoSetOperations(_statementBuilder, _generator, _stageMock, _context);
 
       Assert.That (sqlStatement, Is.EqualTo (_statementBuilder.GetSqlStatement ()));
     }

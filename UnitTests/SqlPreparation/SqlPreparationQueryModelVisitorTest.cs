@@ -84,7 +84,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (result.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (result.WhereCondition, Is.Null);
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) result.SqlTables[0]).TableInfo, Is.InstanceOf (typeof (UnresolvedTableInfo)));
+      Assert.That (result.SqlTables[0].TableInfo, Is.InstanceOf (typeof (UnresolvedTableInfo)));
       Assert.That (result.TopExpression, Is.Null);
       Assert.That (result.IsDistinctQuery, Is.False);
     }
@@ -275,7 +275,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == _mainFromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context),
-                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is (OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (preparedFromExpressionInfo);
 
       _stageMock.Replay();
@@ -311,7 +312,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == constantExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context),
-                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is(OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (preparedFromExpressionInfo);
 
       _stageMock.Replay();
@@ -345,7 +347,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           mock => mock.PrepareFromExpression (
               Arg<Expression>.Matches (e => e == fromClause.FromExpression),
               Arg<ISqlPreparationContext>.Matches (c => c != _context),
-              Arg < Func<ITableInfo, SqlTable>>.Is.Anything))
+              Arg <Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is(OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (preparedFromExpressionInfo);
 
       _stageMock.Replay();
@@ -462,7 +465,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == joinClause.InnerSequence),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context),
-                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is(OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (
@@ -496,7 +500,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == joinClause.InnerSequence),
                   Arg<ISqlPreparationContext>.Is.Anything,
-                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is(OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (
@@ -631,7 +636,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock.PrepareFromExpression (
                   Arg.Is (_mainFromClause.FromExpression),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context),
-                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything))
+                  Arg<Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is(OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (preparedFromExpressionInfo)
           .WhenCalled (mi => 
           {
@@ -641,7 +647,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
             var table = tableCreator (sampleTableInfo);
 
             Assert.That (table, Is.TypeOf (typeof (SqlTable)));
-            Assert.That (((SqlTable) table).TableInfo, Is.SameAs (sampleTableInfo));
+            Assert.That (table.TableInfo, Is.SameAs (sampleTableInfo));
             Assert.That (table.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
           });
       _stageMock.Replay();
@@ -760,7 +766,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock.PrepareFromExpression (
                   Arg<Expression>.Matches (e => e == joinClause.InnerSequence),
                   Arg<ISqlPreparationContext>.Matches (c => c != _context),
-                  Arg < Func<ITableInfo, SqlTable>>.Is.Anything))
+                  Arg <Func<ITableInfo, SqlTable>>.Is.Anything,
+                  Arg.Is(OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Return (preparedFromExpressionInfo);
       _stageMock
           .Expect (

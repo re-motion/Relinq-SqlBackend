@@ -129,12 +129,24 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         for (int i = 0; i < sqlStatementBuilder.Orderings.Count; ++i)
         {
-          var newOrderingExpression = _stage.ResolveOrderingExpression (sqlStatementBuilder.Orderings[i].Expression, _context);
-          if (newOrderingExpression != sqlStatementBuilder.Orderings[i].Expression)
-            sqlStatementBuilder.Orderings[i] = new Ordering (newOrderingExpression, sqlStatementBuilder.Orderings[i].OrderingDirection);
+          var resolvedOrderingExpression = _stage.ResolveOrderingExpression (sqlStatementBuilder.Orderings[i].Expression, _context);
+          if (resolvedOrderingExpression != sqlStatementBuilder.Orderings[i].Expression)
+            sqlStatementBuilder.Orderings[i] = new Ordering (resolvedOrderingExpression, sqlStatementBuilder.Orderings[i].OrderingDirection);
         }
       }
-      
+
+      for (int i = 0; i < sqlStatement.SetOperationCombinedStatements.Count; i++)
+      {
+        var combinedStatement = sqlStatement.SetOperationCombinedStatements[i];
+        var resolvedSqlStatement = _stage.ResolveSqlStatement (combinedStatement.SqlStatement, _context);
+        if (!Equals (resolvedSqlStatement, combinedStatement.SqlStatement))
+        {
+          sqlStatementBuilder.SetOperationCombinedStatements[i] = new SetOperationCombinedStatement (
+              resolvedSqlStatement,
+              combinedStatement.SetOperation);
+        }
+      }
+
       return sqlStatementBuilder.GetSqlStatement();
     }
 

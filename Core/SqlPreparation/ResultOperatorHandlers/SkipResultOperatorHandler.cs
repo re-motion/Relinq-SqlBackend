@@ -62,6 +62,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      EnsureNoSetOperations (sqlStatementBuilder, generator, stage, context);
+
       // We move the statement into a subquery and change it to return the row number in addition to the original projection. Then, we use that
       // row number from the outer statement to skip the desired amount of rows. We also add an order by clause to the outer statement to ensure
       // that the rows come in the correct order.

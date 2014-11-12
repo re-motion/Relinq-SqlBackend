@@ -17,14 +17,17 @@
 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq.Clauses;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
+using Remotion.Linq.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
@@ -52,17 +55,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
               new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
           });
 
-      _sqlStatement = new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          _entityExpression,
-          new[] { sqlTable },
-          null,
-          null,
-          new Ordering[] { },
-          null,
-          false,
-          null,
-          null);
+      _sqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement (
+          new SqlStatementBuilder
+          {
+              SelectProjection = _entityExpression,
+              SqlTables = { sqlTable }
+          });
       _commandBuilder = new SqlCommandBuilder();
     }
 
@@ -75,8 +73,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
     }
-
-
+    
     [Test]
     public void GenerateTextForSelectExpression ()
     {
@@ -92,11 +89,31 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var stage = new DefaultSqlGenerationStage();
 
-      stage.GenerateTextForOuterSelectExpression (_commandBuilder, _sqlStatement.SelectProjection);
+      stage.GenerateTextForOuterSelectExpression (_commandBuilder, _sqlStatement.SelectProjection, SetOperationsMode.StatementIsSetCombined);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t].[ID],[t].[Name],[t].[City]"));
 
       Assert.That (_commandBuilder.GetInMemoryProjectionBody(), Is.Not.Null);
+    }
+
+    [Test]
+    public void GenerateTextForOuterSelectExpression_PassesOnSetOperationsMode ()
+    {
+      var stage = new DefaultSqlGenerationStage();
+
+      var projectionWithMethodCall = Expression.Call (ReflectionUtility.GetMethod (() => SomeMethod (null)), _sqlStatement.SelectProjection);
+
+      Assert.That (
+          () => stage.GenerateTextForOuterSelectExpression (_commandBuilder, projectionWithMethodCall, SetOperationsMode.StatementIsSetCombined),
+          Throws.TypeOf<NotSupportedException>());
+      Assert.That (
+          () => stage.GenerateTextForOuterSelectExpression (_commandBuilder, projectionWithMethodCall, SetOperationsMode.StatementIsNotSetCombined),
+          Throws.Nothing);
+    }
+
+    private static string SomeMethod (string s)
+    {
+      throw new NotImplementedException();
     }
 
     [Test]
