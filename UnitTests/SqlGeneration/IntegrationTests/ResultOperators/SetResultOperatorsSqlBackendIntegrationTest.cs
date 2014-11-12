@@ -198,7 +198,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
     [Test]
     [ExpectedException(typeof (NotSupportedException), ExpectedMessage = 
-        "The Union result operator is only supported for combining two query results, but a 'ConstantExpression' was supplied as the second sequence: "
+        "The 'Union' operation is only supported for combining two query results, but a 'ConstantExpression' was supplied as the second sequence: "
         + "value(System.Int32[])")]
     public void SetOperation_WithCollection ()
     {
