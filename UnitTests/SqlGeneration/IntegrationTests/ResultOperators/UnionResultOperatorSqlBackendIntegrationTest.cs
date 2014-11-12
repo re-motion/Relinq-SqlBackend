@@ -127,8 +127,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore("TODO RMLNQSQL-30: This should really throw an error, but it generates an invalid in-memory projection.")]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "X")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "
+        + "Rewrite the query to perform the in-memory operation after the set operation has been performed.\r\n"
+        + "For example, instead of the following query:\r\n"
+        + "    SomeOrders.Select (o => SomeMethod (o.ID)).Concat (OtherOrders.Select (o => SomeMethod (o.ID)))\r\n"
+        + "Try the following query:\r\n"
+        + "    SomeOrders.Select (o => o.ID).Concat (OtherOrders.Select (o => o.ID)).Select (i => SomeMethod (i))")]
     public void Union_WithDifferentInMemoryProjections ()
     {
       CheckQuery (

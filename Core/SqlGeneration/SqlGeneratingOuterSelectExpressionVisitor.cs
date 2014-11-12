@@ -132,6 +132,21 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      if (_setOperationsMode == SetOperationsMode.StatementIsSetCombined)
+      {
+        var message = "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "
+                      + "Rewrite the query to perform the in-memory operation after the set operation has been performed."
+                      + Environment.NewLine
+                      + "For example, instead of the following query:"
+                      + Environment.NewLine
+                      + "    SomeOrders.Select (o => SomeMethod (o.ID)).Concat (OtherOrders.Select (o => SomeMethod (o.ID)))"
+                      + Environment.NewLine
+                      + "Try the following query:"
+                      + Environment.NewLine
+                      + "    SomeOrders.Select (o => o.ID).Concat (OtherOrders.Select (o => o.ID)).Select (i => SomeMethod (i))";
+        throw new NotSupportedException (message);
+      }
+
       var allItems = expression.Object != null ? new[] { expression.Object }.Concat (expression.Arguments) : expression.Arguments;
       var projectionItems = new List<Expression>();
       CommandBuilder.AppendSeparated (",", allItems, (cb, expr) => projectionItems.Add (VisitArgumentOfLocalEvaluation (expr)));
