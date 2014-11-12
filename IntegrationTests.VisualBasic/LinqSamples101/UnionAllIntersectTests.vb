@@ -86,7 +86,7 @@ Namespace LinqSamples101
     'This sample uses Intersect to return a sequence of all countries that both
     'Customers and Employees live in.
     <Test()> _
-    <Ignore("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")> _
+    <Ignore("RMLNQSQL-62: Support for the Intersect and Except query operators")> _
     Public Sub LinqToSqlUnion04()
       Dim countries = (From cust In DB.Customers _
                        Select cust.Country).Intersect(From emp In DB.Employees _
@@ -98,7 +98,7 @@ Namespace LinqSamples101
     'This sample uses Except to return a sequence of all countries that
     'Customers live in but no Employees live in.
     <Test()> _
-    <Ignore("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")> _
+    <Ignore("RMLNQSQL-62: Support for the Intersect and Except query operators")> _
     Public Sub LinqToSqlUnion05()
       Dim countries = (From cust In DB.Customers _
             Select cust.Country).Except(From emp In DB.Employees _

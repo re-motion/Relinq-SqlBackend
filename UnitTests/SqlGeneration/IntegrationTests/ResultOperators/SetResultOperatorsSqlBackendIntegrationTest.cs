@@ -160,7 +160,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore("TODO RMLNQSQL-30: This should really throw an error, but it generates invalid SQL.")]
+    [Ignore("TODO RMLNQSQL-63: This should really throw an error, but it generates invalid SQL.")]
     public void SetOperation_WithDifferentColumnLists ()
     {
       CheckQuery (
