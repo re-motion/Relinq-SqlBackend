@@ -20,7 +20,6 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Development.UnitTesting;
-using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -285,6 +284,26 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _generator.BuildSetOperationCombinedStatementsPart (sqlStatement, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" UNION (statement)"));
+      _stageMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BuildSetOperationCombinedStatementsPart_UnionAll ()
+    {
+      var setOperationCombinedStatement = new SetOperationCombinedStatement(SqlStatementModelObjectMother.CreateSqlStatement(), SetOperation.UnionAll);
+      var sqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement (
+          new SqlStatementBuilder
+          {
+              SetOperationCombinedStatements = { setOperationCombinedStatement }
+          });
+
+      _stageMock.Expect (mock => mock.GenerateTextForSqlStatement (_commandBuilder, setOperationCombinedStatement.SqlStatement))
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("statement"));
+      _stageMock.Replay ();
+
+      _generator.BuildSetOperationCombinedStatementsPart (sqlStatement, _commandBuilder);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" UNION ALL (statement)"));
       _stageMock.VerifyAllExpectations ();
     }
     

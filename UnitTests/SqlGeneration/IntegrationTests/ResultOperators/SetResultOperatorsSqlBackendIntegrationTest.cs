@@ -64,13 +64,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore ("TODO RMLNQSQL-30")]
     public void Concat_OnTopLevel ()
     {
       CheckQuery (
           () => Cooks.Where (c => c.FirstName == "Hugo").Select (c => c.ID).Concat (Cooks.Where (c => c.Name == "Boss").Select (c => c.ID)),
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
-          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          + "UNION ALL (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
           row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "Boss"));
@@ -80,8 +79,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
               .Concat (Cooks.Where (c => c.Name == "Boss").Select (c => c.ID))
               .Concat (Cooks.Where (c => c.ID == 100).Select (c => c.ID)),
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
-          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2)) "
-          + "UNION (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3))",
+          + "UNION ALL (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2)) "
+          + "UNION ALL (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3))",
           row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "Boss"),
@@ -94,8 +93,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
                       .Concat (Cooks.Where (c => c.ID == 100).Select (c => c.ID))),
           // The difference is in the parentheses.
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
-          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2) "
-          + "UNION (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3)))",
+          + "UNION ALL (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2) "
+          + "UNION ALL (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3)))",
           row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "Boss"),
@@ -130,6 +129,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
               .Union (Cooks.Where (c => c.Name == "Boss").OrderBy (c => c.ID).Select (c => c.ID)),
           "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
           + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
+
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").OrderBy (c => c.ID).Select (c => c.ID)
+              .Concat (Cooks.Where (c => c.Name == "Boss").OrderBy (c => c.ID).Select (c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION ALL (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
           row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
           new CommandParameter ("@1", "Hugo"),
           new CommandParameter ("@2", "Boss"));
@@ -220,6 +228,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + "CROSS APPLY ("
           + "SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[FirstName] = @1) "
           + "UNION (SELECT [t3].[ID] AS [value] FROM [CookTable] AS [t3] WHERE ([t3].[Name] = @2))) " 
+          + "AS [q0] "
+          + "WHERE ([t1].[ID] = [q0].[value])",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
+
+       CheckQuery (
+          () => from k in Cooks
+                from x in (Cooks.Where(c => c.FirstName == "Hugo").Select(c => c.ID).Concat (Cooks.Where (c => c.Name == "Boss").Select(c => c.ID)))
+                where k.ID == x
+                select x,
+          "SELECT [q0].[value] AS [value] " 
+          + "FROM [CookTable] AS [t1] " 
+          + "CROSS APPLY ("
+          + "SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[FirstName] = @1) "
+          + "UNION ALL (SELECT [t3].[ID] AS [value] FROM [CookTable] AS [t3] WHERE ([t3].[Name] = @2))) " 
           + "AS [q0] "
           + "WHERE ([t1].[ID] = [q0].[value])",
           row => (object) row.GetValue<int> (new ColumnID ("value", 0)),

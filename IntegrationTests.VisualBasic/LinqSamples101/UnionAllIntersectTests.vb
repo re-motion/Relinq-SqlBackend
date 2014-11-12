@@ -48,7 +48,6 @@ Namespace LinqSamples101
     'This sample uses Concat to return a sequence of all Customer and Employee
     'phone/fax numbers
     <Test()> _
-    <Ignore("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlUnion01()
       Dim phoneNumbers = (From cust In DB.Customers Select cust.Phone).Concat( _
                           From cust In DB.Customers Select cust.Fax).Concat( _
@@ -61,7 +60,6 @@ Namespace LinqSamples101
     'This sample uses Concat to return a sequence of all Customer and Employee
     'name and phone number mappings.
     <Test()> _
-    <Ignore("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlUnion02()
       Dim custPhones = From cust In DB.Customers _
                        Select Name = cust.CompanyName, _

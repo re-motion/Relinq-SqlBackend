@@ -45,7 +45,6 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Concat to return a sequence of all Customer and Employee phone/fax numbers.
     /// </summary>
     [Test]
-    [Ignore ("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")]
     public void LinqToSqlUnion01 ()
     {
       var q = (
@@ -66,7 +65,6 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
     /// This sample uses Concat to return a sequence of all Customer and Employee name and phone number mappings.
     /// </summary>
     [Test]
-    [Ignore ("RMLNQSQL-30: Support for the Union, Concat, Intersect, and Except query operators")]
     public void LinqToSqlUnion02 ()
     {
       var q = (

@@ -171,6 +171,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
             commandBuilder.Append (" UNION (");
             break;
 
+          case SetOperation.UnionAll:
+            commandBuilder.Append (" UNION ALL (");
+            break;
+
           default:
             throw new InvalidOperationException ("Invalid enum value: " + combinedStatement.SetOperation);
         }
