@@ -24,6 +24,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
+  /// <summary>
+  /// Handles the <see cref="UnionResultOperator"/> by putting the combined query into <see cref="SqlStatementBuilder.SetOperationCombinedStatements"/>.
+  /// Only works if the unioned enumerable is a subquery. Also deals with ORDER BY in a SQL compatible way.
+  /// </summary>
   public class UnionResultOperatorHandler : ResultOperatorHandler<UnionResultOperator>
   {
     public override void HandleResultOperator (
