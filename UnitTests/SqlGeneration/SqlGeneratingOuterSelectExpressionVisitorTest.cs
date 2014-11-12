@@ -36,6 +36,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
   {
     private NamedExpression _namedIntExpression;
     private SqlEntityDefinitionExpression _entityExpression;
+    private SetOperationsMode _someSetOperationsMode;
     private TestableSqlGeneratingOuterSelectExpressionVisitor _visitor;
     private ISqlGenerationStage _stageMock;
     private SqlCommandBuilder _commandBuilder;
@@ -46,7 +47,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
       _commandBuilder = new SqlCommandBuilder ();
-      _visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock);
+      _someSetOperationsMode = Some.Item (SetOperationsMode.StatementIsSetCombined, SetOperationsMode.StatementIsNotSetCombined);
+      _visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, _someSetOperationsMode);
 
       _namedIntExpression = new NamedExpression ("test", Expression.Constant (0));
       _nameColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
@@ -68,13 +70,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void GenerateSql_Collection ()
     {
       var expression = Expression.Constant (new Cook[] { });
-      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, _someSetOperationsMode);
     }
 
     [Test]
     public void GenerateSql_CreatesFullInMemoryProjectionLambda ()
     {
-       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedIntExpression, _commandBuilder, _stageMock);
+       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedIntExpression, _commandBuilder, _stageMock, _someSetOperationsMode);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));

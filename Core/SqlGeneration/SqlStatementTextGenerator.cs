@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Utilities;
 
@@ -73,9 +74,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
 
       if (isOutermostStatement)
-        _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+      {
+        var setOperationsMode = sqlStatement.SetOperationCombinedStatements.Any()
+            ? SetOperationsMode.StatementIsSetCombined
+            : SetOperationsMode.StatementIsNotSetCombined;
+        _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection, setOperationsMode);
+      }
       else
+      {
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+      }
     }
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)

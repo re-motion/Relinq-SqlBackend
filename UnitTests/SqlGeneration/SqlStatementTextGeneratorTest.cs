@@ -35,24 +35,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     private TestableSqlStatementTextGenerator _generator;
     private SqlCommandBuilder _commandBuilder;
     private ISqlGenerationStage _stageMock;
-    private SqlEntityExpression _entityExpression;
     private SqlTable _sqlTable;
 
     [SetUp]
     public void SetUp ()
     {
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
-      _entityExpression = new SqlEntityDefinitionExpression (
-          typeof(string),
-          "t", null,
-          e => e.GetColumn (typeof (int), "ID", true),
-          new SqlColumnExpression[]
-          {
-              new SqlColumnDefinitionExpression (typeof (int), "t", "ID", true),
-              new SqlColumnDefinitionExpression (typeof (int), "t", "Name", false),
-              new SqlColumnDefinitionExpression (typeof (int), "t", "City", false)
-          });
-
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage>();
       _generator = new TestableSqlStatementTextGenerator (_stageMock);
       _commandBuilder = new SqlCommandBuilder();
@@ -154,6 +142,43 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("SELECT DISTINCT TOP (@1) [t].[ID],[t].[Name],[t].[City]"));
+      _stageMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void BuildSelectPart_OuterSelect_NoSetOperationsAggregation ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForOuterSelectExpression (
+              _commandBuilder,
+              sqlStatement.SelectProjection,
+              SetOperationsMode.StatementIsNotSetCombined)
+          );
+
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, true);
+
+      _stageMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void BuildSelectPart_OuterSelect_WithSetOperationsAggregation ()
+    {
+      var sqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement(new SqlStatementBuilder 
+      {
+        SetOperationCombinedStatements = { SqlStatementModelObjectMother.CreateSetOperationCombinedStatement() }
+      });
+
+      _stageMock.Expect (
+          mock => mock.GenerateTextForOuterSelectExpression (
+              _commandBuilder,
+              sqlStatement.SelectProjection,
+              SetOperationsMode.StatementIsSetCombined)
+          );
+
+      _generator.BuildSelectPart (sqlStatement, _commandBuilder, true);
+
       _stageMock.VerifyAllExpectations();
     }
 
