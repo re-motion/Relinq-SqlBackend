@@ -23,7 +23,7 @@ using Remotion.Linq.SqlBackend.SqlGeneration;
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.ResultOperators
 {
   [TestFixture]
-  public class UnionResultOperatorSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
+  public class SetResultOperatorsSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
     public void Union_OnTopLevel ()
@@ -64,7 +64,46 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void Union_WithDifferentTypes ()
+    [Ignore ("TODO RMLNQSQL-30")]
+    public void Concat_OnTopLevel ()
+    {
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").Select (c => c.ID).Concat (Cooks.Where (c => c.Name == "Boss").Select (c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
+
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").Select (c => c.ID)
+              .Concat (Cooks.Where (c => c.Name == "Boss").Select (c => c.ID))
+              .Concat (Cooks.Where (c => c.ID == 100).Select (c => c.ID)),
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2)) "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"),
+          new CommandParameter ("@3", 100));
+
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").Select (c => c.ID)
+              .Concat (
+                  Cooks.Where (c => c.Name == "Boss").Select (c => c.ID)
+                      .Concat (Cooks.Where (c => c.ID == 100).Select (c => c.ID))),
+          // The difference is in the parentheses.
+          "SELECT [t0].[ID] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2) "
+          + "UNION (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3)))",
+          row => (object) row.GetValue<int> (new ColumnID ("value", 0)),
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"),
+          new CommandParameter ("@3", 100));
+    }
+
+    [Test]
+    public void SetOperation_WithDifferentTypes ()
     {
       CheckQuery (
           () => Cooks.Where(c => c.FirstName == "Hugo").Select(c => c.ID).Union (Chefs.Where (c => c.Name == "Boss").Select(c => c.ID)),
@@ -84,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void Union_CausesOrderByToBeIgnored ()
+    public void SetOperation_CausesOrderByToBeIgnored ()
     {
       CheckQuery (
           () => Cooks.Where (c => c.FirstName == "Hugo").OrderBy (c => c.ID).Select (c => c.ID)
@@ -97,7 +136,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void Union_CausesOrderByWithTakeToWork ()
+    public void SetOperation_CausesOrderByWithTakeToWork ()
     {
       CheckQuery (
           () => Cooks.Where (c => c.FirstName == "Hugo").OrderBy (c => c.ID).Select (c => c.ID).Take(3)
@@ -114,7 +153,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
     [Test]
     [Ignore("TODO RMLNQSQL-30: This should really throw an error, but it generates invalid SQL.")]
-    public void Union_WithDifferentColumnLists ()
+    public void SetOperation_WithDifferentColumnLists ()
     {
       CheckQuery (
           () => Cooks.Union (Chefs.Select (c => c)),
@@ -134,7 +173,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
         + "    SomeOrders.Select (o => SomeMethod (o.ID)).Concat (OtherOrders.Select (o => SomeMethod (o.ID)))\r\n"
         + "Try the following query:\r\n"
         + "    SomeOrders.Select (o => o.ID).Concat (OtherOrders.Select (o => o.ID)).Select (i => SomeMethod (i))")]
-    public void Union_WithDifferentInMemoryProjections ()
+    public void SetOperation_WithDifferentInMemoryProjections ()
     {
       CheckQuery (
           () => Cooks.Select(c => InMemoryToUpper (c.Name)).Union (Kitchens.Select (c => c.Name)),
@@ -142,7 +181,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void Union_WithSubsequentInMemoryProjection ()
+    public void SetOperation_WithSubsequentInMemoryProjection ()
     {
       CheckQuery (
           () => Cooks.Select (c => c.Name).Union (Kitchens.Select (c => c.Name)).Select (n => InMemoryToUpper (n)),
@@ -161,7 +200,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     [ExpectedException(typeof (NotSupportedException), ExpectedMessage = 
         "The Union result operator is only supported for combining two query results, but a 'ConstantExpression' was supplied as the second sequence: "
         + "value(System.Int32[])")]
-    public void Union_WithCollection ()
+    public void SetOperation_WithCollection ()
     {
       CheckQuery (
           () => Cooks.Select(c => c.ID).Union (new[] { 1, 2, 3}),
@@ -169,7 +208,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
     
     [Test]
-    public void Union_InSubQuery ()
+    public void SetOperation_InSubQuery ()
     {
       CheckQuery (
           () => from k in Cooks
