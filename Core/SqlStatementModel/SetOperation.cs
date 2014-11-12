@@ -7,6 +7,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public enum SetOperation
   {
-    Union
+    Union,
+    UnionAll
   }
 }
