@@ -17,23 +17,30 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
+  // TODO RMLNQSQL-64: Merge with SqlTable.
   /// <summary>
   /// Provides a base class for SQL tables, both stand-alone tables and joined tables.
   /// </summary>
   public abstract class SqlTableBase
   {
     private readonly Dictionary<MemberInfo, SqlJoinedTable> _joinedTables = new Dictionary<MemberInfo, SqlJoinedTable>();
+    
+    private readonly List<SqlJoin> _orderedJoins = new List<SqlJoin>();
+    private readonly Dictionary<MemberInfo, SqlJoin> _joinsByMemberInfo = new Dictionary<MemberInfo, SqlJoin>();
+    
     private readonly Type _itemType;
     private readonly JoinSemantics _joinSemantics;
 
     public abstract void Accept (ISqlTableBaseVisitor visitor);
     
+    // TODO RMLNQSQL-64: Remove joinSemantics?
     protected SqlTableBase (Type itemType, JoinSemantics joinSemantics)
     {
       ArgumentUtility.CheckNotNull ("itemType", itemType);
@@ -54,11 +61,17 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _joinedTables.Values; }
     }
 
+    public IEnumerable<SqlJoin> OrderedJoins
+    {
+      get { return _orderedJoins; }
+    }
+
     public JoinSemantics JoinSemantics
     {
       get { return _joinSemantics; }
     }
 
+    // TODO RMLNQSQL-64: Remove.
     public SqlJoinedTable GetOrAddLeftJoin (IJoinInfo joinInfo, MemberInfo memberInfo)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
@@ -69,11 +82,56 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return _joinedTables[memberInfo];
     }
 
+    // TODO RMLNQSQL-64: Remove.
     public SqlJoinedTable GetJoin (MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
       return _joinedTables[relationMember];
+    }
+
+    public SqlJoin GetOrAddLeftJoinByMember (MemberInfo memberInfo, Func<SqlJoin> joinFactory)
+    {
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull ("joinFactory", joinFactory);
+
+      SqlJoin sqlJoin;
+      if (!_joinsByMemberInfo.TryGetValue (memberInfo, out sqlJoin))
+      {
+        sqlJoin = joinFactory();
+        _joinsByMemberInfo.Add (memberInfo, sqlJoin);
+        AddJoin (sqlJoin);
+      }
+
+      return sqlJoin;
+    }
+
+    public void AddJoin (SqlJoin sqlJoin)
+    {
+      ArgumentUtility.CheckNotNull ("sqlJoin", sqlJoin);
+      _orderedJoins.Add (sqlJoin);
+    }
+
+    public SqlJoin GetJoinByMember (MemberInfo relationMember)
+    {
+      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
+
+      return _joinsByMemberInfo[relationMember];
+    }
+
+    protected void AppendJoinString (StringBuilder sb, IEnumerable<SqlJoin> orderedJoins)
+    {
+      foreach (var sqlJoin in orderedJoins)
+      {
+        sb
+            .Append (" ")
+            .Append (sqlJoin.JoinSemantics.ToString().ToUpper())
+            .Append (" JOIN ")
+            .Append (sqlJoin.JoinedTable.TableInfo)
+            .Append (" ON ")
+            .Append (sqlJoin.JoinCondition);
+        AppendJoinString (sb, sqlJoin.JoinedTable.OrderedJoins);
+      }
     }
   }
 }

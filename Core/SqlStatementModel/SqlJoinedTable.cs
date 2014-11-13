@@ -25,6 +25,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
+  // TODO RMLNQSQL-64: Remove.
   /// <summary>
   /// <see cref="SqlJoinedTable"/> represents a joined data source in a <see cref="SqlStatement"/>.
   /// </summary>

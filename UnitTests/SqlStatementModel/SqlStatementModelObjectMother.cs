@@ -341,5 +341,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       return new Ordering (ExpressionHelper.CreateExpression(), OrderingDirection.Asc);
     }
+
+    public static MemberInfo GetKitchenCookMemberInfo ()
+    {
+      return typeof (Kitchen).GetProperty ("Cook");
+    }
+
+    public static PropertyInfo GetKitchenRestaurantMemberInfo ()
+    {
+      return typeof (Kitchen).GetProperty ("Restaurant");
+    }
+
+    public static SqlJoin CreateSqlJoin ()
+    {
+      return new SqlJoin (CreateSqlTable(), JoinSemantics.Inner, ExpressionHelper.CreateExpression (typeof (bool)));
+    }
   }
 }

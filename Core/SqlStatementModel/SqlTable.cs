@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq;
+using System.Text;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -69,7 +70,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return TableInfo + JoinedTables.Aggregate ("", (s, t) => s + " " + t);
+      var sb = new StringBuilder();
+      sb.Append (TableInfo + JoinedTables.Aggregate ("", (s, t) => s + " " + t));
+      AppendJoinString(sb, OrderedJoins);
+
+      return sb.ToString();
     }
   }
 }

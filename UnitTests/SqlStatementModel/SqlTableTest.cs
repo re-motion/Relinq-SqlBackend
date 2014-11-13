@@ -16,11 +16,13 @@
 // 
 
 using System;
+using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
@@ -94,6 +96,40 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       var result = _sqlTable.ToString ();
       Assert.That (result, Is.EqualTo ("[table1] [t] LEFT JOIN Kitchen.Cook"));
+    }
+
+    [Test]
+    public void ToString_WithJoin ()
+    {
+      var joinedTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"), JoinSemantics.Inner);
+      var joinCondition = Expression.Equal (new SqlLiteralExpression ("left"), new SqlLiteralExpression ("right"));
+
+      var memberInfo = SqlStatementModelObjectMother.GetSomeMemberInfo();
+      _sqlTable.GetOrAddLeftJoinByMember (memberInfo, () => new SqlJoin(joinedTable, JoinSemantics.Inner, joinCondition));
+
+      var result = _sqlTable.ToString ();
+
+      Assert.That (result, Is.EqualTo ("[table1] [t] INNER JOIN [Cook] [c] ON (\"left\" == \"right\")"));
+    }
+
+    [Test]
+    public void ToString_WithMultipleJoins ()
+    {
+      var joinedTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"), JoinSemantics.Inner);
+      var joinCondition1 = Expression.Equal (new SqlLiteralExpression ("left"), new SqlLiteralExpression ("right"));
+      var memberInfo1 = SqlStatementModelObjectMother.GetSomeMemberInfo();
+      _sqlTable.GetOrAddLeftJoinByMember (memberInfo1, () => new SqlJoin(joinedTable1, JoinSemantics.Left, joinCondition1));
+
+      var joinedTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Restaurant", "r"), JoinSemantics.Inner);
+      var joinCondition2 = Expression.Equal (new SqlLiteralExpression ("left2"), new SqlLiteralExpression ("right2"));
+      var memberInfo2 = SqlStatementModelObjectMother.GetKitchenRestaurantMemberInfo();
+      _sqlTable.GetOrAddLeftJoinByMember (memberInfo2, () => new SqlJoin(joinedTable2, JoinSemantics.Inner, joinCondition2));
+
+      var result = _sqlTable.ToString ();
+
+      Assert.That (
+          result,
+          Is.EqualTo ("[table1] [t] LEFT JOIN [Cook] [c] ON (\"left\" == \"right\") INNER JOIN [Restaurant] [r] ON (\"left2\" == \"right2\")"));
     }
 
   }

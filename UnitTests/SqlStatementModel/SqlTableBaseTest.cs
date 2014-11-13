@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
@@ -52,5 +54,79 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));
     }
 
+    [Test]
+    public void GetOrAddLeftJoinByMember_NewEntry_IsAddedToOrderedListOfJoins()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
+      var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
+      var createdSqlJoin = SqlStatementModelObjectMother.CreateSqlJoin();
+
+      var result = sqlTable.GetOrAddLeftJoinByMember (memberInfo, () => createdSqlJoin);
+
+      Assert.That (result, Is.SameAs (createdSqlJoin));
+      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { result }));
+    }
+
+    [Test]
+    public void GetOrAddLeftJoinByMember_MultipleNewEntries_AreAddedInOrder()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
+
+      var result1 = sqlTable.GetOrAddLeftJoinByMember (
+          SqlStatementModelObjectMother.GetKitchenCookMemberInfo(),
+          SqlStatementModelObjectMother.CreateSqlJoin);
+      var result2 = sqlTable.GetOrAddLeftJoinByMember (
+          SqlStatementModelObjectMother.GetKitchenRestaurantMemberInfo(),
+          SqlStatementModelObjectMother.CreateSqlJoin);
+
+      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { result1, result2 }));
+    }
+
+    [Test]
+    public void GetOrAddLeftJoinByMember_ExistingEntry_RetrievesExistingEntry()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
+      var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
+      var existingEntry = sqlTable.GetOrAddLeftJoinByMember (memberInfo, SqlStatementModelObjectMother.CreateSqlJoin);
+
+      var result = sqlTable.GetOrAddLeftJoinByMember (memberInfo, () => { throw new InvalidOperationException ("Must not be called."); });
+
+      Assert.That (result, Is.SameAs (existingEntry));
+      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { result }));
+    }
+
+    [Test]
+    public void GetJoinByMember_ExistingEntry ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
+      var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
+      var existingEntry = sqlTable.GetOrAddLeftJoinByMember (memberInfo, SqlStatementModelObjectMother.CreateSqlJoin);
+
+      var result = sqlTable.GetJoinByMember (memberInfo);
+
+      Assert.That (result, Is.SameAs (existingEntry));
+    }
+
+    [Test]
+    public void GetJoinByMember_NonExistingEntry_Throws ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
+      var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
+
+      Assert.That(() => sqlTable.GetJoinByMember (memberInfo), Throws.TypeOf<KeyNotFoundException>());
+    }
+
+    [Test]
+    public void AddJoin_AddsJoinInOrder ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
+      var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
+      var existingEntry = sqlTable.GetOrAddLeftJoinByMember (memberInfo, SqlStatementModelObjectMother.CreateSqlJoin);
+
+      var newEntry = SqlStatementModelObjectMother.CreateSqlJoin();
+      sqlTable.AddJoin (newEntry);
+
+      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { existingEntry, newEntry }));
+    }
   }
 }
