@@ -16,14 +16,8 @@
 // 
 
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
-using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -83,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       //{
       //// Otherwise, we need to move the whole statement up to now into a subquery and put that into a left join.
       //  // TODO RMLNQSQL-1: Refactor to build exact join here as well, using nullIfEmptySqlTable; then eliminate SqlTable.JoinSemantics.
-      //  MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
+      MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
       //}
 
       ////TODO RMLNQSQL-1: Also add integration tests with more than one table to see that this still works.
