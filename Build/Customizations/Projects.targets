@@ -8,10 +8,10 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)Development\Development.csproj">
       <CreateNuGetPackageWithSymbolServerSupport>True</CreateNuGetPackageWithSymbolServerSupport>
     </ReleaseProjectFiles>
-    <ReleaseProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter\LinqToSqlAdapter.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)UnitTests\UnitTests.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.Common\IntegrationTests.Common.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter\LinqToSqlAdapter.csproj"/>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)UnitTests\UnitTests.csproj"/>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj"/>
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.Common\IntegrationTests.Common.csproj"/>
     <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.CSharp\IntegrationTests.CSharp.csproj">
       <IsDatabaseTest>True</IsDatabaseTest>
     </IntegrationTestProjectFiles>
