@@ -49,6 +49,17 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.</exception>
     ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator);
 
+    // TODO RMLNQSQL-64: Document breaking change.
+    /// <summary>
+    /// Takes an <see cref="UnresolvedJoinTableInfo"/> and an <see cref="UniqueIdentifierGenerator"/> to generate a 
+    /// <see cref="ITableInfo"/> that represents the joined table in the database.
+    /// </summary>
+    /// <param name="tableInfo">The <see cref="UnresolvedJoinTableInfo"/> which is to be resolved.</param>
+    /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as table aliases.</param>
+    /// <returns>An <see cref="ITableInfo"/> instance representing the <paramref name="tableInfo"/> in the database.</returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinTableInfo"/> cannot be resolved to a mapped database item.</exception>
+    ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator);
+
     /// <summary>
     /// Analyzes the given <see cref="IResolvedTableInfo"/> and returns a <see cref="SqlEntityDefinitionExpression"/> , which represents the entity 
     /// described by the <paramref name="tableInfo"/> in the database. If the item type of the <paramref name="tableInfo"/> is not a 

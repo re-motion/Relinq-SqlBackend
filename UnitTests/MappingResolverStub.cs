@@ -154,6 +154,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       throw new UnmappedItemException ("Member " + joinInfo.MemberInfo + " is not a valid join member.");
     }
 
+    public ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator)
+    {
+      return new UnresolvedTableInfo (tableInfo.ItemType);
+    }
+
     public virtual SqlEntityDefinitionExpression ResolveSimpleTableInfo (
         IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {

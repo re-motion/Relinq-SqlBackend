@@ -85,6 +85,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return result.Accept (this);
     }
 
+    public ITableInfo VisitUnresolvedJoinTableInfo (UnresolvedJoinTableInfo tableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      var result = _resolver.ResolveJoinTableInfo (tableInfo, _generator);
+      return result.Accept (this);
+    }
+
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);

@@ -91,7 +91,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      return tableInfo;
+      throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
+    }
+
+    public ITableInfo VisitUnresolvedJoinTableInfo (UnresolvedJoinTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedJoinTableInfo is not valid at this point.");
     }
 
     public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)

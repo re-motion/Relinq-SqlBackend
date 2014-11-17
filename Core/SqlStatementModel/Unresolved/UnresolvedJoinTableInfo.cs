@@ -71,20 +71,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public IResolvedTableInfo GetResolvedTableInfo ()
     {
-      // TODO RMLNQSQL-64
-      throw new NotSupportedException ();
+      throw new InvalidOperationException ("This table has not yet been resolved; call the resolution step first.");
     }
 
     public virtual ITableInfo Accept (ITableInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      throw new NotImplementedException ("RMLNQSQL-64");
-      // return visitor.VisitUnresolvedJoinInfo (this);
+      return visitor.VisitUnresolvedJoinTableInfo (this);
     }
 
     public override string ToString ()
     {
-      return string.Format ("{0}.{1}", MemberInfo.DeclaringType.Name, MemberInfo.Name);
+      return string.Format ("TABLE({0}.{1})", MemberInfo.DeclaringType.Name, MemberInfo.Name);
     }
   }
 }
