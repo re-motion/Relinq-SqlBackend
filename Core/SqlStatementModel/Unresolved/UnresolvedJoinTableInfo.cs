@@ -71,14 +71,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public IResolvedTableInfo GetResolvedTableInfo ()
     {
-      // TODO SPIKE
+      // TODO RMLNQSQL-64
       throw new NotSupportedException ();
     }
 
     public virtual ITableInfo Accept (ITableInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      throw new NotImplementedException ("TODO SPIKE");
+      throw new NotImplementedException ("RMLNQSQL-64");
       // return visitor.VisitUnresolvedJoinInfo (this);
     }
 
