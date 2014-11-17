@@ -120,6 +120,54 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_ForJoin ()
+    {
+       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
+       var join = CreateResolvedLeftJoin (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
+       originalTable.AddJoin (join);
+
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("([t1].[ID] = [t2].[FK])"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify();
+      Assert.That (
+          _commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[FK])"));
+    }
+
+    [Test]
+    public void GenerateSql_ForJoin_Recursive ()
+    {
+      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
+      var join1 = CreateResolvedLeftJoin (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
+      originalTable.AddJoin (join1);
+      var join2 = CreateResolvedLeftJoin (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2");
+      join1.JoinedTable.AddJoin (join2);
+
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join1.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("X"))
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join2.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("Y"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify();
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo (
+              "[KitchenTable] AS [t1] LEFT OUTER JOIN "
+              + "[CookTable] AS [t2] ON X LEFT OUTER JOIN "
+              + "[CookTable2] AS [t3] ON Y"));
+    }
+
+    [Test]
     public void GenerateSql_InnerJoinSemantics_FirstTable ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
@@ -345,6 +393,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), originalTableAlias, leftSideKeyName, false);
       var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
       return new ResolvedJoinInfo (foreignTableSource, Expression.Equal (primaryColumn, foreignColumn));
+    }
+
+    private SqlJoin CreateResolvedLeftJoin (
+        Type type, string originalTableAlias, string leftSideKeyName, string joinedTableName, string joinedTableAlias, string rightSideKeyName)
+    {
+      var joinedTableInfo = new ResolvedSimpleTableInfo (type, joinedTableName, joinedTableAlias);
+      var joinedTable = new SqlTable (joinedTableInfo, JoinSemantics.Inner);
+      
+      var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), originalTableAlias, leftSideKeyName, false);
+      var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
+
+      return new SqlJoin (joinedTable, JoinSemantics.Left,  Expression.Equal (primaryColumn, foreignColumn));
     }
   }
 }

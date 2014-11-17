@@ -35,15 +35,20 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       GenerateTextForSqlTable (new SqlTableAndJoinTextGenerator (commandBuilder, stage), sqlTable, commandBuilder, isFirstTable);
-      GenerateSqlForJoins (sqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage));
+      GenerateSqlForJoins (sqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage), stage);
     }
 
-    private static void GenerateSqlForJoins (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, IJoinInfoVisitor visitor)
+    private static void GenerateSqlForJoins (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, SqlTableAndJoinTextGenerator visitor, ISqlGenerationStage stage)
     {
       foreach (var joinedTable in sqlTable.JoinedTables)
       {
         GenerateTextForSqlJoinedTable (visitor, joinedTable, commandBuilder);
-        GenerateSqlForJoins (joinedTable, commandBuilder, visitor);
+        GenerateSqlForJoins (joinedTable, commandBuilder, visitor, stage);
+      }
+      foreach (var join in sqlTable.OrderedJoins)
+      {
+        GenerateTextForJoin (visitor, @join, commandBuilder, stage);
+        GenerateSqlForJoins (@join.JoinedTable, commandBuilder, visitor, stage);
       }
     }
 
@@ -81,6 +86,21 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       commandBuilder.Append (" LEFT OUTER JOIN ");
 
       joinedTable.JoinInfo.Accept (visitor);
+    }
+
+    // TODO RMLNQSQL-64: Maybe inline?
+    private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    {
+      // TODO RMLNQSQL-64: This should be changed to support INNER joins. (Or remove JoinSemantics from SqlJoin.)
+      if (join.JoinSemantics == JoinSemantics.Inner)
+        throw new NotSupportedException ("SqlJoinedTables with INNER JoinSemantics are currently not supported. (RMLNQSQL-4)");
+
+      commandBuilder.Append (" LEFT OUTER JOIN ");
+
+      join.JoinedTable.TableInfo.Accept (visitor);
+      commandBuilder.Append (" ON ");
+      
+      stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
     }
 
     private readonly ISqlCommandBuilder _commandBuilder;
