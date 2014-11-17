@@ -20,6 +20,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
+  // TODO RMLNQSQL-64: Remove.
   // TODO RMLNQSQL-1: Remove.
   /// <summary>
   /// Provides a visitor for implementations of <see cref="SqlTableBase"/>.
