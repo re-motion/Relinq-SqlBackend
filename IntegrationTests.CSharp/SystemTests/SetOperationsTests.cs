@@ -58,6 +58,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
           from p in DB.Products
           where p.SupplierID != null && (DB.Suppliers.Where (s => s.Country == "UK").Select (s => s.SupplierID)
               .Union (DB.Suppliers.Where (s => s.Country == "USA").Select (s => s.SupplierID))).Contains ((int) p.SupplierID)
+          orderby p.ProductID
           select p;
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
@@ -103,6 +104,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
           from p in DB.Products
           where p.SupplierID != null && (DB.Suppliers.Where (s => s.Country == "UK").Select (s => s.SupplierID)
               .Concat (DB.Suppliers.Where (s => s.Country == "USA").Select (s => s.SupplierID))).Contains ((int) p.SupplierID)
+          orderby p.ProductID
           select p;
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
