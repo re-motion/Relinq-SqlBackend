@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
       _commandBuilder = new SqlCommandBuilder ();
       _someSetOperationsMode = Some.Item (SetOperationsMode.StatementIsSetCombined, SetOperationsMode.StatementIsNotSetCombined);
-      _visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, _someSetOperationsMode);
+      _visitor = CreateVisitor (_someSetOperationsMode);
 
       _namedIntExpression = new NamedExpression ("test", Expression.Constant (0));
       _nameColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
@@ -269,7 +269,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitMethodCallExpression_NoSetOperations ()
     {
-      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsNotSetCombined);
+      var visitor = CreateVisitor (SetOperationsMode.StatementIsNotSetCombined);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
@@ -302,7 +302,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitMethodCallExpression_NoSetOperations_WithoutObject ()
     {
-      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsNotSetCombined);
+      var visitor = CreateVisitor (SetOperationsMode.StatementIsNotSetCombined);
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
       var namedStringExpression = new NamedExpression ("Name", _nameColumnExpression);
@@ -330,7 +330,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitMethodCallExpression_NoSetOperations_NoObjectsOrArguments ()
     {
-      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsNotSetCombined);
+      var visitor = CreateVisitor (SetOperationsMode.StatementIsNotSetCombined);
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
       var methodCallExpression = Expression.Call (ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments()));
@@ -347,7 +347,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitMethodCallExpression_WithSetOperations ()
     {
-      var visitor = new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, SetOperationsMode.StatementIsSetCombined);
+      var visitor = CreateVisitor (SetOperationsMode.StatementIsSetCombined);
 
       var methodCallExpression = Expression.Call (ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments()));
       Assert.That (
@@ -416,6 +416,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
       _visitor.VisitSqlGroupingSelectExpression (expression);
+    }
+
+    private TestableSqlGeneratingOuterSelectExpressionVisitor CreateVisitor (SetOperationsMode setOperationsMode)
+    {
+      return new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, setOperationsMode);
     }
 
     private MethodCallExpression GetExpectedProjectionForEntityExpression (ParameterExpression expectedRowParameter, int columnPositionStart)
