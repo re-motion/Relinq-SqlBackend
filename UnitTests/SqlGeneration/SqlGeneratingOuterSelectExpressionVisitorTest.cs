@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     private TestableSqlGeneratingOuterSelectExpressionVisitor _visitor;
     private ISqlGenerationStage _stageMock;
     private SqlCommandBuilder _commandBuilder;
-    private SqlColumnDefinitionExpression _nameColumnExpression;
+    private NamedExpression _namedNameColumnExpression;
 
     [SetUp]
     public void SetUp ()
@@ -52,14 +52,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _visitor = CreateVisitor (_someSetOperationsMode);
 
       _namedIntExpression = new NamedExpression ("test", Expression.Constant (0));
-      _nameColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
+      var nameColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
+      _namedNameColumnExpression = new NamedExpression ("SomeName", nameColumnExpression);
       _entityExpression = new SqlEntityDefinitionExpression (
           typeof (Cook),
           "c",
           "test",
           e => e,
           new SqlColumnDefinitionExpression (typeof (int), "c", "ID", true),
-          _nameColumnExpression,
+          nameColumnExpression,
           new SqlColumnDefinitionExpression (typeof (string), "c", "FirstName", false)
           );
     }
@@ -273,12 +274,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
-      var namedStringExpression = new NamedExpression ("Name", _nameColumnExpression);
 
       var methodCallExpression = Expression.Call (
           _namedIntExpression,
           ReflectionUtility.GetMethod (() => 0.ToString ("")),
-          new Expression[] { namedStringExpression });
+          new Expression[] { _namedNameColumnExpression });
       visitor.VisitMethodCallExpression (methodCallExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (2));
@@ -286,7 +286,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       // Constants are used as is in the projection, whereas columns are taken from the SQL result
       var expectedProjectionForInstanceExpression = Expression.Constant (0);
-      var expectedProjectionForArgumentExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "Name", 1, typeof (string));
+      var expectedProjectionForArgumentExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "SomeName", 1, typeof (string));
 
       var expectedProjection = Expression.Call (
           expectedProjectionForInstanceExpression,
@@ -295,7 +295,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       Assert.That (
           _commandBuilder.GetCommandText (),
-          Is.EqualTo ("NULL AS [test],[c].[Name] AS [Name]"));
+          Is.EqualTo ("NULL AS [test],[c].[Name] AS [SomeName]"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
@@ -305,17 +305,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var visitor = CreateVisitor (SetOperationsMode.StatementIsNotSetCombined);
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
-      var namedStringExpression = new NamedExpression ("Name", _nameColumnExpression);
-
       var methodCallExpression = Expression.Call (
           ReflectionUtility.GetMethod (() => int.Parse ("")),
-          new Expression[] { namedStringExpression });
+          new Expression[] { _namedNameColumnExpression });
       visitor.VisitMethodCallExpression (methodCallExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (1));
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      var expectedProjectionForArgumentExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "Name", 0, typeof (string));
+      var expectedProjectionForArgumentExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "SomeName", 0, typeof (string));
 
       var expectedProjection = Expression.Call (
           methodCallExpression.Method,
@@ -323,7 +321,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       Assert.That (
           _commandBuilder.GetCommandText (),
-          Is.EqualTo ("[c].[Name] AS [Name]"));
+          Is.EqualTo ("[c].[Name] AS [SomeName]"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
