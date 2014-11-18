@@ -401,6 +401,32 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
     
     [Test]
+    public void VisitUnresolvedJoinConditionExpression_ResolvesConditionAndRevisitsResult ()
+    {
+      var originatingEntity = SqlStatementModelObjectMother.CreateSqlEntityExpression();
+      var memberInfo = SqlStatementModelObjectMother.GetSomeMemberInfo();
+      var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
+      var joinedTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var unresolvedJoinConditionExpression = new UnresolvedJoinConditionExpression (originatingEntity, memberInfo, joinedTable);
+
+      var fakeResolvedCondition = Expression.Constant (true);
+      _resolverMock
+          .Setup (mock => mock.ResolveJoinCondition (originatingEntity, memberInfo, tableInfo))
+          .Returns (fakeResolvedCondition)
+          .Verifiable();
+      var fakeRevisitedExpression = new CustomExpression(typeof(bool));
+      _resolverMock
+          .Setup (mock => mock.ResolveConstantExpression (fakeResolvedCondition))
+          .Returns (fakeRevisitedExpression)
+          .Verifiable();
+
+      var result = _visitor.VisitExpression (unresolvedJoinConditionExpression);
+
+      _resolverMock.Verify();
+      Assert.That (result, Is.SameAs (fakeRevisitedExpression));
+    }
+    
+    [Test]
     public void VisitNamedExpression ()
     {
       var innerExpression = Expression.Constant (0);

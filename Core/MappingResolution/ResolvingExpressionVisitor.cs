@@ -31,8 +31,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   public class ResolvingExpressionVisitor : 
       ExpressionVisitor, 
       IUnresolvedSqlExpressionVisitor, 
-      ISqlSubStatementVisitor, 
+      ISqlSubStatementVisitor,
       IJoinConditionExpressionVisitor,
+      IUnresolvedJoinConditionExpressionVisitor, 
       INamedExpressionVisitor,
       ISqlNullCheckExpressionVisitor,
       ISqlInExpressionVisitor,
@@ -231,6 +232,15 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var resolvedLeftJoinInfo = expression.JoinedTable.JoinInfo.GetResolvedJoinInfo();
       return Visit (resolvedLeftJoinInfo.JoinCondition);
+    }
+      
+    public Expression VisitUnresolvedJoinConditionExpression (UnresolvedJoinConditionExpression expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var joinedTableInfo = expression.JoinedTable.GetResolvedTableInfo();
+      var resolvedJoinCondition = _resolver.ResolveJoinCondition (expression.OriginatingEntity, expression.MemberInfo, joinedTableInfo);
+      return VisitExpression (resolvedJoinCondition);
     }
 
     public Expression VisitNamed (NamedExpression expression)
