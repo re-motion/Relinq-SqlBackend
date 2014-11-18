@@ -58,7 +58,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var entity = (SqlEntityExpression) mappingResolver.ResolveSimpleTableInfo (this, generator);
+      var entity = (SqlEntityExpression) mappingResolver.ResolveSimpleTableInfo (this);
       context.AddSqlEntityMapping (entity, sqlTable);
       return entity;
     }

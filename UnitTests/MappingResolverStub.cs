@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
           case "Knife":
             var joinedTableInfo = CreateResolvedTableInfo (joinInfo.ItemType, generator);
             var leftKey = ResolveMemberExpression (joinInfo.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
-            var rightKey = ResolveSimpleTableInfo (joinedTableInfo, generator).GetIdentityExpression();
+            var rightKey = ResolveSimpleTableInfo (joinedTableInfo).GetIdentityExpression();
             return new ResolvedJoinInfo (joinedTableInfo, Expression.Equal (leftKey, rightKey));
         }
       }
@@ -159,8 +159,114 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       return new UnresolvedTableInfo (tableInfo.ItemType);
     }
 
+    public Expression ResolveJoinCondition (SqlEntityExpression originatingEntity, MemberInfo memberInfo, IResolvedTableInfo joinedTableInfo)
+    {
+      if (memberInfo.DeclaringType == typeof (Cook))
+      {
+        switch (memberInfo.Name)
+        {
+          case "Substitution":
+            return CreateJoinCondition (
+                originatingEntity,
+                "ID",
+                typeof (int),
+                true,
+                joinedTableInfo.TableAlias,
+                "SubstitutedID",
+                typeof (int),
+                false);
+          case "Substituted":
+            return CreateJoinCondition (
+                originatingEntity,
+                "SubstitutedID",
+                typeof (int),
+                false,
+                joinedTableInfo.TableAlias,
+                "ID",
+                typeof (int),
+                true);
+          case "Assistants":
+            return CreateJoinCondition (
+                originatingEntity,
+                "ID",
+                typeof (int),
+                true,
+                joinedTableInfo.TableAlias,
+                "AssistedID",
+                typeof (int),
+                false);
+          case "Kitchen":
+            return CreateJoinCondition (
+                originatingEntity,
+                "KitchenID",
+                typeof (int),
+                false,
+                joinedTableInfo.TableAlias,
+                "ID",
+                typeof (int),
+                true);
+          case "Knife":
+            var leftKey = ResolveMemberExpression (originatingEntity, typeof (Cook).GetProperty ("KnifeID"));
+            var rightKey = ResolveSimpleTableInfo (joinedTableInfo).GetIdentityExpression();
+            return Expression.Equal (leftKey, rightKey);
+        }
+      }
+      else if (memberInfo.DeclaringType == typeof (Kitchen))
+      {
+        switch (memberInfo.Name)
+        {
+          case "Cook":
+            return CreateJoinCondition (
+                originatingEntity,
+                "ID", typeof (int), true, joinedTableInfo.TableAlias, "KitchenID", typeof (int), false);
+          case "Restaurant":
+            return CreateJoinCondition (
+                originatingEntity,
+                "RestaurantID", typeof (int), false, joinedTableInfo.TableAlias, "ID", typeof (int), true);
+        }
+      }
+      else if (memberInfo.DeclaringType == typeof (Restaurant))
+      {
+        switch (memberInfo.Name)
+        {
+          case "SubKitchen":
+            return CreateJoinCondition (
+                originatingEntity,
+                "ID", typeof (int), true, joinedTableInfo.TableAlias, "RestaurantID", typeof (int), false);
+          case "Cooks":
+            return CreateJoinCondition (
+                originatingEntity,
+                "ID", typeof (int), true, joinedTableInfo.TableAlias, "RestaurantID", typeof (int), false);
+          case "CompanyIfAny":
+            return CreateJoinCondition (
+                originatingEntity,
+                "CompanyID",
+                typeof (int?), 
+                false, 
+                joinedTableInfo.TableAlias, 
+                "ID", 
+                typeof (int), 
+                true);
+
+        }
+      }
+      else if (memberInfo.DeclaringType == typeof (Company))
+      {
+        switch (memberInfo.Name)
+        {
+          case "AllRestaurants":
+            return CreateJoinCondition (
+                originatingEntity,
+                "ID",
+                typeof (int), true, joinedTableInfo.TableAlias, "CompanyID", typeof (int?), false);
+        }
+      }
+
+      throw new UnmappedItemException ("Member " + memberInfo + " is not a valid join member.");
+    }
+
     public virtual SqlEntityDefinitionExpression ResolveSimpleTableInfo (
-        IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
+        IResolvedTableInfo tableInfo)
     {
       Type type = tableInfo.ItemType;
       if (type == typeof (Cook))
@@ -441,6 +547,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests
 
       return new ResolvedJoinInfo (
           joinedTableInfo, ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null));
+    }
+
+     private Expression CreateJoinCondition (
+        SqlEntityExpression originatingEntity,
+        string leftColumnName,
+        Type leftColumnType,
+        bool leftColumnIsPrimaryKey, 
+        string joinedTableAlias,
+        string rightColumnName,
+        Type rightColumnType,
+        bool rightColumnIsPrimaryKey)
+    {
+      var leftColumn = originatingEntity.GetColumn (leftColumnType, leftColumnName, leftColumnIsPrimaryKey);
+      var rightColumn = CreateColumn (rightColumnType, joinedTableAlias, rightColumnName, rightColumnIsPrimaryKey);
+
+      return ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null);
     }
 
     private static Expression CreateMetaIDExpression (Expression valueExpression, Expression classIDColumn)

@@ -60,21 +60,35 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinTableInfo"/> cannot be resolved to a mapped database item.</exception>
     ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
+    // TODO RMLNQSQL-64: Document breaking change.
     /// <summary>
-    /// Analyzes the given <see cref="IResolvedTableInfo"/> and returns a <see cref="SqlEntityDefinitionExpression"/> , which represents the entity 
-    /// described by the <paramref name="tableInfo"/> in the database. If the item type of the <paramref name="tableInfo"/> is not a 
-    /// queryable entity, the resolver should throw an <see cref="UnmappedItemException"/>.
+    /// Takes an <see cref="SqlEntityExpression"/> as the left side and a <see cref="IResolvedTableInfo"/> as the right side of a join as well as
+    /// a <see cref="MemberInfo"/> identifying the member joining the two tables and returns an <see cref="Expression"/> that describes a join
+    /// condition corresponding to that <see cref="MemberInfo"/>.
     /// </summary>
-    /// <param name="tableInfo">The <see cref="IResolvedTableInfo"/> to be resolved.</param>
-    /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as column aliases.</param>
+    /// <param name="originatingEntity">The entity constituting the left side of the join.</param>
+    /// <param name="memberInfo">The <see cref="MemberInfo"/> used for joining the two sides.</param>
+    /// <param name="joinedTableInfo">The table constituting the right side of the join.</param>
+    /// <returns>The join condition <see cref="Expression"/> corresponding to <paramref name="memberInfo"/>.</returns>
+    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinConditionExpression"/> contains a reference that cannot be 
+    /// resolved to a mapped database item.</exception>
+    Expression ResolveJoinCondition (SqlEntityExpression originatingEntity, MemberInfo memberInfo, IResolvedTableInfo joinedTableInfo);
+
+    // TODO RMLNQSQL-64: Document breaking change and rename to ResolveTableToEntity.
+    ///  <summary>
+    ///  Analyzes the given <see cref="IResolvedTableInfo"/> and returns a <see cref="SqlEntityDefinitionExpression"/> , which represents the entity 
+    ///  described by the <paramref name="tableInfo"/> in the database. If the item type of the <paramref name="tableInfo"/> is not a 
+    ///  queryable entity, the resolver should throw an <see cref="UnmappedItemException"/>.
+    ///  </summary>
+    ///  <param name="tableInfo">The <see cref="IResolvedTableInfo"/> to be resolved.</param>
     /// <returns>A <see cref="SqlEntityDefinitionExpression"/> which contains all the columns of the referenced <paramref name="tableInfo"/> item type.
-    ///</returns>
-    /// <remarks>
-    /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express compound entity identity. 
-    /// Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
-    /// expression.
-    /// </remarks>
-    SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
+    /// </returns>
+    ///  <remarks>
+    ///  Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express compound entity identity. 
+    ///  Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
+    ///  expression.
+    ///  </remarks>
+    SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo);
 
     /// <summary>
     /// Analyzes the given <see cref="MemberInfo"/> and returns an expression representing that member in the database. The resolved version will 

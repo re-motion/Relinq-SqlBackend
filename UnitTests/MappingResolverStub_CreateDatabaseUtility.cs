@@ -110,7 +110,7 @@ LOG ON (
       var mappingResolver = new MappingResolverStub ();
       var generator = new UniqueIdentifierGenerator();
       var resolvedTableInfo = (ResolvedSimpleTableInfo) mappingResolver.ResolveTableInfo (new UnresolvedTableInfo (entity.GetType()), generator);
-      var sqlEntityDefinition = mappingResolver.ResolveSimpleTableInfo (resolvedTableInfo, generator);
+      var sqlEntityDefinition = mappingResolver.ResolveSimpleTableInfo (resolvedTableInfo);
       var columnData = (from c in sqlEntityDefinition.Columns
                         let columnName = c.ColumnName
                         let columnValue =
@@ -337,7 +337,7 @@ LOG ON (
       var mappingResolver = new MappingResolverStub();
       var generator = new UniqueIdentifierGenerator();
       var tableInfo = (ResolvedSimpleTableInfo) mappingResolver.ResolveTableInfo (new UnresolvedTableInfo (type), generator);
-      var entity = mappingResolver.ResolveSimpleTableInfo (tableInfo, generator);
+      var entity = mappingResolver.ResolveSimpleTableInfo (tableInfo);
 
       var columnDeclarations = from c in entity.Columns
                                let sqlTypeName = GetColumnType(c)

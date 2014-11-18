@@ -173,7 +173,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Region), "dbo.Region", "t0");
 
-      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo);
 
       SqlColumnExpression expectedPrimaryColumn = new SqlColumnDefinitionExpression (typeof (int), simpleTableInfo.TableAlias, "RegionID", true);
       SqlColumnExpression expectedDescriptionColumn =
@@ -193,7 +193,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.ClassWithCompoundPrimaryKey), "ClassWithCompoundPrimaryKey", "t0");
 
-      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo);
 
       SqlColumnExpression expectedPrimaryColumn1 = new SqlColumnDefinitionExpression (typeof (int), simpleTableInfo.TableAlias, "Key1", true);
       SqlColumnExpression expectedPrimaryColumn2 = new SqlColumnDefinitionExpression (typeof (string), simpleTableInfo.TableAlias, "Key2", true);
@@ -214,7 +214,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (ContactWithInheritanceHierarchy), "dbo.Contact", "t0");
 
-      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+      SqlEntityDefinitionExpression resolvedExpr = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo);
       var actualColumnNames = resolvedExpr.Columns.Select (c => c.ColumnName).ToArray ();
 
       var expectedMembersAndDeclaringTypes = new[] {  "ContactID", "ContactType", "Password", "PhotoColumn", "HomePage"};
@@ -226,7 +226,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (_unmappedType, "dbo.Region", "t0");
       Assert.That (
-          () => _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator),
+          () => _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo),
           Throws.InstanceOf<UnmappedItemException>()
               .With.Message.EqualTo (
                   "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type"));
@@ -537,7 +537,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var actualColumnNames = metaDataMembers.Select (m => m.MappedName).ToArray();
 
-      var expectedMatchingEntity = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+      var expectedMatchingEntity = _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo);
       var expectedColumnNames = expectedMatchingEntity.Columns.Select (c => c.ColumnName).ToArray();
       Assert.That (actualColumnNames, Is.EqualTo (expectedColumnNames));
     }

@@ -373,7 +373,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Returns (_fakeResolvedSimpleTableInfo)
           .Verifiable();
       _resolverMock
-          .Setup (mock => mock.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
+          .Setup (mock => mock.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo()))
           .Returns (fakeEntityExpression)
           .Verifiable();
 
@@ -391,7 +391,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
-          .Setup (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
+          .Setup (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo()))
           .Returns (fakeResult)
           .Verifiable();
 
@@ -442,7 +442,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Verifiable();
 
       _resolverMock
-          .Setup (mock => mock.ResolveSimpleTableInfo (It.IsAny<IResolvedTableInfo>(), It.IsAny<UniqueIdentifierGenerator>()))
+          .Setup (mock => mock.ResolveSimpleTableInfo (It.IsAny<IResolvedTableInfo>()))
           .Returns (fakeEntityExpression)
           .Verifiable();
 

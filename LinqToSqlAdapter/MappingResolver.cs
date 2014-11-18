@@ -69,6 +69,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return CreateResolvedJoinInfo (joinInfo.OriginatingEntity, metaAssociation, resolvedTable);
     }
 
+    // TODO RMLNQSQL-64: Test.
     public ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
@@ -77,10 +78,19 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return new UnresolvedTableInfo (tableInfo.ItemType);
     }
 
-    public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
+    // TODO RMLNQSQL-64: Test.
+    public Expression ResolveJoinCondition (SqlEntityExpression originatingEntity, MemberInfo memberInfo, IResolvedTableInfo joinedTableInfo)
+    {
+      var metaType = GetMetaType (originatingEntity.Type);
+      var metaAssociation = GetDataMember (metaType, memberInfo).Association;
+      Assertion.DebugAssert (metaAssociation != null);
+
+      return CreateResolvedJoinCondition (originatingEntity, metaAssociation, joinedTableInfo);
+    }
+
+    public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("generator", generator);
 
       Type type = tableInfo.ItemType;
       var primaryKeyMembers = GetMetaType (type).IdentityMembers;
@@ -278,6 +288,33 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       var joinCondition = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null);
       return new ResolvedJoinInfo (joinedTableInfo, joinCondition);
+    }
+
+    private static Expression CreateResolvedJoinCondition (
+        SqlEntityExpression originatingEntity,
+        MetaAssociation metaAssociation,
+        IResolvedTableInfo joinedTableInfo)
+    {
+      var leftColumn = ResolveMember (originatingEntity, metaAssociation.ThisKey);
+
+      // If needed, implement by using compounds (NewExpressions with named arguments, see NamedExpression.CreateNewExpressionWithNamedArguments.)
+      if (metaAssociation.OtherKey.Count > 1)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Associations with more than one column are currently not supported. ({0}.{1})",
+                originatingEntity.Type,
+                metaAssociation.OtherMember.Name));
+      }
+
+      var otherKey = metaAssociation.OtherKey[0];
+      var rightColumn = new SqlColumnDefinitionExpression (
+        otherKey.Type,
+        joinedTableInfo.TableAlias,
+        otherKey.MappedName,
+        otherKey.IsPrimaryKey);
+
+      return ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null);
     }
 
     private static SqlColumnExpression ResolveMember (SqlEntityExpression entity, ReadOnlyCollection<MetaDataMember> metaDataMembers)

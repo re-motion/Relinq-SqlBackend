@@ -66,7 +66,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var mappingResolutionContext = new MappingResolutionContext();
 
       resolverMock
-          .Setup (mock => mock.ResolveSimpleTableInfo (_tableInfo, generator))
+          .Setup (mock => mock.ResolveSimpleTableInfo (_tableInfo))
           .Returns (fakeResult)
           .Verifiable();
 
