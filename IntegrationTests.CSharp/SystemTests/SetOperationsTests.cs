@@ -90,7 +90,6 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     }
 
     [Test]
-    [Ignore ("TODO RMLNQSQL-73")]
     public void Union_WithSelectedDiscriminator ()
     {
       var query = DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
@@ -145,7 +144,6 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     }
 
     [Test]
-    [Ignore ("TODO RMLNQSQL-73")]
     public void Concat_WithSelectedDiscriminator ()
     {
       var query = DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
