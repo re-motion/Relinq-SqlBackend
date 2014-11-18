@@ -354,6 +354,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new Ordering (ExpressionHelper.CreateExpression(), OrderingDirection.Asc);
     }
 
+    public static MemberInfo GetSomeMemberInfo ()
+    {
+      return GetKitchenCookMemberInfo();
+    }
+
     public static MemberInfo GetKitchenCookMemberInfo ()
     {
       return typeof (Kitchen).GetProperty ("Cook");
