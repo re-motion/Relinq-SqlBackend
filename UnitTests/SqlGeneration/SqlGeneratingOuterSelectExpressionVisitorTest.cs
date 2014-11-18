@@ -221,50 +221,104 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
 
       var newExpression = Expression.New (
-          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof(int), typeof (Cook)}), 
-          new Expression[] { _namedIntExpression, _entityExpression });
+          typeof (KeyValuePair<string, Cook>).GetConstructor (new[] { typeof(string), typeof (Cook)}), 
+          new Expression[] { _namedNameColumnExpression, _entityExpression });
       _visitor.VisitNewExpression (newExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (4));
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      // Constants are directly used within the in-memory projection, whereas entities are taken from the SQL result
-      var expectedProjectionForNamedExpression = Expression.Constant (0);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "SomeName", 0, typeof (string));
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
       
       var expectedProjectionForNewExpression = Expression.New (
-          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          typeof (KeyValuePair<string, Cook>).GetConstructor (new[] { typeof (string), typeof (Cook) }),
           new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression });
 
       Assert.That (
           _commandBuilder.GetCommandText (), 
-          Is.EqualTo ("NULL AS [test],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
+          Is.EqualTo ("[c].[Name] AS [SomeName],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
     }
 
     [Test]
     public void VisitNewExpression_WithMembers ()
     {
-      var keyValueType = typeof (KeyValuePair<int, Cook>);
+      var keyValueType = typeof (KeyValuePair<string, Cook>);
       var newExpression = Expression.New (
-          keyValueType.GetConstructor (new[] { typeof (int), typeof (Cook) }),
-          new Expression[] { _namedIntExpression, _entityExpression },
+          keyValueType.GetConstructor (new[] { typeof (string), typeof (Cook) }),
+          new Expression[] { _namedNameColumnExpression, _entityExpression },
           keyValueType.GetProperty("Key"),
           keyValueType.GetProperty("Value"));
 
       _visitor.VisitNewExpression (newExpression);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
-      // Constants are directly used within the in-memory projection, whereas entities are taken from the SQL result
-      var expectedProjectionForNamedExpression = Expression.Constant (0);
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "SomeName", 0, typeof (string));
       var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
       
       var expectedProjectionForNewExpression = Expression.New (
-          keyValueType.GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          keyValueType.GetConstructor (new[] { typeof (string), typeof (Cook) }),
           new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression },
           keyValueType.GetProperty ("Key"), keyValueType.GetProperty ("Value"));
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody ());
+    }
+
+    [Test]
+    public void VisitNewExpression_NoSetOperations_ConstantsAreMovedToProjection ()
+    {
+      var visitor = CreateVisitor (SetOperationsMode.StatementIsNotSetCombined);
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
+
+      var newExpression = Expression.New (
+          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          new Expression[] { _namedIntExpression, _entityExpression });
+      visitor.VisitNewExpression (newExpression);
+
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (4));
+
+      var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
+      // Constants are directly inlined into the in-memory projection
+      var expectedProjectionForNamedExpression = Expression.Constant (0);
+      var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
+
+      var expectedProjectionForNewExpression = Expression.New (
+          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression });
+
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo ("NULL AS [test],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody());
+    }
+
+    [Test]
+    public void VisitNewExpression_WithSetOperations_ConstantsAreNotMovedToProjection ()
+    {
+      var visitor = CreateVisitor (SetOperationsMode.StatementIsSetCombined);
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
+
+      var newExpression = Expression.New (
+          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          new Expression[] { _namedIntExpression, _entityExpression });
+      visitor.VisitNewExpression (newExpression);
+
+      Assert.That (visitor.ColumnPosition, Is.EqualTo (4));
+
+      var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
+      // Constants are taken from SQL result
+      var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression(expectedRowParameter, "test", 0, typeof(int));
+      var expectedProjectionForEntityExpression = GetExpectedProjectionForEntityExpression (expectedRowParameter, 1);
+
+      var expectedProjectionForNewExpression = Expression.New (
+          typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
+          new Expression[] { expectedProjectionForNamedExpression, expectedProjectionForEntityExpression });
+
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo ("@1 AS [test],[c].[ID] AS [test_ID],[c].[Name] AS [test_Name],[c].[FirstName] AS [test_FirstName]"));
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjectionForNewExpression, _commandBuilder.GetInMemoryProjectionBody());
     }
 
     [Test]
@@ -273,7 +327,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var visitor = CreateVisitor (SetOperationsMode.StatementIsNotSetCombined);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
-
 
       var methodCallExpression = Expression.Call (
           _namedIntExpression,

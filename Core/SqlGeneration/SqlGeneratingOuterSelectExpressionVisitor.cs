@@ -212,10 +212,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       try
       {
         var namedExpression = argumentExpression as NamedExpression;
-        if (namedExpression != null && namedExpression.Expression is ConstantExpression)
+        if (_setOperationsMode == SetOperationsMode.StatementIsNotSetCombined 
+            && namedExpression != null
+            && namedExpression.Expression is ConstantExpression)
         {
-          // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory projection.
+          // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory
+          // projection.
           // This enables us to use complex, local-only constants within a local expression.
+          // However, we can only perform such tricks if there are no set operations. With set operations, constants are often used as discriminators,
+          // e.g., Cooks.Select(c => new { Type = "Cook", ID = c.ID }).Union(Kitchens.Select(k => new { Type = "Kitchen", ID = k.ID })).
+          // Since there is only _one_ in-memory projection here, we cannot do as much in memory as we wanted.
           VisitExpression (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
           return namedExpression.Expression;
         }
