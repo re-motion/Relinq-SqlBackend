@@ -35,6 +35,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.IntegrationTests.Common;
 using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
@@ -89,6 +90,14 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     }
 
     [Test]
+    public void Union_WithSelectedDiscriminator ()
+    {
+      var query = DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
+          .Union (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
     public void Concat_TopLevel ()
     {
       var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
@@ -131,6 +140,14 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     {
       var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c).Take (3)
           .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c)).Take (3);
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void Concat_WithSelectedDiscriminator ()
+    {
+      var query = DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
+          .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
   }

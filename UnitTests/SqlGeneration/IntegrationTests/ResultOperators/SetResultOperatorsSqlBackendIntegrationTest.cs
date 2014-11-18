@@ -174,6 +174,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
+    public void SetOperation_WithInMemoryProjectionWithConstantValue ()
+    {
+      CheckQuery (
+          () => Cooks.Select(c => new { X = 1, Y = c.ID }).Union (Kitchens.Select (k => new { X = 2, Y = k.ID })),
+          "SELECT @1 AS [X],[t0].[ID] AS [Y] FROM [CookTable] AS [t0] "
+          + "UNION (SELECT @2 AS [X],[t1].[ID] AS [Y] FROM [KitchenTable] AS [t1])",
+          new CommandParameter("@1", 1),
+          new CommandParameter("@2", 2));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "
         + "Rewrite the query to perform the in-memory operation after the set operation has been performed.\r\n"
