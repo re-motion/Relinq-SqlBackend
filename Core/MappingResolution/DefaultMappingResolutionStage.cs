@@ -170,10 +170,21 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("context", context);
 
       var originatingSqlTable = context.GetSqlTableForEntityExpression (expression.OriginatingEntity);
-      var join = originatingSqlTable.GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
-      ResolveSqlJoinedTable (join, context);
-      var sqlTableReferenceExpression = new SqlTableReferenceExpression (join);
-      
+      var join = originatingSqlTable.GetOrAddLeftJoinByMember (
+          expression.MemberInfo,
+          () =>
+          {
+            var unresolvedJoinTableInfo = new UnresolvedJoinTableInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
+            var joinedTable = new SqlTable (unresolvedJoinTableInfo, JoinSemantics.Inner);
+            var joinCondition = new UnresolvedJoinConditionExpression (expression.OriginatingEntity, expression.MemberInfo, joinedTable);
+            return new SqlJoin (joinedTable, JoinSemantics.Left, joinCondition);
+          });
+
+      join.JoinedTable.TableInfo = ResolveTableInfo (join.JoinedTable.TableInfo, context);
+      // TODO RMLNQSQL-64: This assignment breaks immutability of SqlJoin. Is there a better idea? E.g., originatingSqlTable.ReplaceJoin(old, new)?
+      join.JoinCondition = ResolveJoinCondition (join.JoinCondition, context);
+
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (join.JoinedTable);
       return (SqlEntityExpression) ResolveExpression (sqlTableReferenceExpression, context);
     }
 

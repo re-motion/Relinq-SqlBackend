@@ -380,7 +380,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var newSqlStatment = _stage.ResolveSqlStatement (sqlStatement, _mappingResolutionContext);
 
       _resolverMock.Verify();
-      Assert.That (((SqlTable) newSqlStatment.SqlTables[0]).TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
+      Assert.That (newSqlStatment.SqlTables[0].TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
       Assert.That (newSqlStatment.SelectProjection, Is.SameAs (fakeEntityExpression));
     }
 
@@ -431,19 +431,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, kitchenCookMember);
       var unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-      var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
+      var fakeJoinedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
       _mappingResolutionContext.AddSqlEntityMapping (entityExpression, SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
 
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var fakeJoinConditionExpression = new CustomExpression (typeof (bool)); // Use CustomExpression so the expression isn't passed to the resolver again
 
       _resolverMock
-          .Setup (mock => mock.ResolveJoinInfo (It.Is<UnresolvedJoinInfo> (joinInfo => joinInfo.MemberInfo == kitchenCookMember), It.IsAny<UniqueIdentifierGenerator>()))
-          .Returns (fakeJoinInfo)
+          .Setup (mock => mock.ResolveJoinTableInfo (It.Is<UnresolvedJoinTableInfo> (joinInfo => joinInfo.MemberInfo == kitchenCookMember), It.IsAny<UniqueIdentifierGenerator>()))
+          .Returns (fakeJoinedTableInfo)
+          .Verifiable();
+      _resolverMock
+          .Setup (mock => mock.ResolveSimpleTableInfo (It.IsAny<ResolvedSimpleTableInfo>()))
+          .Returns (fakeEntityExpression)
           .Verifiable();
 
       _resolverMock
-          .Setup (mock => mock.ResolveSimpleTableInfo (It.IsAny<IResolvedTableInfo>()))
-          .Returns (fakeEntityExpression)
+          .Setup (mock => mock.ResolveJoinCondition (entityExpression, kitchenCookMember, fakeJoinedTableInfo))
+          .Returns (fakeJoinConditionExpression)
           .Verifiable();
 
       var result = _stage.ResolveEntityRefMemberExpression (entityRefMemberExpression, unresolvedJoinInfo, _mappingResolutionContext);
@@ -452,8 +457,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       Assert.That (result, Is.SameAs (fakeEntityExpression));
       var sqlTable = _mappingResolutionContext.GetSqlTableForEntityExpression (entityRefMemberExpression.OriginatingEntity);
-      Assert.That (sqlTable.GetJoin (kitchenCookMember), Is.Not.Null);
-      Assert.That (sqlTable.GetJoin (kitchenCookMember).JoinInfo, Is.SameAs (fakeJoinInfo));
+      Assert.That (sqlTable.GetJoinByMember (kitchenCookMember), Is.Not.Null);
+      Assert.That (sqlTable.GetJoinByMember (kitchenCookMember).JoinedTable.TableInfo, Is.SameAs (fakeJoinedTableInfo));
+      Assert.That (sqlTable.GetJoinByMember (kitchenCookMember).JoinCondition, Is.SameAs (fakeJoinConditionExpression));
     }
 
     [Test]
