@@ -7,7 +7,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
-  // TODO RMLNQSQL-64: Test
   /// <summary>
   /// <see cref="UnresolvedCollectionJoinTableInfo"/> represents the data source defined by a member access to a collection in a LINQ expression.
   /// </summary>
@@ -47,8 +46,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
     public ITableInfo Accept (ITableInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      throw new NotImplementedException("TODO RMLNQSQL-64");
-      // return visitor.VisitUnresolvedCollectionJoinTableInfo (this);
+      return visitor.VisitUnresolvedCollectionJoinTableInfo (this);
     }
 
     public IResolvedTableInfo GetResolvedTableInfo ()
@@ -58,7 +56,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
-      return string.Format ("{0}.{1}", MemberInfo.DeclaringType.Name, MemberInfo.Name);
+      return string.Format ("TABLE({0}.{1})", MemberInfo.DeclaringType.Name, MemberInfo.Name);
     }
   }
 }

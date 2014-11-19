@@ -22,6 +22,7 @@ using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -103,6 +104,109 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       _resolverMock.Verify();
       Assert.That (result, Is.SameAs (_resolvedTableInfo));
+    }
+
+    [Test]
+    public void VisitUnresolvedCollectionJoinTableInfo_ResolvesSourceExpression_ThenJoin_AndAddsMapping_AndRevisitsResult ()
+    {
+      var unresolvedCollectionJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
+
+      var fakeResolvedCollectionSourceExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression();
+      _stageMock
+          .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinTableInfo.SourceExpression, _mappingResolutionContext))
+          .Returns (fakeResolvedCollectionSourceExpression)
+          .Verifiable();
+      _resolverMock
+          .Setup (mock => mock.ResolveJoinTableInfo (It.IsAny<UnresolvedJoinTableInfo>(), _generator))
+          .Callback((UnresolvedJoinTableInfo unresolvedJoinTableInfo, UniqueIdentifierGenerator generator) =>
+          {
+            Assert.That (unresolvedJoinTableInfo.OriginatingEntity, Is.SameAs (fakeResolvedCollectionSourceExpression));
+            Assert.That (unresolvedJoinTableInfo.MemberInfo, Is.SameAs (unresolvedCollectionJoinTableInfo.MemberInfo));
+            Assert.That (unresolvedJoinTableInfo.Cardinality, Is.EqualTo (JoinCardinality.Many));
+          })
+          .Returns (_unresolvedTableInfo)
+          .Verifiable();
+      _resolverMock
+          .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
+          .Returns (_resolvedTableInfo)
+          .Verifiable();
+      
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (
+          unresolvedCollectionJoinTableInfo,
+          _resolverMock.Object,
+          _generator,
+          _stageMock.Object,
+          _mappingResolutionContext);
+
+      _resolverMock.Verify();
+      Assert.That (result, Is.SameAs (_resolvedTableInfo));
+
+      Assert.That (
+          _mappingResolutionContext.GetOriginatingEntityForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo),
+          Is.SameAs (fakeResolvedCollectionSourceExpression));
+    }
+
+    [Test]
+    public void VisitUnresolvedCollectionJoinTableInfo_StripsConvertExpressions ()
+    {
+      var unresolvedCollectionJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
+
+      var fakeResolvedCollectionSourceExpressionWithConvert = Expression.Convert(ExpressionHelper.CreateExpression(typeof(Restaurant)), typeof (object));
+      _stageMock
+          .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinTableInfo.SourceExpression, _mappingResolutionContext))
+          .Returns (fakeResolvedCollectionSourceExpressionWithConvert)
+          .Verifiable();
+
+      var fakeResolvedCollectionSourceExpression = SqlStatementModelObjectMother.CreateSqlEntityExpression();
+      _stageMock
+          .Setup (mock => mock.ResolveCollectionSourceExpression (fakeResolvedCollectionSourceExpressionWithConvert.Operand, _mappingResolutionContext))
+          .Returns (fakeResolvedCollectionSourceExpression)
+          .Verifiable();
+      
+      _resolverMock
+          .Setup (mock => mock.ResolveJoinTableInfo (It.IsAny<UnresolvedJoinTableInfo>(), _generator))
+          .Callback((UnresolvedJoinTableInfo unresolvedJoinTableInfo, UniqueIdentifierGenerator generator) =>
+          {
+            Assert.That (unresolvedJoinTableInfo.OriginatingEntity, Is.SameAs (fakeResolvedCollectionSourceExpression));
+          })
+          .Returns (_unresolvedTableInfo)
+          .Verifiable();
+      _resolverMock
+          .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
+          .Returns (_resolvedTableInfo)
+          .Verifiable();
+      
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (
+          unresolvedCollectionJoinTableInfo,
+          _resolverMock.Object,
+          _generator,
+          _stageMock.Object,
+          _mappingResolutionContext);
+
+      _resolverMock.Verify();
+      Assert.That (result, Is.SameAs (_resolvedTableInfo));
+    }
+
+    [Test]
+    public void VisitUnresolvedCollectionJoinTableInfo_WithNonEntitySource_Throws ()
+    {
+       var unresolvedCollectionJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
+
+       var fakeNonEntityResolvedCollectionSourceExpression = new CustomExpression (typeof (Restaurant));
+       _stageMock
+           .Setup (mock => mock.ResolveCollectionSourceExpression (It.IsAny<Expression> (), It.IsAny<IMappingResolutionContext>()))
+           .Returns (fakeNonEntityResolvedCollectionSourceExpression);
+
+       Assert.That (
+           () => ResolvingTableInfoVisitor.ResolveTableInfo (
+               unresolvedCollectionJoinTableInfo,
+               _resolverMock.Object,
+               _generator,
+               _stageMock.Object,
+               _mappingResolutionContext),
+           Throws.TypeOf<NotSupportedException>().With.Message.EqualTo (
+               "Only entities can be used as the collection source in from expressions, 'CustomExpression' cannot. "
+               + "Member: 'System.Collections.Generic.IEnumerable`1[Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook] Cooks'"));
     }
 
     [Test]

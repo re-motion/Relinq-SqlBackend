@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -90,6 +91,32 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       var result = _resolver.ResolveJoinTableInfo (tableInfo, _generator);
       return result.Accept (this);
+    }
+
+    public ITableInfo VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("unresolvedCollectionJoinTableInfo", unresolvedCollectionJoinTableInfo);
+      
+      var resolvedExpression = _stage.ResolveCollectionSourceExpression (unresolvedCollectionJoinTableInfo.SourceExpression, _context);
+      while (resolvedExpression is UnaryExpression)
+      resolvedExpression = _stage.ResolveCollectionSourceExpression (((UnaryExpression)resolvedExpression).Operand, _context);
+
+      var resolvedExpressionAsEntity = resolvedExpression as SqlEntityExpression;
+
+      if (resolvedExpressionAsEntity != null)
+      {
+        var unresolvedJoinTableInfo = new UnresolvedJoinTableInfo (
+            resolvedExpressionAsEntity,
+            unresolvedCollectionJoinTableInfo.MemberInfo,
+            JoinCardinality.Many);
+        return unresolvedJoinTableInfo.Accept (this);
+      }
+
+      var message = string.Format (
+          "Only entities can be used as the collection source in from expressions, '{0}' cannot. Member: '{1}'",
+          FormattingExpressionTreeVisitor.Format (resolvedExpression),
+          unresolvedCollectionJoinTableInfo.MemberInfo);
+      throw new NotSupportedException (message);
     }
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)

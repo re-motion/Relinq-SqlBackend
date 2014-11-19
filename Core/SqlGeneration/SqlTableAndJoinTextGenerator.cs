@@ -191,6 +191,11 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       throw new InvalidOperationException ("UnresolvedJoinTableInfo is not valid at this point.");
     }
 
+    ITableInfo ITableInfoVisitor.VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedCollectionJoinTableInfo is not valid at this point.");
+    }
+
     IJoinInfo IJoinInfoVisitor.VisitUnresolvedJoinInfo (UnresolvedJoinInfo tableSource)
     {
       throw new InvalidOperationException ("UnresolvedJoinInfo is not valid at this point.");
