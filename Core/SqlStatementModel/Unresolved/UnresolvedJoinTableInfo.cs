@@ -24,7 +24,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   // TODO RMLNQSQL-64: Test
   /// <summary>
-  /// <see cref="UnresolvedJoinInfo"/> represents the data source defined by a member access in a LINQ expression.
+  /// <see cref="UnresolvedJoinTableInfo"/> represents the data source defined by a member access in a LINQ expression.
   /// </summary>
   public class UnresolvedJoinTableInfo : ITableInfo
   {
