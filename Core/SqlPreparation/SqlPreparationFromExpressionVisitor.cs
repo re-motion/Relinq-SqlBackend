@@ -112,12 +112,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, Context, Stage, MethodCallTransformerProvider);
 
-      var joinInfo = new UnresolvedCollectionJoinInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
-      var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
-      var oldStyleJoinedTable = _tableGenerator (joinedTable);
+      var joinTableInfo = new UnresolvedCollectionJoinTableInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
+      var oldStyleJoinedTable = _tableGenerator (joinTableInfo);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
+
       FromExpressionInfo = new FromExpressionInfo (
-          oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new JoinConditionExpression (joinedTable));
+          oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new UnresolvedCollectionJoinConditionExpression (oldStyleJoinedTable));
 
       return sqlTableReferenceExpression;
     }

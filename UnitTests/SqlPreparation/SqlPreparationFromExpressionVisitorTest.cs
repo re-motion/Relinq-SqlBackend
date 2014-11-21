@@ -102,15 +102,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           _someOrderingExtractionPolicy);
 
-      Assert.That (result.SqlTable.TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (((SqlJoinedTable) result.SqlTable.TableInfo).JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
-
-      var joinInfo = ((SqlJoinedTable) result.SqlTable.TableInfo).JoinInfo;
-
-      Assert.That (joinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
-
-      Assert.That (((UnresolvedCollectionJoinInfo) joinInfo).MemberInfo, Is.EqualTo (memberInfo));
-      Assert.That (joinInfo.ItemType, Is.SameAs (typeof (Cook)));
+      Assert.That (result.SqlTable.TableInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinTableInfo)));
+      Assert.That (((UnresolvedCollectionJoinTableInfo) result.SqlTable.TableInfo).MemberInfo, Is.EqualTo (memberInfo));
     }
 
     [Test]
@@ -227,17 +220,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           _someOrderingExtractionPolicy);
 
-      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
-      Assert.That (result.SqlTable.TableInfo, Is.TypeOf (typeof (SqlJoinedTable)));
-      Assert.That (((SqlJoinedTable) result.SqlTable.TableInfo).JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
-      Assert.That (
-          ((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result.SqlTable.TableInfo).JoinInfo).SourceExpression,
-          Is.EqualTo (memberExpression.Expression));
-      Assert.That (
-          ((UnresolvedCollectionJoinInfo) ((SqlJoinedTable) result.SqlTable.TableInfo).JoinInfo).MemberInfo,
-          Is.EqualTo (memberExpression.Member));
-      var expectedWherecondition = new JoinConditionExpression (((SqlJoinedTable) result.SqlTable.TableInfo));
-      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWherecondition, result.WhereCondition);
+      Assert.That (result.SqlTable.TableInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinTableInfo)));
+
+      var unresolvedCollectionJoinTableInfo = (UnresolvedCollectionJoinTableInfo) result.SqlTable.TableInfo;
+      Assert.That (unresolvedCollectionJoinTableInfo.SourceExpression, Is.EqualTo (memberExpression.Expression));
+      Assert.That (unresolvedCollectionJoinTableInfo.MemberInfo, Is.EqualTo (memberExpression.Member));
+
+      Assert.That (result.ExtractedOrderings, Is.Empty);
+
+      var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
+
+      var expectedWhereCondition = new UnresolvedCollectionJoinConditionExpression (result.SqlTable);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, result.WhereCondition);
     }
 
     [Test]
@@ -261,8 +256,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _someOrderingExtractionPolicy);
 
       var sqlTable = result.SqlTable;
-      var joinedTable = (SqlJoinedTable) sqlTable.TableInfo;
-      Assert.That (((UnresolvedCollectionJoinInfo) joinedTable.JoinInfo).SourceExpression, Is.SameAs (replacement));
+      var tableInfo = (UnresolvedCollectionJoinTableInfo) sqlTable.TableInfo;
+      Assert.That (tableInfo.SourceExpression, Is.SameAs (replacement));
     }
 
     [Test]
@@ -365,9 +360,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var memberInfo = typeof (Cook).GetProperty ("Assistants");
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
-      var innerSequenceExpression =
-          Expression.MakeMemberAccess (
-              sqlTableReferenceExpression, memberInfo);
+      var innerSequenceExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, memberInfo);
       var joinClause = new JoinClause (
           "x",
           typeof (Cook[]),
@@ -397,14 +390,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fromExpressionInfo = (FromExpressionInfo) visitor.FromExpressionInfo;
 
       Assert.That (fromExpressionInfo.WhereCondition, Is.AssignableTo (typeof (BinaryExpression)));
-      Assert.That (fromExpressionInfo.WhereCondition.NodeType, Is.EqualTo(ExpressionType.AndAlso));
-      Assert.That (((BinaryExpression) fromExpressionInfo.WhereCondition).Left, Is.TypeOf(typeof(JoinConditionExpression)));
-      Assert.That (((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinInfo)));
-      Assert.That (
-          ((UnresolvedCollectionJoinInfo) ((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinInfo).SourceExpression, Is.SameAs(sqlTableReferenceExpression));
-      Assert.That (
-          ((UnresolvedCollectionJoinInfo) ((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinInfo).MemberInfo, Is.SameAs (memberInfo));
-      Assert.That (((JoinConditionExpression) ((BinaryExpression) fromExpressionInfo.WhereCondition).Left).JoinedTable.JoinSemantics, Is.EqualTo(JoinSemantics.Inner));
+      Assert.That (fromExpressionInfo.WhereCondition.NodeType, Is.EqualTo (ExpressionType.AndAlso));
+
+      // This is the "original" where condition (from the JoinClause).
+      Assert.That (((BinaryExpression) fromExpressionInfo.WhereCondition).Left, Is.TypeOf (typeof (UnresolvedCollectionJoinConditionExpression)));
+
+      // The right side is the where condition from the reference to the GroupJoinClause.
       Assert.That (((BinaryExpression) fromExpressionInfo.WhereCondition).Right, Is.SameAs (fakeWhereExpression));
     }
 
