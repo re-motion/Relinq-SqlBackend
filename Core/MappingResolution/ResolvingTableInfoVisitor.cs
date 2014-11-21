@@ -102,13 +102,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       resolvedExpression = _stage.ResolveCollectionSourceExpression (((UnaryExpression)resolvedExpression).Operand, _context);
 
       var resolvedExpressionAsEntity = resolvedExpression as SqlEntityExpression;
-
       if (resolvedExpressionAsEntity != null)
       {
         var unresolvedJoinTableInfo = new UnresolvedJoinTableInfo (
             resolvedExpressionAsEntity,
             unresolvedCollectionJoinTableInfo.MemberInfo,
             JoinCardinality.Many);
+        _context.AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo, resolvedExpressionAsEntity);
+
         return unresolvedJoinTableInfo.Accept (this);
       }
 

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
@@ -30,11 +31,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   {
     private readonly Dictionary<SqlEntityExpression, SqlTableBase> _entityMapping;
     private readonly Dictionary<SqlGroupingSelectExpression, SqlTableBase> _groupReferenceMapping;
+    private readonly Dictionary<UnresolvedCollectionJoinTableInfo, SqlEntityExpression> _unresolvedCollectionJoinTableInfoToOriginatingEntityMapping;
 
     public MappingResolutionContext ()
     {
       _entityMapping = new Dictionary<SqlEntityExpression, SqlTableBase>();
       _groupReferenceMapping = new Dictionary<SqlGroupingSelectExpression, SqlTableBase>();
+      _unresolvedCollectionJoinTableInfoToOriginatingEntityMapping = new Dictionary<UnresolvedCollectionJoinTableInfo, SqlEntityExpression>();
     }
 
     public void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable)
@@ -125,6 +128,34 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
 
       return expression;
+    }
+
+    // This mapping is used to store the intermediate result from resolving an UnresolvedCollectionJoinTableInfo for sharing it between
+    // ResolvingTableInfoVisitor and ResolvingExpressionVisitor.
+    public void AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (
+        UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo,
+        SqlEntityExpression resolvedOriginatingEntity)
+    {
+      ArgumentUtility.CheckNotNull ("unresolvedCollectionJoinTableInfo", unresolvedCollectionJoinTableInfo);
+      ArgumentUtility.CheckNotNull ("resolvedOriginatingEntity", resolvedOriginatingEntity);
+
+      _unresolvedCollectionJoinTableInfoToOriginatingEntityMapping[unresolvedCollectionJoinTableInfo] = resolvedOriginatingEntity;
+    }
+
+    public SqlEntityExpression GetOriginatingEntityForUnresolvedCollectionJoinTableInfo (
+        UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("unresolvedCollectionJoinTableInfo", unresolvedCollectionJoinTableInfo);
+      try
+      {
+        return _unresolvedCollectionJoinTableInfoToOriginatingEntityMapping[unresolvedCollectionJoinTableInfo];
+      }
+      catch (KeyNotFoundException ex)
+      {
+        var message = "An originating entity for the giben UnresolvedCollectionJoinTableInfo has not been registered. Make sure the "
+            + "UnresolvedCollectionJoinTableInfo is resolved before the referencing UnresolvedCollectionJoinConditionExpression is.";
+        throw new KeyNotFoundException (message, ex);
+      }
     }
   }
 }

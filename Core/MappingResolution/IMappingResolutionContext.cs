@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
@@ -37,5 +38,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         SqlGroupingSelectExpression expression, Expression newKey, Expression newElement, IEnumerable<Expression> aggregations);
     void AddSqlTable (SqlTable sqlTable, SqlStatementBuilder sqlStatementBuilder);
     Expression RemoveNamesAndUpdateMapping (Expression expression);
+
+    void AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (
+        UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo,
+        SqlEntityExpression resolvedOriginatingEntity);
+    SqlEntityExpression GetOriginatingEntityForUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo);
   }
 }

@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -185,6 +186,44 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (result, Is.TypeOf (entity.GetType ()));
       Assert.That (((SqlEntityExpression) result).Name, Is.Null);
       Assert.That (_context.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (sqlTable));
+    }
+
+    [Test]
+    public void AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo_AllowsEntityToBeLookedUp ()
+    {
+      var unresolvedCollectionJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
+      var resolvedOriginatingEntity = SqlStatementModelObjectMother.CreateSqlEntityExpression();
+
+      _context.AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo, resolvedOriginatingEntity);
+
+      var result = _context.GetOriginatingEntityForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo);
+      Assert.That (result, Is.SameAs (resolvedOriginatingEntity));
+    }
+
+    [Test]
+    public void AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo_Twice_SecondMappingOverwritesFirst ()
+    {
+      var unresolvedCollectionJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
+      var resolvedOriginatingEntity1 = SqlStatementModelObjectMother.CreateSqlEntityExpression();
+      var resolvedOriginatingEntity2 = SqlStatementModelObjectMother.CreateSqlEntityExpression();
+
+      _context.AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo, resolvedOriginatingEntity1);
+      _context.AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo, resolvedOriginatingEntity2);
+
+      var result = _context.GetOriginatingEntityForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo);
+      Assert.That (result, Is.SameAs (resolvedOriginatingEntity2));
+    }
+
+    [Test]
+    public void GetOriginatingEntityForUnresolvedCollectionJoinTableInfo_WithoutAddedMapping_ThrowsKeyNotFoundException ()
+    {
+      var unresolvedCollectionJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
+
+      Assert.That (
+          () => _context.GetOriginatingEntityForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo),
+          Throws.TypeOf<KeyNotFoundException>().With.Message.EqualTo (
+              "An originating entity for the giben UnresolvedCollectionJoinTableInfo has not been registered. "
+              + "Make sure the UnresolvedCollectionJoinTableInfo is resolved before the referencing UnresolvedCollectionJoinConditionExpression is."));
     }
   }
 }

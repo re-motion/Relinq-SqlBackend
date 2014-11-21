@@ -303,6 +303,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlColumnDefinitionExpression (type ?? typeof (int), owningTableAlias ?? "t0", column ?? "column", isPrimaryKey);
     }
 
+    public static SqlEntityExpression CreateSqlEntityExpression ()
+    {
+      return CreateSqlEntityDefinitionExpression();
+    }
+
     public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type = null, string name = null, string owningTableAlias = null, Type primaryKeyType = null)
     {
       type = type ?? typeof (Cook);
