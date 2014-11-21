@@ -110,6 +110,29 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      // This is the scenario "from oi in o.OrderItems" or "from oi in p.Order.OrderItems" or something like this. Note that we haven't resolved the
+      // left side of the member expression yet - it could be a SqlTableReferenceExpression, a MemberExpression, a SubStatementExpression. Those
+      // things will be moved into a SqlTable only in the resolution stage, so we can't really add a join to anything yet.
+      // We'll therefore generate an old-style join instead: add a cross-joined table corresponding to the right side of the join and a where 
+      // condition that constitutes the join condition.
+
+      // IDEA: To generate a real inner join instead, refactor as follows:
+      //   SqlTable GetSqlTable (MemberExpression expression)
+      //   1 - Prepare the left side of the expression. 
+      //   2a - If it is a SqlTableReferenceExpression, take that SqlTable. Otherwise, it must be a MemberExpression or a a SubStatementExpression.
+      //       (Throw on anything else.) Since that table already existed, "null" will be returned in the FromExpressionInfo.
+      //   2b - If a SubStatementExpression, put the sub-statement into a new SqlTable and take that. Remember this new SqlTable: It must be returned 
+      //       in the FromExpressionInfo so that it is added to the list of SqlTables in the statement.
+      //       (Or throw because we don't support sub-statements on the left side of a MemberExpression in the from expression.)
+      //   2c - If a MemberExpression, recurse: GetSqlTable((MemberExpression) left side). Take the returned table.
+      //   3 - After step 2, you have one table corresponding to the left side. Add the inner join to it. Note that this is not necessarily a 
+      //       "collection join"; due to the recursion in 2c, it could also be a "single join". Therefore, refactor and rename 
+      //       UnresolvedCollectionJoinTableInfo and its resolution to cope with that and hold a join cardinality or something. Can probably be 
+      //       deduced from enumerability of the member result, or it can be made a parameter to the GetSqlTable function.
+      //       That table is only returned via the FromExpressionInfo if it was newly created (in step 2b if you support it).
+      //       Otherwise, null is returned. Ensure all callers can deal with null tables.
+      //       Remove the FromExpressionInfo.WhereCondition, it's no longer needed.
+      
       var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, Context, Stage, MethodCallTransformerProvider);
 
       var joinTableInfo = new UnresolvedCollectionJoinTableInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
@@ -117,7 +140,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
 
       FromExpressionInfo = new FromExpressionInfo (
-          oldStyleJoinedTable, new Ordering[0], sqlTableReferenceExpression, new UnresolvedCollectionJoinConditionExpression (oldStyleJoinedTable));
+          sqlTable: oldStyleJoinedTable,
+          extractedOrderings: new Ordering[0],
+          itemSelector: sqlTableReferenceExpression,
+          whereCondition: new UnresolvedCollectionJoinConditionExpression (oldStyleJoinedTable));
 
       return sqlTableReferenceExpression;
     }
