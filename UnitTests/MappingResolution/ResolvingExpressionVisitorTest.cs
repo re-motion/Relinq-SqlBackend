@@ -420,7 +420,41 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Returns (fakeRevisitedExpression)
           .Verifiable();
 
-      var result = _visitor.VisitExpression (unresolvedJoinConditionExpression);
+      var result = _visitor.Visit (unresolvedJoinConditionExpression);
+
+      _resolverMock.Verify();
+      Assert.That (result, Is.SameAs (fakeRevisitedExpression));
+    }
+
+    [Test]
+    public void VisitUnresolvedCollectionJoinConditionExpression_ObtainsOriginatingEntityAndResolvesConditionAndRevisitsResult ()
+    {
+      var unresolvedCollectionJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
+      var originatingEntity = SqlStatementModelObjectMother.CreateSqlEntityExpression();
+      _mappingResolutionContext.AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (
+          unresolvedCollectionJoinTableInfo,
+          originatingEntity);
+
+      // Prepare an UnresolvedCollectionJoinConditionExpression while the table is not resolved yet.
+      var joinedTable = new SqlTable (unresolvedCollectionJoinTableInfo, JoinSemantics.Inner);
+      var unresolvedCollectionJoinConditionExpression = new UnresolvedCollectionJoinConditionExpression (joinedTable);
+
+      // Then, change the table so it appears to be resolved.
+      var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (joinedTable.ItemType);
+      joinedTable.TableInfo = tableInfo;
+
+      var fakeResolvedCondition = Expression.Constant (true);
+      _resolverMock
+          .Setup (mock => mock.ResolveJoinCondition (originatingEntity, unresolvedCollectionJoinTableInfo.MemberInfo, tableInfo))
+          .Returns (fakeResolvedCondition)
+          .Verifiable();
+      var fakeRevisitedExpression = new CustomExpression(typeof(bool));
+      _resolverMock
+          .Setup (mock => mock.ResolveConstantExpression (fakeResolvedCondition))
+          .Returns (fakeRevisitedExpression)
+          .Verifiable();
+
+      var result = _visitor.Visit (unresolvedCollectionJoinConditionExpression);
 
       _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeRevisitedExpression));

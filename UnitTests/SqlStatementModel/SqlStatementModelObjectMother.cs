@@ -260,7 +260,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new UnresolvedCollectionJoinInfo (Expression.Constant (new Restaurant()), typeof (Restaurant).GetProperty ("Cooks"));
     }
 
-    public static ITableInfo CreateUnresolvedCollectionJoinTableInfo ()
+    public static UnresolvedCollectionJoinTableInfo CreateUnresolvedCollectionJoinTableInfo ()
     {
       return CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
     }

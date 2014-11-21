@@ -12,14 +12,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// Represents a yet unresolved join condition.
   /// </summary>
-  public class UnresolvedJoinConditionExpression : ExtensionExpression
+  public class UnresolvedJoinConditionExpression : Expression
   {
     private readonly SqlEntityExpression _originatingEntity;
     private readonly MemberInfo _memberInfo;
     private readonly SqlTable _joinedTable;
 
     public UnresolvedJoinConditionExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, SqlTable joinedTable)
-        : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
@@ -28,6 +27,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       _originatingEntity = originatingEntity;
       _memberInfo = memberInfo;
       _joinedTable = joinedTable;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(bool); }
     }
 
     public SqlEntityExpression OriginatingEntity
@@ -45,12 +54,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _joinedTable; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as IUnresolvedJoinConditionExpressionVisitor;
       if (specificVisitor != null)

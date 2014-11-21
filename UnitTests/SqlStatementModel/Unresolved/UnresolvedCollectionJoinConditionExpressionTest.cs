@@ -16,11 +16,12 @@
 // 
 
 using System;
+using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.NUnit;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
 {
@@ -56,13 +57,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
-      visitorMock.Replay();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 
       Assert.That (result, Is.SameAs (_expression));
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
     }
 
     [Test]
