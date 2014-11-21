@@ -21,6 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
+  // TODO RMLNQSQL-64: Remove.
   /// <summary>
   /// <see cref="JoinConditionExpression"/> represents the data source defined by a member access in the from part of a linq expression.
   /// </summary>
