@@ -64,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    public void ToString_Unresolved ()
+    public new void ToString ()
     {
       var result = _expression.ToString();
 
