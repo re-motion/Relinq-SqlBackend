@@ -32,6 +32,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   {
     private ITableInfo _tableInfo;
 
+    // TODO RMLNQSQL-64: Can we remove the joinSemantics parameter here?
     public SqlTable (ITableInfo tableInfo, JoinSemantics joinSemantics)
         : base (tableInfo.ItemType, joinSemantics)
     {
