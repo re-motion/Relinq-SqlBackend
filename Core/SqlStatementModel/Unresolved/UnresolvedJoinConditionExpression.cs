@@ -8,7 +8,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
-  // TODO RMLNQSQL-64: Test
   /// <summary>
   /// Represents a yet unresolved join condition.
   /// </summary>

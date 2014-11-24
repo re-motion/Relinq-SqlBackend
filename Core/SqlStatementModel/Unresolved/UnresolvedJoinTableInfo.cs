@@ -22,7 +22,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
-  // TODO RMLNQSQL-64: Test
   /// <summary>
   /// <see cref="UnresolvedJoinTableInfo"/> represents the data source defined by a member access in a LINQ expression.
   /// </summary>
