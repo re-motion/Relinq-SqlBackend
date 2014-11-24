@@ -23,6 +23,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
+  // TODO RMLNQSQL-64: Remove.
   /// <summary>
   /// <see cref="UnresolvedCollectionJoinInfo"/> represents the data source defined by a member access to a collection in a LINQ expression.
   /// </summary>
