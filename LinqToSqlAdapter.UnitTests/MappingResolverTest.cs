@@ -40,7 +40,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     private readonly Type _unmappedType = typeof (Type);
     private const string _unmappedTypeMsg = "System.Type";
 
-    private PropertyInfo _unmappedInfo;
+    private PropertyInfo _unmappedMember;
     private const string _unmappedInfoMsg = "System.Type.GUID";
 
     [SetUp]
@@ -48,7 +48,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       _generator = new UniqueIdentifierGenerator();
       _mappingResolver = new MappingResolver (new AttributeMappingSource().GetModel (typeof (DataContextTestClass)));
-      _unmappedInfo = _unmappedType.GetProperty ("GUID");
+      _unmappedMember = _unmappedType.GetProperty ("GUID");
       new AttributeMappingSource().GetModel (typeof (DataContextTestClass));
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
               .With.Message.EqualTo (
                   "Cannot resolve table: " + _unmappedTypeMsg + " is not a mapped table"));
     }
-    
+
     [Test]
     public void ResolveJoinInfo_ForeignKeyOnTheRight()
     {
@@ -160,9 +160,102 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var customerDefinition = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
 
-      var joinInfo = new UnresolvedJoinInfo (customerDefinition, _unmappedInfo, JoinCardinality.One);
+      var joinInfo = new UnresolvedJoinInfo (customerDefinition, _unmappedMember, JoinCardinality.One);
       Assert.That (
           () => _mappingResolver.ResolveJoinInfo (joinInfo, _generator),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve member: " + _unmappedInfoMsg + " is not a mapped member"));
+    }
+
+    [Test]
+    public void ResolveJoinTableInfo ()
+    {
+      var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
+      var customerEntity = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
+      var ordersMember = customerTableInfo.ItemType.GetProperty ("Orders");
+
+      var unresolvedJoinTableInfo = new UnresolvedJoinTableInfo (customerEntity, ordersMember, JoinCardinality.Many);
+
+      var result = _mappingResolver.ResolveJoinTableInfo (unresolvedJoinTableInfo, _generator);
+
+      Assert.That (result, Is.TypeOf<UnresolvedTableInfo>());
+      Assert.That (((UnresolvedTableInfo) result).ItemType, Is.SameAs (typeof (DataContextTestClass.Order)));
+    }
+
+    [Test]
+    public void ResolveJoinCondition_ForeignKeyOnTheRight()
+    {
+      var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
+      var customerPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), customerTableInfo.TableAlias, "CustomerID", true);
+      var customerEntity = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
+      var ordersMember = customerTableInfo.ItemType.GetProperty ("Orders");
+      var resolvedJoinedTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t0");
+
+      var resolvedJoinCondition = _mappingResolver.ResolveJoinCondition (customerEntity, ordersMember, resolvedJoinedTableInfo);
+
+      var expectedOrderForeignKey = new SqlColumnDefinitionExpression (typeof (string), "t0", "CustomerID", false);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (customerPrimaryKey, expectedOrderForeignKey), resolvedJoinCondition);
+    }
+
+    [Test]
+    public void ResolveJoinCondition_ForeignKeyOnTheLeft()
+    {
+      var orderTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Order", "t1");
+      var orderEntity = new SqlEntityDefinitionExpression (
+          orderTableInfo.ItemType, orderTableInfo.TableAlias, null, e => e.GetColumn (typeof (string), "OrderID", true));
+      var customerMember = orderTableInfo.ItemType.GetProperty ("Customer");
+      var resolvedJoinedTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customer", "t0");
+
+      var resolvedJoinCondition = _mappingResolver.ResolveJoinCondition (orderEntity, customerMember, resolvedJoinedTableInfo);
+
+      var orderForeignKey = new SqlColumnDefinitionExpression (typeof (string), orderTableInfo.TableAlias, "CustomerID", false);
+      var expectedCustomerPrimaryKey = new SqlColumnDefinitionExpression (typeof (string), "t0", "CustomerID", true);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (orderForeignKey, expectedCustomerPrimaryKey), resolvedJoinCondition);
+    }
+
+    [Test]
+    public void ResolveJoinCondition_OneNullableColumn_TheOtherNot_LeadsToConversion ()
+    {
+      var regionTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Region), "dbo.Regions", "t1");
+      var regionEntity = new SqlEntityDefinitionExpression (regionTableInfo.ItemType, regionTableInfo.TableAlias, null, e => e);
+      var territoriesMember = regionTableInfo.ItemType.GetProperty ("Territories");
+      var resolvedJoinedTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Territory), "dbo.Territories", "t0");
+
+      var resolvedJoinCondition = _mappingResolver.ResolveJoinCondition (regionEntity, territoriesMember, resolvedJoinedTableInfo);
+
+      var regionPrimaryKey = new SqlColumnDefinitionExpression (typeof (int), regionTableInfo.TableAlias, "RegionID", true);
+      var expectedTerritoryForeignKey = new SqlColumnDefinitionExpression (typeof (int?), "t0", "RegionID", false);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
+          Expression.Equal (
+            Expression.Convert (regionPrimaryKey, typeof (int?)), 
+            expectedTerritoryForeignKey), resolvedJoinCondition);
+    }
+
+    [Test]
+    public void ResolveJoinCondition_ShouldThrowUnmappedExceptionForType ()
+    {
+      var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
+      var customerEntity = new SqlEntityDefinitionExpression (_unmappedType, customerTableInfo.TableAlias, null, e => e);
+      var ordersMember = customerTableInfo.ItemType.GetProperty ("Orders");
+      var resolvedJoinedTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Orders", "t0");
+
+      Assert.That (
+          () => _mappingResolver.ResolveJoinCondition (customerEntity, ordersMember, resolvedJoinedTableInfo),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type"));
+    }
+
+    [Test]
+    public void ResolveJoinCondition_ShouldThrowUnmappedExceptionForMember ()
+    {
+      var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
+      var customerEntity = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
+      var resolvedJoinedTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Order), "dbo.Orders", "t0");
+
+      Assert.That (
+          () => _mappingResolver.ResolveJoinCondition (customerEntity, _unmappedMember, resolvedJoinedTableInfo),
           Throws.InstanceOf<UnmappedItemException>()
               .With.Message.EqualTo (
                   "Cannot resolve member: " + _unmappedInfoMsg + " is not a mapped member"));

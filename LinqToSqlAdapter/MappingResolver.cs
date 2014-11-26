@@ -69,7 +69,6 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return CreateResolvedJoinInfo (joinInfo.OriginatingEntity, metaAssociation, resolvedTable);
     }
 
-    // TODO RMLNQSQL-64: Test.
     public ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
@@ -78,9 +77,12 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return new UnresolvedTableInfo (tableInfo.ItemType);
     }
 
-    // TODO RMLNQSQL-64: Test.
     public Expression ResolveJoinCondition (SqlEntityExpression originatingEntity, MemberInfo memberInfo, IResolvedTableInfo joinedTableInfo)
     {
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull ("joinedTableInfo", joinedTableInfo);
+
       var metaType = GetMetaType (originatingEntity.Type);
       var metaAssociation = GetDataMember (metaType, memberInfo).Association;
       Assertion.DebugAssert (metaAssociation != null);
