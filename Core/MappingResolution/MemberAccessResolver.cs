@@ -118,8 +118,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return result;
 
       // Optimized member access didn't work, so resolve the entity reference (adding joins and such), then retry.
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
-      var entityExpression = _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
+      var entityExpression = _stage.ResolveEntityRefMemberExpression (expression, _context);
       return Visit (entityExpression);
     }
 

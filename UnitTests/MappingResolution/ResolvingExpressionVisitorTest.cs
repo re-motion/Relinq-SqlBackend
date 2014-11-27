@@ -812,14 +812,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression();
       _stageMock
-          .Setup (
-              mock => mock.ResolveEntityRefMemberExpression (
-                  entityRefMemberExpression,
-                  It.Is<UnresolvedJoinInfo> (
-                      ji => ji.OriginatingEntity == entityRefMemberExpression.OriginatingEntity
-                            && ji.MemberInfo == entityRefMemberExpression.MemberInfo
-                            && ji.Cardinality == JoinCardinality.One),
-                  _mappingResolutionContext))
+          .Setup (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, _mappingResolutionContext))
           .Returns (fakeResolvedExpression)
           .Verifiable();
 
@@ -860,14 +853,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       _stageMock
-          .Setup (
-              mock => mock.ResolveEntityRefMemberExpression (
-                  entityRefMemberExpression,
-                  It.Is<UnresolvedJoinInfo> (
-                      i => i.OriginatingEntity == entityExpression
-                           && i.MemberInfo == memberInfo
-                           && i.Cardinality == JoinCardinality.One),
-                  _mappingResolutionContext))
+          .Setup (mock => mock.ResolveEntityRefMemberExpression (entityRefMemberExpression, _mappingResolutionContext))
           .Returns (fakeResult)
           .Verifiable();
 

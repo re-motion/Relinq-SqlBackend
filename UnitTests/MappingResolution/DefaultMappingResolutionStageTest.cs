@@ -430,7 +430,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var kitchenCookMember = typeof (Kitchen).GetProperty ("Cook");
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       var entityRefMemberExpression = new SqlEntityRefMemberExpression (entityExpression, kitchenCookMember);
-      var unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       var fakeJoinedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
       _mappingResolutionContext.AddSqlEntityMapping (entityExpression, SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
 
@@ -451,7 +450,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Returns (fakeJoinConditionExpression)
           .Verifiable();
 
-      var result = _stage.ResolveEntityRefMemberExpression (entityRefMemberExpression, unresolvedJoinInfo, _mappingResolutionContext);
+      var result = _stage.ResolveEntityRefMemberExpression (entityRefMemberExpression, _mappingResolutionContext);
 
       _resolverMock.Verify();
 

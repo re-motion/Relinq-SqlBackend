@@ -163,11 +163,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
     }
 
-    // TODO RMLNQSQL-64: Remove JoinInfo parameter.
-    public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context)
+    public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("context", context);
 
       var originatingSqlTable = context.GetSqlTableForEntityExpression (expression.OriginatingEntity);

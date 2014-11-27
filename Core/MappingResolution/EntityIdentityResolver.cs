@@ -152,8 +152,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (optimizedIdentity != null)
         return optimizedIdentity;
 
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
-      return _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context).GetIdentityExpression ();
+      return _stage.ResolveEntityRefMemberExpression (expression, _context).GetIdentityExpression ();
     }
 
     private Expression CheckAndSimplifyEntityWithinSubStatement (SqlSubStatementExpression sqlSubStatementExpression)

@@ -336,9 +336,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (!_resolveEntityRefMemberExpressions)
         return VisitExtension (expression);
 
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
       // No revisiting required since this visitor does not handle ISqlEntityExpressions.
-      return _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
+      return _stage.ResolveEntityRefMemberExpression (expression, _context);
     }
   }
 }
