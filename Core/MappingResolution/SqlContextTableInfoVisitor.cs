@@ -77,16 +77,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return tableInfo;
     }
 
-    public ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable)
-    {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
-
-      var newJoinInfo = _stage.ApplyContext (joinedTable.JoinInfo, _expressionContext, _mappingResolutionContext); 
-      joinedTable.JoinInfo = newJoinInfo;
-
-      return joinedTable;
-    }
-
     public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);

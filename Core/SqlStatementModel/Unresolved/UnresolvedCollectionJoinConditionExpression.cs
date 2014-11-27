@@ -7,7 +7,7 @@ using Remotion.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// Represents the yet unresolved join condition for an <see cref="UnresolvedCollectionJoinInfo"/>.
+  /// Represents the yet unresolved join condition for an <see cref="UnresolvedCollectionJoinTableInfo"/>.
   /// </summary>
   public class UnresolvedCollectionJoinConditionExpression : Expression
   {

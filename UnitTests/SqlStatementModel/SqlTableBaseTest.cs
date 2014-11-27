@@ -17,9 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
@@ -27,32 +25,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
   [TestFixture]
   public class SqlTableBaseTest
   {
-    [Test]
-    public void GetOrAddJoin_NewEntry ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
-      var unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_CookSubstitution();
-
-      var joinedTable = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, unresolvedJoinInfo.MemberInfo);
-      Assert.That (joinedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
-      Assert.That (joinedTable.JoinInfo, Is.SameAs (unresolvedJoinInfo));
-    }
-    
-    [Test]
-    public void GetOrAddJoin_GetEntry_Twice ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
-      var memberInfo = typeof (Cook).GetProperty ("FirstName");
-      var unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_CookSubstitution ();
-
-      var joinedTable1 = sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
-      var originalJoinInfo = joinedTable1.JoinInfo;
-
-      var joinedTable2 = sqlTable.GetOrAddLeftJoin (originalJoinInfo, memberInfo);
-
-      Assert.That (joinedTable2, Is.SameAs (joinedTable1));
-      Assert.That (joinedTable2.JoinInfo, Is.SameAs (originalJoinInfo));
-    }
 
     [Test]
     public void GetOrAddLeftJoinByMember_NewEntry_IsAddedToOrderedListOfJoins()

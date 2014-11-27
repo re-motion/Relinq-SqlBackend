@@ -70,6 +70,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public override string ToString ()
     {
+      // TODO RMLNQSQL-64: Always SqlTable.
       var sqlTableBaseAsSqlTable = _sqlTableBase as SqlTable;
       if (sqlTableBaseAsSqlTable!=null)
       {
@@ -78,15 +79,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
           return "TABLE-REF(" + resolvedTableInfo.TableAlias + ")";
         else
           return "TABLE-REF(" + sqlTableBaseAsSqlTable.TableInfo.GetType ().Name + "(" + sqlTableBaseAsSqlTable.TableInfo.ItemType.Name + "))";
-      }
-
-      var sqlTableBaseAsSqlJoinedTable = _sqlTableBase as SqlJoinedTable;
-      if (sqlTableBaseAsSqlJoinedTable != null)
-      {
-        if (sqlTableBaseAsSqlJoinedTable.JoinInfo is ResolvedJoinInfo)
-          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetResolvedJoinInfo ().ForeignTableInfo.TableAlias + ")"; //TODO RMLNQSQL-1: Drop TableAlias
-        else
-          return "TABLE-REF(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.GetType().Name + "(" + sqlTableBaseAsSqlJoinedTable.JoinInfo.ItemType.Name + "))";
       }
 
       return "TABLE-REF (" + _sqlTableBase.GetType().Name + " (" + _sqlTableBase.ItemType.Name + "))";

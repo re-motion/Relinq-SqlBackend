@@ -116,27 +116,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return (IResolvedTableInfo) ApplyContext (resolvedTableInfo, SqlExpressionContext.ValueRequired, context);
     }
 
-    public virtual void ResolveSqlJoinedTable (SqlJoinedTable sqlJoinedTable, IMappingResolutionContext context)
-    {
-      ArgumentUtility.CheckNotNull ("sqlJoinedTable", sqlJoinedTable);
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      var joinInfoWithResolvedTable = ResolvingJoinInfoVisitor.ResolveJoinInfo (sqlJoinedTable.JoinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
-      
-      // Temporarily set the joinInfoWithResolvedTable into the sqlJoinedTable; that way, the join condition can reference the joined table without 
-      // raising an exception (because the referenced SqlJoinedTable hasn't been resolved yet).
-      sqlJoinedTable.JoinInfo = joinInfoWithResolvedTable;
-
-      var resolvedJoinCondition = ResolveJoinCondition (joinInfoWithResolvedTable.JoinCondition, context);
-      ResolvedJoinInfo completelyResolvedJoinInfo;
-      if (resolvedJoinCondition != joinInfoWithResolvedTable.JoinCondition)
-        completelyResolvedJoinInfo = new ResolvedJoinInfo (joinInfoWithResolvedTable.ForeignTableInfo, resolvedJoinCondition);
-      else
-        completelyResolvedJoinInfo = joinInfoWithResolvedTable;
-
-      sqlJoinedTable.JoinInfo = ApplyContext (completelyResolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
-    }
-
+    // TODO RMLNQSQL-64: Remove from stage interface? If so, merge tests for ResolveJoinCondition and tests for ResolveEntityRefMemberExpression.
     public Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
@@ -227,14 +207,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
       return SqlContextTableInfoVisitor.ApplyContext (tableInfo, expressionContext, this, mappingResolutionContext);
-    }
-
-    public virtual IJoinInfo ApplyContext (IJoinInfo joinInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
-    {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
-
-      return SqlContextJoinInfoVisitor.ApplyContext (joinInfo, expressionContext, this, mappingResolutionContext);
     }
 
     protected virtual Expression ResolveExpression (Expression expression, IMappingResolutionContext context)

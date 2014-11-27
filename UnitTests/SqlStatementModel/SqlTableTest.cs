@@ -88,17 +88,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     }
 
     [Test]
-    public void ToString_WithJoins ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
-      var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-      _sqlTable.GetOrAddLeftJoin (joinInfo, memberInfo);
-
-      var result = _sqlTable.ToString ();
-      Assert.That (result, Is.EqualTo ("[table1] [t] LEFT JOIN Kitchen.Cook"));
-    }
-
-    [Test]
     public void ToString_WithJoin ()
     {
       var joinedTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"), JoinSemantics.Inner);

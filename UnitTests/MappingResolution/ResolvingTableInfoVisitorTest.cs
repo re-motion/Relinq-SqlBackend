@@ -295,21 +295,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void ResolveTableInfo_SqlJoinedTable ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
-      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-
-      _stageMock
-          .Setup (mock => mock.ResolveSqlJoinedTable(sqlJoinedTable, _mappingResolutionContext))
-          .Verifiable();
-
-      ResolvingTableInfoVisitor.ResolveTableInfo (sqlJoinedTable, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
-
-      _stageMock.Verify();
-    }
-
-    [Test]
     public void ResolveTableInfo_GroupReferenceTableInfo ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));

@@ -24,9 +24,9 @@ using Remotion.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
-  /// <see cref="SqlTableAndJoinTextGenerator"/> generates sql-text for <see cref="ResolvedSimpleTableInfo"/> and <see cref="ResolvedJoinInfo"/>.
+  /// <see cref="SqlTableAndJoinTextGenerator"/> generates SQL text for <see cref="SqlTable"/> objects and its joined tables.
   /// </summary>
-  public class SqlTableAndJoinTextGenerator : ITableInfoVisitor, IJoinInfoVisitor
+  public class SqlTableAndJoinTextGenerator : ITableInfoVisitor
   {
     public static void GenerateSql (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
     {
@@ -40,11 +40,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private static void GenerateSqlForJoins (SqlTableBase sqlTable, ISqlCommandBuilder commandBuilder, SqlTableAndJoinTextGenerator visitor, ISqlGenerationStage stage)
     {
-      foreach (var joinedTable in sqlTable.JoinedTables)
-      {
-        GenerateTextForSqlJoinedTable (visitor, joinedTable, commandBuilder);
-        GenerateSqlForJoins (joinedTable, commandBuilder, visitor, stage);
-      }
       foreach (var join in sqlTable.OrderedJoins)
       {
         GenerateTextForJoin (visitor, @join, commandBuilder, stage);
@@ -73,19 +68,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
 
       sqlTable.TableInfo.Accept (visitor);
-    }
-
-    private static void GenerateTextForSqlJoinedTable (IJoinInfoVisitor visitor, SqlJoinedTable joinedTable, ISqlCommandBuilder commandBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
-
-      // TODO RMLNQSQL-4: This check can be removed.
-      if (joinedTable.JoinSemantics == JoinSemantics.Inner)
-        throw new NotSupportedException ("SqlJoinedTables with INNER JoinSemantics are currently not supported. (RMLNQSQL-4)");
-
-      commandBuilder.Append (" LEFT OUTER JOIN ");
-
-      joinedTable.JoinInfo.Accept (visitor);
     }
 
     // TODO RMLNQSQL-64: Maybe inline?
@@ -162,25 +144,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return VisitSubStatementTableInfo (tableInfo);
     }
 
-    public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
-    {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-
-      joinInfo.ForeignTableInfo.Accept (this);
-
-      _commandBuilder.Append (" ON ");
-
-      _stage.GenerateTextForJoinCondition (_commandBuilder, joinInfo.JoinCondition);
-
-      return joinInfo;
-    }
-
-    // TODO RMLNQSQL-4: This method can be removed.
-    ITableInfo ITableInfoVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
-    {
-      throw new InvalidOperationException ("SqlJoinedTable as TableInfo is not valid at this point.");
-    }
-
     ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
@@ -194,16 +157,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     ITableInfo ITableInfoVisitor.VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedCollectionJoinTableInfo is not valid at this point.");
-    }
-
-    IJoinInfo IJoinInfoVisitor.VisitUnresolvedJoinInfo (UnresolvedJoinInfo tableSource)
-    {
-      throw new InvalidOperationException ("UnresolvedJoinInfo is not valid at this point.");
-    }
-
-    IJoinInfo IJoinInfoVisitor.VisitUnresolvedCollectionJoinInfo (UnresolvedCollectionJoinInfo joinInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedCollectionJoinInfo is not valid at this point.");
     }
   }
 }

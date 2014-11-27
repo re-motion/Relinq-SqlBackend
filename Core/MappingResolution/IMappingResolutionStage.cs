@@ -36,7 +36,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     Expression ResolveTopExpression (Expression expression, IMappingResolutionContext context);
     Expression ResolveAggregationExpression (Expression expression, IMappingResolutionContext context);
     IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context);
-    void ResolveSqlJoinedTable (SqlJoinedTable sqlJoinedTable, IMappingResolutionContext context);
     Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext);
     SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context);
     Expression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context);
@@ -50,7 +49,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
     ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
-    IJoinInfo ApplyContext (IJoinInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
 
     SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
   }

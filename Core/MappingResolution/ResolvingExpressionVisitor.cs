@@ -32,7 +32,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ExpressionVisitor, 
       IUnresolvedSqlExpressionVisitor, 
       ISqlSubStatementVisitor,
-      IJoinConditionExpressionVisitor,
       IUnresolvedJoinConditionExpressionVisitor, 
       IUnresolvedCollectionJoinConditionExpressionVisitor,
       INamedExpressionVisitor,
@@ -227,14 +226,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _groupAggregateSimplifier.SimplifyIfPossible (resolvedExpression, expression.SqlStatement.SelectProjection);
     }
 
-    public virtual Expression VisitJoinCondition (JoinConditionExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      var resolvedLeftJoinInfo = expression.JoinedTable.JoinInfo.GetResolvedJoinInfo();
-      return Visit (resolvedLeftJoinInfo.JoinCondition);
-    }
-      
     public Expression VisitUnresolvedJoinConditionExpression (UnresolvedJoinConditionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

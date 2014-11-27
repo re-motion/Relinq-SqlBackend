@@ -373,34 +373,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitJoinConditionExpression ()
-    {
-      var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
-      var leftKey = new SqlColumnDefinitionExpression (typeof (Cook), "c", "ID", false);
-      var rightKey = new SqlColumnDefinitionExpression (typeof (Cook), "a", "FK", false);
-      var joinInfo = new ResolvedJoinInfo (resolvedTableInfo, Expression.Equal (leftKey, rightKey));
-      var sqlTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-      var joinConditionExpression = new JoinConditionExpression (sqlTable);
-
-      _entityIdentityResolverMock
-          .Setup (mock => mock.ResolvePotentialEntityComparison (It.Is<BinaryExpression> (b => b.Left == leftKey && b.Right == rightKey)))
-          .Returns ((BinaryExpression expression) => expression)
-          .Verifiable();
-      _compoundComparisonSplitterMock
-          .Setup (mock => mock.SplitPotentialCompoundComparison (It.Is<BinaryExpression> (b => b.Left == leftKey && b.Right == rightKey)))
-          .Returns ((BinaryExpression expression) => expression)
-          .Verifiable();
-
-      var result = _visitor.Visit (joinConditionExpression);
-
-      _entityIdentityResolverMock.Verify();
-      _compoundComparisonSplitterMock.Verify();
-
-      var expectedExpression = Expression.Equal (leftKey, rightKey);
-      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
-    }
-    
-    [Test]
     public void VisitUnresolvedJoinConditionExpression_ResolvesConditionAndRevisitsResult ()
     {
       var originatingEntity = SqlStatementModelObjectMother.CreateSqlEntityExpression();

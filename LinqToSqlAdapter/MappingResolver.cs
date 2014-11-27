@@ -56,19 +56,6 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return new ResolvedSimpleTableInfo (tableInfo.ItemType, tableName, generator.GetUniqueIdentifier ("t"));
     }
 
-    public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
-    {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-
-      var metaType = GetMetaType (joinInfo.OriginatingEntity.Type);
-      var metaAssociation = GetDataMember (metaType, joinInfo.MemberInfo).Association;
-      Assertion.DebugAssert (metaAssociation != null);
-
-      IResolvedTableInfo resolvedTable = ResolveTableInfo (new UnresolvedTableInfo (joinInfo.ItemType), generator);
-      return CreateResolvedJoinInfo (joinInfo.OriginatingEntity, metaAssociation, resolvedTable);
-    }
-
     public ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
@@ -264,32 +251,6 @@ namespace Remotion.Linq.LinqToSqlAdapter
         members.Add (metaDataMember);
 
       return members.ToArray();
-    }
-
-    private static ResolvedJoinInfo CreateResolvedJoinInfo (
-        SqlEntityExpression originatingEntity, MetaAssociation metaAssociation, IResolvedTableInfo joinedTableInfo)
-    {
-      var leftColumn = ResolveMember (originatingEntity, metaAssociation.ThisKey);
-
-      // If needed, implement by using compounds (NewExpressions with named arguments, see NamedExpression.CreateNewExpressionWithNamedArguments.)
-      if (metaAssociation.OtherKey.Count > 1)
-      {
-        throw new NotSupportedException (
-            string.Format (
-                "Associations with more than one column are currently not supported. ({0}.{1})",
-                originatingEntity.Type,
-                metaAssociation.OtherMember.Name));
-      }
-
-      var otherKey = metaAssociation.OtherKey[0];
-      var rightColumn = new SqlColumnDefinitionExpression (
-        otherKey.Type,
-        joinedTableInfo.TableAlias,
-        otherKey.MappedName,
-        otherKey.IsPrimaryKey);
-
-      var joinCondition = ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null);
-      return new ResolvedJoinInfo (joinedTableInfo, joinCondition);
     }
 
     private static Expression CreateResolvedJoinCondition (

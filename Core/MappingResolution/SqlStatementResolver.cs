@@ -65,15 +65,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ResolveJoins (sqlTable);
     }
 
-    protected virtual void ResolveJoinedTable (SqlJoinedTable joinedTable)
-    {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+    // TODO RMLNQSQL-64
+    //protected virtual void ResolveJoinedTable (SqlJoinedTable joinedTable)
+    //{
+    //  ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
-      _stage.ResolveSqlJoinedTable (joinedTable, _context);
+    //  _stage.ResolveSqlJoinedTable (joinedTable, _context);
 
-      foreach (var table in joinedTable.JoinedTables)
-        ResolveJoinedTable (table);
-    }
+    //  foreach (var table in joinedTable.JoinedTables)
+    //    ResolveJoinedTable (table);
+    //}
 
     protected virtual Expression ResolveWhereCondition (Expression whereCondition)
     {
@@ -155,17 +156,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ResolveSqlTable (sqlTable);
     }
 
-    void ISqlTableBaseVisitor.VisitSqlJoinedTable (SqlJoinedTable joinedTable)
-    {
-      ResolveJoinedTable (joinedTable);
-    }
-
     private void ResolveJoins (SqlTableBase sqlTable)
     {
-      foreach (var joinedTable in sqlTable.JoinedTables)
-      {
-        ResolveJoinedTable (joinedTable);
-      }
+      // RMLNQSQL-64: Missin: Joins must be resolved!
+
+      //foreach (var joinedTable in sqlTable.JoinedTables)
+      //{
+      //  ResolveJoinedTable (joinedTable);
+      //}
     }
   }
 }

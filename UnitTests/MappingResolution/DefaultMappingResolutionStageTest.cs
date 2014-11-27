@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -256,88 +255,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void ResolveSqlJoinedTable_WithJoinConditionNotChangedByResolution ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-
-      var alreadyResolvedJoinCondition = Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
-      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook), alreadyResolvedJoinCondition);
-
-      _resolverMock
-          .Setup (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
-          .Returns (fakeResolvedJoinInfo)
-          .Verifiable();
-
-      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
-
-      _stage.ResolveSqlJoinedTable (sqlJoinedTable, _mappingResolutionContext);
-
-      _resolverMock.Verify();
-      Assert.That (sqlJoinedTable.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
-    }
-
-    [Test]
-    public void ResolveSqlJoinedTable_WithJoinConditionChangedByResolution_ResolvesExpression_AndAppliesValueContext ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-      
-      var joinCondition = Expression.Constant (true);
-      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook), joinCondition);
-      
-      var fakeResolvedJoinCondition = Expression.Constant (false);
-
-      // This is performed by the first step: ResolvingJoinInfoVisitor.ResolveJoinInfo.
-      _resolverMock
-          .Expect (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
-          .Return (fakeResolvedJoinInfo);
-      // This is performed by the second step: ResolveJoinCondition.
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (joinCondition))
-          .Return (fakeResolvedJoinCondition);
-      // Terminate re-visitation of constant expressions.
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResolvedJoinCondition))
-          .Return (fakeResolvedJoinCondition);
-      _resolverMock.Replay();
-
-      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
-
-      _stage.ResolveSqlJoinedTable (sqlJoinedTable, _mappingResolutionContext);
-
-      _resolverMock.VerifyAllExpectations();
-      Assert.That (sqlJoinedTable.JoinInfo, Is.Not.SameAs (fakeResolvedJoinInfo));
-      Assert.That (((ResolvedJoinInfo) sqlJoinedTable.JoinInfo).ForeignTableInfo, Is.SameAs (fakeResolvedJoinInfo.ForeignTableInfo));
-      // This is performed by the third step: ApplyContext.
-      var expectedJoinConditionWithPredicateContext = ExpressionObjectMother.CreateExpectedPredicateExpressionForBooleanFalse();
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedJoinConditionWithPredicateContext, ((ResolvedJoinInfo) sqlJoinedTable.JoinInfo).JoinCondition);
-    }
-
-    [Test]
-    public void ResolveSqlJoinedTable_TemporarilySetsPreresolvedJoinInfoWhileJoinConditionIsResolved ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-
-      var constantExpression = Expression.Constant (1);
-      var joinCondition = Expression.Equal (constantExpression, new SqlLiteralExpression (1));
-      var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook), joinCondition);
-
-      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Inner);
-
-      _resolverMock
-          .Expect (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
-          .Return (fakeResolvedJoinInfo);
-      _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
-          .Return (constantExpression)
-          .WhenCalled(mi => Assert.That (sqlJoinedTable.JoinInfo, Is.SameAs (fakeResolvedJoinInfo)));
-      _resolverMock.Replay();
-
-      _stage.ResolveSqlJoinedTable (sqlJoinedTable, _mappingResolutionContext);
-
-      _resolverMock.VerifyAllExpectations();
-    }
-
-    [Test]
     public void ResolveJoinCondition_ResolvesExpression_AndAppliesPredicateContext ()
     {
       var expression = Expression.Constant (true);
@@ -369,7 +286,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
-          .Setup (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))
+          .Setup (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) sqlStatement.SqlTables[0].TableInfo, _uniqueIdentifierGenerator))
           .Returns (_fakeResolvedSimpleTableInfo)
           .Verifiable();
       _resolverMock
@@ -520,30 +437,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (
           ((ConstantExpression) ((SqlConvertedBooleanExpression) ((ResolvedSubStatementTableInfo) result).SqlStatement.SelectProjection).Expression).
               Value,
-          Is.EqualTo (1));
-    }
-
-    [Test]
-    public void ApplyContext_JoinInfo ()
-    {
-      var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                         {
-                             SelectProjection = Expression.Constant (true),
-                             DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()))
-                         }.GetSqlStatement();
-      var tableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
-      var joinInfo = new ResolvedJoinInfo (tableInfo, Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)));
-
-      var result = _stage.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired, _mappingResolutionContext);
-
-      Assert.That (result, Is.Not.SameAs (joinInfo));
-      Assert.That (
-          ((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) result).ForeignTableInfo).SqlStatement.SelectProjection,
-          Is.TypeOf (typeof (SqlConvertedBooleanExpression)));
-      Assert.That (
-          ((ConstantExpression)
-           ((SqlConvertedBooleanExpression) ((ResolvedSubStatementTableInfo) ((ResolvedJoinInfo) result).ForeignTableInfo).SqlStatement.SelectProjection)
-               .Expression).Value,
           Is.EqualTo (1));
     }
   }

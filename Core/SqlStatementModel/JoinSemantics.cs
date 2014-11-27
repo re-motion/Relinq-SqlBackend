@@ -20,7 +20,7 @@ using System;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Defines whether a <see cref="SqlJoinedTable"/> represents a left- or inner join.
+  /// Defines whether a <see cref="SqlJoin"/> represents a left or inner join.
   /// </summary>
   public enum JoinSemantics
   {

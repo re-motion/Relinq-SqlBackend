@@ -28,6 +28,5 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   public interface ISqlTableBaseVisitor
   {
     void VisitSqlTable (SqlTable sqlTable);
-    void VisitSqlJoinedTable (SqlJoinedTable joinedTable);
   }
 }

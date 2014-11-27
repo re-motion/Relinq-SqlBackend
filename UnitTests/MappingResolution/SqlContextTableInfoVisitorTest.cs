@@ -19,7 +19,6 @@ using System;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
-using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
@@ -128,41 +127,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (result.AssociatedGroupingSelectExpression, Is.SameAs (joinedGroupingTableInfo.AssociatedGroupingSelectExpression));
       Assert.That (result.SqlStatement, Is.SameAs (returnedStatement));
       Assert.That (result.TableAlias, Is.EqualTo (joinedGroupingTableInfo.TableAlias));
-    }
-
-    [Test]
-    public void ApplyContext_SqlJoinedTable_SameJoinInfo ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
-      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-
-      _stageMock
-          .Setup (mock => mock.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
-          .Returns (joinInfo)
-          .Verifiable();
-
-      var result = SqlContextTableInfoVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingresolutionContext);
-
-      _stageMock.Verify();
-      Assert.That (result, Is.SameAs (sqlJoinedTable));
-    }
-
-    [Test]
-    public void ApplyContext_SqlJoinedTable_NewJoinInfo ()
-    {
-      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
-      var sqlJoinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-      var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
-
-      _stageMock
-          .Setup (mock => mock.ApplyContext (joinInfo, SqlExpressionContext.ValueRequired, _mappingresolutionContext))
-          .Returns (fakeJoinInfo)
-          .Verifiable();
-
-      var result = SqlContextTableInfoVisitor.ApplyContext (sqlJoinedTable, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingresolutionContext);
-
-      _stageMock.Verify();
-      Assert.That (((SqlJoinedTable) result).JoinInfo, Is.SameAs (fakeJoinInfo));
     }
 
     [Test]

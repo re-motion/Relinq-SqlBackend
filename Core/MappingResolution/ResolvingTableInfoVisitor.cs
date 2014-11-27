@@ -155,15 +155,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
     }
 
-    public ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable)
-    {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
-
-      _stage.ResolveSqlJoinedTable (joinedTable, _context);
-
-      return joinedTable.GetResolvedTableInfo ();
-    }
-
     public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
     {
       var groupSourceSubStatementTableInfo = tableInfo.ReferencedGroupSource.GetResolvedTableInfo() as ResolvedSubStatementTableInfo;

@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -76,30 +75,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
       var result = expression.ToString();
 
       Assert.That (result, Is.EqualTo ("TABLE-REF(UnresolvedTableInfo(Cook))"));
-    }
-
-    [Test]
-    public void ToString_SqlJoinedTableWithResolvedJoinInfo ()
-    {
-      var sqlTable =
-          new SqlJoinedTable (
-              new ResolvedJoinInfo (
-                  new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), Expression.Constant (true)),
-              JoinSemantics.Left);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-      var result = expression.ToString();
-
-      Assert.That (result, Is.EqualTo ("TABLE-REF(c)"));
-    }
-
-    [Test]
-    public void ToString_SqlJoinedTableWithUnresolvedJoinInfo ()
-    {
-      var sqlTable = new SqlJoinedTable (SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook(), JoinSemantics.Left);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-      var result = expression.ToString();
-
-      Assert.That (result, Is.EqualTo ("TABLE-REF(UnresolvedJoinInfo(Cook))"));
     }
 
     [Test]

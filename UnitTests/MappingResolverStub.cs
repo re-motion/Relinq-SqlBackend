@@ -47,113 +47,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       throw new UnmappedItemException ("The type " + tableInfo.ItemType + " cannot be queried from the stub provider.");
     }
 
-    public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
-    {
-      if (joinInfo.MemberInfo.DeclaringType == typeof (Cook))
-      {
-        switch (joinInfo.MemberInfo.Name)
-        {
-          case "Substitution":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "ID",
-                typeof (int),
-                true,
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "SubstitutedID",
-                typeof (int),
-                false);
-          case "Substituted":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "SubstitutedID",
-                typeof (int),
-                false,
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "ID",
-                typeof (int),
-                true);
-          case "Assistants":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "ID",
-                typeof (int),
-                true,
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "AssistedID",
-                typeof (int),
-                false);
-          case "Kitchen":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "KitchenID",
-                typeof (int),
-                false,
-                CreateResolvedTableInfo (joinInfo.ItemType, generator),
-                "ID",
-                typeof (int),
-                true);
-          case "Knife":
-            var joinedTableInfo = CreateResolvedTableInfo (joinInfo.ItemType, generator);
-            var leftKey = ResolveMemberExpression (joinInfo.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
-            var rightKey = ResolveSimpleTableInfo (joinedTableInfo).GetIdentityExpression();
-            return new ResolvedJoinInfo (joinedTableInfo, Expression.Equal (leftKey, rightKey));
-        }
-      }
-      else if (joinInfo.MemberInfo.DeclaringType == typeof (Kitchen))
-      {
-        switch (joinInfo.MemberInfo.Name)
-        {
-          case "Cook":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "ID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "KitchenID", typeof (int), false);
-          case "Restaurant":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "RestaurantID", typeof (int), false, CreateResolvedTableInfo (joinInfo.ItemType, generator), "ID", typeof (int), true);
-        }
-      }
-      else if (joinInfo.MemberInfo.DeclaringType == typeof (Restaurant))
-      {
-        switch (joinInfo.MemberInfo.Name)
-        {
-          case "SubKitchen":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "ID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "RestaurantID", typeof (int), false);
-          case "Cooks":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "ID", typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "RestaurantID", typeof (int), false);
-          case "CompanyIfAny":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "CompanyID",
-                typeof (int?), 
-                false, 
-                CreateResolvedTableInfo (joinInfo.ItemType, generator), 
-                "ID", 
-                typeof (int), 
-                true);
-
-        }
-      }
-      else if (joinInfo.MemberInfo.DeclaringType == typeof (Company))
-      {
-        switch (joinInfo.MemberInfo.Name)
-        {
-          case "AllRestaurants":
-            return CreateResolvedJoinInfo (
-                joinInfo.OriginatingEntity,
-                "ID",
-                typeof (int), true, CreateResolvedTableInfo (joinInfo.ItemType, generator), "CompanyID", typeof (int?), false);
-        }
-      }
-
-      throw new UnmappedItemException ("Member " + joinInfo.MemberInfo + " is not a valid join member.");
-    }
-
     public ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       return new UnresolvedTableInfo (tableInfo.ItemType);
@@ -497,19 +390,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       if (entityRefMemberExpression.MemberInfo.DeclaringType == typeof (Cook) && entityRefMemberExpression.MemberInfo.Name == "Knife")
         return ResolveMemberExpression (entityRefMemberExpression.OriginatingEntity, typeof (Cook).GetProperty ("KnifeID"));
 
-      // Prepare a join, then check if the foreign key column is on the left side => this is the identity. (Otherwise, return null.)
+      // Prepare a faked join, then check if the foreign key column is on the left side => this is the identity. (Otherwise, return null.)
 
-      var joinInfo =
-          ResolveJoinInfo (
-              new UnresolvedJoinInfo (entityRefMemberExpression.OriginatingEntity, entityRefMemberExpression.MemberInfo, JoinCardinality.One),
-              new UniqueIdentifierGenerator());
+      var dummyUniqueIdentifierGenerator = new UniqueIdentifierGenerator();
+      var unresolvedJoinedTableInfo =
+          (UnresolvedTableInfo) ResolveJoinTableInfo (
+              new UnresolvedJoinTableInfo (entityRefMemberExpression.OriginatingEntity, entityRefMemberExpression.MemberInfo, JoinCardinality.One),
+              dummyUniqueIdentifierGenerator);
+      var resolvedJoinedTableInfo = ResolveTableInfo (unresolvedJoinedTableInfo, dummyUniqueIdentifierGenerator);
+      var joinCondition = 
+          ResolveJoinCondition (entityRefMemberExpression.OriginatingEntity, entityRefMemberExpression.MemberInfo, resolvedJoinedTableInfo);
 
-      var rightKey = ((BinaryExpression) joinInfo.JoinCondition).Right;
+      var rightKey = ((BinaryExpression) joinCondition).Right;
       while (rightKey.NodeType == ExpressionType.Convert)
         rightKey = ((UnaryExpression) rightKey).Operand;
 
       if (((SqlColumnExpression) rightKey).IsPrimaryKey)
-        return ((BinaryExpression) joinInfo.JoinCondition).Left;
+        return ((BinaryExpression) joinCondition).Left;
 
       return null;
     }
@@ -530,23 +427,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests
     private ResolvedSimpleTableInfo CreateResolvedTableInfo (Type entityType, UniqueIdentifierGenerator generator)
     {
       return new ResolvedSimpleTableInfo (entityType, entityType.Name + "Table", generator.GetUniqueIdentifier ("t"));
-    }
-
-    private ResolvedJoinInfo CreateResolvedJoinInfo (
-        SqlEntityExpression originatingEntity,
-        string leftColumnName,
-        Type leftColumnType,
-        bool leftColumnIsPrimaryKey,
-        IResolvedTableInfo joinedTableInfo,
-        string rightColumnName,
-        Type rightColumnType,
-        bool rightColumnIsPrimaryKey)
-    {
-      var leftColumn = originatingEntity.GetColumn (leftColumnType, leftColumnName, leftColumnIsPrimaryKey);
-      var rightColumn = CreateColumn (rightColumnType, joinedTableInfo.TableAlias, rightColumnName, rightColumnIsPrimaryKey);
-
-      return new ResolvedJoinInfo (
-          joinedTableInfo, ConversionUtility.MakeBinaryWithOperandConversion (ExpressionType.Equal, leftColumn, rightColumn, false, null));
     }
 
      private Expression CreateJoinCondition (

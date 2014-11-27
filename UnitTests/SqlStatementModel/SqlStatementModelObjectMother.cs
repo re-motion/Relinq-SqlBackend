@@ -208,13 +208,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return sqlTable;
     }
 
-    public static SqlJoinedTable CreateSqlJoinedTable_WithUnresolvedJoinInfo ()
-    {
-      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Cook));
-      var joinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("FirstName"), JoinCardinality.One);
-      return new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-    }
-
     public static UnresolvedTableInfo CreateUnresolvedTableInfo ()
     {
       return CreateUnresolvedTableInfo (typeof (Cook));
@@ -223,12 +216,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public static UnresolvedTableInfo CreateUnresolvedTableInfo (Type type)
     {
       return new UnresolvedTableInfo (type);
-    }
-
-    public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenCook ()
-    {
-      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
-      return new UnresolvedJoinInfo (entityExpression, GetKitchenCookMemberInfo(), JoinCardinality.One);
     }
 
     public static UnresolvedJoinTableInfo CreateUnresolvedJoinTableInfo ()
@@ -240,24 +227,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       return new UnresolvedJoinTableInfo (entityExpression, GetKitchenCookMemberInfo(), JoinCardinality.One);
-    }
-
-    public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_KitchenRestaurant ()
-    {
-      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
-      return new UnresolvedJoinInfo (entityExpression, GetKitchenRestaurantMemberInfo(), JoinCardinality.One);
-    }
-
-    public static UnresolvedJoinInfo CreateUnresolvedJoinInfo_CookSubstitution ()
-    {
-      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Cook));
-      return new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.One);
-    }
-
-
-    public static UnresolvedCollectionJoinInfo CreateUnresolvedCollectionJoinInfo_RestaurantCooks ()
-    {
-      return new UnresolvedCollectionJoinInfo (Expression.Constant (new Restaurant()), typeof (Restaurant).GetProperty ("Cooks"));
     }
 
     public static UnresolvedCollectionJoinTableInfo CreateUnresolvedCollectionJoinTableInfo ()
@@ -278,24 +247,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public static ResolvedSimpleTableInfo CreateResolvedTableInfo (Type type)
     {
       return new ResolvedSimpleTableInfo (type, "table", "t");
-    }
-
-    public static ResolvedJoinInfo CreateResolvedJoinInfo ()
-    {
-      return CreateResolvedJoinInfo (typeof (Cook));
-    }
-
-    public static ResolvedJoinInfo CreateResolvedJoinInfo (Type type, Expression joinCondition = null)
-    {
-      if (joinCondition == null)
-      {
-        var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), "k", "ID", false);
-        var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), "s", "ID", false);
-        joinCondition = Expression.Equal (primaryColumn, foreignColumn);
-      }
-
-      var foreignTableInfo = new ResolvedSimpleTableInfo (type, "Table", "s");
-      return new ResolvedJoinInfo (foreignTableInfo, joinCondition);
     }
 
     public static SqlColumnExpression CreateSqlColumn (Type type = null, string owningTableAlias = null, string column = null, bool isPrimaryKey = false)

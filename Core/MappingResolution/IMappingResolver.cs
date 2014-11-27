@@ -39,17 +39,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedTableInfo"/> cannot be resolved to a mapped database item.</exception>
     IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
-    /// <summary>
-    /// Takes an <see cref="UnresolvedJoinInfo"/> and an <see cref="UniqueIdentifierGenerator"/> to generate a 
-    /// <see cref="ResolvedJoinInfo"/> that represents the join in the database.
-    /// </summary>
-    /// <param name="joinInfo">The <see cref="UnresolvedJoinInfo"/> which is to be resolved.</param>
-    /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as table aliases.</param>
-    /// <returns>An instance of <see cref="ResolvedJoinInfo"/> representing the <paramref name="joinInfo"/> in the database.</returns>
-    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.</exception>
-    ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator);
-
-    // TODO RMLNQSQL-64: Document breaking change.
+    // TODO RMLNQSQL-64: Document breaking change: ResolveJoinInfo => ResolveJoinTableInfo, ResolveJoinCondition
     /// <summary>
     /// Takes an <see cref="UnresolvedJoinTableInfo"/> and an <see cref="UniqueIdentifierGenerator"/> to generate a 
     /// <see cref="ITableInfo"/> that represents the joined table in the database.
@@ -160,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// is to be returned.</param>
     /// <returns>An expression equivalent to the identity of the references entity that can be deduced without creating a join, or 
     /// <see langword="null" /> if the identity cannot be deduced without a join.</returns>
-    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.
+    /// <exception cref="UnmappedItemException">The given <see cref="SqlEntityRefMemberExpression"/> cannot be resolved to a mapped database item.
     /// (Implementations can also return <see langword="null" /> instead.)</exception>
     /// <remarks>
     /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express compound entity identity. 
@@ -183,7 +173,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <see cref="ResolveMemberExpression(Remotion.Linq.SqlBackend.SqlStatementModel.Resolved.SqlEntityExpression,System.Reflection.MemberInfo)"/>
     /// deduced without a join, or <see langword="null" /> is the <paramref name="memberInfo"/> cannot be deduced without a join.
     /// </returns>
-    /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinInfo"/> cannot be resolved to a mapped database item.
+    /// <exception cref="UnmappedItemException">The given <see cref="SqlEntityRefMemberExpression"/> of <see cref="MemberExpression"/> cannot be 
+    /// resolved to a mapped database item.
     /// (Implementations can also return <see langword="null" /> instead.)</exception>
     /// <remarks>
     /// Note that compound expressions (<see cref="NewExpression"/> instances with named arguments) can be used to express a compound member. 

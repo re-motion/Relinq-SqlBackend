@@ -30,8 +30,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public abstract class SqlTableBase
   {
-    private readonly Dictionary<MemberInfo, SqlJoinedTable> _joinedTables = new Dictionary<MemberInfo, SqlJoinedTable>();
-    
     private readonly List<SqlJoin> _orderedJoins = new List<SqlJoin>();
     private readonly Dictionary<MemberInfo, SqlJoin> _joinsByMemberInfo = new Dictionary<MemberInfo, SqlJoin>();
     
@@ -56,11 +54,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _itemType; }
     }
 
-    public IEnumerable<SqlJoinedTable> JoinedTables
-    {
-      get { return _joinedTables.Values; }
-    }
-
     public IEnumerable<SqlJoin> OrderedJoins
     {
       get { return _orderedJoins; }
@@ -69,25 +62,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public JoinSemantics JoinSemantics
     {
       get { return _joinSemantics; }
-    }
-
-    // TODO RMLNQSQL-64: Remove.
-    public SqlJoinedTable GetOrAddLeftJoin (IJoinInfo joinInfo, MemberInfo memberInfo)
-    {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-
-      if (!_joinedTables.ContainsKey (memberInfo))
-        _joinedTables.Add (memberInfo, new SqlJoinedTable (joinInfo, JoinSemantics.Left));
-
-      return _joinedTables[memberInfo];
-    }
-
-    // TODO RMLNQSQL-64: Remove.
-    public SqlJoinedTable GetJoin (MemberInfo relationMember)
-    {
-      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
-
-      return _joinedTables[relationMember];
     }
 
     public SqlJoin GetOrAddLeftJoinByMember (MemberInfo memberInfo, Func<SqlJoin> joinFactory)
