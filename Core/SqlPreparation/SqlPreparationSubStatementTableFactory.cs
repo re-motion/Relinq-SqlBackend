@@ -27,7 +27,7 @@ using Remotion.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// Creates a <see cref="SqlTableBase"/> object from a given <see cref="SqlStatement"/>, extracting all <see cref="SqlStatement.Orderings"/> in the
+  /// Creates a <see cref="SqlTable"/> object from a given <see cref="SqlStatement"/>, extracting all <see cref="SqlStatement.Orderings"/> in the
   /// statement as required by SQL.
   /// </summary>
   public class SqlPreparationSubStatementTableFactory

@@ -35,7 +35,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public static Expression ResolveSubStatementReferenceExpression (
         Expression referencedExpression,
         ResolvedSubStatementTableInfo containingSubStatementTableInfo,
-        SqlTableBase containingSqlTable,
+        SqlTable containingSqlTable,
         IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("referencedExpression", referencedExpression);
@@ -49,10 +49,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     }
 
     private readonly ResolvedSubStatementTableInfo _tableInfo;
-    private readonly SqlTableBase _sqlTable;
+    private readonly SqlTable _sqlTable;
     private readonly IMappingResolutionContext _context;
 
-    protected SubStatementReferenceResolver (ResolvedSubStatementTableInfo tableInfo, SqlTableBase sqlTable, IMappingResolutionContext context)
+    protected SubStatementReferenceResolver (ResolvedSubStatementTableInfo tableInfo, SqlTable sqlTable, IMappingResolutionContext context)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);

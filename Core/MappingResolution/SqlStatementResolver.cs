@@ -151,7 +151,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return sqlStatementBuilder.GetSqlStatement();
     }
 
-    private void ResolveJoins (SqlTableBase sqlTable)
+    private void ResolveJoins (SqlTable sqlTable)
     {
       // RMLNQSQL-64: Missin: Joins must be resolved!
 

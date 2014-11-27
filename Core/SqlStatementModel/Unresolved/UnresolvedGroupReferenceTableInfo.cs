@@ -28,9 +28,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   public class UnresolvedGroupReferenceTableInfo : ITableInfo
   {
     private readonly Type _itemType;
-    private readonly SqlTableBase _referencedGroupSource;
+    private readonly SqlTable _referencedGroupSource;
 
-    public UnresolvedGroupReferenceTableInfo (SqlTableBase referencedGroupSource)
+    public UnresolvedGroupReferenceTableInfo (SqlTable referencedGroupSource)
     {
       ArgumentUtility.CheckNotNull ("referencedGroupSource", referencedGroupSource);
 
@@ -43,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _itemType; }
     }
 
-    public SqlTableBase ReferencedGroupSource
+    public SqlTable ReferencedGroupSource
     {
       get { return _referencedGroupSource; }
     }

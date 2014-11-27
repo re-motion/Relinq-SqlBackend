@@ -29,18 +29,18 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// </summary>
   public class MappingResolutionContext : IMappingResolutionContext
   {
-    private readonly Dictionary<SqlEntityExpression, SqlTableBase> _entityMapping;
-    private readonly Dictionary<SqlGroupingSelectExpression, SqlTableBase> _groupReferenceMapping;
+    private readonly Dictionary<SqlEntityExpression, SqlTable> _entityMapping;
+    private readonly Dictionary<SqlGroupingSelectExpression, SqlTable> _groupReferenceMapping;
     private readonly Dictionary<UnresolvedCollectionJoinTableInfo, SqlEntityExpression> _unresolvedCollectionJoinTableInfoToOriginatingEntityMapping;
 
     public MappingResolutionContext ()
     {
-      _entityMapping = new Dictionary<SqlEntityExpression, SqlTableBase>();
-      _groupReferenceMapping = new Dictionary<SqlGroupingSelectExpression, SqlTableBase>();
+      _entityMapping = new Dictionary<SqlEntityExpression, SqlTable>();
+      _groupReferenceMapping = new Dictionary<SqlGroupingSelectExpression, SqlTable>();
       _unresolvedCollectionJoinTableInfoToOriginatingEntityMapping = new Dictionary<UnresolvedCollectionJoinTableInfo, SqlEntityExpression>();
     }
 
-    public void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable)
+    public void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTable sqlTable)
     {
       ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
@@ -48,7 +48,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _entityMapping[entityExpression] = sqlTable;
     }
 
-    public void AddGroupReferenceMapping (SqlGroupingSelectExpression groupingSelectExpression, SqlTableBase sqlTable)
+    public void AddGroupReferenceMapping (SqlGroupingSelectExpression groupingSelectExpression, SqlTable sqlTable)
     {
       ArgumentUtility.CheckNotNull ("groupingSelectExpression", groupingSelectExpression);
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
@@ -56,11 +56,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _groupReferenceMapping[groupingSelectExpression] = sqlTable;
     }
 
-    public SqlTableBase GetSqlTableForEntityExpression (SqlEntityExpression entityExpression)
+    public SqlTable GetSqlTableForEntityExpression (SqlEntityExpression entityExpression)
     {
       ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
 
-      SqlTableBase result;
+      SqlTable result;
       if (_entityMapping.TryGetValue (entityExpression, out result))
         return result;
 
@@ -68,10 +68,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       throw new InvalidOperationException (message);
     }
 
-    public SqlTableBase GetReferencedGroupSource (SqlGroupingSelectExpression groupingSelectExpression)
+    public SqlTable GetReferencedGroupSource (SqlGroupingSelectExpression groupingSelectExpression)
     {
       ArgumentUtility.CheckNotNull ("groupingSelectExpression", groupingSelectExpression);
-      SqlTableBase result;
+      SqlTable result;
       if (_groupReferenceMapping.TryGetValue (groupingSelectExpression, out result))
         return result;
 
@@ -100,7 +100,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("aggregations", aggregations);
 
       var newSqlGroupingSelectExpression = expression.Update (newKey, newElement, aggregations);
-      SqlTableBase tableForGroupingSelectExpression; 
+      SqlTable tableForGroupingSelectExpression; 
       if(_groupReferenceMapping.TryGetValue(expression, out tableForGroupingSelectExpression))
         AddGroupReferenceMapping (newSqlGroupingSelectExpression, tableForGroupingSelectExpression);
       return newSqlGroupingSelectExpression;

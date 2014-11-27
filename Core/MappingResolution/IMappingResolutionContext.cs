@@ -29,10 +29,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   // TODO: Consider removing this interface and keeping only the implementation
   public interface IMappingResolutionContext
   {
-    void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable);
-    void AddGroupReferenceMapping (SqlGroupingSelectExpression expression, SqlTableBase table);
-    SqlTableBase GetSqlTableForEntityExpression (SqlEntityExpression entityExpression);
-    SqlTableBase GetReferencedGroupSource (SqlGroupingSelectExpression groupingSelectExpression);
+    void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTable sqlTable);
+    void AddGroupReferenceMapping (SqlGroupingSelectExpression expression, SqlTable table);
+    SqlTable GetSqlTableForEntityExpression (SqlEntityExpression entityExpression);
+    SqlTable GetReferencedGroupSource (SqlGroupingSelectExpression groupingSelectExpression);
     SqlEntityExpression UpdateEntityAndAddMapping (SqlEntityExpression entityExpression, Type itemType, string tableAlias, string newName);
     SqlGroupingSelectExpression UpdateGroupingSelectAndAddMapping (
         SqlGroupingSelectExpression expression, Expression newKey, Expression newElement, IEnumerable<Expression> aggregations);

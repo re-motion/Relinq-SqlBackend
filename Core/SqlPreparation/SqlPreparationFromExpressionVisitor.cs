@@ -27,8 +27,8 @@ using Remotion.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// Analyzes the <see cref="FromClauseBase.FromExpression"/> of a <see cref="FromClauseBase"/> and returns a <see cref="SqlTableBase"/> that 
-  /// represents the data source of the <see cref="FromClauseBase"/>.
+  /// Analyzes the <see cref="FromClauseBase.FromExpression"/> of a <see cref="FromClauseBase"/> and returns a <see cref="SqlTable"/> that 
+  /// represents the data source of the <see cref="FromClauseBase"/>, together with other data held by a <see cref="SqlPreparation.FromExpressionInfo"/>.
   /// </summary>
   public class SqlPreparationFromExpressionVisitor : SqlPreparationExpressionVisitor, IUnresolvedSqlExpressionVisitor
   {

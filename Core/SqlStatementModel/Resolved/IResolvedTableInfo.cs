@@ -28,6 +28,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   {
     string TableAlias { get; }
 
-    Expression ResolveReference (SqlTableBase sqlTable, IMappingResolver mappingResolver, IMappingResolutionContext context, UniqueIdentifierGenerator generator);
+    Expression ResolveReference (
+        SqlTable sqlTable,
+        IMappingResolver mappingResolver,
+        IMappingResolutionContext context,
+        UniqueIdentifierGenerator generator);
   }
 }

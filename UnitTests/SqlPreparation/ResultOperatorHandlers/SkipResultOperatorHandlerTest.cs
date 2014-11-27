@@ -305,9 +305,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           new MemberInfo[] { GetTupleMethod ("get_Key"), GetTupleMethod ("get_Value") });
     }
 
-    private SqlStatement GetSubStatement (SqlTableBase sqlTableBase)
+    private SqlStatement GetSubStatement (SqlTable sqlTableBase)
     {
-      return ((ResolvedSubStatementTableInfo) ((SqlTable) sqlTableBase).TableInfo).SqlStatement;
+      return ((ResolvedSubStatementTableInfo) sqlTableBase.TableInfo).SqlStatement;
     }
 
     private MethodInfo GetTupleMethod(string name)

@@ -17,7 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -75,29 +74,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
       var result = expression.ToString();
 
       Assert.That (result, Is.EqualTo ("TABLE-REF(UnresolvedTableInfo(Cook))"));
-    }
-
-    [Test]
-    public void ToString_OtherSqlTable ()
-    {
-      var sqlTable = new OtherSqlTable (typeof (Cook), JoinSemantics.Left);
-      var expression = new SqlTableReferenceExpression (sqlTable);
-      var result = expression.ToString();
-
-      Assert.That (result, Is.EqualTo ("TABLE-REF (OtherSqlTable (Cook))"));
-    }
-  }
-
-  internal class OtherSqlTable : SqlTableBase
-  {
-    public OtherSqlTable (Type itemType, JoinSemantics joinSemantics)
-        : base(itemType, joinSemantics)
-    {
-    }
-
-    public override IResolvedTableInfo GetResolvedTableInfo ()
-    {
-      throw new NotImplementedException();
     }
   }
 }

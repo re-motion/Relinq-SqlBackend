@@ -177,7 +177,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       AddJoinClause (joinClause);
     }
 
-    public SqlTableBase AddJoinClause (JoinClause joinClause)
+    public SqlTable AddJoinClause (JoinClause joinClause)
     {
       ArgumentUtility.CheckNotNull ("joinClause", joinClause);
 
@@ -213,7 +213,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       resultOperatorHandler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
     }
 
-    public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
+    public SqlTable AddQuerySource (IQuerySource source, Expression fromExpression)
     {
       ArgumentUtility.CheckNotNull ("source", source);
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);

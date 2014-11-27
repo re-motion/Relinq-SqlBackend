@@ -55,7 +55,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _tableAlias;  }
     }
 
-    public Expression ResolveReference (SqlTableBase sqlTable, IMappingResolver mappingResolver, IMappingResolutionContext context, UniqueIdentifierGenerator generator)
+    public Expression ResolveReference (
+        SqlTable sqlTable,
+        IMappingResolver mappingResolver,
+        IMappingResolutionContext context,
+        UniqueIdentifierGenerator generator)
     {
       var selectProjection = SqlStatement.SelectProjection;
       return SubStatementReferenceResolver.ResolveSubStatementReferenceExpression (selectProjection, this, sqlTable, context);

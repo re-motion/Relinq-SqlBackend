@@ -121,10 +121,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public class SimplifyingVisitor : RelinqExpressionVisitor, IUnresolvedSqlExpressionVisitor
     {
-      private readonly SqlTableBase _oldElementSource;
+      private readonly SqlTable _oldElementSource;
       private readonly Expression _newElementExpression;
 
-      public SimplifyingVisitor (SqlTableBase oldElementSource, Expression newElementExpression)
+      public SimplifyingVisitor (SqlTable oldElementSource, Expression newElementExpression)
       {
         ArgumentUtility.CheckNotNull ("oldElementSource", oldElementSource);
         ArgumentUtility.CheckNotNull ("newElementExpression", newElementExpression);
