@@ -26,7 +26,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// <see cref="SqlStatementResolver"/> provides methods to visit sql-statement classes.
   /// </summary>
-  public class SqlStatementResolver : ISqlTableBaseVisitor
+  public class SqlStatementResolver
   {
     private readonly IMappingResolutionStage _stage;
     private readonly IMappingResolutionContext _context;
@@ -109,7 +109,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       foreach (var sqlTable in sqlStatement.SqlTables)
-        sqlTable.Accept (this);
+        ResolveSqlTable (sqlTable);
 
       var sqlStatementBuilder = new SqlStatementBuilder(sqlStatement);
 
@@ -149,11 +149,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
 
       return sqlStatementBuilder.GetSqlStatement();
-    }
-
-    void ISqlTableBaseVisitor.VisitSqlTable (SqlTable sqlTable)
-    {
-      ResolveSqlTable (sqlTable);
     }
 
     private void ResolveJoins (SqlTableBase sqlTable)

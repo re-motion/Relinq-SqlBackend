@@ -36,8 +36,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     private readonly Type _itemType;
     private readonly JoinSemantics _joinSemantics;
 
-    public abstract void Accept (ISqlTableBaseVisitor visitor);
-    
     // TODO RMLNQSQL-64: Remove joinSemantics?
     protected SqlTableBase (Type itemType, JoinSemantics joinSemantics)
     {

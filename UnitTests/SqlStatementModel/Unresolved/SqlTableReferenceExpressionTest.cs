@@ -95,11 +95,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     {
     }
 
-    public override void Accept (ISqlTableBaseVisitor visitor)
-    {
-      throw new NotImplementedException();
-    }
-
     public override IResolvedTableInfo GetResolvedTableInfo ()
     {
       throw new NotImplementedException();
