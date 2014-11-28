@@ -39,7 +39,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedTableInfo"/> cannot be resolved to a mapped database item.</exception>
     IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
-    // TODO RMLNQSQL-64: Document breaking change: ResolveJoinInfo => ResolveJoinTableInfo, ResolveJoinCondition
     /// <summary>
     /// Takes an <see cref="UnresolvedJoinTableInfo"/> and an <see cref="UniqueIdentifierGenerator"/> to generate a 
     /// <see cref="ITableInfo"/> that represents the joined table in the database.
@@ -50,7 +49,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinTableInfo"/> cannot be resolved to a mapped database item.</exception>
     ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator);
 
-    // TODO RMLNQSQL-64: Document breaking change.
     /// <summary>
     /// Takes an <see cref="SqlEntityExpression"/> as the left side and a <see cref="IResolvedTableInfo"/> as the right side of a join as well as
     /// a <see cref="MemberInfo"/> identifying the member joining the two tables and returns an <see cref="Expression"/> that describes a join
@@ -64,7 +62,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// resolved to a mapped database item.</exception>
     Expression ResolveJoinCondition (SqlEntityExpression originatingEntity, MemberInfo memberInfo, IResolvedTableInfo joinedTableInfo);
 
-    // TODO RMLNQSQL-64: Document breaking change and rename to ResolveTableToEntity.
     ///  <summary>
     ///  Analyzes the given <see cref="ResolvedSimpleTableInfo"/> and returns a <see cref="SqlEntityDefinitionExpression"/>, i.e., an entity 
     ///  made of a row of the database table. If the item type of the <paramref name="tableInfo"/> is not a 
