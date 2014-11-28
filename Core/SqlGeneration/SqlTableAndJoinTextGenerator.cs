@@ -70,7 +70,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       sqlTable.TableInfo.Accept (visitor);
     }
 
-    // TODO RMLNQSQL-64: Maybe inline?
     private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       // TODO RMLNQSQL-64: This should be changed to support INNER joins. (Or remove JoinSemantics from SqlJoin.)
