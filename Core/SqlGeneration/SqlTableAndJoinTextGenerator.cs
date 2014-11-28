@@ -72,11 +72,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
-      // TODO RMLNQSQL-64: This should be changed to support INNER joins. (Or remove JoinSemantics from SqlJoin.)
       if (join.JoinSemantics == JoinSemantics.Inner)
-        throw new NotSupportedException ("SqlJoinedTables with INNER JoinSemantics are currently not supported. (RMLNQSQL-4)");
-
-      commandBuilder.Append (" LEFT OUTER JOIN ");
+        commandBuilder.Append (" INNER JOIN ");
+      else
+        commandBuilder.Append (" LEFT OUTER JOIN ");
 
       join.JoinedTable.TableInfo.Accept (visitor);
       commandBuilder.Append (" ON ");
