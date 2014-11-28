@@ -130,7 +130,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      if (expression.Type == typeof (string))
+      if (expression.Value == null)
+        _commandBuilder.Append ("NULL");
+      else if (expression.Type == typeof (string))
         _commandBuilder.AppendStringLiteral ((string) expression.Value);
       else
         _commandBuilder.Append (Convert.ToString (expression.Value, CultureInfo.InvariantCulture));

@@ -262,6 +262,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
+    public void VisitLiteralExpression_Null ()
+    {
+      var expression = SqlLiteralExpression.Null (typeof (string));
+
+      SqlGeneratingExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock.Object);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("NULL"));
+      Assert.That (_commandBuilder.GetCommandParameters(), Is.Empty);
+    }
+
+    [Test]
     public void VisitConstantExpression_StringParameter ()
     {
       var expression = Expression.Constant ("Test");

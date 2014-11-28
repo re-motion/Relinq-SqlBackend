@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -69,6 +70,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     }
 
     [Test]
+    public void Null ()
+    {
+      var nullString = SqlLiteralExpression.Null (typeof (string));
+      Assert.That (nullString.Value, Is.Null);
+      Assert.That (nullString.Type, Is.SameAs (typeof (string)));
+
+      var nullObject = SqlLiteralExpression.Null (typeof (object));
+      Assert.That (nullObject.Value, Is.Null);
+      Assert.That (nullObject.Type, Is.SameAs (typeof (object)));
+
+      var nullInt = SqlLiteralExpression.Null (typeof (int?));
+      Assert.That (nullInt.Value, Is.Null);
+      Assert.That (nullInt.Type, Is.SameAs (typeof (int?)));
+    }
+
+    [Test]
+    public void Null_WithNonNullableValue_Throws ()
+    {
+      Assert.That (
+          () => SqlLiteralExpression.Null (typeof (int)),
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo ("Type must be nullable.", "type"));
+    }
+
+    [Test]
     public void VisitChildren_ReturnsThis ()
     {
       var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
@@ -104,6 +129,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       var literalExpression = new SqlLiteralExpression ("test");
       Assert.That (literalExpression.ToString (), Is.EqualTo ("\"test\""));
+    }
+
+     [Test]
+    public void ToString_Null ()
+    {
+      var literalExpression = SqlLiteralExpression.Null (typeof(string));
+      Assert.That (literalExpression.ToString (), Is.EqualTo ("NULL"));
     }
   }
 }
