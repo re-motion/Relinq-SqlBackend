@@ -208,6 +208,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return sqlTable;
     }
 
+    public static ITableInfo CreateTableInfo (Type type)
+    {
+      return CreateUnresolvedTableInfo (type);
+    }
+
     public static UnresolvedTableInfo CreateUnresolvedTableInfo ()
     {
       return CreateUnresolvedTableInfo (typeof (Cook));
@@ -356,5 +361,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       return new SqlTable.LeftJoinData (CreateSqlTable(), ExpressionHelper.CreateExpression (typeof (bool)));
     }
+
   }
 }

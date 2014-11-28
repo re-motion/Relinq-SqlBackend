@@ -30,43 +30,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
   [TestFixture]
   public class SqlTableTest
   {
-    private ResolvedSimpleTableInfo _oldTableInfo;
-    private ResolvedSimpleTableInfo _newTableInfo;
-    private SqlTable _sqlTable;
-
-    [SetUp]
-    public void SetUp ()
+    [Test]
+    public void TableInfo_Setter_SameType ()
     {
-      _oldTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
-      _newTableInfo = new ResolvedSimpleTableInfo (typeof (string), "table2", "s");
-      _sqlTable = new SqlTable (_oldTableInfo, JoinSemantics.Inner);
+      var oldTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (int));
+      var sqlTable = new SqlTable (oldTableInfo, JoinSemantics.Inner);
+
+      var newTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (int));
+      sqlTable.TableInfo = newTableInfo;
+
+      Assert.That (sqlTable.TableInfo.ItemType, Is.EqualTo (newTableInfo.ItemType));
     }
 
     [Test]
-    public void SameType ()
+    public void TableInfo_Setter_DifferentType ()
     {
-      var newTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table2", "s");
-      _sqlTable.TableInfo = newTableInfo;
+      var oldTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (int));
+      var sqlTable = new SqlTable (oldTableInfo, JoinSemantics.Inner);
 
-      Assert.That (_sqlTable.TableInfo.ItemType, Is.EqualTo (newTableInfo.ItemType));
-    }
+      var newTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (string));
 
-    [Test]
-    public void DifferentType ()
-    {
       Assert.That (
-          () => _sqlTable.TableInfo = _newTableInfo,
+          () => sqlTable.TableInfo = newTableInfo,
           Throws.ArgumentException);
-    }
-
-    [Test]
-    public void JoinSemantic ()
-    {
-      var sqlTableWithInnerJoinSemantic = new SqlTable (_oldTableInfo, JoinSemantics.Inner);
-      var sqlTableWithLeftJoinSemantic = new SqlTable (_oldTableInfo, JoinSemantics.Left);
-
-      Assert.That (sqlTableWithInnerJoinSemantic.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
-      Assert.That (sqlTableWithLeftJoinSemantic.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
     }
 
     [Test]
@@ -149,7 +135,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void ToString_WithoutJoins ()
     {
-      var result = _sqlTable.ToString ();
+      var oldTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
+      var sqlTable = new SqlTable (oldTableInfo, JoinSemantics.Inner);
+
+      var result = sqlTable.ToString ();
       Assert.That (result, Is.EqualTo ("[table1] [t]"));
     }
 
@@ -159,9 +148,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var joinedTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"), JoinSemantics.Inner);
       var joinCondition = Expression.Equal (new SqlLiteralExpression ("left"), new SqlLiteralExpression ("right"));
 
-      _sqlTable.AddJoin (new SqlJoin(joinedTable, JoinSemantics.Inner, joinCondition));
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      sqlTable.AddJoin (new SqlJoin(joinedTable, JoinSemantics.Inner, joinCondition));
 
-      var result = _sqlTable.ToString ();
+      var result = sqlTable.ToString ();
 
       Assert.That (result, Is.EqualTo ("[table1] [t] INNER JOIN [Cook] [c] ON (\"left\" == \"right\")"));
     }
@@ -169,15 +160,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void ToString_WithMultipleJoins ()
     {
+      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
+      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+
       var joinedTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"), JoinSemantics.Inner);
       var joinCondition1 = Expression.Equal (new SqlLiteralExpression ("left"), new SqlLiteralExpression ("right"));
-      _sqlTable.AddJoin (new SqlJoin(joinedTable1, JoinSemantics.Left, joinCondition1));
+      sqlTable.AddJoin (new SqlJoin(joinedTable1, JoinSemantics.Left, joinCondition1));
 
       var joinedTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Restaurant", "r"), JoinSemantics.Inner);
       var joinCondition2 = Expression.Equal (new SqlLiteralExpression ("left2"), new SqlLiteralExpression ("right2"));
-      _sqlTable.AddJoin (new SqlJoin(joinedTable2, JoinSemantics.Inner, joinCondition2));
+      sqlTable.AddJoin (new SqlJoin(joinedTable2, JoinSemantics.Inner, joinCondition2));
 
-      var result = _sqlTable.ToString ();
+      var result = sqlTable.ToString ();
 
       Assert.That (
           result,
