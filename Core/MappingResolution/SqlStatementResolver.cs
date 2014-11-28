@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -63,11 +64,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       
       sqlTable.TableInfo = _stage.ResolveTableInfo (sqlTable.TableInfo, _context);
 
-      foreach (var join in sqlTable.OrderedJoins)
-      {
-        ResolveSqlTable (join.JoinedTable);
-        join.JoinCondition = _stage.ResolveJoinCondition (join.JoinCondition, _context);
-      }
+      ResolveJoins (sqlTable);
     }
 
     protected virtual Expression ResolveWhereCondition (Expression whereCondition)
@@ -143,6 +140,25 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
 
       return sqlStatementBuilder.GetSqlStatement();
+    }
+
+    private void ResolveJoins (SqlTable sqlTable)
+    {
+      Dictionary<SqlJoin, SqlJoin> modifiedJoins = null;
+      foreach (var join in sqlTable.OrderedJoins)
+      {
+        ResolveSqlTable (join.JoinedTable);
+
+        var resolvedJoinCondition = _stage.ResolveJoinCondition (join.JoinCondition, _context);
+        if (resolvedJoinCondition != join.JoinCondition)
+        {
+          modifiedJoins = new Dictionary<SqlJoin, SqlJoin>();
+          modifiedJoins.Add (join, new SqlJoin (join.JoinedTable, join.JoinSemantics, resolvedJoinCondition));
+        }
+      }
+
+      if (modifiedJoins != null)
+        sqlTable.SubstituteJoins (modifiedJoins);
     }
   }
 }

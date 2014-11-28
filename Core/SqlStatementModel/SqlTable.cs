@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -148,6 +149,27 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
       return _joinsByMemberInfo[relationMember];
+    }
+
+    // Idea: This method is only required because we want to keep SqlJoin immutable. Maybe refactor it toward SqlJoinBuilder (mutable) and 
+    // SqlJoin (immutable) later on. This would fit well with a SqlTableBuilder (mutable) and a SqlTable (immutable).
+    public void SubstituteJoins (IDictionary<SqlJoin, SqlJoin> substitutions)
+    {
+      ArgumentUtility.CheckNotNull ("substitutions", substitutions);
+
+      for (int i = 0; i < _orderedJoins.Count; ++i)
+      {
+        SqlJoin substitution;
+        if (substitutions.TryGetValue (_orderedJoins[i], out substitution))
+          _orderedJoins[i] = substitution;
+      }
+
+      foreach (var kvp in _joinsByMemberInfo.ToArray())
+      {
+        SqlJoin substitution;
+        if (substitutions.TryGetValue (kvp.Value, out substitution))
+          _joinsByMemberInfo[kvp.Key] = substitution;
+      }
     }
 
     public override string ToString ()

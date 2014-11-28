@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
@@ -130,6 +131,51 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       sqlTable.AddJoin (newEntry);
 
       Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { existingEntry, newEntry }));
+    }
+
+    [Test]
+    public void SubstituteJoins_ReplacesJoinInOrderedJoinsCollection ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Kitchen));
+      
+      var originalJoin1 = SqlStatementModelObjectMother.CreateSqlJoin();
+      sqlTable.AddJoin (originalJoin1);
+      
+      var originalJoin2 = SqlStatementModelObjectMother.CreateSqlJoin();
+      sqlTable.AddJoin (originalJoin2);
+      
+      var originalJoin3 = SqlStatementModelObjectMother.CreateSqlJoin();
+      sqlTable.AddJoin (originalJoin3);
+
+      var replacementJoin1 = SqlStatementModelObjectMother.CreateSqlJoin();
+      var replacementJoin2 = SqlStatementModelObjectMother.CreateSqlJoin();
+      var substitutions = new Dictionary<SqlJoin, SqlJoin> { { originalJoin1, replacementJoin1 }, { originalJoin2, replacementJoin2 } };
+
+      sqlTable.SubstituteJoins (substitutions);
+
+      Assert.That (sqlTable.OrderedJoins.ElementAt (0), Is.SameAs (replacementJoin1));
+      Assert.That (sqlTable.OrderedJoins.ElementAt (1), Is.SameAs (replacementJoin2));
+      Assert.That (sqlTable.OrderedJoins.ElementAt (2), Is.SameAs (originalJoin3));
+    }
+
+    [Test]
+    public void SubstituteJoins_ReplacesJoinInMemberDictionary ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Kitchen));
+      
+      var memberInfo1 = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
+      var originalJoin1 = sqlTable.GetOrAddLeftJoinByMember (memberInfo1, SqlStatementModelObjectMother.CreateLeftJoinData);
+
+      var memberInfo2 = SqlStatementModelObjectMother.GetKitchenRestaurantMemberInfo();
+      var originalJoin2 = sqlTable.GetOrAddLeftJoinByMember (memberInfo2, SqlStatementModelObjectMother.CreateLeftJoinData);
+
+      var replacementJoin = SqlStatementModelObjectMother.CreateSqlJoin();
+      var substitutions = new Dictionary<SqlJoin, SqlJoin> { { originalJoin1, replacementJoin } };
+
+      sqlTable.SubstituteJoins (substitutions);
+
+      Assert.That (sqlTable.GetJoinByMember (memberInfo1), Is.SameAs (replacementJoin));
+      Assert.That (sqlTable.GetJoinByMember (memberInfo2), Is.SameAs (originalJoin2));
     }
 
     [Test]

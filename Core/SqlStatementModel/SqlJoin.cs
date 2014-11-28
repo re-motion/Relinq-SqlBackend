@@ -10,7 +10,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   {
     private readonly SqlTable _joinedTable;
     private readonly JoinSemantics _joinSemantics;
-    private Expression _joinCondition;
+    private readonly Expression _joinCondition;
 
     public SqlJoin (SqlTable joinedTable, JoinSemantics joinSemantics, Expression joinCondition)
     {
@@ -35,7 +35,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public Expression JoinCondition
     {
       get { return _joinCondition; }
-      set { _joinCondition = value; }
     }
   }
 }
