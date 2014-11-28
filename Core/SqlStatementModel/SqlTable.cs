@@ -94,6 +94,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return TableInfo.GetResolvedTableInfo();
     }
 
+    // TODO RMLNQSQL-64: "Left" join is actually influenced by join factory. Consider: Either allow left or inner joins 
+    // (but then it should be part of the dictionary key) or always make left joins (but then change joinFactory so that user cannot create inner joins).
     public SqlJoin GetOrAddLeftJoinByMember (MemberInfo memberInfo, Func<SqlJoin> joinFactory)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
