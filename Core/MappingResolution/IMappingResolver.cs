@@ -66,11 +66,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     // TODO RMLNQSQL-64: Document breaking change and rename to ResolveTableToEntity.
     ///  <summary>
-    ///  Analyzes the given <see cref="IResolvedTableInfo"/> and returns a <see cref="SqlEntityDefinitionExpression"/> , which represents the entity 
-    ///  described by the <paramref name="tableInfo"/> in the database. If the item type of the <paramref name="tableInfo"/> is not a 
+    ///  Analyzes the given <see cref="ResolvedSimpleTableInfo"/> and returns a <see cref="SqlEntityDefinitionExpression"/>, i.e., an entity 
+    ///  made of a row of the database table. If the item type of the <paramref name="tableInfo"/> is not a 
     ///  queryable entity, the resolver should throw an <see cref="UnmappedItemException"/>.
     ///  </summary>
-    ///  <param name="tableInfo">The <see cref="IResolvedTableInfo"/> to be resolved.</param>
+    ///  <param name="tableInfo">The <see cref="ResolvedSimpleTableInfo"/> to be resolved.</param>
     /// <returns>A <see cref="SqlEntityDefinitionExpression"/> which contains all the columns of the referenced <paramref name="tableInfo"/> item type.
     /// </returns>
     ///  <remarks>
@@ -78,7 +78,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     ///  Use <see cref="NamedExpression.CreateNewExpressionWithNamedArguments(System.Linq.Expressions.NewExpression)"/> to create a compound
     ///  expression.
     ///  </remarks>
-    SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo);
+    SqlEntityDefinitionExpression ResolveSimpleTableInfo (ResolvedSimpleTableInfo tableInfo);
 
     /// <summary>
     /// Analyzes the given <see cref="MemberInfo"/> and returns an expression representing that member in the database. The resolved version will 

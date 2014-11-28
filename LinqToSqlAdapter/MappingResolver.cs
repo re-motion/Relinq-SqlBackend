@@ -77,7 +77,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return CreateResolvedJoinCondition (originatingEntity, metaAssociation, joinedTableInfo);
     }
 
-    public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo)
+    public SqlEntityDefinitionExpression ResolveSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
