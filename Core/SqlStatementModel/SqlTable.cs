@@ -150,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return _joinsByMemberInfo[relationMember];
     }
 
-    // Idea: This method is only required because we want to keep SqlJoin immutable. Maybe refactor it toward SqlJoinBuilder (mutable) and 
+    // TODO RMLNQSQL-7: This method is only required because we want to keep SqlJoin immutable. Maybe refactor it toward SqlJoinBuilder (mutable) and 
     // SqlJoin (immutable) later on. This would fit well with a SqlTableBuilder (mutable) and a SqlTable (immutable).
     public void SubstituteJoins (IDictionary<SqlJoin, SqlJoin> substitutions)
     {
