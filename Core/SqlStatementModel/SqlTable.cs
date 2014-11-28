@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -32,6 +33,31 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public class SqlTable
   {
+    public class LeftJoinData
+    {
+      private readonly SqlTable _joinedTable;
+      private readonly Expression _joinCondition;
+
+      public LeftJoinData (SqlTable joinedTable, Expression joinCondition)
+      {
+        ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+        ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
+
+        _joinedTable = joinedTable;
+        _joinCondition = joinCondition;
+      }
+
+      public SqlTable JoinedTable
+      {
+        get { return _joinedTable; }
+      }
+
+      public Expression JoinCondition
+      {
+        get { return _joinCondition; }
+      }
+    }
+
     private readonly JoinSemantics _joinSemantics;
 
     private readonly List<SqlJoin> _orderedJoins = new List<SqlJoin>();
@@ -94,17 +120,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return TableInfo.GetResolvedTableInfo();
     }
 
-    // TODO RMLNQSQL-64: "Left" join is actually influenced by join factory. Consider: Either allow left or inner joins 
-    // (but then it should be part of the dictionary key) or always make left joins (but then change joinFactory so that user cannot create inner joins).
-    public SqlJoin GetOrAddLeftJoinByMember (MemberInfo memberInfo, Func<SqlJoin> joinFactory)
+    public SqlJoin GetOrAddLeftJoinByMember (MemberInfo memberInfo, Func<LeftJoinData> joinDataFactory)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      ArgumentUtility.CheckNotNull ("joinFactory", joinFactory);
+      ArgumentUtility.CheckNotNull ("joinDataFactory", joinDataFactory);
 
       SqlJoin sqlJoin;
       if (!_joinsByMemberInfo.TryGetValue (memberInfo, out sqlJoin))
       {
-        sqlJoin = joinFactory();
+        var joinData = joinDataFactory();
+        sqlJoin = new SqlJoin (joinData.JoinedTable, JoinSemantics.Left, joinData.JoinCondition);
         _joinsByMemberInfo.Add (memberInfo, sqlJoin);
         AddJoin (sqlJoin);
       }
