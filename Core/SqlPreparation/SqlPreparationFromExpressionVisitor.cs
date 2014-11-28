@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     }
 
     private readonly UniqueIdentifierGenerator _generator;
-    // TODO RMLNQSQL-64: Remove.
+    // TODO RMLNQSQL-1: Remove.
     private readonly Func<ITableInfo, SqlTable> _tableGenerator;
     private readonly OrderingExtractionPolicy _orderingExtractionPolicy;
 
