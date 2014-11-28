@@ -28,7 +28,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
-  // TODO RMLNQSQL-64: Document breaking change: SqlTableBase and SqlJoinedTable have been removed.
   /// <summary>
   /// <see cref="SqlTable"/> represents a data source in a <see cref="SqlStatement"/>.
   /// </summary>
