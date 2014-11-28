@@ -229,6 +229,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new UnresolvedJoinTableInfo (entityExpression, GetKitchenCookMemberInfo(), JoinCardinality.One);
     }
 
+    public static UnresolvedJoinTableInfo CreateUnresolvedJoinTableInfo_CookSubstitution ()
+    {
+      var entityExpression = CreateSqlEntityDefinitionExpression (typeof (Kitchen));
+      return new UnresolvedJoinTableInfo (entityExpression, GetCookSubstitutionMemberInfo(), JoinCardinality.One);
+    }
+
     public static UnresolvedCollectionJoinTableInfo CreateUnresolvedCollectionJoinTableInfo ()
     {
       return CreateUnresolvedCollectionJoinTableInfo_RestaurantCooks();
@@ -334,6 +340,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public static PropertyInfo GetKitchenRestaurantMemberInfo ()
     {
       return typeof (Kitchen).GetProperty ("Restaurant");
+    }
+
+    public static MemberInfo GetCookSubstitutionMemberInfo ()
+    {
+      return typeof (Cook).GetProperty ("Substitution");
     }
 
     public static SqlJoin CreateSqlJoin ()

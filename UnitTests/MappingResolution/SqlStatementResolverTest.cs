@@ -22,6 +22,7 @@ using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -69,104 +70,78 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (_sqlTable.TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
     }
 
-    // TODO RMLNQSQL-64
-    //[Test]
-    //public void ResolveSqlTable_ResolvesJoinInfo ()
-    //{
-    //  var memberInfo = typeof (Kitchen).GetProperty ("Cook");
-    //  var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
-    //  var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
-    //  var join = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo, memberInfo);
+    [Test]
+    public void ResolveSqlTable_ResolvesJoinedTable ()
+    {
+      var unresolvedJoinTableInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinTableInfo_KitchenCook();
+      var joinedTable = SqlStatementModelObjectMother.CreateSqlTable (unresolvedJoinTableInfo);
+      var joinCondition = ExpressionHelper.CreateExpression (typeof (bool));
+      _sqlTable.AddJoin (new SqlJoin (joinedTable, JoinSemantics.Left, joinCondition));
 
-    //  var sequence = new MockSequence();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
-    //        .Returns (_fakeResolvedSimpleTableInfo)
-    //        .Verifiable();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveSqlJoinedTable (join, _mappingResolutionContext))
-    //        .Verifiable();
+      var sequence = new MockSequence();
+      _stageMock
+          .InSequence (sequence)
+          .Expect (mock => mock.ResolveTableInfo (_sqlTable.TableInfo, _mappingResolutionContext))
+          .Return (_fakeResolvedSimpleTableInfo);
+          .Verifiable();
+      var fakeResolvedJoinedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
+      _stageMock
+          .InSequence (sequence)
+          .Setup (mock => mock.ResolveTableInfo (unresolvedJoinTableInfo, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinedTableInfo)
+          .Verifiable();
+      var fakeResolvedJoinCondition = ExpressionHelper.CreateExpression (typeof (bool));
+      _stageMock
+          .InSequence (sequence)
+          .Setup (mock => mock.ResolveJoinCondition (joinCondition, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinCondition)
+          .Callback ((Expression _1, IMappingResolutionContext _2) => Assert.That (joinedTable.TableInfo, Is.SameAs (fakeResolvedJoinedTableInfo)))
+          .Verifiable();
 
-    //  _visitor.ResolveSqlTable (_sqlTable);
+      _visitor.ResolveSqlTable (_sqlTable);
 
-    //  _stageMock.Verify();
-    //}
+      _stageMock.Verify();
+      Assert.That (joinedTable.TableInfo, Is.SameAs (fakeResolvedJoinedTableInfo));
+      Assert.That (_sqlTable.OrderedJoins.Single().JoinCondition, Is.SameAs (fakeResolvedJoinCondition));
+    }
 
-    // TODO RMLNQSQL-64
-    //[Test]
-    //public void ResolveSqlTable_ResolvesJoinInfo_Multiple ()
-    //{
-    //  var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-    //  var entityExpression1 = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
-    //  var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
-    //  var memberInfo2 = typeof (Kitchen).GetProperty ("Restaurant");
-    //  var entityExpression2 = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
-    //  var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
-    //  var join1 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
-    //  var join2 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
+    [Test]
+    public void ResolveSqlTable_ResolvesJoinInfo_Recursive ()
+    {
+      var unresolvedJoinTableInfo1 = SqlStatementModelObjectMother.CreateUnresolvedJoinTableInfo_KitchenCook();
+      var joinedTable1 = SqlStatementModelObjectMother.CreateSqlTable (unresolvedJoinTableInfo1);
+      var joinCondition1 = ExpressionHelper.CreateExpression (typeof (bool));
+      _sqlTable.AddJoin (new SqlJoin (joinedTable1, JoinSemantics.Left, joinCondition1));
 
-    //  var sequence = new MockSequence();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
-    //        .Returns (_fakeResolvedSimpleTableInfo)
-    //        .Verifiable();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveSqlJoinedTable (join1, _mappingResolutionContext))
-    //        .Verifiable();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveSqlJoinedTable (join2, _mappingResolutionContext))
-    //        .Verifiable();
+      var unresolvedJoinTableInfo2 = SqlStatementModelObjectMother.CreateUnresolvedJoinTableInfo_CookSubstitution();
+      var joinedTable2 = SqlStatementModelObjectMother.CreateSqlTable (unresolvedJoinTableInfo2);
+      var joinCondition2 = ExpressionHelper.CreateExpression (typeof (bool));
+      _sqlTable.AddJoin (new SqlJoin (joinedTable2, JoinSemantics.Left, joinCondition2));
 
-    //  _visitor.ResolveSqlTable (_sqlTable);
+      _stageMock
+          .Setup (mock => mock.ResolveTableInfo (_sqlTable.TableInfo, _mappingResolutionContext))
+          .Returns (_fakeResolvedSimpleTableInfo);
+      _stageMock
+          .Setup (mock => mock.ResolveTableInfo (unresolvedJoinTableInfo1, _mappingResolutionContext))
+          .Returns (SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook)))
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveTableInfo (unresolvedJoinTableInfo2, _mappingResolutionContext))
+          .Returns (SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook)))
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveJoinCondition (joinCondition1, _mappingResolutionContext))
+          .Returns (ExpressionHelper.CreateExpression (typeof (bool)))
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveJoinCondition (joinCondition2, _mappingResolutionContext))
+          .Returns (ExpressionHelper.CreateExpression (typeof (bool)))
+          .Verifiable();
 
-    //  _stageMock.Verify();
-    //}
+      _visitor.ResolveSqlTable (_sqlTable);
 
-    // TODO RMLNQSQL-64
-    //[Test]
-    //public void ResolveSqlTable_ResolvesJoinInfo_Recursive ()
-    //{
-    //  var memberInfo1 = typeof (Kitchen).GetProperty ("Cook");
-    //  var entityExpression1 = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
-    //  var unresolvedJoinInfo1 = new UnresolvedJoinInfo (entityExpression1, memberInfo1, JoinCardinality.One);
-    //  var memberInfo2 = typeof (Cook).GetProperty ("Substitution");
-    //  var entityExpression2 = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
-    //  var unresolvedJoinInfo2 = new UnresolvedJoinInfo (entityExpression2, memberInfo2, JoinCardinality.One);
-    //  var memberInfo3 = typeof (Cook).GetProperty ("Name");
-    //  var entityExpression3 = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
-    //  var unresolvedJoinInfo3 = new UnresolvedJoinInfo (entityExpression3, memberInfo3, JoinCardinality.One);
-
-    //  var join1 = _sqlTable.GetOrAddLeftJoin (unresolvedJoinInfo1, memberInfo1);
-    //  var join2 = join1.GetOrAddLeftJoin (unresolvedJoinInfo2, memberInfo2);
-    //  var join3 = join1.GetOrAddLeftJoin (unresolvedJoinInfo3, memberInfo3);
-
-    //  var sequence = new MockSequence();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
-    //        .Verifiable();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveSqlJoinedTable (join1, _mappingResolutionContext))
-    //        .Verifiable();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveSqlJoinedTable (join2, _mappingResolutionContext))
-    //        .Verifiable();
-    //  _stageMock
-    //        .InSequence (sequence)
-    //        .Setup (mock => mock.ResolveSqlJoinedTable (join3, _mappingResolutionContext))
-    //        .Verifiable();
-
-    //  _visitor.ResolveSqlTable (_sqlTable);
-
-    //  _stageMock.Verify();
-    //}
+      _stageMock.Verify();
+    }
 
     [Test]
     public void ResolveSelectProjection_ResolvesExpression ()
@@ -261,7 +236,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
     // TODO RMLNQSQL-64
     //[Test]
-    //public void ResolveJoinedTable ()
+    //public void ResolveJoin ()
     //{
     //  var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
     //  var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
@@ -270,7 +245,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     //      .Setup (mock => mock.ResolveSqlJoinedTable (joinedTable, _mappingResolutionContext))
     //      .Verifiable();
 
-    //  _visitor.ResolveJoinedTable (joinedTable);
+    //  _visitor.ResolveJoin (joinedTable);
 
     //  _stageMock.VerifyAllExpectations();
     //}

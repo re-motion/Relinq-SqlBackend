@@ -59,12 +59,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       return base.ResolveOrderingExpression (orderByExpression);
     }
 
-    // TODO RMLNQSQL-64
-    //public new void ResolveJoinedTable (SqlJoinedTable joinedTable)
-    //{
-    //  base.ResolveJoinedTable (joinedTable);
-    //}
-
     public new SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
     {
       return base.ResolveSqlStatement (sqlStatement);
