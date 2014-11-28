@@ -234,22 +234,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
-    // TODO RMLNQSQL-64
-    //[Test]
-    //public void ResolveJoin ()
-    //{
-    //  var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-    //  var joinedTable = new SqlJoinedTable (joinInfo, JoinSemantics.Left);
-
-    //  _stageMock
-    //      .Setup (mock => mock.ResolveSqlJoinedTable (joinedTable, _mappingResolutionContext))
-    //      .Verifiable();
-
-    //  _visitor.ResolveJoin (joinedTable);
-
-    //  _stageMock.VerifyAllExpectations();
-    //}
-
     [Test]
     public void ResolveSqlStatement ()
     {
