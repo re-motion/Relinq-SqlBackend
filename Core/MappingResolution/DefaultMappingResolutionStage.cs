@@ -116,7 +116,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return (IResolvedTableInfo) ApplyContext (resolvedTableInfo, SqlExpressionContext.ValueRequired, context);
     }
 
-    // TODO RMLNQSQL-64: Remove from stage interface? If so, merge tests for ResolveJoinCondition and tests for ResolveEntityRefMemberExpression.
     public Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
