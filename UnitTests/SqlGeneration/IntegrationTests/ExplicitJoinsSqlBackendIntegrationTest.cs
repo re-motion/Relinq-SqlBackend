@@ -228,13 +228,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           join c in Cooks on k.Cook equals c into gkc
           from kc in gkc.DefaultIfEmpty()
           select kc.Name,
-          "SELECT [q1].[Name] AS [value] FROM [KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t4] ON ([t2].[ID] = [t4].[KitchenID]) "
-          + "CROSS APPLY (SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],"
-          + "[q0].[KitchenID],[q0].[KnifeID],[q0].[KnifeClassID],[q0].[CookRating] " 
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY "
-          + "(SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
-          + "[t3].[KnifeID],[t3].[KnifeClassID],[t3].[CookRating] "
-          + "FROM [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID])) AS [q0]) AS [q1]");
+          "SELECT [q0].[Name] AS [value] FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t3] ON ([t1].[ID] = [t3].[KitchenID]) "
+          + "CROSS APPLY (SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],"
+          + "[t2].[KitchenID],[t2].[KnifeID],[t2].[KnifeClassID],[t2].[CookRating] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t3].[ID] = [t2].[ID])) AS [q0]");
     }
 
     [Test]

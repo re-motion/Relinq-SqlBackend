@@ -31,11 +31,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       CheckQuery (
           Cooks.DefaultIfEmpty (),
-          "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID],"
-          + "[q0].[KnifeID],[q0].[KnifeClassID],[q0].[CookRating] " 
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"
-          + "[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
-          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating] FROM [CookTable] AS [t1]) AS [q0]",
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] " 
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t0] ON (1 = 1)",
            row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
               new ColumnID ("FirstName", 1),
@@ -54,9 +52,58 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       CheckQuery (
            from s in Cooks where (from s2 in Cooks select s2.ID).DefaultIfEmpty().Max() > 5 select s.Name,
-          "SELECT [t1].[Name] AS [value] FROM [CookTable] AS [t1] WHERE ((SELECT MAX([q0].[value]) AS [value] FROM " +
-          "(SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY (SELECT [t2].[ID] AS [value] FROM [CookTable] AS [t2]) AS [q0]) > @1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MAX([t1].[ID]) AS [value] FROM " +
+          "(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t1] ON (1 = 1)) > @1)",
           new CommandParameter ("@1", 5));
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens.Where(k => k == c.Kitchen).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t1].[ID] AS [CookID],[q0].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] "
+          + "CROSS APPLY ("
+          + "SELECT [t2].[ID],[t2].[Name],[t2].[RestaurantID],[t2].[LastCleaningDay],[t2].[PassedLastInspection],[t2].[LastInspectionScore] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID])"
+          + ") AS [q0]");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InJoinClause ()
+    {
+      CheckQuery (
+          from c in Cooks
+          join k in Kitchens on c.Kitchen equals k into kitchens
+          from k in kitchens.DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t1].[ID] AS [CookID],[q0].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] "
+          + "CROSS APPLY ("
+          + "SELECT [t2].[ID],[t2].[Name],[t2].[RestaurantID],[t2].[LastCleaningDay],[t2].[PassedLastInspection],[t2].[LastInspectionScore] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[KitchenID] = [t2].[ID])"
+          + ") AS [q0]");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_WithMultipleTables ()
+    {
+      CheckQuery (
+          (from c in Cooks
+            from k in Kitchens
+            where k == c.Kitchen
+            select new { CookID = c.ID, KitchenID = k.ID }).DefaultIfEmpty(),
+          "SELECT [q0].[CookID] AS [CookID],[q0].[KitchenID] AS [KitchenID] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] "
+          + "OUTER APPLY ("
+          + "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] "
+          + "CROSS JOIN [KitchenTable] AS [t2] "
+          + "WHERE ([t2].[ID] = [t1].[KitchenID])"
+          + ") AS [q0]");
     }
   }
 }

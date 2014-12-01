@@ -190,11 +190,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           () => (from s in Cooks select s).DefaultIfEmpty().All (s => s.IsStarredCook),
           "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
-          + "SELECT [q0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY (SELECT [t1].[ID],[t1].[FirstName],"
-          + "[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
-          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating] "
-          + "FROM [CookTable] AS [t1]) AS [q0] "
-          + "WHERE NOT ([q0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END) AS [value]");
+          + "SELECT [t0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t0] ON (1 = 1) "
+          + "WHERE NOT ([t0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END) AS [value]");
     }
 
     [Test]
