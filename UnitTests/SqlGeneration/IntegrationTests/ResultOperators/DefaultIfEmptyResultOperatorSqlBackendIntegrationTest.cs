@@ -48,6 +48,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
+    public void DefaultIfEmpty_WithDefaultValue ()
+    {
+      Assert.That (
+          () => CheckQuery (Cooks.DefaultIfEmpty (null), "..."),
+          Throws.TypeOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The DefaultIfEmpty operator is not supported if a default value is specified. Use the overload without a specified default value."));
+    }
+
+    [Test]
     public void DefaultIfEmpty_InSubquery ()
     {
       CheckQuery (

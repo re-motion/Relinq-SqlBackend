@@ -47,6 +47,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
+      if (resultOperator.OptionalDefaultValue != null)
+      {
+        var message =
+            "The DefaultIfEmpty operator is not supported if a default value is specified. Use the overload without a specified default value.";
+        throw new NotSupportedException (message);
+      }
+
       if (sqlStatementBuilder.SqlTables.Count == 1 && !sqlStatementBuilder.SetOperationCombinedStatements.Any())
       {
         // If there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by converting 

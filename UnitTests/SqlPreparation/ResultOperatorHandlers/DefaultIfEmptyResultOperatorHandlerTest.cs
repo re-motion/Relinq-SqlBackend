@@ -52,6 +52,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     }
 
     [Test]
+    public void HandleResultOperator_ThrowsForGivenDefaultValue ()
+    {
+      var sqlStatementBuilder = new SqlStatementBuilder();
+      var resultOperator = new DefaultIfEmptyResultOperator (Expression.Constant (null));
+
+      Assert.That (
+          () => _handler.HandleResultOperator (resultOperator, sqlStatementBuilder, _generator, _stage, _context),
+          Throws.TypeOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The DefaultIfEmpty operator is not supported if a default value is specified. Use the overload without a specified default value."));
+    }
+
+    [Test]
     public void HandleResultOperator_WithSingleTable_ConvertsTableIntoLeftJoinedTable ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
