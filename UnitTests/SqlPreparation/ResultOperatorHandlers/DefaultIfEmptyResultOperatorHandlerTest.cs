@@ -87,20 +87,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (sqlStatementBuilder.WhereCondition, Is.Null);
       Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
       Assert.That (sqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
-      Assert.That (sqlStatementBuilder.SqlTables[0].TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
-      Assert.That (((ResolvedSubStatementTableInfo) sqlStatementBuilder.SqlTables[0].TableInfo).TableAlias, Is.EqualTo ("Empty"));
 
       // The new table now contains a dummy statement (SELECT NULL AS Empty)...
-      var dummySubStatement = ((ResolvedSubStatementTableInfo) sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement;
-      var expectedNullAsEmptyProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (typeof (object)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedNullAsEmptyProjection, dummySubStatement.SelectProjection);
-      Assert.That (dummySubStatement.SqlTables, Is.Empty);
-      Assert.That (dummySubStatement.DataInfo, Is.TypeOf<StreamedSequenceInfo>());
-      Assert.That (dummySubStatement.DataInfo.DataType, Is.SameAs (typeof(IEnumerable<object>)));
-      Assert.That (((StreamedSequenceInfo) dummySubStatement.DataInfo).ItemExpression, Is.SameAs (dummySubStatement.SelectProjection));
-
+      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0]);
+      
       // ... as well as a join for the original table ...
-      Assert.That (sqlStatementBuilder.SqlTables[0].OrderedJoins, Has.Count.EqualTo (1));
+      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
       var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
@@ -131,11 +123,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       // Again, everything is the same, but the table has been replaced.
       Assert.That (sqlStatementBuilder.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
-      Assert.That (sqlStatementBuilder.SqlTables[0].TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
-      Assert.That (((ResolvedSubStatementTableInfo) sqlStatementBuilder.SqlTables[0].TableInfo).TableAlias, Is.EqualTo ("Empty"));
+      AssertIsDummyTable(sqlStatementBuilder.SqlTables[0]);
 
-      // Here's the join where the original table was moved...
-      Assert.That (sqlStatementBuilder.SqlTables[0].OrderedJoins, Has.Count.EqualTo (1));
+      // This is the join where the original table was moved...
+      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
       var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
@@ -159,17 +150,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                                     DataInfo = dataInfo
                                 };
 
-
       var resultOperator = new DefaultIfEmptyResultOperator (null);
 
       _handler.HandleResultOperator (resultOperator, sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (sqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Left));
-      
-      var tableInfo = sqlStatementBuilder.SqlTables[0].TableInfo;
-      Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (_context.GetExpressionMapping (((StreamedSequenceInfo) sqlStatementBuilder.DataInfo).ItemExpression), Is.Not.Null);
+      // Again, there is now a dummy table...
+      Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
+      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0]);
+
+      // ... and joined to it is a substatement that used to be the original statement:
+      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
+      var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
+      Assert.That (join.JoinedTable.TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
+      var joinedSubStatement = ((ResolvedSubStatementTableInfo) join.JoinedTable.TableInfo).SqlStatement;
+      Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { sqlTable1, sqlTable2 }));
     }
 
     [Test]
@@ -178,25 +172,46 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
       var selectProjection = new SqlTableReferenceExpression (sqlTable);
       var dataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (selectProjection.Type), selectProjection);
+      var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
 
       var sqlStatementBuilder = new SqlStatementBuilder
                                 {
                                     SqlTables = { sqlTable },
                                     SelectProjection = selectProjection,
                                     DataInfo = dataInfo,
-                                    SetOperationCombinedStatements = { SqlStatementModelObjectMother.CreateSetOperationCombinedStatement() }
+                                    SetOperationCombinedStatements = { setOperationCombinedStatement }
                                 };
       
       var resultOperator = new DefaultIfEmptyResultOperator (null);
 
       _handler.HandleResultOperator (resultOperator, sqlStatementBuilder, _generator, _stage, _context);
 
-      Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (sqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Left));
-      
-      var tableInfo = sqlStatementBuilder.SqlTables[0].TableInfo;
-      Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (_context.GetExpressionMapping (((StreamedSequenceInfo) sqlStatementBuilder.DataInfo).ItemExpression), Is.Not.Null);
+      // Again, there is now a dummy table...
+      Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
+      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0]);
+
+      // ... and joined to it is a substatement that used to be the original statement:
+      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
+      var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
+      Assert.That (join.JoinedTable.TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
+      var joinedSubStatement = ((ResolvedSubStatementTableInfo) join.JoinedTable.TableInfo).SqlStatement;
+      Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (joinedSubStatement.SetOperationCombinedStatements, Is.EqualTo (new[] { setOperationCombinedStatement }));
+    }
+
+    private void AssertIsDummyTable (SqlTable sqlTable)
+    {
+      Assert.That (sqlTable.TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).TableAlias, Is.EqualTo ("Empty"));
+
+      var dummySubStatement = ((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement;
+      var expectedNullAsEmptyProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (typeof (object)));
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedNullAsEmptyProjection, dummySubStatement.SelectProjection);
+      Assert.That (dummySubStatement.SqlTables, Is.Empty);
+      Assert.That (dummySubStatement.DataInfo, Is.TypeOf<StreamedSequenceInfo>());
+      Assert.That (dummySubStatement.DataInfo.DataType, Is.SameAs (typeof(IEnumerable<object>)));
+      Assert.That (((StreamedSequenceInfo) dummySubStatement.DataInfo).ItemExpression, Is.SameAs (dummySubStatement.SelectProjection));
+
     }
   }
 }

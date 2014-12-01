@@ -354,10 +354,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).DefaultIfEmpty(),
           "SELECT [q0].[value] AS [value] FROM ("
           + "SELECT NULL AS [Empty]) AS [Empty] "
-          + "OUTER APPLY ("
+          + "LEFT OUTER JOIN ("
           + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
           + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
-          + ") AS [q0]");
+          + ") AS [q0] ON (1 = 1)");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Distinct(),

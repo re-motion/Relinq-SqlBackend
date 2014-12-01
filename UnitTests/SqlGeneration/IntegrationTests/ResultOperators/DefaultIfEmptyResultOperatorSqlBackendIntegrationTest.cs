@@ -108,12 +108,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
             select new { CookID = c.ID, KitchenID = k.ID }).DefaultIfEmpty(),
           "SELECT [q0].[CookID] AS [CookID],[q0].[KitchenID] AS [KitchenID] "
           + "FROM (SELECT NULL AS [Empty]) AS [Empty] "
-          + "OUTER APPLY ("
+          + "LEFT OUTER JOIN ("
           + "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
           + "FROM [CookTable] AS [t1] "
           + "CROSS JOIN [KitchenTable] AS [t2] "
           + "WHERE ([t2].[ID] = [t1].[KitchenID])"
-          + ") AS [q0]");
+          + ") AS [q0] ON (1 = 1)");
     }
   }
 }

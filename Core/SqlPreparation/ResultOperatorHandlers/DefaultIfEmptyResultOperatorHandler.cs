@@ -54,48 +54,52 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         throw new NotSupportedException (message);
       }
 
-      if (sqlStatementBuilder.SqlTables.Count == 1 && !sqlStatementBuilder.SetOperationCombinedStatements.Any())
+      // If there's more than one table, convert the current statement into a substatement.
+      // This ensures that there is exactly one table that holds everything we want to put into a LEFT JOIN.
+      if (sqlStatementBuilder.SqlTables.Count != 1 || sqlStatementBuilder.SetOperationCombinedStatements.Any())
       {
-        // If there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by converting 
-        // this table into the right part of a left join with a dummy table.
-        // It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
-        // _during_ the left join.
-
-        // Create a new dummy table: (SELECT NULL AS [Empty]) AS [Empty]
-        var nullIfEmptyStatementBuilder = new SqlStatementBuilder();
-        var selectProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (typeof (object)));
-        nullIfEmptyStatementBuilder.SelectProjection = selectProjection;
-        nullIfEmptyStatementBuilder.DataInfo = new StreamedSequenceInfo (
-            typeof (IEnumerable<>).MakeGenericType (selectProjection.Type),
-            selectProjection);
-
-        var nullIfEmptySqlTable = new SqlTable (
-            new ResolvedSubStatementTableInfo ("Empty", nullIfEmptyStatementBuilder.GetSqlStatement()),
-            JoinSemantics.Inner);
-
-        // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
-        var originalSqlTable = sqlStatementBuilder.SqlTables[0];
-        var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
-        var join = new SqlJoin(originalSqlTable, JoinSemantics.Left,  joinCondition);
-        nullIfEmptySqlTable.AddJoin (join);
-
-        // Replace original table with dummy table:
-        sqlStatementBuilder.SqlTables.Clear();
-        sqlStatementBuilder.SqlTables.Add (nullIfEmptySqlTable);
-        
-        // WHERE condition was moved to JOIN condition => no longer needed.
-        sqlStatementBuilder.WhereCondition = null;
-
-        // Further TODOs:
-        // TODO RMLNQSQL-1: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
-        // TODO RMLNQSQL-1: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
       }
-      else
-      {
-        // Otherwise, we need to move the whole statement up to now into a subquery and put that into a left join.
-        // TODO RMLNQSQL-1: Refactor to build exact join here as well, using nullIfEmptySqlTable; then eliminate SqlTable.JoinSemantics.
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
-      }
+
+      // Now, since there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by 
+      // converting that table into the right part of a left join with a dummy table.
+      // It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
+      // _during_ the left join.
+
+      // Create a new dummy table: (SELECT NULL AS [Empty]) AS [Empty]
+      var nullIfEmptySqlTable = CreateNullAsEmptySqlTable();
+
+      // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
+      var originalSqlTable = sqlStatementBuilder.SqlTables[0];
+      var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var join = new SqlJoin (originalSqlTable, JoinSemantics.Left, joinCondition);
+      nullIfEmptySqlTable.AddJoin (@join);
+
+      // Replace original table with dummy table:
+      sqlStatementBuilder.SqlTables.Clear();
+      sqlStatementBuilder.SqlTables.Add (nullIfEmptySqlTable);
+
+      // WHERE condition was moved to JOIN condition => no longer needed.
+      sqlStatementBuilder.WhereCondition = null;
+
+      // Further TODOs:
+      // TODO RMLNQSQL-1: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
+      // TODO RMLNQSQL-1: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
+    }
+
+    private SqlTable CreateNullAsEmptySqlTable ()
+    {
+      var nullAsEmptyStatementBuilder = new SqlStatementBuilder();
+      var selectProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (typeof (object)));
+      nullAsEmptyStatementBuilder.SelectProjection = selectProjection;
+      nullAsEmptyStatementBuilder.DataInfo = new StreamedSequenceInfo (
+          typeof (IEnumerable<>).MakeGenericType (selectProjection.Type),
+          selectProjection);
+
+      var nullAsEmptySqlTable = new SqlTable (
+          new ResolvedSubStatementTableInfo ("Empty", nullAsEmptyStatementBuilder.GetSqlStatement()),
+          JoinSemantics.Inner);
+      return nullAsEmptySqlTable;
     }
   }
 }
