@@ -83,8 +83,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       sqlStatementBuilder.WhereCondition = null;
 
       // Further TODOs:
-      // TODO RMLNQSQL-1: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
-      // TODO RMLNQSQL-1: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
+      // TODO RMLNQSQL-81: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
+      // TODO RMLNQSQL-81: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
     }
 
     private SqlTable CreateNullAsEmptySqlTable ()

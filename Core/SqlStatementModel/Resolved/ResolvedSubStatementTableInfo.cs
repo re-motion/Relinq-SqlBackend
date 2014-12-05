@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
-  // TODO RMLNQSQL-1: Rename to just SubStatementTableInfo.
+  // TODO RMLNQSQL-81: Rename to just SubStatementTableInfo.
   /// <summary>
   /// <see cref="ResolvedSubStatementTableInfo"/> represents the data source defined by a table of a subquery in a relational database.
   /// </summary>
