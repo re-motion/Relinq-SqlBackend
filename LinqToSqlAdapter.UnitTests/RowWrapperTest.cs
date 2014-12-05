@@ -72,23 +72,62 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
           .Verifiable();
       PrepareReverseMapping (typeof (PersonTestClass));
 
-      var columnIDs = new[]
-                      {
-                          new ColumnID ("FirstName", 1),
-                          new ColumnID ("Age", 2)
-                      };
+      var columnIDs = GetColumnIDsForPersonTestClass();
 
       var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
 
       var instance = rowWrapper.GetEntity<PersonTestClass> (columnIDs);
+
 
       _readerMock.Verify();
       Assert.That (instance, Is.EqualTo (new PersonTestClass ("Peter", 21)));
     }
 
     [Test]
+    public void GetEntity_NullValue ()
+    {
+      _readerMock
+          .Setup (mock => mock.GetValue (1))
+          .Returns (null)
+          .Verifiable();
+      PrepareReverseMapping (typeof (PersonTestClass));
+
+      var columnIDs = GetColumnIDsForPersonTestClass();
+
+      var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
+
+      var instance = rowWrapper.GetEntity<PersonTestClass> (columnIDs);
+
+      _readerMock.Verify();
+      Assert.That (instance, Is.Null);
+    }
+
+    [Test]
+    public void GetEntity_TypeWithoutPrimaryKey ()
+    {
+      _readerMock
+          .Setup (mock => mock.GetValue (1))
+          .Returns (null)
+          .Verifiable();
+      PrepareReverseMapping (typeof (PersonTestClass));
+
+      var columnIDs = GetColumnIDsForPersonTestClass();
+
+      var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
+
+      var instance = rowWrapper.GetEntity<PersonTestClass> (columnIDs);
+
+      _readerMock.Verify();
+      Assert.That (instance, Is.Null);
+    }
+
+    [Test]
     public void GetEntity_CreatesInstanceAccordingToDiscriminatorColumn ()
     {
+      _readerMock
+          .Setup (mock => mock.GetValue (1))
+          .Returns (1)
+          .Verifiable();
       _readerMock
           .Setup (mock => mock.GetValue (2))
           .Returns ("Customer")
@@ -113,6 +152,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [Test]
     public void GetEntity_CreateDefaultInstanceIfDiscriminatorIsNull ()
     {
+      _readerMock
+          .Setup (mock => mock.GetValue (1))
+          .Returns (1)
+          .Verifiable();
       _readerMock
           .Setup (mock => mock.GetValue (2))
           .Returns ((object) null)
@@ -195,7 +238,8 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       _readerMock
           .Setup (mock => mock.GetValue (3))
           .Returns (1)
-          .Verifiable(); //return value of discriminator column
+          .Verifiable();
+     //return value of discriminator column
       _readerMock
           .Setup (mock => mock.GetValue (4))
           .Returns ("Employee")
@@ -235,6 +279,15 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
           .Setup (mock => mock.GetMetaDataMembers (entityType))
           .Returns (_metaModel.GetTable (entityType).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray())
           .Verifiable();
+    }
+
+    private ColumnID[] GetColumnIDsForPersonTestClass ()
+    {
+      return new[]
+             {
+                 new ColumnID ("FirstName", 1),
+                 new ColumnID ("Age", 2)
+             };
     }
   }
 }

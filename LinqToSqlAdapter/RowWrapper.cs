@@ -54,7 +54,15 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
       Assertion.DebugAssert (entityMembers.Length == columnIDs.Length);
 
-      var entityMembersWithColumnIDs = entityMembers.Select ((member, index) => new { Member = member, ColumnID = columnIDs[index] });
+      var entityMembersWithColumnIDs = entityMembers.Select ((member, index) => new { Member = member, ColumnID = columnIDs[index] }).ToArray();
+
+      // Assumption: If the primary key is null, the whole returned entity is null.
+      var idColumns = entityMembersWithColumnIDs.Where (c => c.Member.IsPrimaryKey).ToArray();
+      Assertion.IsTrue (
+          idColumns.Length > 0,
+          "MappingResolver currently does not support entities without identity members, so we don't need to either.");
+      if (idColumns.All (c => GetValue<object> (c.ColumnID) == null))
+        return default(T);
 
       Type instanceType = typeof (T);
       var discriminatorMember = entityMembersWithColumnIDs.SingleOrDefault (tuple => tuple.Member.IsDiscriminator);
