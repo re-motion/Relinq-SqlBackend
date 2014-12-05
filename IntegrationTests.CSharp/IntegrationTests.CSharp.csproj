@@ -31,6 +31,9 @@
     <None Include="..\MSPL.licenseheader">
       <Link>MSPL.licenseheader</Link>
     </None>
+    <Content Include="SystemTests\Resources\DefaultIfEmptyTests.DefaultIfEmpty_ForLeftJoin_WithNullComplexType.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

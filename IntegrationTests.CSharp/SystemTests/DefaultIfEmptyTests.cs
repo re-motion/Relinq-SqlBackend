@@ -35,6 +35,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.IntegrationTests.Common;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
@@ -47,6 +48,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
       var query = from employee in DB.Employees
         join subordinate in DB.Employees on employee equals subordinate.ReportsToEmployee into subordinates
         from subordinate in subordinates.DefaultIfEmpty()
+        orderby employee.EmployeeID, subordinate.EmployeeID
         select new { Employee = employee, Subordinate = subordinate };
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
@@ -57,6 +59,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     {
       var query = from employee in DB.Employees
         from subordinate in DB.Employees.Where (subordinate => employee == subordinate.ReportsToEmployee).DefaultIfEmpty()
+        orderby employee.EmployeeID, subordinate.EmployeeID
         select new { Employee = employee, Subordinate = subordinate };
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
@@ -71,7 +74,24 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
                 .Take(100)
                 .Where (subordinate => employee == subordinate.ReportsToEmployee)
                 .DefaultIfEmpty()
+        orderby employee.EmployeeID, subordinate.EmployeeID
         select new { Employee = employee, Subordinate = subordinate };
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    [Ignore ("TODO RMLNQSQL-56")]
+    public void DefaultIfEmpty_ForLeftJoin_WithNullComplexType ()
+    {
+      var query =
+          from employee in DB.Employees.Select (e => new { e.EmployeeID, e.LastName })
+          join subordinate in DB.Employees
+              on employee.EmployeeID equals subordinate.ReportsTo
+              into subordinates
+          from subordinate in subordinates.Select (e => new { e.EmployeeID, e.LastName, e.ReportsTo }).DefaultIfEmpty()
+          orderby employee.EmployeeID, subordinate.EmployeeID
+          select new { Employee = employee, Subordinate = subordinate };
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }

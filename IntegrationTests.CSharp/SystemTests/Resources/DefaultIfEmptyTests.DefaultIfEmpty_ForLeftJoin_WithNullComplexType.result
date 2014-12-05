@@ -1,0 +1,101 @@
+Enumerable {
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 1
+      LastName: 'Davolio'
+    Subordinate: null
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 2
+      LastName: 'Fuller'
+    Subordinate: AnonymousType
+      EmployeeID: 1
+      LastName: 'Davolio'
+      ReportsTo: 2
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 2
+      LastName: 'Fuller'
+    Subordinate: AnonymousType
+      EmployeeID: 3
+      LastName: 'Leverling'
+      ReportsTo: 2
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 2
+      LastName: 'Fuller'
+    Subordinate: AnonymousType
+      EmployeeID: 4
+      LastName: 'Peacock'
+      ReportsTo: 2
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 2
+      LastName: 'Fuller'
+    Subordinate: AnonymousType
+      EmployeeID: 5
+      LastName: 'Buchanan'
+      ReportsTo: 2
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 2
+      LastName: 'Fuller'
+    Subordinate: AnonymousType
+      EmployeeID: 8
+      LastName: 'Callahan'
+      ReportsTo: 2
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 3
+      LastName: 'Leverling'
+    Subordinate: null
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 4
+      LastName: 'Peacock'
+    Subordinate: null
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 5
+      LastName: 'Buchanan'
+    Subordinate: AnonymousType
+      EmployeeID: 6
+      LastName: 'Suyama'
+      ReportsTo: 5
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 5
+      LastName: 'Buchanan'
+    Subordinate: AnonymousType
+      EmployeeID: 7
+      LastName: 'King'
+      ReportsTo: 5
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 5
+      LastName: 'Buchanan'
+    Subordinate: AnonymousType
+      EmployeeID: 9
+      LastName: 'Dodsworth'
+      ReportsTo: 5
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 6
+      LastName: 'Suyama'
+    Subordinate: null
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 7
+      LastName: 'King'
+    Subordinate: null
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 8
+      LastName: 'Callahan'
+    Subordinate: null
+  AnonymousType
+    Employee: AnonymousType
+      EmployeeID: 9
+      LastName: 'Dodsworth'
+    Subordinate: null
+}
