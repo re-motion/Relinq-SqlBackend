@@ -71,6 +71,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
       var query = from employee in DB.Employees
         from subordinate in
             DB.Employees.Where (subordinate => employee == subordinate.ReportsToEmployee)
+                // The Take operator causes a subquery to be created.
                 .Take(100)
                 .Where (subordinate => employee == subordinate.ReportsToEmployee)
                 .DefaultIfEmpty()
