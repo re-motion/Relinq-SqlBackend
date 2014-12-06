@@ -38,13 +38,14 @@
     <None Include="Remotion.build" />
     <None Include="Remotion.Local.build" />
     <None Include="Remotion.Server.build" />
+    <None Include="TestingSetupForDatabase.build" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Remotion.BuildScript">
-      <HintPath>..\packages\Remotion.BuildScript.2.0.0-alpha003\lib\net45\Remotion.BuildScript.dll</HintPath>
+      <HintPath>..\packages\Remotion.BuildScript.2.0.0-alpha00401\lib\net45\Remotion.BuildScript.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
