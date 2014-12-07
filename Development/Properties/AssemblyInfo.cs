@@ -27,6 +27,7 @@ using System.Security;
 
 [assembly: AssemblyTitle ("Remotion Development Support Library for Remotion.Linq.SqlBackend")]
 [assembly: AssemblyDescription ("Library for unit testing, building and other development-time activities.")]
+[assembly: AssemblyMetadata ("tags", "re-motion LINQ SQL SqlGeneration UnitTesting")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 [assembly: SecurityTransparent] // required to allow assembly to be linked from assemblies having the AllowPartiallyTrustedCallersAttribute applied

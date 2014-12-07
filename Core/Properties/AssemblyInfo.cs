@@ -26,6 +26,7 @@ using System.Security;
 
 [assembly: AssemblyTitle("Remotion Linq SqlBackend Library")]
 [assembly: AssemblyDescription ("Framework for calling linq queries on sql server.")]
+[assembly: AssemblyMetadata ("tags", "re-motion LINQ SQL SqlGeneration")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 [assembly: SecurityTransparent] // required to allow assembly to be linked from assemblies having the AllowPartiallyTrustedCallersAttribute applied
