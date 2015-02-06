@@ -29,6 +29,19 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// Provides functionality to simplify sub-statements that contain an <see cref="AggregateExpressionNode"/> aggregating over the
   /// elements of a grouping. The sub-statements must be resolved before they can be simplified.
   /// </summary>
+  /// <remarks>
+  /// For example, consider the following query (pseudo-code, mixing LINQ and SQL):
+  /// <code>
+  ///   from g in { SELECT ... FROM [OrderTable] [t0] GROUP BY [t0].[OrderDate] }
+  ///   select new { g.Max(), g.Sum() }
+  /// </code>
+  /// In this code, g.Max() and g.Sum() are SubStatementExpressions because Max() and Sum() are parsed as result operators and thus as sub-statements.
+  /// We want to simplify that query as follows:
+  /// <code>
+  ///   from g in { SELECT ..., MAX(...) AS m, SUM(...) AS s FROM [OrderTable] [t0] GROUP BY [t0].[OrderDate] }
+  ///   select new { g.m, g.s }
+  /// </code>
+  /// </remarks>
   public class GroupAggregateSimplifier : IGroupAggregateSimplifier
   {
     private readonly IMappingResolutionStage _stage;
