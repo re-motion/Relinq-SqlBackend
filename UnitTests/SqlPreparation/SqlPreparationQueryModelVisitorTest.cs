@@ -334,7 +334,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fromClause = ExpressionHelper.CreateAdditionalFromClause();
       
       var preparedTable = new SqlTable (SqlStatementModelObjectMother.CreateResolvedTableInfo(), JoinSemantics.Inner);
-      // TODO RMLNQSQL-2: Add existing where condition and assert that the new where condition is added, does not replace the original one.
       var whereCondition = ExpressionHelper.CreateExpression(typeof(bool));
       var preparedFromExpressionInfo = new FromExpressionInfo (
           preparedTable,
@@ -357,13 +356,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock.Verify();
 
       Assert.That (_visitor.SqlStatementBuilder.WhereCondition, Is.SameAs(whereCondition));
-    }
-
-    [Test]
-    [Ignore("TODO RMLNQSQL-2")]
-    public void VisitAdditionalFromClause_WithOrderings_AddsOrderings ()
-    {
-    // TODO RMLNQSQL-2: Add existing orderings and assert that the new orderings are added, do not replace the original one.
     }
 
     [Test]
