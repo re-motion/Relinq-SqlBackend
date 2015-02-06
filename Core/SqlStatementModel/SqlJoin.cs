@@ -4,7 +4,7 @@ using Remotion.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Represents a join.
+  /// Represents an INNER or LEFT join with a <see cref="JoinCondition"/>.
   /// </summary>
   public class SqlJoin
   {
