@@ -186,6 +186,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitQuerySourceReference (QuerySourceReferenceExpression expression)
     {
+      // TODO RMLNQSQL-77: Actually, wouldn't it be really easy to simply detect DefaultIfEmpty here and return a SqlAppendedTable with outer ...
+      // semantics _instead_ of adding a null if empty table? Consider this...
       var groupJoinClause = expression.ReferencedQuerySource as GroupJoinClause;
       if (groupJoinClause != null)
       {
