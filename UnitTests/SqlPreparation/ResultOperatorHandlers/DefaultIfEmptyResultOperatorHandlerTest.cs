@@ -97,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
       // ... with a dummy join condition.
-      ExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)), join.JoinCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)), join.JoinCondition);
     }
 
     [Test]
@@ -206,7 +206,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var dummySubStatement = ((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement;
       var expectedNullAsEmptyProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (typeof (object)));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedNullAsEmptyProjection, dummySubStatement.SelectProjection);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNullAsEmptyProjection, dummySubStatement.SelectProjection);
       Assert.That (dummySubStatement.SqlTables, Is.Empty);
       Assert.That (dummySubStatement.DataInfo, Is.TypeOf<StreamedSequenceInfo>());
       Assert.That (dummySubStatement.DataInfo.DataType, Is.SameAs (typeof(IEnumerable<object>)));
