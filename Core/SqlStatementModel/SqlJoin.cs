@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
@@ -35,6 +36,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public Expression JoinCondition
     {
       get { return _joinCondition; }
+    }
+
+    public override string ToString ()
+    {
+      return JoinSemantics.ToString().ToUpper() + " JOIN " + JoinedTable.TableInfo + " ON " + JoinCondition;
     }
   }
 }
