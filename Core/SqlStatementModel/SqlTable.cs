@@ -120,6 +120,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return TableInfo.GetResolvedTableInfo();
     }
 
+    /// <summary>
+    /// Adds a join representing a member access to this <see cref="SqlTable"/> or returns it if such a join has already been added for this member.
+    /// Note that SQL requires that the right side of a join must not reference the left side of a join 
+    /// in SQL (apart from in the join condition). For cases where this doesn't hold, add the joined table via <see cref="SqlStatement.SqlTables"/>
+    /// instead and put the join condition into a WHERE condition. (Note that for LEFT joins, the join condition must be embedded within the applied
+    /// table; i.e., a sub-statement must be used.)
+    /// </summary>
     public SqlJoin GetOrAddLeftJoinByMember (MemberInfo memberInfo, Func<LeftJoinData> joinDataFactory)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
@@ -137,6 +144,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return sqlJoin;
     }
 
+    /// <summary>
+    /// Adds a join to this <see cref="SqlTable"/>. Note that SQL requires that the right side of a join must not reference the left side of a join 
+    /// in SQL (apart from in the join condition). For cases where this doesn't hold, add the joined table via <see cref="SqlStatement.SqlTables"/>
+    /// instead and put the join condition into a WHERE condition. (Note that for LEFT joins, the join condition must be embedded within the applied
+    /// table; i.e., a sub-statement must be used.)
+    /// </summary>
     public void AddJoin (SqlJoin sqlJoin)
     {
       ArgumentUtility.CheckNotNull ("sqlJoin", sqlJoin);

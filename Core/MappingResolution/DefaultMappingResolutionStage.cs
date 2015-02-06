@@ -148,6 +148,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("context", context);
 
       var originatingSqlTable = context.GetSqlTableForEntityExpression (expression.OriginatingEntity);
+      
+      // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is passed
+      // on to the IMappingResolver (and documented on the corresponding members).
       var join = originatingSqlTable.GetOrAddLeftJoinByMember (
           expression.MemberInfo,
           () =>

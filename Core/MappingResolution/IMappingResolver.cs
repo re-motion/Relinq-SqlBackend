@@ -45,7 +45,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// </summary>
     /// <param name="tableInfo">The <see cref="UnresolvedJoinTableInfo"/> which is to be resolved.</param>
     /// <param name="generator">A <see cref="UniqueIdentifierGenerator"/> that can be used to generate unique identifiers such as table aliases.</param>
-    /// <returns>An <see cref="ITableInfo"/> instance representing the <paramref name="tableInfo"/> in the database.</returns>
+    /// <returns>
+    /// An <see cref="ITableInfo"/> instance representing the <paramref name="tableInfo"/> in the database. Note that SQL does not allow this
+    /// <see cref="ITableInfo"/> to be (or become) a <see cref="ResolvedSubStatementTableInfo"/> that references the 
+    /// <see cref="UnresolvedJoinTableInfo.OriginatingEntity"/>. All such references must be moved to the join condition (see 
+    /// <see cref="ResolveJoinCondition"/>).
+    /// </returns>
     /// <exception cref="UnmappedItemException">The given <see cref="UnresolvedJoinTableInfo"/> cannot be resolved to a mapped database item.</exception>
     ITableInfo ResolveJoinTableInfo (UnresolvedJoinTableInfo tableInfo, UniqueIdentifierGenerator generator);
 

@@ -115,5 +115,34 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + "WHERE ([t2].[ID] = [t1].[KitchenID])"
           + ") AS [q0] ON (1 = 1)");
     }
+
+    // TODO RMLNQSQL-77: This test would generate invalid SQL if optimization is implemented incorrectly.
+    [Test]
+    public void DefaultIfEmpty_WithEscapingReferenceInSubstatement ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from x in (
+              from k in (
+                  from y in Kitchens
+                  where y == c.Kitchen
+                  select y
+                  ).Distinct()
+              where k == c.Kitchen
+              select k
+              ).DefaultIfEmpty()
+          select x,
+          "SELECT [q1].[ID],[q1].[Name],[q1].[RestaurantID],[q1].[LastCleaningDay],[q1].[PassedLastInspection],[q1].[LastInspectionScore] "
+          + "FROM [CookTable] AS [t2] "
+          + "CROSS APPLY ("
+          + "SELECT [q0].[ID],[q0].[Name],[q0].[RestaurantID],[q0].[LastCleaningDay],[q0].[PassedLastInspection],[q0].[LastInspectionScore] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] "
+          + "LEFT OUTER JOIN ("
+          + "SELECT DISTINCT [t3].[ID],[t3].[Name],[t3].[RestaurantID],[t3].[LastCleaningDay],[t3].[PassedLastInspection],[t3].[LastInspectionScore] "
+          + "FROM [KitchenTable] AS [t3] "
+          + "WHERE ([t3].[ID] = [t2].[KitchenID])"
+          + ") AS [q0] ON ([q0].[ID] = [t2].[KitchenID])"
+          + ") AS [q1]");
+    }
   }
 }

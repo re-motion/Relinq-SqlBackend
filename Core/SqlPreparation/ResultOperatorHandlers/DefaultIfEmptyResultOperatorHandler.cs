@@ -73,6 +73,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var originalSqlTable = sqlStatementBuilder.SqlTables[0];
       var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
       var join = new SqlJoin (originalSqlTable, JoinSemantics.Left, joinCondition);
+      // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
+      // here because the left side is just the nullIfEmptySqlTable (and there is nothing else in this statement).
+      // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
+      // care that this restriction is _not_ broken.
       nullIfEmptySqlTable.AddJoin (@join);
 
       // Replace original table with dummy table:
