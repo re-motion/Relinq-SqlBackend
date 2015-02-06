@@ -76,7 +76,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           {
               DataInfo = _dataInfo,
               SelectProjection = _resolvedSelectProjection,
-              SqlTables = { _resolvedJoinedGroupingTable }
+              SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable (_resolvedJoinedGroupingTable) }
           });
 
       _simplifiableUnresolvedProjection = new AggregationExpression (
@@ -180,7 +180,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void IsSimplifiableGroupAggregate_False_TooManySqlTables ()
     {
       var sqlStatementBuilder = new SqlStatementBuilder (_simplifiableResolvedSqlStatement);
-      sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable());
+      sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlAppendedTable(_resolvedJoinedGroupingTable));
       var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
 
       Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);
@@ -191,7 +191,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var sqlStatementBuilder = new SqlStatementBuilder (_simplifiableResolvedSqlStatement);
       sqlStatementBuilder.SqlTables.Clear();
-      sqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable (new ResolvedSimpleTableInfo (typeof (int), "table", "t0")));
+      sqlStatementBuilder.SqlTables.Add (
+          SqlStatementModelObjectMother.CreateSqlAppendedTable (
+              SqlStatementModelObjectMother.CreateSqlTable (new ResolvedSimpleTableInfo (typeof (int), "table", "t0"))));
       var sqlStatement = sqlStatementBuilder.GetSqlStatement ();
 
       Assert.That (_groupAggregateSimplifier.IsSimplifiableGroupAggregate (sqlStatement), Is.False);

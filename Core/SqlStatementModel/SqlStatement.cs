@@ -33,7 +33,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   {
     private readonly IStreamedDataInfo _dataInfo;
     private readonly Expression _selectProjection;
-    private readonly SqlTable[] _sqlTables;
+    private readonly SqlAppendedTable[] _sqlTables;
     private readonly Expression _groupByExpression;
     private readonly Ordering[] _orderings;
     private readonly Expression _whereCondition;
@@ -46,7 +46,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public SqlStatement (
         IStreamedDataInfo dataInfo,
         Expression selectProjection,
-        IEnumerable<SqlTable> sqlTables,
+        IEnumerable<SqlAppendedTable> sqlTables,
         Expression whereCondition,
         Expression groupByExpression,
         IEnumerable<Ordering> orderings,
@@ -98,7 +98,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _selectProjection; }
     }
 
-    public ReadOnlyCollection<SqlTable> SqlTables
+    // TODO RMLNQSQL-78: Rename? Or rename SqlAppendedTable.SqlTable.
+    public ReadOnlyCollection<SqlAppendedTable> SqlTables
     {
       get { return Array.AsReadOnly (_sqlTables); }
     }

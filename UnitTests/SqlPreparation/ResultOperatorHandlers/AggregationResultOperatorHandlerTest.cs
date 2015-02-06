@@ -24,7 +24,6 @@ using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
@@ -86,9 +85,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
       Assert.That (
-          ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
+          ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
       Assert.That (
-          ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement.Orderings[0], Is.SameAs(ordering));
+          ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo).SqlStatement.Orderings[0], Is.SameAs(ordering));
     }
 
     [Test]

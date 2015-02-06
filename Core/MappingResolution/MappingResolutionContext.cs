@@ -106,12 +106,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return newSqlGroupingSelectExpression;
     }
 
-    public void AddSqlTable (SqlTable sqlTable, SqlStatementBuilder sqlStatementBuilder)
+    // TODO RMLNQSQL-78: Remove, this method doesn't add any value?
+    public void AddSqlTable (SqlAppendedTable appendedTable, SqlStatementBuilder sqlStatementBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("appendedTable", appendedTable);
       ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
 
-      sqlStatementBuilder.SqlTables.Add (sqlTable);
+      sqlStatementBuilder.SqlTables.Add (appendedTable);
     }
 
     public Expression RemoveNamesAndUpdateMapping (Expression expression)

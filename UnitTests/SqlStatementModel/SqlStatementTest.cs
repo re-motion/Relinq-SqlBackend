@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -40,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           () => new SqlStatement (
               new TestStreamedValueInfo (typeof (int)),
               Expression.Constant (1),
-              new SqlTable[0],
+              new SqlAppendedTable[0],
               Expression.Constant (1),
               null,
               new Ordering[0],
@@ -60,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           Expression.Constant (1),
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -79,7 +78,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
       var selectProjection = Expression.Constant (1);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable();
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant ("top");
@@ -91,7 +90,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new[] { sqlTable },
+          new[] { appendedTable },
           whereCondition,
           groupByExpression,
           new[] { ordering },
@@ -104,7 +103,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new[] { sqlTable },
+          new[] { appendedTable },
           whereCondition,
           groupByExpression,
           new[] { ordering },
@@ -126,7 +125,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -139,7 +138,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -162,7 +161,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo1,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -175,7 +174,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo2,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -198,7 +197,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection1,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -211,7 +210,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection2,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -225,17 +224,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     }
 
     [Test]
-    public void Equals_DifferentSqlTables ()
+    public void Equals_DifferentAppendedTables ()
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
-      var sqlTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
-      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Inner);
+      // SqlAppendedTables are compared using reference equality, so creating two different references should be enough.
+      var appendedTable1 = SqlStatementModelObjectMother.CreateSqlAppendedTable();
+      var appendedTable2 = SqlStatementModelObjectMother.CreateSqlAppendedTable();
 
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new[] { sqlTable1 },
+          new[] { appendedTable1 },
           null,
           null,
           new Ordering[0],
@@ -248,7 +248,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new[] { sqlTable2 },
+          new[] { appendedTable2 },
           null,
           null,
           new Ordering[0],
@@ -272,7 +272,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new[] { ordering1 },
@@ -285,7 +285,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new[] { ordering2 },
@@ -309,7 +309,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           whereCondition1,
           null,
           new Ordering[0],
@@ -322,7 +322,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           whereCondition2,
           null,
           new Ordering[0],
@@ -346,7 +346,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -359,7 +359,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -382,7 +382,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjectionWithCountAggregation,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -395,7 +395,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -418,7 +418,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -431,7 +431,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -455,7 +455,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -468,7 +468,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -492,7 +492,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -505,7 +505,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -529,7 +529,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           groupByExpression1,
           new Ordering[0],
@@ -542,7 +542,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           groupByExpression2,
           new Ordering[0],
@@ -566,7 +566,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -579,7 +579,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -595,8 +595,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void Equals_ObjectIsNull ()
     {
-      var dataInfo = new TestStreamedValueInfo (typeof (int));
-      var selectProjection = Expression.Constant (1);
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement();
 
       Assert.That (sqlStatement.Equals (null), Is.False);
@@ -622,7 +620,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
       var selectProjection = Expression.Constant (1);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable();
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant ("top");
@@ -634,7 +632,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement1 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new[] { sqlTable },
+          new[] { appendedTable },
           whereCondition,
           groupByExpression,
           new[] { ordering },
@@ -647,7 +645,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement2 = new SqlStatement (
           dataInfo,
           selectProjection,
-          new[] { sqlTable },
+          new[] { appendedTable },
           whereCondition,
           groupByExpression,
           new[] { ordering },
@@ -717,8 +715,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
-      var sqlTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
-      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Left);
+      var appendedTable1 =
+          SqlStatementModelObjectMother.CreateSqlAppendedTable (
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner),
+              JoinSemantics.Inner);
+      var appendedTable2 =
+          SqlStatementModelObjectMother.CreateSqlAppendedTable (
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Left),
+              JoinSemantics.Left);
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant (10);
@@ -728,7 +732,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           dataInfo,
           selectProjection,
-          new[] { sqlTable1, sqlTable2 },
+          new[] { appendedTable1, appendedTable2 },
           whereCondition,
           groupExpression,
           new[] { ordering },
@@ -743,8 +747,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (
           result,
           Is.EqualTo (
-              "SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC UNION ("
-              + setOperationCombinedStatement.SqlStatement + ")"));
+              "SELECT DISTINCT TOP (10) 1 FROM CROSS APPLY [CookTable] [c] OUTER APPLY [KitchenTable] [k] WHERE True GROUP BY \"group\" "
+              + "ORDER BY \"ordering\" ASC "
+              + "UNION (" + setOperationCombinedStatement.SqlStatement + ")"));
     }
   }
 }

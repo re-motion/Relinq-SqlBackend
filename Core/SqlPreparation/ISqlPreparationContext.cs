@@ -29,7 +29,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   {
     bool IsOuterMostQuery { get; }
     void AddExpressionMapping (Expression original, Expression replacement);
-    void AddSqlTable (SqlTable sqlTable);
+    void AddSqlTable (SqlAppendedTable sqlTable);
     Expression GetExpressionMapping (Expression original);
   }
 }

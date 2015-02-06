@@ -28,14 +28,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class SqlTableAndJoinTextGenerator : ITableInfoVisitor
   {
-    public static void GenerateSql (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
+    public static void GenerateSql (SqlAppendedTable table, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      GenerateTextForSqlTable (new SqlTableAndJoinTextGenerator (commandBuilder, stage), sqlTable, commandBuilder, isFirstTable);
-      GenerateSqlForJoins (sqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage), stage);
+      GenerateTextForSqlTable (new SqlTableAndJoinTextGenerator (commandBuilder, stage), table, commandBuilder, isFirstTable);
+      GenerateSqlForJoins (table.SqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage), stage);
     }
 
     private static void GenerateSqlForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, SqlTableAndJoinTextGenerator visitor, ISqlGenerationStage stage)
@@ -47,10 +47,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlTable sqlTable, ISqlCommandBuilder commandBuilder, bool isFirstTable)
+    private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlAppendedTable table, ISqlCommandBuilder commandBuilder, bool isFirstTable)
     {
         // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
-      if (sqlTable.JoinSemantics == JoinSemantics.Left)
+      if (table.JoinSemantics == JoinSemantics.Left)
       {
         if (isFirstTable)
           commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
@@ -61,14 +61,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         if (!isFirstTable)
         {
           commandBuilder.Append (" CROSS ");
-          if (sqlTable.TableInfo is ResolvedSimpleTableInfo)
+          if (table.SqlTable.TableInfo is ResolvedSimpleTableInfo)
             commandBuilder.Append ("JOIN ");
           else
             commandBuilder.Append ("APPLY ");
         }
       }
 
-      sqlTable.TableInfo.Accept (visitor);
+      table.SqlTable.TableInfo.Accept (visitor);
     }
 
     private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)

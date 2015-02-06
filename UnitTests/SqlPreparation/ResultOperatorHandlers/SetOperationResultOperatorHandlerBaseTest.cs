@@ -110,7 +110,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     public void HandleResultOperator_OrderingsWithoutTopInMainSqlStatement_ShouldBeRemoved ()
     {
       _sqlStatementBuilder.Orderings.Add (SqlStatementModelObjectMother.CreateOrdering());
-      var originalSqlTable = SqlStatementModelObjectMother.CreateSqlTable();
+      var originalSqlTable = SqlStatementModelObjectMother.CreateSqlAppendedTable();
       _sqlStatementBuilder.SqlTables.Add (originalSqlTable);
 
       var stage = CreateDefaultSqlPreparationStage();
@@ -141,7 +141,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       // Statement was moved to substatement as is, without affecting select projection (apart from NamedExpression) 
       // and leaving the orderings in place.
-      var subStatement = ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement;
+      var subStatement = ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo).SqlStatement;
       Assert.That (((NamedExpression) subStatement.SelectProjection).Expression, Is.SameAs (originalSelectProjection));
       Assert.That (subStatement.Orderings, Is.EqualTo (new[] { originalOrdering }));
 

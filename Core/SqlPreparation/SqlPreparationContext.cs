@@ -59,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       _mapping[original] = replacement;
     }
 
-    public void AddSqlTable (SqlTable sqlTable)
+    public void AddSqlTable (SqlAppendedTable sqlTable)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 

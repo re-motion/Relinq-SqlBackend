@@ -29,7 +29,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public class DefaultSqlGenerationStage : ISqlGenerationStage
   {
-    public virtual void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable)
+    public virtual void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("table", table);

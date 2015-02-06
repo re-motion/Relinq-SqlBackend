@@ -116,10 +116,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (newExpressionAsSqlSubStatementExpression != null
           && newExpressionAsSqlSubStatementExpression.SqlStatement.DataInfo is StreamedSingleValueInfo)
       {
-        var sqlTable = newExpressionAsSqlSubStatementExpression.ConvertToSqlTable (Generator.GetUniqueIdentifier ("q"));
-        var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+        var appendedTable = newExpressionAsSqlSubStatementExpression.ConvertToSqlTable (Generator.GetUniqueIdentifier ("q"));
+        var sqlTableReferenceExpression = new SqlTableReferenceExpression (appendedTable.SqlTable);
 
-        Context.AddSqlTable (sqlTable, _sqlStatementBuilder);
+        Context.AddSqlTable (appendedTable, _sqlStatementBuilder);
         return Visit (sqlTableReferenceExpression);
       }
       return newExpression;

@@ -28,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     protected void AssertStatementWasMovedToSubStatement (SqlStatement sqlStatement)
     {
       Assert.That (sqlStatement.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (sqlStatement.SqlTables[0].TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (sqlStatement.SqlTables[0].SqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
     }
 
     protected DefaultSqlPreparationStage CreateDefaultSqlPreparationStage ()

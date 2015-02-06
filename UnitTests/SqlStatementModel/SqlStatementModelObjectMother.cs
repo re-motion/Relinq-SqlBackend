@@ -46,10 +46,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
     public static SqlStatement CreateSqlStatement (Expression selectProjection, params SqlTable[] sqlTables)
     {
+      return CreateSqlStatement (selectProjection, sqlTables.Select (x => CreateSqlAppendedTable (x)).ToArray());
+    }
+
+    public static SqlStatement CreateSqlStatement (Expression selectProjection, params SqlAppendedTable[] appendedTables)
+    {
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           selectProjection,
-          sqlTables,
+          appendedTables,
           null,
           null,
           new Ordering[0],
@@ -66,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (null, typeof (Cook))),
           new SqlTableReferenceExpression (sqlTable),
-          new[] { sqlTable },
+          new[] { CreateSqlAppendedTable (sqlTable) },
           null,
           null,
           new Ordering[] { },
@@ -83,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSequenceInfo (typeof (IQueryable<int>), Expression.Constant (0, typeof (int))),
           new SqlTableReferenceExpression (sqlTable),
-          new[] { sqlTable },
+          new[] { CreateSqlAppendedTable (sqlTable) },
           null,
           null,
           new Ordering[] { },
@@ -102,7 +107,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
               typeof (IQueryable<>).MakeGenericType (type),
               Expression.Constant (type.IsValueType ? Activator.CreateInstance (type) : null, type)),
           CreateSqlEntityDefinitionExpression (type),
-          new[] { sqlTable },
+          new[] { CreateSqlAppendedTable (sqlTable) },
           null,
           null,
           new Ordering[] { },
@@ -118,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlStatement (
           new StreamedSingleValueInfo (typeof (int), false),
           Expression.Constant (0),
-          new SqlTable[0],
+          new SqlAppendedTable[0],
           null,
           null,
           new Ordering[0],
@@ -362,10 +367,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlAppendedTable (sqlTable ?? CreateSqlTable(), semantics);
     }
 
+    public static SqlAppendedTable CreateSqlAppendedTable (ITableInfo tableInfo, JoinSemantics semantics = JoinSemantics.Inner)
+    {
+      return new SqlAppendedTable (CreateSqlTable(tableInfo), semantics);
+    }
+
     public static SqlTable.LeftJoinData CreateLeftJoinData ()
     {
       return new SqlTable.LeftJoinData (CreateSqlTable(), ExpressionHelper.CreateExpression (typeof (bool)));
     }
-
   }
 }

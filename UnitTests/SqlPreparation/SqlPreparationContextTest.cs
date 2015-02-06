@@ -123,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void AddSqlTable ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable ();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlAppendedTable ();
       
       _contextWithParent.AddSqlTable (sqlTable);
 

@@ -34,12 +34,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     private TestableSqlStatementTextGenerator _generator;
     private SqlCommandBuilder _commandBuilder;
     private Mock<ISqlGenerationStage> _stageMock;
-    private SqlTable _sqlTable;
+    private SqlAppendedTable _sqlTable;
 
     [SetUp]
     public void SetUp ()
     {
-      _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
+      _sqlTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
+          SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo(),
+          JoinSemantics.Inner);
       _stageMock = new Mock<ISqlGenerationStage> (MockBehavior.Strict);
       _generator = new TestableSqlStatementTextGenerator (_stageMock.Object);
       _commandBuilder = new SqlCommandBuilder();
@@ -68,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
           .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
-          .Callback ((ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
           .Verifiable();
 
       _generator.BuildFromPart (sqlStatement, _commandBuilder);
@@ -336,7 +338,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
-          .Callback ((ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
           .Verifiable();
 
       _generator.Build (sqlStatement, _commandBuilder, false);
@@ -379,7 +381,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
-          .Callback ((ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForGroupByExpression (_commandBuilder, sqlStatement.GroupByExpression))
@@ -403,7 +405,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
-          .Callback ((ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition))
@@ -433,7 +435,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
-          .Callback ((ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, sqlStatement.Orderings[0]))
@@ -465,7 +467,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true))
-          .Callback ((ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable) => commandBuilder.Append ("[Table] AS [t]"))
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement.SetOperationCombinedStatements[0].SqlStatement))

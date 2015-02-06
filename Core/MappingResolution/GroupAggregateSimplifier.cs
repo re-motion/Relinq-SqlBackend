@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
@@ -65,7 +66,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
              && resolvedSqlStatement.Orderings.Count == 0
              && resolvedSqlStatement.GroupByExpression == null
              && resolvedSqlStatement.SqlTables.Count == 1
-             && resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo() is ResolvedJoinedGroupingTableInfo 
+             && resolvedSqlStatement.SqlTables[0].SqlTable.GetResolvedTableInfo() is ResolvedJoinedGroupingTableInfo 
              && resolvedSqlStatement.TopExpression == null
              && !resolvedSqlStatement.IsDistinctQuery;
     }
@@ -87,11 +88,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var resolvedSqlStatement = subStatementExpression.SqlStatement;
       if (IsSimplifiableGroupAggregate (resolvedSqlStatement))
       {
-        var joinedGroupingTableInfo = (ResolvedJoinedGroupingTableInfo) resolvedSqlStatement.SqlTables[0].GetResolvedTableInfo ();
+        var sqlTable = resolvedSqlStatement.SqlTables.Single().SqlTable;
+        var joinedGroupingTableInfo = (ResolvedJoinedGroupingTableInfo) sqlTable.GetResolvedTableInfo ();
 
         // Strip surrounding names so that there won't be a named expression inside the new aggregation
         var elementExpression = _context.RemoveNamesAndUpdateMapping (joinedGroupingTableInfo.AssociatedGroupingSelectExpression.ElementExpression);
-        var visitor = new SimplifyingVisitor (resolvedSqlStatement.SqlTables[0], elementExpression);
+        var visitor = new SimplifyingVisitor (sqlTable, elementExpression);
 
         var aggregationExpression = FindAggregationExpression (unresolvedSelectProjection);
         if (aggregationExpression == null)

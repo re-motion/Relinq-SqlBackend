@@ -114,7 +114,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Returns (fakeResolvedSqlStatement)
           .Verifiable();
       _groupAggregateSimplifier
-          .Setup (mock => mock.SimplifyIfPossible (It.Is<SqlSubStatementExpression> (e => e.SqlStatement == fakeResolvedSqlStatement), sqlStatement.SelectProjection))
+          .Setup (mock => mock.SimplifyIfPossible (It.Is<SqlSubStatementExpression> (e => ReferenceEquals (e.SqlStatement, fakeResolvedSqlStatement)), sqlStatement.SelectProjection))
           .Returns ((SqlSubStatementExpression subStatementExpression, Expression unresolvedSelectProjection) => subStatementExpression)
           .Verifiable();
       _stageMock
@@ -125,7 +125,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                 var expectedStatement =
                     new SqlStatementBuilder (fakeResolvedSqlStatement)
                     { DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<int>), fakeResolvedSqlStatement.SelectProjection) }.GetSqlStatement();
-                sqlTable = (SqlTable) expression.SqlTable;
+                sqlTable = expression.SqlTable;
                 Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (expectedStatement));
               })
           .Returns (resolvedReference)
@@ -146,7 +146,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       Assert.That (result, Is.SameAs (resolvedReference));
       Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (sqlStatementBuilder.SqlTables[0], Is.EqualTo (sqlTable));
+      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable, Is.EqualTo (sqlTable));
     }
 
     [Test]

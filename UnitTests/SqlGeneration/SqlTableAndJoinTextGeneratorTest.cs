@@ -47,9 +47,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void GenerateSql_ForTable ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
-      sqlTable.TableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-      SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, true);
+      var appendedTable = CreateResolvedAppendedTable("Table", "t", JoinSemantics.Inner);
+      SqlTableAndJoinTextGenerator.GenerateSql (appendedTable, _commandBuilder, _stageMock.Object, true);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[Table] AS [t]"));
     }
@@ -57,9 +56,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void GenerateSql_ForSeveralTables ()
     {
-      var sqlTable1 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("Table1", "t1");
-      var sqlTable2 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("Table2", "t2");
-      var sqlTable3 = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo ("Table3", "t3");
+      var sqlTable1 = CreateResolvedAppendedTable ("Table1", "t1", JoinSemantics.Inner);
+      var sqlTable2 = CreateResolvedAppendedTable ("Table2", "t2", JoinSemantics.Inner);
+      var sqlTable3 = CreateResolvedAppendedTable ("Table3", "t3", JoinSemantics.Inner);
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable1, _commandBuilder, _stageMock.Object, true);
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable2, _commandBuilder, _stageMock.Object, false);
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable3, _commandBuilder, _stageMock.Object, false);
@@ -70,9 +69,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void GenerateSql_ForLeftJoin ()
     {
-       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
-       var join = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
-       originalTable.AddJoin (join);
+      var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+
+      var join = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
+       originalTable.SqlTable.AddJoin (join);
 
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition))
@@ -89,9 +89,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
      [Test]
     public void GenerateSql_ForInnerJoin ()
     {
-       var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
+       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
        var join = CreateResolvedJoin (typeof (Cook), "t1", JoinSemantics.Inner, "ID", "CookTable", "t2", "FK");
-       originalTable.AddJoin (join);
+       originalTable.SqlTable.AddJoin (join);
 
        _stageMock
            .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition))
@@ -108,9 +108,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void GenerateSql_ForJoin_Recursive ()
     {
-      var originalTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "t1"), JoinSemantics.Inner);
+      var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
       var join1 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
-      originalTable.AddJoin (join1);
+      originalTable.SqlTable.AddJoin (join1);
       var join2 = CreateResolvedJoin(typeof (Cook), "t2", JoinSemantics.Left, "ID2", "CookTable2", "t3", "FK2");
       join1.JoinedTable.AddJoin (join2);
 
@@ -135,10 +135,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_InnerJoinSemantics_FirstTable ()
+    public void GenerateSql_CrossJoinSemantics_FirstTable ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var sqlTable = CreateResolvedAppendedTable ("Table", "t", JoinSemantics.Inner);
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: true);
       
@@ -146,10 +145,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_InnerJoinSemantics_NonFirstTable_SimpleTableInfo ()
+    public void GenerateSql_CrossJoinSemantics_NonFirstTable_SimpleTableInfo ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var sqlTable = CreateResolvedAppendedTable ("Table", "t", JoinSemantics.Inner);
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: false);
 
@@ -157,11 +155,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_InnerJoinSemantics_NonFirstTable_SubstatementTableInfo ()
+    public void GenerateSql_CrossJoinSemantics_NonFirstTable_SubstatementTableInfo ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook));
       var tableInfo = new ResolvedSubStatementTableInfo("q0", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (tableInfo, JoinSemantics.Inner);
 
       _stageMock
         .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
@@ -175,10 +173,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_LeftJoinSemantics_FirstTable ()
+    public void GenerateSql_OuterApplySemantics_FirstTable ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
+      var sqlTable = CreateResolvedAppendedTable ("Table", "t", JoinSemantics.Left);
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: true);
 
@@ -186,10 +183,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_LeftJoinSemantics_NonFirstTable ()
+    public void GenerateSql_OuterApplySemantics_NonFirstTable ()
     {
-      var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Left);
+      var sqlTable = CreateResolvedAppendedTable ("Table", "t", JoinSemantics.Left);
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: false);
 
@@ -259,37 +255,40 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void GenerateSql_WithUnresolvedTableInfo_RaisesException ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo();
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
+          SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo());
       Assert.That (
-          () => SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, false),
+          () => SqlTableAndJoinTextGenerator.GenerateSql (appendedTable, _commandBuilder, _stageMock.Object, false),
           Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedTableInfo is not valid at this point."));
     }
 
     [Test]
     public void GenerateSql_WithUnresolvedJoinTableInfo_RaisesException ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (SqlStatementModelObjectMother.CreateUnresolvedJoinTableInfo());
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
+          SqlStatementModelObjectMother.CreateUnresolvedJoinTableInfo());
       Assert.That (
-          () => SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, false),
+          () => SqlTableAndJoinTextGenerator.GenerateSql (appendedTable, _commandBuilder, _stageMock.Object, false),
           Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedJoinTableInfo is not valid at this point."));
     }
 
     [Test]
     public void GenerateSql_WithUnresolvedCollectionJoinTableInfo_RaisesException ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo());
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
+          SqlStatementModelObjectMother.CreateUnresolvedCollectionJoinTableInfo());
       Assert.That (
-          () => SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, false),
+          () => SqlTableAndJoinTextGenerator.GenerateSql (appendedTable, _commandBuilder, _stageMock.Object, false),
           Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedCollectionJoinTableInfo is not valid at this point."));
     }
 
     [Test]
     public void GenerateSql_WithUnresolvedGroupReferenceTableInfo ()
     {
-      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo();
-
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
+          SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo());
       Assert.That (
-          () => SqlTableAndJoinTextGenerator.GenerateSql (new SqlTable (tableInfo, JoinSemantics.Inner), _commandBuilder, _stageMock.Object, false),
+          () => SqlTableAndJoinTextGenerator.GenerateSql (appendedTable, _commandBuilder, _stageMock.Object, false),
           Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedGroupReferenceTableInfo is not valid at this point."));
     }
 
@@ -309,6 +308,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
 
       return new SqlJoin (joinedTable, joinSemantics, Expression.Equal (primaryColumn, foreignColumn));
+    }
+
+    private SqlAppendedTable CreateResolvedAppendedTable (string tableName, string tableAlias, JoinSemantics joinSemantics)
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (new ResolvedSimpleTableInfo (typeof (int), tableName, tableAlias));
+      return SqlStatementModelObjectMother.CreateSqlAppendedTable (sqlTable, joinSemantics);
     }
   }
 }

@@ -177,16 +177,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (2));
-      Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof(SqlTable)));
-      Assert.That (_sqlStatementBuilder.SqlTables[1].TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (_sqlStatementBuilder.SqlTables[1].SqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
-      var groupKeyTableTableInfo = (ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[1].TableInfo;
+      var groupKeyTableTableInfo = (ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[1].SqlTable.TableInfo;
       var expectedStatement = new SqlStatementBuilder (sqlStatement) 
         { DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<int>), sqlStatement.SelectProjection) }
         .GetSqlStatement();
       Assert.That (groupKeyTableTableInfo.SqlStatement, Is.EqualTo (expectedStatement));
 
-      var expectedGroupGyExpression = new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[1]);
+      var expectedGroupGyExpression = new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[1].SqlTable);
       SqlExpressionTreeComparer.CheckAreEqualTrees (_sqlStatementBuilder.GroupByExpression, expectedGroupGyExpression);
       SqlExpressionTreeComparer.CheckAreEqualTrees (
           _sqlStatementBuilder.SelectProjection, 
@@ -215,10 +214,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock.Verify();
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (2));
-      Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof (SqlTable)));
-      Assert.That (_sqlStatementBuilder.SqlTables[1].TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (_sqlStatementBuilder.SqlTables[1].SqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       
-      var groupKeyTableTableInfo = (ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[1].TableInfo;
+      var groupKeyTableTableInfo = (ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[1].SqlTable.TableInfo;
       var expectedSelectExpression = new NamedExpression (null, preparedConstantKeySelector);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectExpression, groupKeyTableTableInfo.SqlStatement.SelectProjection);
       
@@ -230,7 +228,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
         .GetSqlStatement ();
       Assert.That (groupKeyTableTableInfo.SqlStatement, Is.EqualTo (expectedStatement));
 
-      var expectedGroupGyExpression = new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[1]);
+      var expectedGroupGyExpression = new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[1].SqlTable);
       SqlExpressionTreeComparer.CheckAreEqualTrees (_sqlStatementBuilder.GroupByExpression, expectedGroupGyExpression);
       SqlExpressionTreeComparer.CheckAreEqualTrees (
           _sqlStatementBuilder.SelectProjection,

@@ -101,7 +101,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedSqlStatement = new SqlStatementBuilder (sqlStatement) { DataInfo = expectedDataInfo }.GetSqlStatement ();
 
       Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((ResolvedSubStatementTableInfo) sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement, Is.EqualTo (expectedSqlStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo).SqlStatement, Is.EqualTo (expectedSqlStatement));
       Assert.That (result, Is.SameAs (sqlStatement.SelectProjection));
     }
 
@@ -286,7 +286,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
-          .Setup (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) sqlStatement.SqlTables[0].TableInfo, _uniqueIdentifierGenerator))
+          .Setup (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) sqlStatement.SqlTables[0].SqlTable.TableInfo, _uniqueIdentifierGenerator))
           .Returns (_fakeResolvedSimpleTableInfo)
           .Verifiable();
       _resolverMock
@@ -297,7 +297,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var newSqlStatment = _stage.ResolveSqlStatement (sqlStatement, _mappingResolutionContext);
 
       _resolverMock.Verify();
-      Assert.That (newSqlStatment.SqlTables[0].TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
+      Assert.That (newSqlStatment.SqlTables[0].SqlTable.TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
       Assert.That (newSqlStatment.SelectProjection, Is.SameAs (fakeEntityExpression));
     }
 

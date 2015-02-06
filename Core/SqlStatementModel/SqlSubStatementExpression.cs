@@ -78,12 +78,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return "(" + _sqlStatement + ")";
     }
     
-    public SqlTable ConvertToSqlTable (string uniqueIdentifier)
+    public SqlAppendedTable ConvertToSqlTable (string uniqueIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
       
-      var joinSemantic = CalculateJoinSemantic();
+      var joinSemantics = CalculateJoinSemantics();
 
       SqlStatement sequenceStatement;
       if (SqlStatement.DataInfo is StreamedSequenceInfo)
@@ -92,10 +92,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         sequenceStatement = ConvertValueStatementToSequenceStatement ();
 
       var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, sequenceStatement);
-      return new SqlTable (resolvedSubStatementTableInfo, joinSemantic);
+      var sqlTable = new SqlTable (resolvedSubStatementTableInfo, joinSemantics);
+      return new SqlAppendedTable (sqlTable, joinSemantics);
     }
 
-    private JoinSemantics CalculateJoinSemantic ()
+    private JoinSemantics CalculateJoinSemantics ()
     {
       var dataInfoAsStreamedSingleValueInfo = SqlStatement.DataInfo as StreamedSingleValueInfo;
       if (dataInfoAsStreamedSingleValueInfo != null && dataInfoAsStreamedSingleValueInfo.ReturnDefaultWhenEmpty)

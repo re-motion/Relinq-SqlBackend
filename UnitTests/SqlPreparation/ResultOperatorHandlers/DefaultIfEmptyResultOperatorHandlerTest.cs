@@ -23,6 +23,7 @@ using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -73,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var sqlStatementBuilder = new SqlStatementBuilder
                                 {
-                                    SqlTables = { sqlTable },
+                                    SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable(sqlTable) },
                                     SelectProjection = selectProjection,
                                     DataInfo = dataInfo
                                 };
@@ -87,13 +88,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (sqlStatementBuilder.WhereCondition, Is.Null);
       Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
       Assert.That (sqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
-
       // The new table now contains a dummy statement (SELECT NULL AS Empty)...
-      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0]);
+      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0].SqlTable);
       
       // ... as well as a join for the original table ...
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
+      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
       // ... with a dummy join condition.
@@ -110,7 +110,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var sqlStatementBuilder = new SqlStatementBuilder
                                 {
-                                    SqlTables = { sqlTable },
+                                    SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable(sqlTable) },
                                     SelectProjection = selectProjection,
                                     WhereCondition = whereCondition,
                                     DataInfo = dataInfo
@@ -123,11 +123,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       // Again, everything is the same, but the table has been replaced.
       Assert.That (sqlStatementBuilder.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
-      AssertIsDummyTable(sqlStatementBuilder.SqlTables[0]);
+      AssertIsDummyTable(sqlStatementBuilder.SqlTables[0].SqlTable);
 
       // This is the join where the original table was moved...
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
+      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
       // ... with the where condition as a join condition. The outer where condition has been cleared.
@@ -138,14 +138,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     [Test]
     public void HandleResultOperator_WithMoreThanOneTable_MovesStatementToSubStatement_AsLeftJoinedTable ()
     {
-      var sqlTable1 = SqlStatementModelObjectMother.CreateSqlTable();
-      var sqlTable2 = SqlStatementModelObjectMother.CreateSqlTable();
-      var selectProjection = new SqlTableReferenceExpression (sqlTable1);
+      var appendedTable1 = SqlStatementModelObjectMother.CreateSqlAppendedTable ();
+      var appendedTable2 = SqlStatementModelObjectMother.CreateSqlAppendedTable();
+      var selectProjection = new SqlTableReferenceExpression (appendedTable1.SqlTable);
       var dataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (selectProjection.Type), selectProjection);
 
       var sqlStatementBuilder = new SqlStatementBuilder
                                 {
-                                    SqlTables = { sqlTable1, sqlTable2 },
+                                    SqlTables = { appendedTable1, appendedTable2 },
                                     SelectProjection = selectProjection,
                                     DataInfo = dataInfo
                                 };
@@ -156,27 +156,27 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       // Again, there is now a dummy table...
       Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
-      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0]);
+      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0].SqlTable);
 
       // ... and joined to it is a substatement that used to be the original statement:
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
+      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
       Assert.That (join.JoinedTable.TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
       var joinedSubStatement = ((ResolvedSubStatementTableInfo) join.JoinedTable.TableInfo).SqlStatement;
-      Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { sqlTable1, sqlTable2 }));
+      Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { appendedTable1, appendedTable2 }));
     }
 
     [Test]
     public void HandleResultOperator_WithSetOperation_MovesStatementToSubStatement_AsLeftJoinedTable ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      var selectProjection = new SqlTableReferenceExpression (sqlTable);
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable ();
+      var selectProjection = new SqlTableReferenceExpression (appendedTable.SqlTable);
       var dataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (selectProjection.Type), selectProjection);
       var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
 
       var sqlStatementBuilder = new SqlStatementBuilder
                                 {
-                                    SqlTables = { sqlTable },
+                                    SqlTables = { appendedTable },
                                     SelectProjection = selectProjection,
                                     DataInfo = dataInfo,
                                     SetOperationCombinedStatements = { setOperationCombinedStatement }
@@ -188,14 +188,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       // Again, there is now a dummy table...
       Assert.That (sqlStatementBuilder.SqlTables, Has.Count.EqualTo (1));
-      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0]);
+      AssertIsDummyTable (sqlStatementBuilder.SqlTables[0].SqlTable);
 
       // ... and joined to it is a substatement that used to be the original statement:
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].OrderedJoins.Single();
+      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
       Assert.That (join.JoinedTable.TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
       var joinedSubStatement = ((ResolvedSubStatementTableInfo) join.JoinedTable.TableInfo).SqlStatement;
-      Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { appendedTable }));
       Assert.That (joinedSubStatement.SetOperationCombinedStatements, Is.EqualTo (new[] { setOperationCombinedStatement }));
     }
 

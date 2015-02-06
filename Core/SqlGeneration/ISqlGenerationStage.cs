@@ -27,7 +27,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// </summary>
   public interface ISqlGenerationStage
   {
-    void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable);
+    void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlAppendedTable table, bool isFirstTable);
     void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression);
     void GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression, SetOperationsMode setOperationsMode);
     void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression);

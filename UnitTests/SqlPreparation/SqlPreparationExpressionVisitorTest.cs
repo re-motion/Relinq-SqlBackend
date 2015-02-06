@@ -124,7 +124,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var querModel = ExpressionHelper.CreateQueryModel (mainFromClause);
       var expression = new SubQueryExpression (querModel);
       var fakeSqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement());
-      fakeSqlStatementBuilder.SqlTables.Add (_sqlTable);
+      fakeSqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlAppendedTable());
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
       _stageMock
@@ -203,7 +203,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                                         TopExpression = null
                                     };
       fakeSqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
-      fakeSqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
+      fakeSqlStatementBuilder.SqlTables.Add (SqlStatementModelObjectMother.CreateSqlAppendedTable());
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
       fakeSqlStatementBuilder.Orderings.Clear();
       var expectedStatement = fakeSqlStatementBuilder.GetSqlStatement();

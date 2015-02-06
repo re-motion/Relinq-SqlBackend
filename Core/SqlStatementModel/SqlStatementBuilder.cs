@@ -34,7 +34,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public bool IsDistinctQuery { get; set; }
     public Expression TopExpression { get; set; }
     public Expression SelectProjection { get; set; }
-    public List<SqlTable> SqlTables { get; private set; }
+    public List<SqlAppendedTable> SqlTables { get; private set; }
     public Expression WhereCondition { get; set; }
     public Expression GroupByExpression { get; set; }
     public List<Ordering> Orderings { get; private set; }
@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       RowNumberSelector = sqlStatement.RowNumberSelector;
       CurrentRowNumberOffset = sqlStatement.CurrentRowNumberOffset;
 
-      SqlTables = new List<SqlTable> (sqlStatement.SqlTables);
+      SqlTables = new List<SqlAppendedTable> (sqlStatement.SqlTables);
       Orderings = new List<Ordering> (sqlStatement.Orderings);
       SetOperationCombinedStatements = new List<SetOperationCombinedStatement> (sqlStatement.SetOperationCombinedStatements);
     }
@@ -133,7 +133,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       {
         sb.Append (" FROM ");
         sb.Append (SqlTables.First());
-        SqlTables.Skip (1).Aggregate (sb, (builder, table) => builder.Append (", ").Append (table));
+        SqlTables.Skip(1).Aggregate (sb, (builder, table) => builder.Append (" ").Append (table));
       }
       if (WhereCondition != null)
         sb.Append (" WHERE ").Append (WhereCondition);
@@ -174,7 +174,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       RowNumberSelector = null;
       CurrentRowNumberOffset = null;
 
-      SqlTables = new List<SqlTable>();
+      SqlTables = new List<SqlAppendedTable>();
       Orderings = new List<Ordering>();
       SetOperationCombinedStatements = new List<SetOperationCombinedStatement>();
     }

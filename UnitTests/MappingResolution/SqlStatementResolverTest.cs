@@ -81,8 +81,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var sequence = new MockSequence();
       _stageMock
           .InSequence (sequence)
-          .Expect (mock => mock.ResolveTableInfo (_sqlTable.TableInfo, _mappingResolutionContext))
-          .Return (_fakeResolvedSimpleTableInfo);
+          .Setup (mock => mock.ResolveTableInfo (_sqlTable.TableInfo, _mappingResolutionContext))
+          .Returns (_fakeResolvedSimpleTableInfo)
           .Verifiable();
       var fakeResolvedJoinedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
       _stageMock
@@ -305,7 +305,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Returns (fakeOrderExpression)
           .Verifiable();
       _stageMock
-          .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
+          .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].SqlTable.TableInfo, _mappingResolutionContext))
           .Returns (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"))
           .Verifiable();
       _stageMock
@@ -369,8 +369,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Returns (ordering.Expression)
           .Verifiable();
       _stageMock
-          .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
-          .Returns ((IResolvedTableInfo) sqlStatement.SqlTables[0].TableInfo)
+          .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].SqlTable.TableInfo, _mappingResolutionContext))
+          .Returns ((IResolvedTableInfo) sqlStatement.SqlTables[0].SqlTable.TableInfo)
           .Verifiable();
       _stageMock
           .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))

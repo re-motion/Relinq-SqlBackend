@@ -102,7 +102,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (expression.Type, "from expression");
       var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      FromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], sqlTableReferenceExpression, null);
+      
+      Assertion.IsTrue (sqlTable.JoinSemantics == JoinSemantics.Inner);
+      FromExpressionInfo = new FromExpressionInfo (
+          new SqlAppendedTable (sqlTable, JoinSemantics.Inner),
+          new Ordering[0],
+          sqlTableReferenceExpression,
+          null);
 
       return sqlTableReferenceExpression;
     }
@@ -140,8 +146,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var oldStyleJoinedTable = _tableGenerator (joinTableInfo);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
 
+      Assertion.IsTrue (oldStyleJoinedTable.JoinSemantics == JoinSemantics.Inner);
       FromExpressionInfo = new FromExpressionInfo (
-          sqlTable: oldStyleJoinedTable,
+          appendedTable: new SqlAppendedTable (oldStyleJoinedTable, JoinSemantics.Inner),
           extractedOrderings: new Ordering[0],
           itemSelector: sqlTableReferenceExpression,
           whereCondition: new UnresolvedCollectionJoinConditionExpression (oldStyleJoinedTable));
@@ -157,9 +164,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, Context, _generator);
       FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator, _orderingExtractionPolicy);
-      Assertion.DebugAssert (FromExpressionInfo.Value.WhereCondition == null);
+      Assertion.IsTrue (FromExpressionInfo.Value.WhereCondition == null);
 
-      return new SqlTableReferenceExpression (FromExpressionInfo.Value.SqlTable);
+      return new SqlTableReferenceExpression (FromExpressionInfo.Value.AppendedTable.SqlTable);
     }
 
     public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
@@ -168,7 +175,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
-      FromExpressionInfo = new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
+      FromExpressionInfo = new FromExpressionInfo (
+          new SqlAppendedTable (sqlTable, JoinSemantics.Inner),
+          new Ordering[0],
+          new SqlTableReferenceExpression (sqlTable),
+          null);
 
       return expression;
     }
@@ -197,12 +208,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           whereCondition = Expression.AndAlso (fromExpressionInfo.WhereCondition, whereCondition);
 
         FromExpressionInfo = new FromExpressionInfo (
-            fromExpressionInfo.SqlTable,
+            fromExpressionInfo.AppendedTable,
             fromExpressionInfo.ExtractedOrderings.ToArray(),
             fromExpressionInfo.ItemSelector,
             whereCondition);
 
-        return new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
+        return new SqlTableReferenceExpression (fromExpressionInfo.AppendedTable.SqlTable);
       }
 
       return base.VisitQuerySourceReference (expression);

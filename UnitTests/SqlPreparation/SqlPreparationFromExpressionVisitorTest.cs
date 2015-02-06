@@ -76,9 +76,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           _someOrderingExtractionPolicy);
 
-      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
-
-      var tableInfo = result.SqlTable.TableInfo;
+      Assert.That (result.AppendedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      var tableInfo = result.AppendedTable.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (UnresolvedTableInfo)));
 
       Assert.That (tableInfo.ItemType, Is.SameAs (typeof (Cook)));
@@ -102,8 +101,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           _someOrderingExtractionPolicy);
 
-      Assert.That (result.SqlTable.TableInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinTableInfo)));
-      Assert.That (((UnresolvedCollectionJoinTableInfo) result.SqlTable.TableInfo).MemberInfo, Is.EqualTo (memberInfo));
+      Assert.That (result.AppendedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.AppendedTable.SqlTable.TableInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinTableInfo)));
+      Assert.That (((UnresolvedCollectionJoinTableInfo) result.AppendedTable.SqlTable.TableInfo).MemberInfo, Is.EqualTo (memberInfo));
     }
 
     [Test]
@@ -151,8 +151,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      Assert.That (result.SqlTable.TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (((ResolvedSubStatementTableInfo) result.SqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (0));
+      Assert.That (result.AppendedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.AppendedTable.SqlTable.TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) result.AppendedTable.SqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (0));
       Assert.That (result.ExtractedOrderings, Is.Not.Empty);
     }
 
@@ -177,8 +178,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           OrderingExtractionPolicy.DoNotExtractOrderings);
 
-      Assert.That (result.SqlTable.TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (((ResolvedSubStatementTableInfo) result.SqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (0));
+      Assert.That (result.AppendedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.AppendedTable.SqlTable.TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((ResolvedSubStatementTableInfo) result.AppendedTable.SqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (0));
       Assert.That (result.ExtractedOrderings, Is.Empty);
     }
 
@@ -204,7 +206,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator, 
           _someOrderingExtractionPolicy);
 
-      Assert.That (result.SqlTable.TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (result.AppendedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.AppendedTable.SqlTable.TableInfo, Is.InstanceOf (typeof (ResolvedSubStatementTableInfo)));
     }
 
     [Test]
@@ -220,18 +223,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           _someOrderingExtractionPolicy);
 
-      Assert.That (result.SqlTable.TableInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinTableInfo)));
+      Assert.That (result.AppendedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.AppendedTable.SqlTable.TableInfo, Is.TypeOf (typeof (UnresolvedCollectionJoinTableInfo)));
 
-      var unresolvedCollectionJoinTableInfo = (UnresolvedCollectionJoinTableInfo) result.SqlTable.TableInfo;
+      var unresolvedCollectionJoinTableInfo = (UnresolvedCollectionJoinTableInfo) result.AppendedTable.SqlTable.TableInfo;
       Assert.That (unresolvedCollectionJoinTableInfo.SourceExpression, Is.EqualTo (memberExpression.Expression));
       Assert.That (unresolvedCollectionJoinTableInfo.MemberInfo, Is.EqualTo (memberExpression.Member));
 
       Assert.That (result.ExtractedOrderings, Is.Empty);
 
-      var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
+      var expectedItemSelector = new SqlTableReferenceExpression (result.AppendedTable.SqlTable);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
 
-      var expectedWhereCondition = new UnresolvedCollectionJoinConditionExpression (result.SqlTable);
+      var expectedWhereCondition = new UnresolvedCollectionJoinConditionExpression (result.AppendedTable.SqlTable);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, result.WhereCondition);
     }
 
@@ -255,8 +259,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           _someOrderingExtractionPolicy);
 
-      var sqlTable = result.SqlTable;
-      var tableInfo = (UnresolvedCollectionJoinTableInfo) sqlTable.TableInfo;
+      var sqlTable = result.AppendedTable;
+      var tableInfo = (UnresolvedCollectionJoinTableInfo) sqlTable.SqlTable.TableInfo;
       Assert.That (tableInfo.SourceExpression, Is.SameAs (replacement));
     }
 
@@ -275,19 +279,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           _tableGenerator,
           _someOrderingExtractionPolicy);
 
-      Assert.That (result.SqlTable, Is.Not.SameAs (sqlTable));
+      Assert.That (result.AppendedTable, Is.Not.SameAs (sqlTable));
       Assert.That (result.WhereCondition, Is.Null);
       Assert.That (result.ExtractedOrderings, Is.Empty);
 
-      var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
+      var expectedItemSelector = new SqlTableReferenceExpression (result.AppendedTable.SqlTable);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
 
-      var tableInfo = result.SqlTable.TableInfo;
+      var tableInfo = result.AppendedTable.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (UnresolvedGroupReferenceTableInfo)));
       var castTableInfo = (UnresolvedGroupReferenceTableInfo) tableInfo;
       Assert.That (castTableInfo.ItemType, Is.SameAs (typeof (int)));
       Assert.That (castTableInfo.ReferencedGroupSource, Is.SameAs (sqlTable));
-      Assert.That (result.SqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
+      Assert.That (result.AppendedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
     [Test]
@@ -347,10 +351,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fromExpressionInfo = (FromExpressionInfo) visitor.FromExpressionInfo;
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (
-          new SqlTableReferenceExpression (fromExpressionInfo.SqlTable),
+          new SqlTableReferenceExpression (fromExpressionInfo.AppendedTable.SqlTable),
           _context.GetExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause)));
       SqlExpressionTreeComparer.CheckAreEqualTrees (fromExpressionInfo.ItemSelector, result);
-      Assert.That (((UnresolvedTableInfo) fromExpressionInfo.SqlTable.TableInfo).ItemType, Is.EqualTo (typeof (Cook)));
+      Assert.That (((UnresolvedTableInfo) fromExpressionInfo.AppendedTable.SqlTable.TableInfo).ItemType, Is.EqualTo (typeof (Cook)));
       Assert.That (fromExpressionInfo.WhereCondition, Is.SameAs (fakeWhereExpression));
       Assert.That (fromExpressionInfo.ExtractedOrderings.Count, Is.EqualTo (0));
     }
@@ -358,6 +362,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void VisitQuerySourceReferenceExpression_WithNonNullWhereCondition ()
     {
+      // TODO RMLNQSQL-78: Simplify
       var memberInfo = typeof (Cook).GetProperty ("Assistants");
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
       var innerSequenceExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, memberInfo);
@@ -402,15 +407,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void VisitQuerySourceReferenceExpression_WithOrderings_AndExtractOrdingsPolicy ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
-      var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      // TODO RMLNQSQL-78: Simplify
+      var sqlTableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
       var selectProjection = new NamedExpression("test", Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("Name")));
       var orderingExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("ID"));
       var sqlStatement = new SqlStatementBuilder
                          {
                              DataInfo = new StreamedSequenceInfo(typeof (DateTime[]), Expression.Constant (new DateTime (2000, 1, 1))),
                              SelectProjection = selectProjection,
-                             SqlTables = { sqlTable },
+                             SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable() },
                              Orderings =
                                  { new Ordering (orderingExpression, OrderingDirection.Asc) }
                          }.GetSqlStatement();
@@ -456,9 +461,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (
           ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+          ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       var resolvedSubStatementtableInfo =
-         (ResolvedSubStatementTableInfo) ((SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable).TableInfo;
+         (ResolvedSubStatementTableInfo) ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Expression).SqlTable.TableInfo;
       Assert.That (resolvedSubStatementtableInfo.SqlStatement.SelectProjection, Is.SameAs(fakeSelectExpression));
       Assert.That (resolvedSubStatementtableInfo.SqlStatement.Orderings.Count, Is.EqualTo (0));
       Assert.That (((MemberExpression) fromExpressionInfo.ExtractedOrderings[0].Expression).Member, Is.EqualTo(typeof(KeyValuePair<,>).MakeGenericType(typeof(string), typeof(int)).GetProperty("Value")));
@@ -466,13 +471,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (((MemberExpression) fromExpressionInfo.ItemSelector).Expression, Is.TypeOf(typeof(SqlTableReferenceExpression)));
       Assert.That (((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ItemSelector).Expression).SqlTable, Is.TypeOf (typeof (SqlTable)));
       Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ItemSelector).Expression).SqlTable).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+          ((SqlTableReferenceExpression) ((MemberExpression) fromExpressionInfo.ItemSelector).Expression).SqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (((MemberExpression) fromExpressionInfo.ItemSelector).Member, Is.EqualTo (typeof (KeyValuePair<,>).MakeGenericType (typeof (string), typeof (int)).GetProperty ("Key")));
     }
 
     [Test]
     public void VisitQuerySourceReferenceExpression_WithOrderings_AndDoNotExtractOrdingsPolicy ()
     {
+      // TODO RMLNQSQL-78: Simplify
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       var selectProjection = new NamedExpression("test", Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("Name")));
@@ -481,7 +487,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          {
                              DataInfo = new StreamedSequenceInfo(typeof (DateTime[]), Expression.Constant (new DateTime (2000, 1, 1))),
                              SelectProjection = selectProjection,
-                             SqlTables = { sqlTable },
+                             SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable(sqlTable) },
                              Orderings =
                                  { new Ordering (orderingExpression, OrderingDirection.Asc) }
                          }.GetSqlStatement();

@@ -92,7 +92,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
+      Assert.That (result.AppendedTable, Is.Not.Null);
     }
 
     [Test]

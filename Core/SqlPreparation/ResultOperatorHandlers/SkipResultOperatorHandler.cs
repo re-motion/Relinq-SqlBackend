@@ -80,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var subStatementWithRowNumber = CreateSubStatementWithRowNumber (sqlStatementBuilder, generator, stage, context);
 
       sqlStatementBuilder.SelectProjection = subStatementWithRowNumber.OriginalProjectionSelector;
-      sqlStatementBuilder.SqlTables.Add (subStatementWithRowNumber.SubStatementTable);
+      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable(subStatementWithRowNumber.SubStatementTable, JoinSemantics.Inner));
       sqlStatementBuilder.AddWhereCondition (Expression.GreaterThan (subStatementWithRowNumber.RowNumberSelector, resultOperator.Count));
       sqlStatementBuilder.Orderings.Add (new Ordering (subStatementWithRowNumber.RowNumberSelector, OrderingDirection.Asc));
       sqlStatementBuilder.DataInfo = originalDataInfo;

@@ -213,6 +213,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       resultOperatorHandler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
     }
 
+    // TODO RMLNQSQL-78: Remove return values of these methods.
     public SqlTable AddQuerySource (IQuerySource source, Expression fromExpression)
     {
       ArgumentUtility.CheckNotNull ("source", source);
@@ -226,7 +227,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       AddPreparedFromExpression (fromExpressionInfo);  
       
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
-      return fromExpressionInfo.SqlTable;
+      return fromExpressionInfo.AppendedTable.SqlTable;
     }
 
     public void AddPreparedFromExpression (FromExpressionInfo fromExpressionInfo)
@@ -239,7 +240,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
         SqlStatementBuilder.Orderings.Add (ordering);
 
-      SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
+      SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.AppendedTable);
     }
 
     private ICollection GetConstantCollectionValue (QueryModel queryModel)

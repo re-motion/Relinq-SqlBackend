@@ -26,7 +26,6 @@ using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
@@ -41,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var selectProjection = Expression.Constant ("select");
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant ("top");
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable();
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
       var rowNumberSelector = Expression.Constant("selector");
       var currentRowNumberOffset = Expression.Constant(1);
@@ -51,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
           selectProjection,
-          new[] { sqlTable },
+          new[] { appendedTable },
           whereCondition,
           groupExpression,
           new[] { ordering },
@@ -65,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
-      Assert.That (testedBuilder.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (testedBuilder.SqlTables, Is.EqualTo (new[] { appendedTable }));
       Assert.That (testedBuilder.Orderings, Is.EqualTo (new[] { ordering }));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
@@ -102,14 +101,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       var constantExpression = Expression.Constant ("test");
       statementBuilder.SelectProjection = constantExpression;
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      statementBuilder.SqlTables.Add (sqlTable);
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable();
+      statementBuilder.SqlTables.Add (appendedTable);
 
       var result = statementBuilder.GetSqlStatement();
 
       Assert.That (result.SelectProjection, Is.SameAs (constantExpression));
       Assert.That (result.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (result.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (result.SqlTables[0], Is.SameAs (appendedTable));
     }
 
     [Test]
@@ -142,7 +141,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var isDistinctQuery = BooleanObjectMother.GetRandomBoolean();
       var selectProjection = new AggregationExpression (typeof (int), Expression.Constant (1), AggregationModifier.Min);
       var whereCondition = Expression.Constant (true);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable();
       var ordering = new Ordering (Expression.Constant ("order"), OrderingDirection.Desc);
       var rowNumberSelector = Expression.Constant ("selector");
       var currentRowNumberOffset = Expression.Constant (1);
@@ -155,7 +154,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                                  TopExpression = topExpression,
                                  IsDistinctQuery = isDistinctQuery,
                                  SelectProjection = selectProjection,
-                                 SqlTables = { sqlTable },
+                                 SqlTables = { appendedTable },
                                  WhereCondition = whereCondition,
                                  RowNumberSelector = rowNumberSelector,
                                  CurrentRowNumberOffset = currentRowNumberOffset,
@@ -170,7 +169,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (sqlStatement.TopExpression, Is.SameAs (topExpression));
       Assert.That (sqlStatement.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
       Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (sqlStatement.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (sqlStatement.SqlTables, Is.EqualTo (new[] { appendedTable }));
       Assert.That (sqlStatement.Orderings, Is.EqualTo (new[] { ordering }));
       Assert.That (sqlStatement.WhereCondition, Is.SameAs (whereCondition));
       Assert.That (sqlStatement.RowNumberSelector, Is.SameAs (rowNumberSelector));
@@ -188,7 +187,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                                  TopExpression =  ExpressionHelper.CreateExpression(),
                                  IsDistinctQuery = true,
                                  SelectProjection = new AggregationExpression(typeof(int), Expression.Constant (1),AggregationModifier.Min),
-                                 SqlTables = { new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner) },
+                                 SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable() },
                                  WhereCondition = Expression.Constant (true),
                                  RowNumberSelector = Expression.Constant ("selector"),
                                  CurrentRowNumberOffset = Expression.Constant (1),
@@ -322,8 +321,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
-      var sqlTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
-      var sqlTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Left);
+      var appendedTable1 =
+          SqlStatementModelObjectMother.CreateSqlAppendedTable (
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner),
+              JoinSemantics.Inner);
+      var appendedTable2 =
+          SqlStatementModelObjectMother.CreateSqlAppendedTable (
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Left),
+              JoinSemantics.Left);
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant (10);
@@ -334,7 +339,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                     {
                         DataInfo = dataInfo,
                         SelectProjection = selectProjection,
-                        SqlTables = { sqlTable1, sqlTable2 },
+                        SqlTables = { appendedTable1, appendedTable2 },
                         Orderings = { ordering },
                         WhereCondition = whereCondition,
                         TopExpression = topExpression,
@@ -348,7 +353,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (
           result,
           Is.EqualTo (
-              "SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC "
+              "SELECT DISTINCT TOP (10) 1 FROM CROSS APPLY [CookTable] [c] OUTER APPLY [KitchenTable] [k] WHERE True GROUP BY \"group\" "
+              + "ORDER BY \"ordering\" ASC "
               + "UNION (" + setOperationCombinedStatement.SqlStatement + ")"));
     }
 
@@ -357,18 +363,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var dataInfo = new TestStreamedValueInfo (typeof (int));
       var selectProjection = Expression.Constant (1);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
+      var appendedTable =
+          SqlStatementModelObjectMother.CreateSqlAppendedTable (
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner),
+              JoinSemantics.Inner);
 
       var builder = new SqlStatementBuilder
       {
         DataInfo = dataInfo,
         SelectProjection = selectProjection,
-        SqlTables = { sqlTable },
+        SqlTables = { appendedTable },
       };
 
       var result = builder.ToString ();
 
-      Assert.That (result, Is.EqualTo ("SELECT 1 FROM [CookTable] [c]"));
+      Assert.That (result, Is.EqualTo ("SELECT 1 FROM CROSS APPLY [CookTable] [c]"));
     }
 
     [Test]

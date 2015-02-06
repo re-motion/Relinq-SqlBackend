@@ -91,6 +91,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     protected void MoveCurrentStatementToSqlTable (
         SqlStatementBuilder sqlStatementBuilder,
         ISqlPreparationContext context,
+        // TODO RMLNQSQL-78: Replace with SqlTable
         Func<ITableInfo, SqlTable> tableGenerator,
         ISqlPreparationStage stage,
         OrderingExtractionPolicy orderingExtractionPolicy = OrderingExtractionPolicy.ExtractOrderingsIntoProjection)
@@ -105,7 +106,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
           tableGenerator,
           orderingExtractionPolicy);
 
-      sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
+      sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.AppendedTable);
       sqlStatementBuilder.SelectProjection = fromExpressionInfo.ItemSelector;
       sqlStatementBuilder.Orderings.AddRange (fromExpressionInfo.ExtractedOrderings);
       Assertion.DebugAssert (fromExpressionInfo.WhereCondition == null);

@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
       var originalSqlTable = sqlStatementBuilder.SqlTables[0];
       var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
-      var join = new SqlJoin (originalSqlTable, JoinSemantics.Left, joinCondition);
+      var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
       // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
       // here because the left side is just the nullIfEmptySqlTable (and there is nothing else in this statement).
       // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
@@ -81,7 +81,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       // Replace original table with dummy table:
       sqlStatementBuilder.SqlTables.Clear();
-      sqlStatementBuilder.SqlTables.Add (nullIfEmptySqlTable);
+      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable(nullIfEmptySqlTable, JoinSemantics.Inner));
 
       // WHERE condition was moved to JOIN condition => no longer needed.
       sqlStatementBuilder.WhereCondition = null;

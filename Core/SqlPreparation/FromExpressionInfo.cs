@@ -28,19 +28,19 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public struct FromExpressionInfo
   {
-    public FromExpressionInfo (SqlTable sqlTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition)
+    public FromExpressionInfo (SqlAppendedTable appendedTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("appendedTable", appendedTable);
       ArgumentUtility.CheckNotNull ("extractedOrderings", extractedOrderings);
       ArgumentUtility.CheckNotNull ("itemSelector", itemSelector);
       
-      SqlTable = sqlTable;
+      AppendedTable = appendedTable;
       ExtractedOrderings = Array.AsReadOnly(extractedOrderings);
       ItemSelector = itemSelector;
       WhereCondition = whereCondition;
     }
 
-    public readonly SqlTable SqlTable;
+    public readonly SqlAppendedTable AppendedTable;
     public readonly ReadOnlyCollection<Ordering> ExtractedOrderings;
     public readonly Expression ItemSelector;
     public readonly Expression WhereCondition;

@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock.Verify();
 
       Assert.That (_statementBuilder.DataInfo, Is.SameAs (originalStatement.DataInfo));
-      Assert.That (_statementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.SqlTable));
+      Assert.That (_statementBuilder.SqlTables[0], Is.SameAs (fakeFromExpressionInfo.AppendedTable));
       Assert.That (_statementBuilder.SelectProjection, Is.SameAs (fakeFromExpressionInfo.ItemSelector));
 
       var mappedItemExpression = _context.GetExpressionMapping (((StreamedSequenceInfo) originalStatement.DataInfo).ItemExpression);
@@ -155,7 +155,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_statementBuilder.TopExpression, Is.Null);
       
       var sqlTable = _statementBuilder.SqlTables[0];
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.SqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
@@ -203,7 +203,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_statementBuilder.GroupByExpression, Is.Null);
 
       var sqlTable = _statementBuilder.SqlTables[0];
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.SqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
@@ -231,7 +231,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_statementBuilder.IsDistinctQuery, Is.False);
 
       var sqlTable = _statementBuilder.SqlTables[0];
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.SqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
@@ -271,7 +271,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (_statementBuilder.SetOperationCombinedStatements, Is.Empty);
 
       var sqlTable = _statementBuilder.SqlTables[0];
-      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
+      Assert.That (((ResolvedSubStatementTableInfo) sqlTable.SqlTable.TableInfo).SqlStatement, Is.EqualTo (originalStatement));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
     }
 
@@ -298,7 +298,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     private FromExpressionInfo CreateFakeFromExpressionInfo (Ordering[] extractedOrderings)
     {
       return new FromExpressionInfo (
-          new SqlTable (new ResolvedSubStatementTableInfo("sc", _statementBuilder.GetSqlStatement()), JoinSemantics.Inner),
+          new SqlAppendedTable (
+              new SqlTable (new ResolvedSubStatementTableInfo ("sc", _statementBuilder.GetSqlStatement()), JoinSemantics.Inner),
+              JoinSemantics.Inner),
           extractedOrderings,
           Expression.Constant (0),
           null);

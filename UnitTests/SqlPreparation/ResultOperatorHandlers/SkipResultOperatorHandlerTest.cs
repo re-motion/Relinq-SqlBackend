@@ -44,7 +44,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     private Mock<ISqlPreparationStage> _stageMock;
     private ISqlPreparationContext _context;
     private SkipResultOperatorHandler _handler;
-    private SqlTable _sqlTable;
     private SqlTableReferenceExpression _selectProjection;
     private Ordering _ordering;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -58,16 +57,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
 
       _handler = new SkipResultOperatorHandler ();
-      
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)), JoinSemantics.Inner);
-      _selectProjection = new SqlTableReferenceExpression (_sqlTable);
+
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
+      _selectProjection = new SqlTableReferenceExpression (sqlTable);
 
       _ordering = new Ordering (Expression.Constant (7), OrderingDirection.Asc);
       _sqlStatementBuilder = new SqlStatementBuilder
       {
         SelectProjection = _selectProjection,
         DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook ())),
-        SqlTables = { _sqlTable },
+        SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable(sqlTable) },
       };
 
       _tupleCtor = _tupleCtor = typeof (KeyValuePair<Cook, int>).GetConstructor (new[] { typeof (Cook), typeof (int) });
@@ -99,10 +98,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
       var sqlTable = _sqlStatementBuilder.SqlTables[0];
-      Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (sqlTable.SqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (sqlTable.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
 
-      var subStatementTableInfo = ((ResolvedSubStatementTableInfo) sqlTable.TableInfo);
+      var subStatementTableInfo = ((ResolvedSubStatementTableInfo) sqlTable.SqlTable.TableInfo);
       Assert.That (subStatementTableInfo.SqlStatement.SelectProjection, Is.SameAs (fakePreparedProjection));
       Assert.That (subStatementTableInfo.TableAlias, Is.EqualTo ("q0"));
     }
@@ -145,7 +144,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      var subStatement = GetSubStatement(_sqlStatementBuilder.SqlTables[0]);
+      var subStatement = GetSubStatement(_sqlStatementBuilder.SqlTables[0].SqlTable);
       Assert.That (subStatement.Orderings, Is.Empty);
     }
 
@@ -160,7 +159,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0]);
+      var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0].SqlTable);
       Assert.That (subStatement.Orderings, Is.Not.Empty);
       Assert.That (subStatement.Orderings, Is.EqualTo (new[] { _ordering }));
     }
@@ -173,7 +172,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0]);
+      var subStatement = GetSubStatement (_sqlStatementBuilder.SqlTables[0].SqlTable);
       Assert.That (subStatement.DataInfo, Is.InstanceOf (typeof (StreamedSequenceInfo)));
       Assert.That (subStatement.DataInfo.DataType, Is.EqualTo(typeof (IQueryable<KeyValuePair<Cook, int>>)));
     }
@@ -189,7 +188,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, stage, _context);
 
-      AssertStatementWasMovedToSubStatement (GetSubStatement (_sqlStatementBuilder.SqlTables[0]));
+      AssertStatementWasMovedToSubStatement (GetSubStatement (_sqlStatementBuilder.SqlTables[0].SqlTable));
     }
 
     [Test]
@@ -201,7 +200,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
       var expectedSelectProjection = Expression.MakeMemberAccess (
-          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), GetTupleProperty ("Key"));
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0].SqlTable), GetTupleProperty ("Key"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, _sqlStatementBuilder.SelectProjection);
     }
 
@@ -214,7 +213,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
-          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]), 
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0].SqlTable),
           GetTupleProperty ("Value"));
       var expectedWhereCondition = Expression.GreaterThan (expectedRowNumberSelector, resultOperator.Count);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedWhereCondition, _sqlStatementBuilder.WhereCondition);
@@ -229,7 +228,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
-          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0].SqlTable),
           GetTupleProperty ("Value"));
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (1));
@@ -260,7 +259,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
       var expectedRowNumberSelector = Expression.MakeMemberAccess (
-          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0]),
+          new SqlTableReferenceExpression (_sqlStatementBuilder.SqlTables[0].SqlTable),
           GetTupleProperty ("Value"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedRowNumberSelector, _sqlStatementBuilder.RowNumberSelector);
     }

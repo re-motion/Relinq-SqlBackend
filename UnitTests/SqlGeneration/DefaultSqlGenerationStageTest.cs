@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq.Expressions;
+using JetBrains.Annotations;
 using Moq;
 using Moq.Language.Flow;
 using Moq.Protected;
@@ -42,7 +43,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [SetUp]
     public void SetUp ()
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
+          SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo(),
+          JoinSemantics.Inner);
       _entityExpression = new SqlEntityDefinitionExpression (
           typeof (string),
           "t",
@@ -111,7 +114,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           Throws.Nothing);
     }
 
-    private static string SomeMethod (string s)
+    private static string SomeMethod ([UsedImplicitly] string s)
     {
       throw new NotImplementedException();
     }

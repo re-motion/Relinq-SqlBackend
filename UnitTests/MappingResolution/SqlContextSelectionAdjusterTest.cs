@@ -24,7 +24,6 @@ using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
@@ -109,16 +108,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var whereCondition = Expression.Constant(true);
       var topExpression = Expression.Constant("top");
       var dataInfo = new StreamedSequenceInfo(typeof(Cook[]), Expression.Constant(new Cook()));
-      var builder = new SqlStatementBuilder () 
-      {  
+      var builder = new SqlStatementBuilder
+                    {  
         SelectProjection = selectProjection,
         WhereCondition = whereCondition,
         TopExpression = topExpression,
         IsDistinctQuery = true,
         DataInfo = dataInfo
       };
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner);
-      builder.SqlTables.Add (sqlTable);
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable();
+      builder.SqlTables.Add (appendedTable);
       var ordering = new Ordering (Expression.Constant ("order"),OrderingDirection.Asc);
       builder.Orderings.Add (ordering);
       var sqlStatement = builder.GetSqlStatement();
@@ -136,7 +135,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (result.DataInfo, Is.SameAs (dataInfo));
       Assert.That (result.WhereCondition, Is.SameAs (whereCondition));
       Assert.That (result.TopExpression, Is.SameAs (topExpression));
-      Assert.That (result.SqlTables[0], Is.SameAs (sqlTable));
+      Assert.That (result.SqlTables[0], Is.SameAs (appendedTable));
       Assert.That (result.Orderings[0], Is.SameAs (ordering));
       Assert.That (result.IsDistinctQuery, Is.True);
     }

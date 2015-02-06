@@ -99,8 +99,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
-      foreach (var sqlTable in sqlStatement.SqlTables)
-        ResolveSqlTable (sqlTable);
+      foreach (var appendedTable in sqlStatement.SqlTables)
+        ResolveSqlTable (appendedTable.SqlTable);
 
       var sqlStatementBuilder = new SqlStatementBuilder(sqlStatement);
 

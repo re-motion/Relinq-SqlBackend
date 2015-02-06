@@ -310,7 +310,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                                  {
                                      DataInfo = dataInfo,
                                      SelectProjection = groupingSelect,
-                                     SqlTables = { sqlTable },
+                                     SqlTables = { SqlStatementModelObjectMother.CreateSqlAppendedTable (sqlTable) },
                                      WhereCondition = whereCondition,
                                      GroupByExpression = groupByExpression
                                  }.GetSqlStatement();
@@ -358,7 +358,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           resultSqlStatement.WhereCondition);
 
       var expectedResultSelectProjection =
-          Expression.MakeMemberAccess (new SqlTableReferenceExpression (resultSqlStatement.SqlTables[0]), typeof (Cook).GetProperty ("ID"));
+          Expression.MakeMemberAccess (new SqlTableReferenceExpression (resultSqlStatement.SqlTables[0].SqlTable), typeof (Cook).GetProperty ("ID"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResultSelectProjection, resultSqlStatement.SelectProjection);
 
       Assert.That (resultSqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));

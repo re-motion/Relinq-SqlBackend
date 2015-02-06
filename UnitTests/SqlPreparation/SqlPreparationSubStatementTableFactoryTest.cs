@@ -74,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       _stageMock.Verify();
 
-      var tableInfo = result.SqlTable.TableInfo;
+      var tableInfo = result.AppendedTable.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (result.WhereCondition, Is.Null);
       Assert.That (result.ExtractedOrderings, Is.Empty);
 
-      var expectedItemSelector = new SqlTableReferenceExpression (result.SqlTable);
+      var expectedItemSelector = new SqlTableReferenceExpression (result.AppendedTable.SqlTable);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
     }
 
@@ -103,7 +103,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       _stageMock.Verify();
 
-      var tableInfo = result.SqlTable.TableInfo;
+      var tableInfo = result.AppendedTable.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
@@ -140,8 +140,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock.Verify();
 
       var expectedItemSelector = Expression.MakeMemberAccess (
-          new SqlTableReferenceExpression (result.SqlTable),
-          result.SqlTable.ItemType.GetProperty ("Key"));
+          new SqlTableReferenceExpression (result.AppendedTable.SqlTable),
+          result.AppendedTable.SqlTable.ItemType.GetProperty ("Key"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedItemSelector, result.ItemSelector);
     }
 
@@ -164,8 +164,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (2));
 
       var valueMemberAccess1 = Expression.MakeMemberAccess (
-          new SqlTableReferenceExpression (result.SqlTable),
-          result.SqlTable.ItemType.GetProperty ("Value"));
+          new SqlTableReferenceExpression (result.AppendedTable.SqlTable),
+          result.AppendedTable.SqlTable.ItemType.GetProperty ("Value"));
       var expectedOrdering1 = Expression.MakeMemberAccess (valueMemberAccess1, valueMemberAccess1.Type.GetProperty ("Key"));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedOrdering1, result.ExtractedOrderings[0].Expression);
       Assert.That (result.ExtractedOrderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Desc));
@@ -242,7 +242,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       _stageMock.Verify();
 
-      var sqlTable = result.SqlTable;
+      var sqlTable = result.AppendedTable.SqlTable;
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
       Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
@@ -278,7 +278,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       Assert.That (result.ExtractedOrderings, Is.Empty);
       
-      var tableInfo = result.SqlTable.TableInfo;
+      var tableInfo = result.AppendedTable.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
@@ -305,7 +305,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       Assert.That (result.ExtractedOrderings, Is.Empty);
       
-      var tableInfo = result.SqlTable.TableInfo;
+      var tableInfo = result.AppendedTable.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
