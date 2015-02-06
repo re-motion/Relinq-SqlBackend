@@ -49,6 +49,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlTable sqlTable, ISqlCommandBuilder commandBuilder, bool isFirstTable)
     {
+        // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
       if (sqlTable.JoinSemantics == JoinSemantics.Left)
       {
         if (isFirstTable)

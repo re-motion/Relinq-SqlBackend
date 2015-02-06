@@ -357,6 +357,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlJoin (CreateSqlTable(), JoinSemantics.Inner, ExpressionHelper.CreateExpression (typeof (bool)));
     }
 
+    public static SqlAppendedTable CreateSqlAppendedTable (SqlTable sqlTable = null, JoinSemantics semantics = JoinSemantics.Inner)
+    {
+      return new SqlAppendedTable (sqlTable ?? CreateSqlTable(), semantics);
+    }
+
     public static SqlTable.LeftJoinData CreateLeftJoinData ()
     {
       return new SqlTable.LeftJoinData (CreateSqlTable(), ExpressionHelper.CreateExpression (typeof (bool)));
