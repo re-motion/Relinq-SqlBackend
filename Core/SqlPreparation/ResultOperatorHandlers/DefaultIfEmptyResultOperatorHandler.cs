@@ -19,8 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -57,6 +59,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       // If there's more than one table, convert the current statement into a substatement.
       // This ensures that there is exactly one table that holds everything we want to put into a LEFT JOIN.
+      // TODO RMLNQSQL-77: This is probably missing conditions. E.g., what about GroupBy? => See RMLNQSQL-77 Potential Bugs.sql, add integration tests and add conditions detecting these scenarios here.
       if (sqlStatementBuilder.SqlTables.Count != 1 || sqlStatementBuilder.SetOperationCombinedStatements.Any())
       {
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
@@ -76,8 +79,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
       // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
       // here because the left side is just the dummyRowTable (and there is nothing else in this statement).
-      // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
-      // care that this restriction is _not_ broken.
       dummyRowTable.AddJoinForExplicitQuerySource (@join);
 
       // Replace original table with dummy table:

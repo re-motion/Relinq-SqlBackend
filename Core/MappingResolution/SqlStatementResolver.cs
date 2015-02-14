@@ -145,6 +145,20 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private void ResolveJoins (SqlTable sqlTable)
     {
+      // 
+      //var joinsToBeResolved = sqlTable.GetJoinsWithMetadataAndReset();
+      //foreach (var joinWithMetadata in joinsToBeResolved)
+      //{
+      //  var join = joinWithMetadata.Join;
+      //  var metadata = joinWithMetadata.Metadata;
+
+      //  ResolveSqlTable (join.JoinedTable);
+
+      //  var resolvedJoinCondition = _stage.ResolveJoinCondition (join.JoinCondition, _context);
+      //  sqlTable.AddJoinWithMetadata (new SqlJoin (join.JoinedTable, join.JoinSemantics, resolvedJoinCondition), metadata);
+      //}
+
+
       Dictionary<SqlJoin, SqlJoin> modifiedJoins = null;
       // Make a copy of the OrderedJoins sequence because it's possible that resolving a join condition adds another join.
       // The resolution stage takes care to only add joins that are already resolved.

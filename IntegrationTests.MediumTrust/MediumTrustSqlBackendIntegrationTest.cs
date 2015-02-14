@@ -25,7 +25,6 @@ using Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests;
 namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust
 {
   [TestFixture]
-  [Explicit ("TODO RMLNQSQL-77: Re-enable the tests once the optimizations are implemented.")]
   public class MediumTrustSqlBackendIntegrationTest
   {
     [Test]

@@ -24,7 +24,6 @@ using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.ResultOperators
 {
   [TestFixture]
-  [Explicit ("TODO RMLNQSQL-77: Re-enable the tests once the optimizations are implemented.")]
   public class DefaultIfEmptyResultOperatorSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
@@ -304,6 +303,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
     // TODO RMLNQSQL-77: This test would generate invalid SQL if optimization is implemented incorrectly.
     [Test]
+    [Ignore("TODO RMLNQSQL-77: Dependent subquery (outside of join condition).")]
     public void DefaultIfEmpty_WithEscapingReferenceInSubstatement ()
     {
       CheckQuery (

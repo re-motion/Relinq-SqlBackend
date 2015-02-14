@@ -296,7 +296,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
      }
 
     [Test]
-    [Explicit ("TODO RMLNQSQL-77: Re-enable the tests once the optimizations are implemented.")]
     public void ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable ()
     {
       // This test duplicates a scenario from DefaultIfEmptyResultOperatorSqlBackendIntegrationTest 
