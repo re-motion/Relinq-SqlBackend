@@ -88,7 +88,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var result = _stage.PrepareFromExpression (
           fromExpression,
           _context,
-          info => new SqlTable (info),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       Assert.That (result.AppendedTable, Is.Not.Null);

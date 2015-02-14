@@ -51,7 +51,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.TopExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
     }
 
     protected void EnsureNoDistinctQuery (
@@ -62,7 +62,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.IsDistinctQuery)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
     }
 
     protected void EnsureNoGroupExpression (
@@ -74,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       if (sqlStatementBuilder.GroupByExpression != null)
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
     }
 
     protected void EnsureNoSetOperations (
@@ -85,14 +85,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       if (sqlStatementBuilder.SetOperationCombinedStatements.Any())
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
     }
 
     protected void MoveCurrentStatementToSqlTable (
         SqlStatementBuilder sqlStatementBuilder,
         ISqlPreparationContext context,
-        // TODO RMLNQSQL-78: Replace with SqlTable
-        Func<ITableInfo, SqlTable> tableGenerator,
         ISqlPreparationStage stage,
         OrderingExtractionPolicy orderingExtractionPolicy = OrderingExtractionPolicy.ExtractOrderingsIntoProjection)
     {
@@ -103,7 +101,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var fromExpressionInfo = stage.PrepareFromExpression (
           new SqlSubStatementExpression (oldStatement),
           context,
-          tableGenerator,
           orderingExtractionPolicy);
 
       sqlStatementBuilder.SqlTables.Add (fromExpressionInfo.AppendedTable);

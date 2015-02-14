@@ -58,7 +58,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // This ensures that there is exactly one table that holds everything we want to put into a LEFT JOIN.
       if (sqlStatementBuilder.SqlTables.Count != 1 || sqlStatementBuilder.SetOperationCombinedStatements.Any())
       {
-        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info), stage);
+        MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
       }
 
       // Now, since there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by 

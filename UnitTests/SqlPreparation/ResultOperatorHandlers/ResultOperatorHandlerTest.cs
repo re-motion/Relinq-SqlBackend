@@ -60,7 +60,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var originalStatement = _statementBuilder.GetSqlStatement ();
 
       var fakeFromExpressionInfo = CreateFakeFromExpressionInfo(new Ordering[0]);
-      Func<ITableInfo, SqlTable> tableGenerator = info => new SqlTable (info);
 
       var someOrderingExtractionPolicy = Some.Item (
           OrderingExtractionPolicy.DoNotExtractOrderings,
@@ -71,14 +70,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               mock => mock.PrepareFromExpression (
                   It.IsNotNull<SqlSubStatementExpression>(),
                   _context,
-                  tableGenerator,
                   someOrderingExtractionPolicy))
           .Returns (fakeFromExpressionInfo)
           .Callback (
               (
                   Expression fromExpression,
                   ISqlPreparationContext context,
-                  Func<ITableInfo, SqlTable> _,
                   OrderingExtractionPolicy orderingExtractionPolicy) =>
               {
                 var sqlStatement = ((SqlSubStatementExpression) fromExpression).SqlStatement;
@@ -91,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               })
           .Verifiable();
 
-      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _context, tableGenerator, _stageMock.Object, someOrderingExtractionPolicy);
+      _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _context, _stageMock.Object, someOrderingExtractionPolicy);
 
       _stageMock.Verify();
 
@@ -116,7 +113,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               mock => mock.PrepareFromExpression (
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   It.IsAny<OrderingExtractionPolicy>()))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
@@ -124,7 +120,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _handler.MoveCurrentStatementToSqlTable (
           _statementBuilder,
           _context,
-          info => new SqlTable (info),
           _stageMock.Object,
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
@@ -143,7 +138,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               mock => mock.PrepareFromExpression (
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
@@ -191,7 +185,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               mock => mock.PrepareFromExpression (
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
@@ -219,7 +212,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               mock => mock.PrepareFromExpression (
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
@@ -259,7 +251,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               mock => mock.PrepareFromExpression (
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();

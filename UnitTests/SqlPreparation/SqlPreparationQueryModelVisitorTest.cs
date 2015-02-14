@@ -275,7 +275,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   It.Is<Expression> (e => e == _mainFromClause.FromExpression),
                   It.Is<ISqlPreparationContext> (c => c != _context),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (preparedFromExpressionInfo)
           .Verifiable();
@@ -306,7 +305,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   It.Is<Expression> (e => e == constantExpression),
                   It.Is<ISqlPreparationContext> (c => c != _context),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (preparedFromExpressionInfo)
           .Verifiable();
@@ -336,7 +334,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   It.Is<Expression> (e => e == fromClause.FromExpression),
                   It.Is<ISqlPreparationContext> (c => c != _context),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (preparedFromExpressionInfo)
           .Verifiable();
@@ -441,7 +438,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   It.Is<Expression> (e => e == joinClause.InnerSequence),
                   It.Is<ISqlPreparationContext> (c => c != _context),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (preparedFromExpressionInfo)
           .Verifiable();
@@ -473,7 +469,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   It.Is<Expression> (e => e == joinClause.InnerSequence),
                   It.IsAny<ISqlPreparationContext>(),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (preparedFromExpressionInfo)
           .Verifiable();
@@ -605,23 +600,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   _mainFromClause.FromExpression,
                   It.Is<ISqlPreparationContext> (c => c != _context),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (preparedFromExpressionInfo)
-          .Callback (
-              (
-                  Expression fromExpression,
-                  ISqlPreparationContext context,
-                  Func<ITableInfo, SqlTable> tableGenerator,
-                  OrderingExtractionPolicy orderingExtractionPolicy) =>
-              {
-                var sampleTableInfo = new UnresolvedTableInfo (typeof (Cook));
-
-                var table = tableGenerator (sampleTableInfo);
-
-                Assert.That (table, Is.TypeOf (typeof (SqlTable)));
-                Assert.That (table.TableInfo, Is.SameAs (sampleTableInfo));
-              })
           .Verifiable();
 
       var result = _visitor.AddQuerySource (_mainFromClause, _mainFromClause.FromExpression);
@@ -728,7 +708,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               mock => mock.PrepareFromExpression (
                   It.Is<Expression> (e => e == joinClause.InnerSequence),
                   It.Is<ISqlPreparationContext> (c => c != _context),
-                  It.IsAny<Func<ITableInfo, SqlTable>>(),
                   OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (preparedFromExpressionInfo)
           .Verifiable();

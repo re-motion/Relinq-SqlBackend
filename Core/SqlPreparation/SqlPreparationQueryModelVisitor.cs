@@ -222,7 +222,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var fromExpressionInfo = _stage.PrepareFromExpression (
           fromExpression,
           _context,
-          info => new SqlTable (info),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
       AddPreparedFromExpression (fromExpressionInfo);  
       

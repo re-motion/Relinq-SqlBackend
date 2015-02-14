@@ -49,18 +49,14 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       _context = context;
     }
 
-    public FromExpressionInfo CreateSqlTableForStatement (
-        SqlStatement sqlStatement,
-        Func<ITableInfo, SqlTable> tableCreator,
-        OrderingExtractionPolicy orderingExtractionPolicy)
+    public FromExpressionInfo CreateSqlTableForStatement (SqlStatement sqlStatement, OrderingExtractionPolicy orderingExtractionPolicy)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("tableCreator", tableCreator);
 
       if (sqlStatement.Orderings.Count == 0)
       {
         var tableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), sqlStatement);
-        var sqlTable = tableCreator (tableInfo);
+        var sqlTable = new SqlTable (tableInfo);
         return new FromExpressionInfo (
             new SqlAppendedTable (sqlTable, JoinSemantics.Inner),
             new Ordering[0],
@@ -79,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       if (orderingExtractionPolicy == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)
         newSelectProjection = GetNewSelectExpressionWithOrderings (sqlStatement);
 
-      var tableWithSubStatement = CreateSqlCompatibleSubStatementTable (sqlStatement, newSelectProjection, tableCreator);
+      var tableWithSubStatement = CreateSqlCompatibleSubStatementTable (sqlStatement, newSelectProjection);
       return GetFromExpressionInfoForSubStatement (sqlStatement, tableWithSubStatement);
     }
 
@@ -96,10 +92,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return preparedTupleExpression;
     }
 
-    private SqlTable CreateSqlCompatibleSubStatementTable (
-        SqlStatement originalStatement, 
-        Expression newSelectProjection, 
-        Func<ITableInfo, SqlTable> tableCreator)
+    private SqlTable CreateSqlCompatibleSubStatementTable (SqlStatement originalStatement, Expression newSelectProjection)
     {
       // create a new statement equal to the original one, but with the tuple as its select projection
       var builder = new SqlStatementBuilder (originalStatement) { SelectProjection = newSelectProjection };
@@ -113,7 +106,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       // put new statement into a sub-statement table
       var subStatementTableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), newSqlStatement);
-      return tableCreator (subStatementTableInfo);
+      return new SqlTable (subStatementTableInfo);
     }
 
     private FromExpressionInfo GetFromExpressionInfoForSubStatement (SqlStatement originalSqlStatement, SqlTable tableWithSubStatement)

@@ -38,7 +38,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         UniqueIdentifierGenerator generator,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator,
         OrderingExtractionPolicy orderingExtractionPolicy)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
@@ -47,7 +46,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator, orderingExtractionPolicy);
+      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, orderingExtractionPolicy);
       visitor.Visit (fromExpression);
       if (visitor.FromExpressionInfo != null)
         return visitor.FromExpressionInfo.Value;
@@ -60,8 +59,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     }
 
     private readonly UniqueIdentifierGenerator _generator;
-    // TODO RMLNQSQL-78: Remove.
-    private readonly Func<ITableInfo, SqlTable> _tableGenerator;
     private readonly OrderingExtractionPolicy _orderingExtractionPolicy;
 
     protected SqlPreparationFromExpressionVisitor (
@@ -69,15 +66,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         ISqlPreparationStage stage,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator, 
         OrderingExtractionPolicy orderingExtractionPolicy)
         : base (context, stage, provider)
     {
       ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("tableGenerator", tableGenerator);
 
       _generator = generator;
-      _tableGenerator = tableGenerator;
       _orderingExtractionPolicy = orderingExtractionPolicy;
 
       FromExpressionInfo = null;
@@ -90,17 +84,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       get { return _generator; }
     }
 
-    public Func<ITableInfo, SqlTable> TableGenerator
-    {
-      get { return _tableGenerator; }
-    }
-
     protected override Expression VisitConstant (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (expression.Type, "from expression");
-      var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
+      var sqlTable = new SqlTable (new UnresolvedTableInfo (itemType));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       
       FromExpressionInfo = new FromExpressionInfo (
@@ -142,7 +131,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, Context, Stage, MethodCallTransformerProvider);
 
       var joinTableInfo = new UnresolvedCollectionJoinTableInfo (preparedMemberExpression.Expression, preparedMemberExpression.Member);
-      var oldStyleJoinedTable = _tableGenerator (joinTableInfo);
+      var oldStyleJoinedTable = new SqlTable (joinTableInfo);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
 
       FromExpressionInfo = new FromExpressionInfo (
@@ -161,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var sqlStatement = expression.SqlStatement;
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, Context, _generator);
-      FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator, _orderingExtractionPolicy);
+      FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _orderingExtractionPolicy);
       Assertion.IsTrue (FromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (FromExpressionInfo.Value.AppendedTable.SqlTable);
@@ -195,7 +184,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
             _generator,
             MethodCallTransformerProvider,
             Context,
-            _tableGenerator,
             _orderingExtractionPolicy);
 
         Context.AddExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause), fromExpressionInfo.ItemSelector);

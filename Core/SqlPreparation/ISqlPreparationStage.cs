@@ -34,7 +34,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     FromExpressionInfo PrepareFromExpression (
         Expression fromExpression,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator,
         OrderingExtractionPolicy orderingExtractionPolicy);
 
     SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext parentContext);
