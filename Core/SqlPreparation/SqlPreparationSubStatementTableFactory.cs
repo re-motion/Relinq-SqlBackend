@@ -61,7 +61,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       {
         var tableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), sqlStatement);
         var sqlTable = tableCreator (tableInfo);
-        Assertion.IsTrue (sqlTable.JoinSemantics == JoinSemantics.Inner);
         return new FromExpressionInfo (
             new SqlAppendedTable (sqlTable, JoinSemantics.Inner),
             new Ordering[0],
@@ -127,7 +126,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           .Skip (1) // ignore original projection
           .Select ((expr, i) => new Ordering (expr, originalSqlStatement.Orderings[i].OrderingDirection));
 
-      Assertion.IsTrue (tableWithSubStatement.JoinSemantics == JoinSemantics.Inner);
       return new FromExpressionInfo (
           new SqlAppendedTable (tableWithSubStatement, JoinSemantics.Inner),
           orderingsFromSubStatement.ToArray(),

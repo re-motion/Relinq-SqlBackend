@@ -621,7 +621,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
                 Assert.That (table, Is.TypeOf (typeof (SqlTable)));
                 Assert.That (table.TableInfo, Is.SameAs (sampleTableInfo));
-                Assert.That (table.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
               })
           .Verifiable();
 

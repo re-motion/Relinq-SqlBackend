@@ -58,8 +58,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       }
     }
 
-    private readonly JoinSemantics _joinSemantics;
-
     private readonly List<SqlJoin> _orderedJoins = new List<SqlJoin>();
     private readonly Dictionary<MemberInfo, SqlJoin> _joinsByMemberInfo = new Dictionary<MemberInfo, SqlJoin>();
 
@@ -70,13 +68,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      _joinSemantics = joinSemantics;
       _tableInfo = tableInfo;
-    }
-
-    public JoinSemantics JoinSemantics
-    {
-      get { return _joinSemantics; }
     }
 
     public IEnumerable<SqlJoin> OrderedJoins

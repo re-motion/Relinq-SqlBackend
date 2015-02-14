@@ -103,7 +103,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       
-      Assertion.IsTrue (sqlTable.JoinSemantics == JoinSemantics.Inner);
       FromExpressionInfo = new FromExpressionInfo (
           new SqlAppendedTable (sqlTable, JoinSemantics.Inner),
           new Ordering[0],
@@ -146,7 +145,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       var oldStyleJoinedTable = _tableGenerator (joinTableInfo);
       var sqlTableReferenceExpression = new SqlTableReferenceExpression (oldStyleJoinedTable);
 
-      Assertion.IsTrue (oldStyleJoinedTable.JoinSemantics == JoinSemantics.Inner);
       FromExpressionInfo = new FromExpressionInfo (
           appendedTable: new SqlAppendedTable (oldStyleJoinedTable, JoinSemantics.Inner),
           extractedOrderings: new Ordering[0],
