@@ -62,34 +62,39 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
       }
 
-      // Now, since there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by 
-      // converting that table into the right part of a left join with a dummy table.
-      // It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
-      // _during_ the left join.
-
-      // Create a new dummy table that guarantees delivering a single row. This is important to get a "default" row if the joined table doesn't return anything.
-      var dummyRowTable = new SqlTable (UnresolvedDummyRowTableInfo.Instance);
-
-      // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
-      var originalSqlTable = sqlStatementBuilder.SqlTables[0];
-      var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
-      var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
-      // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
-      // here because the left side is just the dummyRowTable (and there is nothing else in this statement).
-      // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
-      // care that this restriction is _not_ broken.
-      dummyRowTable.AddJoin (@join);
-
-      // Replace original table with dummy table:
+      // Change the single table to have LEFT JOIN semantics.
+      var table = sqlStatementBuilder.SqlTables.Single();
       sqlStatementBuilder.SqlTables.Clear();
-      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable (dummyRowTable, JoinSemantics.Inner));
+      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable (table.SqlTable, JoinSemantics.Left));
+      
+      //// Now, since there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by 
+      //// converting that table into the right part of a left join with a dummy table.
+      //// It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
+      //// _during_ the left join.
 
-      // WHERE condition was moved to JOIN condition => no longer needed.
-      sqlStatementBuilder.WhereCondition = null;
+      //// Create a new dummy table: (SELECT NULL AS [Empty]) AS [Empty]
+      //var dummyRowTable = new SqlTable (UnresolvedDummyRowTableInfo.Instance);
 
-      // Further TODOs:
-      // TODO RMLNQSQL-81: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
-      // TODO RMLNQSQL-81: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
+      //// Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
+      //var originalSqlTable = sqlStatementBuilder.SqlTables[0];
+      //var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      //var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
+      //// The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
+      //// here because the left side is just the dummyRowTable (and there is nothing else in this statement).
+      //// TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
+      //// care that this restriction is _not_ broken.
+      //dummyRowTable.AddJoin (@join);
+
+      //// Replace original table with dummy table:
+      //sqlStatementBuilder.SqlTables.Clear();
+      //sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable(dummyRowTable, JoinSemantics.Inner));
+
+      //// WHERE condition was moved to JOIN condition => no longer needed.
+      //sqlStatementBuilder.WhereCondition = null;
+
+      //// Further TODOs:
+      //// TODO RMLNQSQL-81: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
+      //// TODO RMLNQSQL-81: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
     }
   }
 }

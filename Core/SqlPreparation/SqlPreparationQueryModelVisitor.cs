@@ -16,11 +16,15 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
+using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
@@ -223,10 +227,67 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           fromExpression,
           _context,
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
-      AddPreparedFromExpression (fromExpressionInfo);  
-      
-      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
-      return fromExpressionInfo.AppendedTable.SqlTable;
+
+      // TODO RMLNQSQL-77: Move to separate class.
+      // LEFT JOIN subquery optimization - convert subquery resulting from "DefaultIfEmpty" into a LEFT JOIN if possible
+      // This optimizes _exactly_ the following situation:
+      // ... CROSS APPLY (
+      //   SELECT [q0] 
+      //   FROM <SELECT NULL AS Empty>
+      //     OUTER APPLY (
+      //       SELECT actualProjection
+      //       FROM joinedTable
+      //       WHERE joinCondition
+      //     ) [q0]
+      // )
+
+      ResolvedSubStatementTableInfo subStatementTableInfo;
+      if (
+          // only possible if there is a table that can be the left side of the join
+          SqlStatementBuilder.SqlTables.Any()
+              // don't want to deal with extracted orderings in a LEFT JOIN scenario
+          && !fromExpressionInfo.ExtractedOrderings.Any()
+              // don't want to deal with extracted WHERE in a LEFT JOIN scenario
+          && fromExpressionInfo.WhereCondition == null
+              // we only want to optimize LEFT JOIN embedded inside CROSS APPLY
+          && fromExpressionInfo.AppendedTable.JoinSemantics == JoinSemantics.Inner
+              // don't want to deal with additional joins coming outside the DefaultIfEmpty  
+          && !fromExpressionInfo.AppendedTable.SqlTable.OrderedJoins.Any()
+              // this is the subquery to be optimized
+          && (subStatementTableInfo = fromExpressionInfo.AppendedTable.SqlTable.TableInfo as ResolvedSubStatementTableInfo) != null
+              // criteria for optimizable scenario
+          && subStatementTableInfo.SqlStatement.SqlTables.Count == 1
+          && subStatementTableInfo.SqlStatement.SqlTables.Single().JoinSemantics == JoinSemantics.Left
+          && subStatementTableInfo.SqlStatement.SelectProjection is NamedExpression
+          && ((NamedExpression) subStatementTableInfo.SqlStatement.SelectProjection).Expression is SqlTableReferenceExpression
+          && ((SqlTableReferenceExpression) ((NamedExpression) subStatementTableInfo.SqlStatement.SelectProjection).Expression).SqlTable == subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable
+          && !subStatementTableInfo.SqlStatement.SetOperationCombinedStatements.Any()
+          && !subStatementTableInfo.SqlStatement.IsDistinctQuery
+          && subStatementTableInfo.SqlStatement.GroupByExpression == null
+          && !subStatementTableInfo.SqlStatement.Orderings.Any()
+          && subStatementTableInfo.SqlStatement.RowNumberSelector == null
+          && subStatementTableInfo.SqlStatement.TopExpression == null
+          // TODO RMLNQSQL-77: add Select check? should not contain aggregation (wouldn't work, but shouldn't be possible anyway) or subquery (might be no "optimization" any more)
+          // TODO RMLNQSQL-77: Check subStatementTableInfo.SqlStatement.SqlTables.Single() for escaping references! LEFT JOINS must not contain any references to SqlTables outside of this subtree... See DefaultIfEmpty_WithEscapingReferenceInSubstatement.
+          )
+      {
+        var actualProjection = subStatementTableInfo.SqlStatement.SelectProjection;
+        var joinedTable = subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable;
+        var joinCondition = subStatementTableInfo.SqlStatement.WhereCondition;
+        SqlStatementBuilder.SqlTables.Last().SqlTable.AddJoin (new SqlJoin (joinedTable, JoinSemantics.Left, joinCondition));
+
+        // TODO RMLNQSQL-77: Do we need this?
+        // _context.AddExpressionMapping (fromExpressionInfo.ItemSelector, actualProjection);
+
+        _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), actualProjection);
+        return joinedTable;
+      }
+      else
+      {
+        AddPreparedFromExpression (fromExpressionInfo);
+        _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
+        return fromExpressionInfo.AppendedTable.SqlTable;
+      }
     }
 
     public void AddPreparedFromExpression (FromExpressionInfo fromExpressionInfo)
