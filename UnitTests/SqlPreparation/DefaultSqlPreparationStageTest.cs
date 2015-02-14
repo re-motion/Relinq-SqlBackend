@@ -26,7 +26,6 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Remotion.Linq.SqlBackend.UnitTests.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 {
@@ -44,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
 
       var querySource = ExpressionHelper.CreateMainFromClause<Cook>();
-      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)), JoinSemantics.Inner);
+      _sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
 
       _context.AddExpressionMapping (new QuerySourceReferenceExpression(querySource), new SqlTableReferenceExpression(_sqlTable));
 
@@ -89,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var result = _stage.PrepareFromExpression (
           fromExpression,
           _context,
-          info => new SqlTable (info, JoinSemantics.Inner),
+          info => new SqlTable (info),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       Assert.That (result.AppendedTable, Is.Not.Null);

@@ -158,7 +158,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             var unresolvedJoinTableInfo = new UnresolvedJoinTableInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
             var resolvedTableInfo = ResolveTableInfo (unresolvedJoinTableInfo, context);
 
-            var joinedTable = new SqlTable (resolvedTableInfo, JoinSemantics.Inner);
+            var joinedTable = new SqlTable (resolvedTableInfo);
             var unresolvedJoinCondition = new UnresolvedJoinConditionExpression (expression.OriginatingEntity, expression.MemberInfo, joinedTable);
             var joinCondition = ResolveJoinCondition (unresolvedJoinCondition, context);
             return new SqlTable.LeftJoinData (joinedTable, joinCondition);

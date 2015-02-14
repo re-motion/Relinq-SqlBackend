@@ -281,7 +281,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void ResolveSqlStatement ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithUnresolvedTableInfo (typeof (Cook));
-      var tableReferenceExpression = new SqlTableReferenceExpression (new SqlTable (_fakeResolvedSimpleTableInfo, JoinSemantics.Inner));
+      var tableReferenceExpression = new SqlTableReferenceExpression (new SqlTable (_fakeResolvedSimpleTableInfo));
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement(tableReferenceExpression, new[] { sqlTable});
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 

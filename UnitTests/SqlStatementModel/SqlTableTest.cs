@@ -35,7 +35,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void TableInfo_Setter_SameType ()
     {
       var oldTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (int));
-      var sqlTable = new SqlTable (oldTableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (oldTableInfo);
 
       var newTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (int));
       sqlTable.TableInfo = newTableInfo;
@@ -47,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void TableInfo_Setter_DifferentType ()
     {
       var oldTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (int));
-      var sqlTable = new SqlTable (oldTableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (oldTableInfo);
 
       var newTableInfo = SqlStatementModelObjectMother.CreateTableInfo (typeof (string));
 
@@ -182,7 +182,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void ToString_WithoutJoins ()
     {
       var oldTableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
-      var sqlTable = new SqlTable (oldTableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (oldTableInfo);
 
       var result = sqlTable.ToString ();
       Assert.That (result, Is.EqualTo ("[table1] [t]"));
@@ -191,11 +191,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void ToString_WithJoin ()
     {
-      var joinedTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"), JoinSemantics.Inner);
+      var joinedTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"));
       var joinCondition = Expression.Equal (new SqlLiteralExpression ("left"), new SqlLiteralExpression ("right"));
 
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (tableInfo);
       sqlTable.AddJoin (new SqlJoin(joinedTable, JoinSemantics.Inner, joinCondition));
 
       var result = sqlTable.ToString ();
@@ -207,13 +207,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void ToString_WithMultipleJoins ()
     {
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (tableInfo);
 
-      var joinedTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"), JoinSemantics.Inner);
+      var joinedTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"));
       var joinCondition1 = Expression.Equal (new SqlLiteralExpression ("left"), new SqlLiteralExpression ("right"));
       sqlTable.AddJoin (new SqlJoin(joinedTable1, JoinSemantics.Left, joinCondition1));
 
-      var joinedTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Restaurant", "r"), JoinSemantics.Inner);
+      var joinedTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Restaurant", "r"));
       var joinCondition2 = Expression.Equal (new SqlLiteralExpression ("left2"), new SqlLiteralExpression ("right2"));
       sqlTable.AddJoin (new SqlJoin(joinedTable2, JoinSemantics.Inner, joinCondition2));
 

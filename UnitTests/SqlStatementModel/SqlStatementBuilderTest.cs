@@ -323,11 +323,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var selectProjection = Expression.Constant (1);
       var appendedTable1 =
           SqlStatementModelObjectMother.CreateSqlAppendedTable (
-              new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner),
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")),
               JoinSemantics.Inner);
       var appendedTable2 =
           SqlStatementModelObjectMother.CreateSqlAppendedTable (
-              new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k"), JoinSemantics.Left),
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Kitchen), "KitchenTable", "k")),
               JoinSemantics.Left);
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Asc);
       var whereCondition = Expression.Constant (true);
@@ -365,7 +365,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var selectProjection = Expression.Constant (1);
       var appendedTable =
           SqlStatementModelObjectMother.CreateSqlAppendedTable (
-              new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Inner),
+              new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")),
               JoinSemantics.Inner);
 
       var builder = new SqlStatementBuilder

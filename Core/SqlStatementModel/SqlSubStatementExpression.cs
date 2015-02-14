@@ -92,7 +92,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         sequenceStatement = ConvertValueStatementToSequenceStatement ();
 
       var resolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo (uniqueIdentifier, sequenceStatement);
-      var sqlTable = new SqlTable (resolvedSubStatementTableInfo, joinSemantics);
+      var sqlTable = new SqlTable (resolvedSubStatementTableInfo);
       return new SqlAppendedTable (sqlTable, joinSemantics);
     }
 

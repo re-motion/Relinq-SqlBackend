@@ -69,7 +69,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
               "q1",
               _resolvedJoinedGroupingSubStatement,
               _associatedGroupingSelectExpression,
-              "q0"), JoinSemantics.Inner);
+              "q0"));
 
       _simplifiableResolvedSqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement (
           new SqlStatementBuilder

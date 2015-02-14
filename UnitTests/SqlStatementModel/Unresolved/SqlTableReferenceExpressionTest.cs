@@ -59,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     [Test]
     public void ToString_SqlTableWithResolvedTableInfo ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), JoinSemantics.Left);
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"));
       var expression = new SqlTableReferenceExpression (sqlTable);
       var result = expression.ToString();
 
@@ -69,7 +69,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     [Test]
     public void ToString_SqlTableWithUnresolvedTableInfo ()
     {
-      var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)), JoinSemantics.Left);
+      var sqlTable = new SqlTable (new UnresolvedTableInfo (typeof (Cook)));
       var expression = new SqlTableReferenceExpression (sqlTable);
       var result = expression.ToString();
 

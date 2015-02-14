@@ -302,7 +302,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
         string rightSideKeyName)
     {
       var joinedTableInfo = new ResolvedSimpleTableInfo (type, joinedTableName, joinedTableAlias);
-      var joinedTable = new SqlTable (joinedTableInfo, JoinSemantics.Inner);
+      var joinedTable = new SqlTable (joinedTableInfo);
 
       var primaryColumn = new SqlColumnDefinitionExpression (typeof (int), originalTableAlias, leftSideKeyName, false);
       var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);

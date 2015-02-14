@@ -165,13 +165,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
     public static SqlTable CreateSqlTable (ITableInfo tableInfo)
     {
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
-      return sqlTable;
+      return new SqlTable (tableInfo);
     }
 
     public static SqlTable CreateSqlTable (Type type)
     {
-      return new SqlTable (CreateUnresolvedTableInfo (type), JoinSemantics.Inner);
+      return new SqlTable (CreateUnresolvedTableInfo (type));
     }
 
     public static SqlTable CreateSqlTable_WithUnresolvedTableInfo ()
@@ -182,8 +181,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public static SqlTable CreateSqlTable_WithUnresolvedTableInfo (Type type)
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (type);
-      var sqlTable = new SqlTable (unresolvedTableInfo, JoinSemantics.Inner);
-      return sqlTable;
+      return new SqlTable (unresolvedTableInfo);
     }
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo ()
@@ -198,19 +196,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo (
         string tableName,
-        string tableAlias,
-        JoinSemantics joinSemantics = JoinSemantics.Inner)
+        string tableAlias)
     {
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (string), tableName, tableAlias);
-      var sqlTable = new SqlTable (resolvedTableInfo, joinSemantics);
-      return sqlTable;
+      return new SqlTable (resolvedTableInfo);
     }
 
     public static SqlTable CreateSqlTable_WithResolvedTableInfo (Type type, string tableName, string tableAlias)
     {
       var resolvedTableInfo = new ResolvedSimpleTableInfo (type, tableName, tableAlias);
-      var sqlTable = new SqlTable (resolvedTableInfo, JoinSemantics.Inner);
-      return sqlTable;
+      return new SqlTable (resolvedTableInfo);
     }
 
     public static ITableInfo CreateTableInfo (Type type)

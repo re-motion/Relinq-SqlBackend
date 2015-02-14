@@ -109,7 +109,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var newSqlStatement = sqlStatementBuilder.GetStatementAndResetBuilder ();
 
       var tableInfo = new ResolvedSubStatementTableInfo (generator.GetUniqueIdentifier ("q"), newSqlStatement);
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (tableInfo);
 
       var originalProjectionSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (sqlTable), 

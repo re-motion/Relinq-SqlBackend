@@ -58,7 +58,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _cookMainFromClause = ExpressionHelper.CreateMainFromClause<Cook>();
       _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);
       var source = new UnresolvedTableInfo (_cookMainFromClause.ItemType);
-      _sqlTable = new SqlTable (source, JoinSemantics.Inner);
+      _sqlTable = new SqlTable (source);
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (_cookMainFromClause), new SqlTableReferenceExpression (_sqlTable));
       _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault();
     }
@@ -401,7 +401,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var selectProjection = Expression.Constant (new Cook());
       var fakeStatement = SqlStatementModelObjectMother.CreateSqlStatement (
-          new NamedExpression("test", selectProjection), new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"),JoinSemantics.Left));
+          new NamedExpression("test", selectProjection), new SqlTable (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c")));
       var memberInfo = typeof (Cook).GetProperty ("Name");
       var queryModel = ExpressionHelper.CreateQueryModel<Cook>();
       queryModel.ResultOperators.Add (new FirstResultOperator (false));

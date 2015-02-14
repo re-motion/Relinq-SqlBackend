@@ -172,7 +172,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
-      var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var sqlTable = new SqlTable (tableInfo);
       FromExpressionInfo = new FromExpressionInfo (
           new SqlAppendedTable (sqlTable, JoinSemantics.Inner),
           new Ordering[0],

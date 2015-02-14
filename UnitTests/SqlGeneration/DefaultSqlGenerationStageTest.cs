@@ -186,7 +186,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void GenerateTextForSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (
-          _entityExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
+          _entityExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t")) });
 
       var stage = new DefaultSqlGenerationStage();
 
@@ -199,7 +199,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void GenerateTextForOuterSqlStatement ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatement (
-          _entityExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t"), JoinSemantics.Inner) });
+          _entityExpression, new[] { new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Table", "t")) });
 
       var stage = new DefaultSqlGenerationStage();
 

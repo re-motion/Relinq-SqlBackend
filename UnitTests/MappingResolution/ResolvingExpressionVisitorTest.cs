@@ -378,7 +378,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var originatingEntity = SqlStatementModelObjectMother.CreateSqlEntityExpression();
       var memberInfo = SqlStatementModelObjectMother.GetSomeMemberInfo();
       var tableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
-      var joinedTable = new SqlTable (tableInfo, JoinSemantics.Inner);
+      var joinedTable = new SqlTable (tableInfo);
       var unresolvedJoinConditionExpression = new UnresolvedJoinConditionExpression (originatingEntity, memberInfo, joinedTable);
 
       var fakeResolvedCondition = Expression.Constant (true);
@@ -408,7 +408,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           originatingEntity);
 
       // Prepare an UnresolvedCollectionJoinConditionExpression while the table is not resolved yet.
-      var joinedTable = new SqlTable (unresolvedCollectionJoinTableInfo, JoinSemantics.Inner);
+      var joinedTable = new SqlTable (unresolvedCollectionJoinTableInfo);
       var unresolvedCollectionJoinConditionExpression = new UnresolvedCollectionJoinConditionExpression (joinedTable);
 
       // Then, change the table so it appears to be resolved.

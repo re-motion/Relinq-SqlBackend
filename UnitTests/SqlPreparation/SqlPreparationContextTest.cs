@@ -47,10 +47,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
       _source = ExpressionHelper.CreateMainFromClause<Cook>();
       var source = new UnresolvedTableInfo (typeof (int));
-      _sqlTable = new SqlTable (source, JoinSemantics.Inner);
+      _sqlTable = new SqlTable (source);
       _parentContext = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _parentSource = ExpressionHelper.CreateMainFromClause<Cook>();
-      _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)), JoinSemantics.Inner);
+      _parentSqlTable = new SqlTable (new UnresolvedTableInfo (typeof (int)));
       _sqlStatementBuilder = new SqlStatementBuilder();
       _contextWithParent = new SqlPreparationContext (_parentContext, _sqlStatementBuilder);
     }
