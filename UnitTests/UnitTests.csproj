@@ -127,6 +127,9 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="..\Core\Utilities\ReflectionUtility.cs">
+      <Link>Utilities\ReflectionUtility.cs</Link>
+    </Compile>
     <Compile Include="App_Packages\Remotion.Development.BooleanObjectMother.Sources.1.25.23\BooleanObjectMother.cs" />
     <Compile Include="App_Packages\Remotion.Development.UnitTesting.PrivateInvoke.Sources.1.15.23.0\PrivateInvoke.cs" />
     <Compile Include="App_Packages\Remotion.Development.UnitTesting.Serializer.Sources.1.15.23.0\Serializer.cs" />
@@ -359,6 +362,7 @@
     <Compile Include="MappingResolution\ResolvingTableInfoVisitorTest.cs" />
     <Compile Include="Utilities\ITestRegistry.cs" />
     <Compile Include="Utilities\RegistryBaseTest.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTest.cs" />
     <Compile Include="Utilities\Some.cs" />
     <Compile Include="Utilities\TestRegistry.cs" />
     <Compile Include="Utilities\TestRegistryImplementation.cs" />
