@@ -31,7 +31,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
@@ -177,7 +177,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [Test]
     public void VisitExpression_ValueSemantics_LeavesMethodCallExpression ()
     {
-      var methodWithBoolResultExpression = Expression.Call (ReflectionUtility.GetMethod (() => MethodWithBoolResult()));
+      var methodWithBoolResultExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => MethodWithBoolResult()));
 
       var result = _valueRequiredVisitor.VisitExpression (methodWithBoolResultExpression);
 
@@ -597,7 +597,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [Test]
     public void VisitBinaryExpression_BinaryBoolExpression_PassesMethod ()
     {
-      var operatorMethod = ReflectionUtility.GetMethod (() => FakeAndOperator(false, false));
+      var operatorMethod = MemberInfoFromExpressionUtility.GetMethod (() => FakeAndOperator(false, false));
       var expression = Expression.And (Expression.Constant (true), Expression.Constant (false), operatorMethod);
       Assert.That (expression.Method, Is.Not.Null);
 
@@ -702,8 +702,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var other = new CustomExpression (typeof (Cook));
-      var complexExpressionLeft = BinaryExpression.And (entity, other, ReflectionUtility.GetMethod (() => FakeAndOperator (null, null)));
-      var complexExpressionRight = BinaryExpression.And (other, entity, ReflectionUtility.GetMethod (() => FakeAndOperator (null, null)));
+      var complexExpressionLeft = BinaryExpression.And (entity, other, MemberInfoFromExpressionUtility.GetMethod (() => FakeAndOperator (null, null)));
+      var complexExpressionRight = BinaryExpression.And (other, entity, MemberInfoFromExpressionUtility.GetMethod (() => FakeAndOperator (null, null)));
 
       Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
       Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
@@ -930,7 +930,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var instance = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var argument = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Restaurant));
-      var expression = Expression.Call (instance, ReflectionUtility.GetMethod (() => ((Cook) null).GetSubKitchenCook (null)), argument);
+      var expression = Expression.Call (instance, MemberInfoFromExpressionUtility.GetMethod (() => ((Cook) null).GetSubKitchenCook (null)), argument);
 
       var result = _singleValueRequiredVisitor.VisitMethodCallExpression (expression);
 
@@ -944,7 +944,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var argument = Expression.Constant (true);
       var expression = Expression.Call (
           instance,
-          ReflectionUtility.GetMethod (() => false.CompareTo (true)),
+          MemberInfoFromExpressionUtility.GetMethod (() => false.CompareTo (true)),
           argument);
 
       var result = _predicateRequiredVisitor.VisitMethodCallExpression (expression);
@@ -960,7 +960,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void VisitMethodCallExpression_NoObject ()
     {
       var argument = ExpressionHelper.CreateExpression (typeof (string));
-      var expression = Expression.Call (ReflectionUtility.GetMethod (() => int.Parse ("arg")), argument);
+      var expression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => int.Parse ("arg")), argument);
 
       var result = _predicateRequiredVisitor.VisitMethodCallExpression (expression);
 

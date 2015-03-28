@@ -35,7 +35,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
@@ -590,7 +590,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var methodCallExpression = Expression.Call (
           Expression.Constant (0), 
-          ReflectionUtility.GetMethod (() => 0.ToString ("", null)), 
+          MemberInfoFromExpressionUtility.GetMethod (() => 0.ToString ("", null)), 
           Expression.Constant (""),
           Expression.Constant (null, typeof (IFormatProvider)));
 
@@ -598,7 +598,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var expected = Expression.Call (
           new NamedExpression ("Object", Expression.Constant (0)), 
-          ReflectionUtility.GetMethod (() => 0.ToString ("", null)), 
+          MemberInfoFromExpressionUtility.GetMethod (() => 0.ToString ("", null)), 
           new[] { new NamedExpression ("Arg0", Expression.Constant ("")), new NamedExpression ("Arg1", Expression.Constant (null, typeof (IFormatProvider))) });
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
@@ -607,13 +607,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     public void VisitMethodCallExpression_TransformerNotRegistered_NoObject_WrapsArgumentsIntoNamedExpressions ()
     {
       var methodCallExpression = Expression.Call (
-          ReflectionUtility.GetMethod (() => int.Parse ("")),
+          MemberInfoFromExpressionUtility.GetMethod (() => int.Parse ("")),
           Expression.Constant (""));
       
       var result = SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock, _methodCallTransformerProvider);
 
       var expected = Expression.Call (
-          ReflectionUtility.GetMethod (() => int.Parse ("")),
+          MemberInfoFromExpressionUtility.GetMethod (() => int.Parse ("")),
           new[] { new NamedExpression ("Arg0", Expression.Constant ("")) });
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }

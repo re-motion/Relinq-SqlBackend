@@ -106,10 +106,11 @@
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha-001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha-003\lib\net40\Remotion.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Linq.Development">
-      <HintPath>..\packages\Remotion.Linq.Development.2.0.0-alpha-001\lib\net45\Remotion.Linq.Development.dll</HintPath>
+    <Reference Include="Remotion.Linq.Development, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Remotion.Linq.Development.2.0.0-alpha-003\lib\net45\Remotion.Linq.Development.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -125,6 +126,9 @@
   <ItemGroup>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="..\Core\Utilities\ReflectionUtility.cs">
+      <Link>Utilities\ReflectionUtility.cs</Link>
     </Compile>
     <Compile Include="App_Packages\Remotion.Development.BooleanObjectMother.Sources.1.25.23\BooleanObjectMother.cs" />
     <Compile Include="App_Packages\Remotion.Development.UnitTesting.PrivateInvoke.Sources.1.15.23.0\PrivateInvoke.cs" />
@@ -357,7 +361,9 @@
     <Compile Include="SqlStatementModel\SqlTableTest.cs" />
     <Compile Include="MappingResolution\ResolvingTableInfoVisitorTest.cs" />
     <Compile Include="Utilities\ITestRegistry.cs" />
+    <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="Utilities\RegistryBaseTest.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTest.cs" />
     <Compile Include="Utilities\Some.cs" />
     <Compile Include="Utilities\TestRegistry.cs" />
     <Compile Include="Utilities\TestRegistryImplementation.cs" />

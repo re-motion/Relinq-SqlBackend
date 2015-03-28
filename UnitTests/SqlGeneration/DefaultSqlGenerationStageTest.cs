@@ -17,17 +17,15 @@
 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
@@ -101,7 +99,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var stage = new DefaultSqlGenerationStage();
 
-      var projectionWithMethodCall = Expression.Call (ReflectionUtility.GetMethod (() => SomeMethod (null)), _sqlStatement.SelectProjection);
+      var projectionWithMethodCall = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => SomeMethod (null)), _sqlStatement.SelectProjection);
 
       Assert.That (
           () => stage.GenerateTextForOuterSelectExpression (_commandBuilder, projectionWithMethodCall, SetOperationsMode.StatementIsSetCombined),
