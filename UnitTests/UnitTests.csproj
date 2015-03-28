@@ -361,6 +361,7 @@
     <Compile Include="SqlStatementModel\SqlTableTest.cs" />
     <Compile Include="MappingResolution\ResolvingTableInfoVisitorTest.cs" />
     <Compile Include="Utilities\ITestRegistry.cs" />
+    <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="Utilities\RegistryBaseTest.cs" />
     <Compile Include="Utilities\ReflectionUtilityTest.cs" />
     <Compile Include="Utilities\Some.cs" />

@@ -27,7 +27,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.UnitTests.Utilities;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
@@ -330,7 +330,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       var methodCallExpression = Expression.Call (
           _namedIntExpression,
-          ReflectionUtility.GetMethod (() => 0.ToString ("")),
+          MemberInfoFromExpressionUtility.GetMethod (() => 0.ToString ("")),
           new Expression[] { _namedNameColumnExpression });
       visitor.VisitMethodCallExpression (methodCallExpression);
 
@@ -359,7 +359,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
       var methodCallExpression = Expression.Call (
-          ReflectionUtility.GetMethod (() => int.Parse ("")),
+          MemberInfoFromExpressionUtility.GetMethod (() => int.Parse ("")),
           new Expression[] { _namedNameColumnExpression });
       visitor.VisitMethodCallExpression (methodCallExpression);
 
@@ -384,7 +384,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var visitor = CreateVisitor (SetOperationsMode.StatementIsNotSetCombined);
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
-      var methodCallExpression = Expression.Call (ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments()));
+      var methodCallExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => StaticMethodWithoutArguments()));
       visitor.VisitMethodCallExpression (methodCallExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (1));
@@ -400,7 +400,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var visitor = CreateVisitor (SetOperationsMode.StatementIsSetCombined);
 
-      var methodCallExpression = Expression.Call (ReflectionUtility.GetMethod (() => StaticMethodWithoutArguments()));
+      var methodCallExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => StaticMethodWithoutArguments()));
       Assert.That (
           () => visitor.VisitMethodCallExpression (methodCallExpression),
           Throws.TypeOf<NotSupportedException>().With.Message.StringContaining (

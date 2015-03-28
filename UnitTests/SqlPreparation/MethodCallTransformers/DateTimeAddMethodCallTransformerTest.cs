@@ -22,7 +22,7 @@ using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransformers
 {
@@ -43,22 +43,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     [Test]
     public void SupportedMethods ()
     {
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.Add (new TimeSpan ()))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddDays (1.5))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddHours (1.5))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddMilliseconds (1.5))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddMinutes (1.5))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddMonths (15))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddSeconds (1.5))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddTicks (15))));
-      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (ReflectionUtility.GetMethod (() => DateTime.Now.AddYears (15))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.Add (new TimeSpan ()))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddDays (1.5))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddHours (1.5))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddMilliseconds (1.5))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddMinutes (1.5))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddMonths (15))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddSeconds (1.5))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddTicks (15))));
+      Assert.That (DateTimeAddMethodCallTransformer.SupportedMethods, Has.Member (MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddYears (15))));
     }
 
     [Test]
     public void Transform_Add_TimeSpan ()
     {
       var value = Expression.Constant (new TimeSpan (123456789L));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.Add (new TimeSpan()));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.Add (new TimeSpan()));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_Add_TimeSpan_NoConstantTimeSpan ()
     {
       var value = new CustomExpression (typeof (TimeSpan));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.Add (new TimeSpan ()));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.Add (new TimeSpan ()));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       Assert.That (
@@ -97,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddDays ()
     {
       var value = new CustomExpression (typeof (double));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddDays (0.0));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddDays (0.0));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -125,7 +125,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddHours ()
     {
       var value = new CustomExpression (typeof (double));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddHours (0.0));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddHours (0.0));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -153,7 +153,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddMilliseconds ()
     {
       var value = new CustomExpression (typeof (double));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddMilliseconds (0.0));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddMilliseconds (0.0));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -180,7 +180,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddMinutes ()
     {
       var value = new CustomExpression (typeof (double));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddMinutes (0.0));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddMinutes (0.0));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -208,7 +208,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddMonths ()
     {
       var value = new CustomExpression (typeof (int));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddMonths (0));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddMonths (0));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -226,7 +226,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddSeconds ()
     {
       var value = new CustomExpression (typeof (double));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddSeconds (0.0));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddSeconds (0.0));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -254,7 +254,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddTicks ()
     {
       var value = new CustomExpression (typeof (long));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddTicks (123456));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddTicks (123456));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -279,7 +279,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     public void Transform_AddYears ()
     {
       var value = new CustomExpression (typeof (int));
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.AddYears (0));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.AddYears (0));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, value);
 
       var result = _transformer.Transform (expression);
@@ -296,7 +296,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     [Test]
     public void Transform_InvalidMethod ()
     {
-      var methodInfo = ReflectionUtility.GetMethod (() => DateTime.Now.ToString (""));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => DateTime.Now.ToString (""));
       var expression = Expression.Call (_dateTimeInstance, methodInfo, Expression.Constant (""));
 
       Assert.That (

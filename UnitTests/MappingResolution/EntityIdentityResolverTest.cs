@@ -29,7 +29,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
@@ -278,7 +278,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void ResolvePotentialEntityComparison_BinaryExpression_RemovesOperatorMethod ()
     {
       var binary = Expression.Equal (
-          _entityExpression, _entityConstantExpression, false, ReflectionUtility.GetMethod (() => FakeEqualityOperator (null, null)));
+          _entityExpression, _entityConstantExpression, false, MemberInfoFromExpressionUtility.GetMethod (() => FakeEqualityOperator (null, null)));
 
       var result = _entityIdentityResolver.ResolvePotentialEntityComparison (binary);
 
