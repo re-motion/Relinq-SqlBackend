@@ -23,7 +23,7 @@ Imports System.Security
 <Assembly: AssemblyProduct("re-linq project (relinq.codeplex.com)")> 
 <Assembly: AssemblyCopyright("Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)")> 
 <Assembly: AssemblyTrademark("")> 
-<Assembly: AssemblyConfiguration(".NET Framework: net-4.5, build type: Debug")> 
+<Assembly: AssemblyConfiguration("Build type: Debug")> 
 <Assembly: AssemblyVersion("2.0.0.0")> 
 <Assembly: AssemblyFileVersion("2.0.0.24009")> 
 <Assembly: AssemblyInformationalVersion("2.0.0-x.9+Debug")> 
