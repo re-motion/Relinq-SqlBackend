@@ -326,7 +326,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       var message = string.Format (
           "The expression '{0}' cannot be translated to SQL text by this SQL generator. Expression type '{1}' is not supported.",
-          FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
+          unhandledItem is Expression ? FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem) : unhandledItem.ToString(),
           unhandledItem.GetType().Name);
 
       throw new NotSupportedException (message);

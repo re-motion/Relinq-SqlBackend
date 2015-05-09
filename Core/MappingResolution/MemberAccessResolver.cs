@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           string.Format (
               "Cannot resolve member '{0}' applied to expression '{1}'; the expression type '{2}' is not supported in member expressions.",
               _memberInfo.Name,
-              FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
+              unhandledItem is Expression ? FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem) : unhandledItem.ToString(),
               unhandledItem.GetType().Name));
     }
 
