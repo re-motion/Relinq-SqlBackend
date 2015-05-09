@@ -328,7 +328,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
-      var expectedResult = Expression.Equal (
+      var expectedResult = Expression.ReferenceEqual (
           _associatedGroupingSelectExpression.ElementExpression,
           _associatedGroupingSelectExpression.ElementExpression);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
