@@ -17,21 +17,42 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
+using JetBrains.Annotations;
 
-namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
+namespace Remotion.Linq.SqlBackend
 {
-  public class TestExtensionExpressionWithoutChildren : ExtensionExpression
+  public abstract class ExtensionExpression : Expression
   {
-    public TestExtensionExpressionWithoutChildren (Type type)
-        : base (type)
+    private readonly Type _type;
+
+    public ExtensionExpression ([NotNull] Type type)
     {
+      _type = type;
     }
 
-    protected override Expression VisitChildren (ExpressionVisitor visitor)
+    public override ExpressionType NodeType
     {
-      return this;
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
+    }
+
+    protected abstract override Expression VisitChildren (ExpressionVisitor visitor);
+
+    internal Expression AcceptInteral (ExpressionVisitor expressionVisitor)
+    {
+      return Accept (expressionVisitor);
+    }
+  }
+
+  internal static class ExtensionExpressionExtensions
+  {
+    public static Expression Accept (this ExtensionExpression expression, ExpressionVisitor expressionVisitor)
+    {
+      return expression.AcceptInteral (expressionVisitor);
     }
   }
 }

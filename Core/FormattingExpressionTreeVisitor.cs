@@ -1,4 +1,4 @@
-// This file is part of the re-linq project (relinq.codeplex.com)
+﻿// This file is part of the re-linq project (relinq.codeplex.com)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // re-linq is free software; you can redistribute it and/or modify it under 
@@ -14,40 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 
-namespace Remotion.Linq.SqlBackend.UnitTests
+// ReSharper disable once CheckNamespace
+namespace Remotion.Linq.Clauses.ExpressionVisitors
 {
-  public class CustomCompositeExpression : ExtensionExpression
+  public static class FormattingExpressionTreeVisitor
   {
-    private readonly Expression _child;
-
-    public CustomCompositeExpression (Type type, Expression child)
-        : base (type)
+    public static string Format (Expression expression)
     {
-      _child = child;
-    }
-
-    public Expression Child
-    {
-      get { return _child; }
-    }
-
-    protected override Expression VisitChildren (ExpressionVisitor visitor)
-    {
-      var newChild = visitor.Visit (Child);
-      if (newChild != Child)
-        return new CustomCompositeExpression (Type, newChild);
-      else
-        return this;
-    }
-
-    public override string ToString ()
-    {
-      return "CustomExpression";
+      return expression.ToString();
     }
   }
 }

@@ -17,8 +17,8 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
@@ -75,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void VisitChildren_NoColumnChanged ()
     {
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
       visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (_originalColumnsReadonly);
       visitorMock.Replay();
 
@@ -90,7 +90,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       var newColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Test", false);
 
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
       var expectedColumns = new[] { _columnExpression1, newColumnExpression, _columnExpression3 };
 
       visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (Array.AsReadOnly (expectedColumns));

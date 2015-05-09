@@ -18,7 +18,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
@@ -42,16 +42,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       get { return _expressions; }
     }
 
-    public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
+    public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("textGeneratingExpressionVisitor", textGeneratingExpressionVisitor);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      textGeneratingExpressionVisitor.VisitList (_expressions, textGeneratingExpressionVisitor.VisitExpression);
+      ExpressionVisitor.Visit (_expressions, textGeneratingExpressionVisitor.Visit);
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       var newExpressions = visitor.VisitAndConvert(_expressions, "VisitChildren");
       if (newExpressions != Expressions)

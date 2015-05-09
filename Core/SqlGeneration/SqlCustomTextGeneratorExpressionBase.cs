@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
@@ -31,9 +30,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
     }
 
-    public abstract void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
+    public abstract void Generate (ISqlCommandBuilder commandBuilder, ExpressionVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
     
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
       if (specificVisitor != null)

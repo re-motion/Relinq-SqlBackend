@@ -18,7 +18,6 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
@@ -29,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
     {
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       return this;
     }

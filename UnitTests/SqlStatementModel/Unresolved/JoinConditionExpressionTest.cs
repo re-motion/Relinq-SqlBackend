@@ -43,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
       visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);

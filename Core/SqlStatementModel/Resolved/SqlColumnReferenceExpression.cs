@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -43,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _referencedEntity; }
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlColumnExpressionVisitor;
       if (specificVisitor != null)

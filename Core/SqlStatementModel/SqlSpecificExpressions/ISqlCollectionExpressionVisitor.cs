@@ -22,7 +22,7 @@ using Remotion.Linq.Parsing;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
-  /// Implemented by <see cref="ExpressionTreeVisitor"/> subclasses handling <see cref="SqlCollectionExpression"/> instances.
+  /// Implemented by <see cref="ExpressionVisitor"/> subclasses handling <see cref="SqlCollectionExpression"/> instances.
   /// </summary>
   public interface ISqlCollectionExpressionVisitor
   {

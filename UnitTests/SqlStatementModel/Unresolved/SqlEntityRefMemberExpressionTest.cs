@@ -16,9 +16,9 @@
 // 
 
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
@@ -50,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
       visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);

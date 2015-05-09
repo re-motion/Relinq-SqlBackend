@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -200,7 +200,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
         Expression checkedInMemoryProjection = expectedInMemoryProjection;
         if (simplifyInMemoryProjection)
         {
-          checkedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
+          checkedInMemoryProjection = PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
           checkedInMemoryProjection = ReplaceConvertExpressionMarker (checkedInMemoryProjection);
         }
         SqlExpressionTreeComparer.CheckAreEqualTrees (checkedInMemoryProjection, result.GetInMemoryProjection<object> ());
@@ -236,17 +236,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       });
     }
 
-    protected class AdHocExpressionTreeVisitor : ExpressionTreeVisitor
+    protected class AdHocExpressionTreeVisitor : RelinqExpressionVisitor
     {
       public static Expression Transform (Expression expression, Func<Expression, Expression> transformation)
       {
-        return new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+        return new AdHocExpressionTreeVisitor (transformation).Visit (expression);
       }
 
       public static T TransformAndRetainType<T> (T expression, Func<Expression, Expression> transformation)
         where T : Expression
       {
-        return (T) new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+        return (T) new AdHocExpressionTreeVisitor (transformation).Visit (expression);
       }
 
       private readonly Func<Expression, Expression> _transformation;
@@ -256,9 +256,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
         _transformation = transformation;
       }
 
-      public override Expression VisitExpression (Expression expression)
+      public override Expression Visit (Expression expression)
       {
-        return _transformation (base.VisitExpression (expression));
+        return _transformation (base.Visit (expression));
       }
     }
   }

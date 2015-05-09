@@ -38,11 +38,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       var expression = Expression.Constant (3);
       
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlIsNotNullExpression.Expression))
+          .Expect (mock => mock.Visit (_sqlIsNotNullExpression.Expression))
           .Return (expression);
       
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNotNullExpression, visitorMock);
@@ -55,11 +55,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       var expression = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlIsNotNullExpression.Expression))
+          .Expect (mock => mock.Visit (_sqlIsNotNullExpression.Expression))
           .Return (_sqlIsNotNullExpression.Expression);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNotNullExpression, visitorMock);

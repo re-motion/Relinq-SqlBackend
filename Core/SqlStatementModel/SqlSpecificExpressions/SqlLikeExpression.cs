@@ -19,8 +19,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
+using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -137,18 +136,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _escapeExpression; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newLeftExpression = visitor.VisitExpression (_left);
-      var newRightExpression = visitor.VisitExpression (_right);
-      var newEscapeExpression = visitor.VisitExpression (_escapeExpression);
+      var newLeftExpression = visitor.Visit (_left);
+      var newRightExpression = visitor.Visit (_right);
+      var newEscapeExpression = visitor.Visit (_escapeExpression);
 
       if (newLeftExpression != _left || newRightExpression != _right || newEscapeExpression != _escapeExpression)
         return new SqlLikeExpression (newLeftExpression, newRightExpression, newEscapeExpression);
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)

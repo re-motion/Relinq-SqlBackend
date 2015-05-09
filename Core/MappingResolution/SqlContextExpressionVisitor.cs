@@ -18,7 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -39,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// values (<see cref="NewExpression"/>) or entities are encountered.
   /// </remarks>
   public class SqlContextExpressionVisitor
-      : ExpressionTreeVisitor,
+      : RelinqExpressionVisitor,
         ISqlSpecificExpressionVisitor,
         IResolvedSqlExpressionVisitor,
         ISqlSubStatementVisitor,
@@ -56,7 +56,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("context", context);
 
       var visitor = new SqlContextExpressionVisitor (initialSemantics, stage, context);
-      return visitor.VisitExpression (expression);
+      return visitor.Visit (expression);
     }
 
     private readonly SqlExpressionContext _currentContext;
@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _context = context;
     }
 
-    public override Expression VisitExpression (Expression expression)
+    public override Expression Visit (Expression expression)
     {
       if (expression == null)
         return null;
@@ -106,7 +106,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    protected override Expression VisitConstant (ConstantExpression expression)
     {
       // Always convert boolean constants to int constants because in the database, there are no boolean constants
       
@@ -121,7 +121,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return new SqlConvertedBooleanExpression (convertedExpression);
       }
       
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
     public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
@@ -134,7 +134,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return new SqlConvertedBooleanExpression (convertedExpression);
       }
       
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -148,10 +148,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         throw new NotSupportedException (message);
       }
 
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
-    protected override Expression VisitBinaryExpression (BinaryExpression expression)
+    protected override Expression VisitBinary (BinaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -169,7 +169,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             && expression.Right is ConstantExpression
             && Equals (((ConstantExpression) expression.Right).Value, false))
         {
-          return VisitExpression (Expression.Convert (expression.Left, expression.Type));
+          return Visit (Expression.Convert (expression.Left, expression.Type));
         }
 
         // We'll pull out the bool conversion marker from the operands of the Coalesce expression and instead put it around the whole expression.
@@ -190,7 +190,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitUnaryExpression (UnaryExpression expression)
+    protected override Expression VisitUnary (UnaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -250,7 +250,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             expression.Type.Name);
         throw new NotSupportedException (message);
       }
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
     public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
@@ -263,7 +263,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitNewExpression (NewExpression expression)
+    protected override Expression VisitNew (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -289,7 +289,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    protected override Expression VisitMethodCall (MethodCallExpression expression)
     {
       // Method arguments and target instance are always values
 
@@ -303,12 +303,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitNamedExpression (NamedExpression expression)
     {
-      var newInnerExpression = VisitExpression (expression.Expression);
+      var newInnerExpression = Visit (expression.Expression);
       if (newInnerExpression is SqlConvertedBooleanExpression)
       {
         var convertedBooleanExpression = (SqlConvertedBooleanExpression) newInnerExpression;
         var innerNamedExpression = new NamedExpression (expression.Name, convertedBooleanExpression.Expression);
-        return VisitExpression (new SqlConvertedBooleanExpression (innerNamedExpression));
+        return Visit (new SqlConvertedBooleanExpression (innerNamedExpression));
       }
 
       if (newInnerExpression != expression.Expression)
@@ -367,7 +367,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newCases = VisitList (
+      var newCases = Visit (
           expression.Cases,
           caseWhenPair =>
           {
@@ -415,14 +415,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitInvocationExpression (InvocationExpression expression)
+    protected override Expression VisitInvocation (InvocationExpression expression)
     {
       var message = string.Format (
           "InvocationExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
       throw new NotSupportedException (message);
     }
 
-    protected override Expression VisitLambdaExpression (LambdaExpression expression)
+    protected override Expression VisitLambda<T> (Expression<T> expression)
     {
       var message = string.Format (
           "LambdaExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
@@ -432,7 +432,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     private Expression VisitChildrenWithGivenSemantics (ExtensionExpression expression, SqlExpressionContext childContext)
     {
       var visitor = new SqlContextExpressionVisitor (childContext, _stage, _context);
-      return visitor.VisitExtensionExpression (expression);
+      return visitor.VisitExtension (expression);
     }
 
     private SqlExpressionContext GetChildSemanticsForUnaryExpression (Expression expression)
@@ -472,7 +472,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private Expression HandleValueSemantics (Expression expression)
     {
-      var newExpression = base.VisitExpression (expression);
+      var newExpression = base.Visit (expression);
       if (newExpression is SqlConvertedBooleanExpression)
         return newExpression;
 
@@ -493,7 +493,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private Expression HandlePredicateSemantics (Expression expression)
     {
-      var newExpression = base.VisitExpression (expression);
+      var newExpression = base.Visit (expression);
 
       var convertedBooleanExpression = newExpression as SqlConvertedBooleanExpression;
       if (convertedBooleanExpression != null)

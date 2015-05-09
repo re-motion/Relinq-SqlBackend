@@ -84,8 +84,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expressionOfIncorrectType =
           new TestExtensionExpression (new SqlConvertedBooleanExpression (new TestExtensionExpressionWithoutChildren (typeof (int))));
 
-      var result1 = _predicateRequiredVisitor.VisitExpression (expressionOfCorrectType);
-      var result2 = _predicateRequiredVisitor.VisitExpression (expressionOfIncorrectType);
+      var result1 = _predicateRequiredVisitor.Visit (expressionOfCorrectType);
+      var result2 = _predicateRequiredVisitor.Visit (expressionOfIncorrectType);
 
       Assert.That (result1, Is.SameAs (expressionOfCorrectType));
 
@@ -97,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [Test]
     public void VisitExpression_Null_Ignored ()
     {
-      var result = _valueRequiredVisitor.VisitExpression (null);
+      var result = _valueRequiredVisitor.Visit ((Expression) null);
       Assert.That (result, Is.Null);
     }
 
@@ -107,7 +107,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
-      Assert.That (() => visitor.VisitExpression (entityExpression), Throws.TypeOf<NotSupportedException>());
+      Assert.That (() => visitor.Visit (entityExpression), Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]
@@ -117,8 +117,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var nullableExpression = new CustomExpression (typeof (bool?));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (expression);
-      var resultNullable = visitor.VisitExpression (nullableExpression);
+      var result = visitor.Visit (expression);
+      var resultNullable = visitor.Visit (nullableExpression);
 
       var expected = new SqlConvertedBooleanExpression (GetNonNullablePredicateAsValueExpression (expression));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -133,8 +133,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var nullableExpression = new CustomExpression (typeof (bool?));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (expression);
-      var resultNullable = visitor.VisitExpression (nullableExpression);
+      var result = visitor.Visit (expression);
+      var resultNullable = visitor.Visit (nullableExpression);
 
       var expected = new SqlConvertedBooleanExpression (GetNonNullablePredicateAsValueExpression (expression));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -148,7 +148,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = CreateNewExpression ();
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (expression);
+      var result = visitor.Visit (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -159,7 +159,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new CustomExpression (typeof (int));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (expression);
+      var result = visitor.Visit (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -169,7 +169,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var convertedBooleanExpression = new SqlConvertedBooleanExpression (Expression.Constant (1));
 
-      var result = _valueRequiredVisitor.VisitExpression (convertedBooleanExpression);
+      var result = _valueRequiredVisitor.Visit (convertedBooleanExpression);
 
       Assert.That (result, Is.SameAs (convertedBooleanExpression));
     }
@@ -179,7 +179,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var methodWithBoolResultExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => MethodWithBoolResult()));
 
-      var result = _valueRequiredVisitor.VisitExpression (methodWithBoolResultExpression);
+      var result = _valueRequiredVisitor.Visit (methodWithBoolResultExpression);
 
       Assert.That (result, Is.SameAs (methodWithBoolResultExpression));
     }
@@ -191,8 +191,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var nullableExpression = new CustomExpression (typeof (bool?));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (expression);
-      var resultNullable = visitor.VisitExpression (nullableExpression);
+      var result = visitor.Visit (expression);
+      var resultNullable = visitor.Visit (nullableExpression);
 
       Assert.That (result, Is.SameAs (expression));
       Assert.That (resultNullable, Is.SameAs (nullableExpression));
@@ -205,8 +205,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var nullableExpression = new SqlConvertedBooleanExpression (new CustomExpression (typeof (int?)));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (expression);
-      var resultNullable = visitor.VisitExpression (nullableExpression);
+      var result = visitor.Visit (expression);
+      var resultNullable = visitor.Visit (nullableExpression);
 
       var expected = Expression.Equal (expression.Expression, new SqlLiteralExpression (1));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -222,7 +222,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new CustomExpression (typeof (string));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
-      visitor.VisitExpression (expression);
+      visitor.Visit (expression);
     }
 
     [Test]
@@ -232,7 +232,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new CustomExpression (typeof (string));
 
       var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), _stageMock, _mappingResolutionContext);
-      visitor.VisitExpression (expression);
+      visitor.Visit (expression);
     }
 
     [Test]
@@ -241,7 +241,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitExpression (entityExpression);
+      var result = visitor.Visit (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
     }
@@ -265,11 +265,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var constantNullableFalse = Expression.Constant (false, typeof (bool?));
       var constantNullableNull = Expression.Constant (null, typeof (bool?));
 
-      var resultTrue = _valueRequiredVisitor.VisitConstantExpression (constantTrue);
-      var resultFalse = _valueRequiredVisitor.VisitConstantExpression (constantFalse);
-      var resultNullableTrue = _valueRequiredVisitor.VisitConstantExpression (constantNullableTrue);
-      var resultNullableFalse = _valueRequiredVisitor.VisitConstantExpression (constantNullableFalse);
-      var resultNullableNull = _valueRequiredVisitor.VisitConstantExpression (constantNullableNull);
+      var resultTrue = _valueRequiredVisitor.VisitConstant (constantTrue);
+      var resultFalse = _valueRequiredVisitor.VisitConstant (constantFalse);
+      var resultNullableTrue = _valueRequiredVisitor.VisitConstant (constantNullableTrue);
+      var resultNullableFalse = _valueRequiredVisitor.VisitConstant (constantNullableFalse);
+      var resultNullableNull = _valueRequiredVisitor.VisitConstant (constantNullableNull);
 
       var expectedExpressionTrue = new SqlConvertedBooleanExpression (Expression.Constant (1));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionTrue, resultTrue);
@@ -292,11 +292,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var constantNullableFalse = Expression.Constant (false, typeof (bool?));
       var constantNullableNull = Expression.Constant (null, typeof (bool?));
 
-      var resultTrue = _singleValueRequiredVisitor.VisitConstantExpression (constantTrue);
-      var resultFalse = _singleValueRequiredVisitor.VisitConstantExpression (constantFalse);
-      var resultNullableTrue = _singleValueRequiredVisitor.VisitConstantExpression (constantNullableTrue);
-      var resultNullableFalse = _singleValueRequiredVisitor.VisitConstantExpression (constantNullableFalse);
-      var resultNullableNull = _singleValueRequiredVisitor.VisitConstantExpression (constantNullableNull);
+      var resultTrue = _singleValueRequiredVisitor.VisitConstant (constantTrue);
+      var resultFalse = _singleValueRequiredVisitor.VisitConstant (constantFalse);
+      var resultNullableTrue = _singleValueRequiredVisitor.VisitConstant (constantNullableTrue);
+      var resultNullableFalse = _singleValueRequiredVisitor.VisitConstant (constantNullableFalse);
+      var resultNullableNull = _singleValueRequiredVisitor.VisitConstant (constantNullableNull);
 
       var expectedExpressionTrue = new SqlConvertedBooleanExpression (Expression.Constant (1));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionTrue, resultTrue);
@@ -319,11 +319,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var constantNullableFalse = Expression.Constant (false, typeof (bool?));
       var constantNullableNull = Expression.Constant (null, typeof (bool?));
 
-      var resultTrue = _predicateRequiredVisitor.VisitConstantExpression (constantTrue);
-      var resultFalse = _predicateRequiredVisitor.VisitConstantExpression (constantFalse);
-      var resultNullableTrue = _predicateRequiredVisitor.VisitConstantExpression (constantNullableTrue);
-      var resultNullableFalse = _predicateRequiredVisitor.VisitConstantExpression (constantNullableFalse);
-      var resultNullableNull = _predicateRequiredVisitor.VisitConstantExpression (constantNullableNull);
+      var resultTrue = _predicateRequiredVisitor.VisitConstant (constantTrue);
+      var resultFalse = _predicateRequiredVisitor.VisitConstant (constantFalse);
+      var resultNullableTrue = _predicateRequiredVisitor.VisitConstant (constantNullableTrue);
+      var resultNullableFalse = _predicateRequiredVisitor.VisitConstant (constantNullableFalse);
+      var resultNullableNull = _predicateRequiredVisitor.VisitConstant (constantNullableNull);
 
       var expectedExpressionTrue = new SqlConvertedBooleanExpression (Expression.Constant (1));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpressionTrue, resultTrue);
@@ -342,7 +342,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var constant = Expression.Constant ("hello");
 
-      var result = _valueRequiredVisitor.VisitExpression (constant);
+      var result = _valueRequiredVisitor.Visit (constant);
 
       Assert.That (result, Is.SameAs (constant));
     }
@@ -441,8 +441,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.Equal (Expression.Constant (true), Expression.Constant (false));
       var nullableExpression = Expression.Equal (Expression.Constant (true, typeof (bool?)), Expression.Constant (false, typeof (bool?)), true, null);
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
 
       var expectedExpression = Expression.Equal (
           new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (0)));
@@ -463,8 +463,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var complexExpressionRight = Expression.Equal (
           new CustomExpression (typeof (Cook)), SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook)));
 
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
     }
 
     [Test]
@@ -473,8 +473,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.NotEqual (Expression.Constant (true), Expression.Constant (false));
       var nullableExpression = Expression.NotEqual (Expression.Constant (true, typeof (bool?)), Expression.Constant (false, typeof (bool?)), true, null);
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
 
       var expectedExpression = Expression.NotEqual (
           new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (0)));
@@ -495,8 +495,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var complexExpressionRight = Expression.NotEqual (
           new CustomExpression (typeof (Cook)), SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook)));
 
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
     }
 
     [Test]
@@ -505,8 +505,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.AndAlso (Expression.Constant (true), Expression.Constant (false));
       var nullableExpression = Expression.AndAlso (Expression.Constant (true, typeof (bool?)), Expression.Constant (false, typeof (bool?)));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
 
       var expectedExpression = Expression.AndAlso (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -524,8 +524,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.OrElse (Expression.Constant (true), Expression.Constant (false));
       var nullableExpression = Expression.OrElse (Expression.Constant (true, typeof (bool?)), Expression.Constant (false, typeof (bool?)));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
 
       var expectedExpression = Expression.OrElse (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -543,8 +543,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.And (Expression.Constant (true), Expression.Constant (false));
       var nullableExpression = Expression.And (Expression.Constant (true, typeof (bool?)), Expression.Constant (false, typeof (bool?)));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
 
       var expectedExpression = Expression.And (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -562,8 +562,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.Or (Expression.Constant (true), Expression.Constant (false));
       var nullableExpression = Expression.Or (Expression.Constant (true, typeof (bool?)), Expression.Constant (false, typeof (bool?)));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
 
       var expectedExpression = Expression.Or (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -581,8 +581,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.ExclusiveOr (Expression.Constant (true), Expression.Constant (false));
       var nullableExpression = Expression.ExclusiveOr (Expression.Constant (true, typeof (bool?)), Expression.Constant (false, typeof (bool?)));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
 
       var expectedExpression = Expression.ExclusiveOr (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -601,7 +601,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.And (Expression.Constant (true), Expression.Constant (false), operatorMethod);
       Assert.That (expression.Method, Is.Not.Null);
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
 
       var expectedExpression = Expression.And (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)),
@@ -617,9 +617,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = Expression.Coalesce (Expression.Constant (false, typeof (bool?)), Expression.Constant (true));
       var nullableExpression = Expression.Coalesce (Expression.Constant (false, typeof (bool?)), Expression.Constant (true, typeof (bool?)));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var nullableResult = _valueRequiredVisitor.VisitBinaryExpression (nullableExpression);
-      var resultForPredicateSemantics = _predicateRequiredVisitor.VisitBinaryExpression (expression);
+      var result = _valueRequiredVisitor.VisitBinary (expression);
+      var nullableResult = _valueRequiredVisitor.VisitBinary (nullableExpression);
+      var resultForPredicateSemantics = _predicateRequiredVisitor.VisitBinary (expression);
 
       var expectedExpression = new SqlConvertedBooleanExpression (Expression.Coalesce (
           Expression.Constant (0, typeof (int?)),
@@ -644,8 +644,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var expression = Expression.Coalesce (Expression.Constant (true, typeof (bool?)), Expression.Constant (false));
 
-      var resultForValueSemantics = _valueRequiredVisitor.VisitBinaryExpression (expression);
-      var resultForPredicateSemantics = _predicateRequiredVisitor.VisitBinaryExpression (expression);
+      var resultForValueSemantics = _valueRequiredVisitor.VisitBinary (expression);
+      var resultForPredicateSemantics = _predicateRequiredVisitor.VisitBinary (expression);
 
       var expectedExpressionForValueSemantics = new SqlConvertedBooleanExpression (Expression.Coalesce (
           Expression.Constant (1, typeof (int?)),
@@ -666,8 +666,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var complexExpressionRight = Expression.Coalesce (
           new CustomExpression (typeof (Cook)), SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook)));
 
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
     }
 
     [Test]
@@ -675,7 +675,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var binary = BinaryExpression.And (Expression.Constant (5), Expression.Constant (5));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (binary);
+      var result = _valueRequiredVisitor.VisitBinary (binary);
 
       Assert.That (result, Is.SameAs (binary));
     }
@@ -685,7 +685,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var binary = BinaryExpression.And (Expression.Convert (Expression.Not (Expression.Constant (true)), typeof (int)), Expression.Constant (5));
 
-      var result = _valueRequiredVisitor.VisitBinaryExpression (binary);
+      var result = _valueRequiredVisitor.VisitBinary (binary);
 
       var expectedExpression =
           BinaryExpression.And (
@@ -705,8 +705,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var complexExpressionLeft = BinaryExpression.And (entity, other, MemberInfoFromExpressionUtility.GetMethod (() => FakeAndOperator (null, null)));
       var complexExpressionRight = BinaryExpression.And (other, entity, MemberInfoFromExpressionUtility.GetMethod (() => FakeAndOperator (null, null)));
 
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
-      Assert.That (() => _valueRequiredVisitor.VisitBinaryExpression (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionLeft), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitBinary (complexExpressionRight), Throws.TypeOf<NotSupportedException> ());
     }
 
     [Test]
@@ -715,8 +715,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var unaryExpression = Expression.Not (Expression.Constant (true));
       var unaryNullableExpression = Expression.Not (Expression.Constant (true, typeof (bool?)));
 
-      var result = _valueRequiredVisitor.VisitUnaryExpression (unaryExpression);
-      var resultNullable = _valueRequiredVisitor.VisitUnaryExpression (unaryNullableExpression);
+      var result = _valueRequiredVisitor.VisitUnary (unaryExpression);
+      var resultNullable = _valueRequiredVisitor.VisitUnary (unaryNullableExpression);
 
       var expectedExpression = Expression.Not (Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -730,7 +730,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var unaryExpression = Expression.Convert (Expression.Constant (true), typeof (object));
 
-      var result = _singleValueRequiredVisitor.VisitUnaryExpression (unaryExpression);
+      var result = _singleValueRequiredVisitor.VisitUnary (unaryExpression);
 
       Assert.That (result, Is.Not.SameAs (unaryExpression));
       Assert.That (result.NodeType, Is.EqualTo (ExpressionType.Convert));
@@ -742,7 +742,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var unaryExpression = Expression.Convert (SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook)), typeof (object));
 
-      var result = _valueRequiredVisitor.VisitUnaryExpression (unaryExpression);
+      var result = _valueRequiredVisitor.VisitUnary (unaryExpression);
 
       Assert.That (result, Is.SameAs (unaryExpression));
     }
@@ -752,7 +752,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var unaryExpression = Expression.Not (Expression.Constant (5));
 
-      var result = _valueRequiredVisitor.VisitUnaryExpression (unaryExpression);
+      var result = _valueRequiredVisitor.VisitUnary (unaryExpression);
 
       Assert.That (result, Is.SameAs (unaryExpression));
     }
@@ -769,7 +769,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                       ),
                   typeof (int)));
 
-      var result = _valueRequiredVisitor.VisitUnaryExpression (unaryExpression);
+      var result = _valueRequiredVisitor.VisitUnary (unaryExpression);
 
       var expectedExpression =
           Expression.Not (
@@ -786,8 +786,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var convertToBoolExpression = Expression.Convert (Expression.Constant (true, typeof (bool?)), typeof (bool));
       var convertToNullableBoolExpression = Expression.Convert (Expression.Constant (true), typeof (bool?));
 
-      var result = _valueRequiredVisitor.VisitUnaryExpression (convertToBoolExpression);
-      var resultNullable = _valueRequiredVisitor.VisitUnaryExpression (convertToNullableBoolExpression);
+      var result = _valueRequiredVisitor.VisitUnary (convertToBoolExpression);
+      var resultNullable = _valueRequiredVisitor.VisitUnary (convertToNullableBoolExpression);
 
       var expectedExpression = new SqlConvertedBooleanExpression (Expression.Convert (Expression.Constant (1, typeof (int?)), typeof (int)));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -881,7 +881,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new[] { argument },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("D"));
 
-      var result = _valueRequiredVisitor.VisitNewExpression (expression);
+      var result = _valueRequiredVisitor.VisitNew (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -894,7 +894,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new[] { Expression.Constant (false) },
           (MemberInfo) typeof (TypeForNewExpression).GetProperty ("E"));
 
-      var result = _valueRequiredVisitor.VisitNewExpression (expression);
+      var result = _valueRequiredVisitor.VisitNew (expression);
 
       var expected = Expression.New (
           expression.Constructor, 
@@ -908,7 +908,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = Expression.New (TypeForNewExpression.GetConstructor (typeof (int)), new[] { Expression.Constant (0) });
 
-      var result = _valueRequiredVisitor.VisitNewExpression (expression);
+      var result = _valueRequiredVisitor.VisitNew (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -919,7 +919,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = CreateNewExpression();
 
       Assert.That (
-          () => _singleValueRequiredVisitor.VisitNewExpression (expression),
+          () => _singleValueRequiredVisitor.VisitNew (expression),
           Throws.TypeOf<NotSupportedException>()
                 .With.Message.EqualTo (
                     "Cannot use a complex expression ('new TypeForNewExpression(0)') in a place where SQL requires a single value."));
@@ -932,7 +932,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var argument = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Restaurant));
       var expression = Expression.Call (instance, MemberInfoFromExpressionUtility.GetMethod (() => ((Cook) null).GetSubKitchenCook (null)), argument);
 
-      var result = _singleValueRequiredVisitor.VisitMethodCallExpression (expression);
+      var result = _singleValueRequiredVisitor.VisitMethodCall (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -947,7 +947,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           MemberInfoFromExpressionUtility.GetMethod (() => false.CompareTo (true)),
           argument);
 
-      var result = _predicateRequiredVisitor.VisitMethodCallExpression (expression);
+      var result = _predicateRequiredVisitor.VisitMethodCall (expression);
 
       var expected = Expression.Call (
           new SqlConvertedBooleanExpression (Expression.Constant (0)), 
@@ -962,7 +962,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var argument = ExpressionHelper.CreateExpression (typeof (string));
       var expression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => int.Parse ("arg")), argument);
 
-      var result = _predicateRequiredVisitor.VisitMethodCallExpression (expression);
+      var result = _predicateRequiredVisitor.VisitMethodCall (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -972,7 +972,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var namedExpression = new NamedExpression ("Name", Expression.Constant (true));
 
-      var result = _valueRequiredVisitor.VisitExpression (namedExpression);
+      var result = _valueRequiredVisitor.Visit (namedExpression);
 
       var expected = new SqlConvertedBooleanExpression (new NamedExpression ("Name", Expression.Constant (1)));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -1201,7 +1201,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var aggregationExpression = new AggregationExpression (typeof (int), Expression.Constant (true), AggregationModifier.Count);
 
-      var result = _singleValueRequiredVisitor.VisitExpression (aggregationExpression);
+      var result = _singleValueRequiredVisitor.Visit (aggregationExpression);
 
       var expected = new AggregationExpression (typeof (int), new SqlConvertedBooleanExpression (Expression.Constant (1)), AggregationModifier.Count);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -1213,7 +1213,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression();
       var aggregationExpression = new AggregationExpression (typeof (int), entity, AggregationModifier.Count);
 
-      var result = _singleValueRequiredVisitor.VisitExpression (aggregationExpression);
+      var result = _singleValueRequiredVisitor.Visit (aggregationExpression);
 
       Assert.That (result, Is.SameAs (aggregationExpression));
     }
@@ -1224,7 +1224,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
       var aggregationExpression = new AggregationExpression (typeof (int), entity, AggregationModifier.Sum);
 
-      Assert.That (() => _valueRequiredVisitor.VisitExpression (aggregationExpression), Throws.TypeOf<NotSupportedException>());
+      Assert.That (() => _valueRequiredVisitor.Visit (aggregationExpression), Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]
@@ -1234,7 +1234,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var invocationExpression = Expression.Invoke (lambdaExpression);
 
       Assert.That (
-          () => _predicateRequiredVisitor.VisitExpression (invocationExpression), 
+          () => _predicateRequiredVisitor.Visit (invocationExpression), 
           Throws.TypeOf<NotSupportedException>().With.Message.EqualTo (
               "InvocationExpressions are not supported in the SQL backend. Expression: 'Invoke(() => 0)'."));
     }
@@ -1245,7 +1245,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var lambdaExpression = Expression.Lambda (Expression.Constant (0));
 
       Assert.That (
-          () => _predicateRequiredVisitor.VisitExpression (lambdaExpression),
+          () => _predicateRequiredVisitor.Visit (lambdaExpression),
           Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
               "LambdaExpressions are not supported in the SQL backend. Expression: '() => 0'."));
     }

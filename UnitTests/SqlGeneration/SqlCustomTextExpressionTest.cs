@@ -16,8 +16,8 @@
 // 
 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 
@@ -39,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void Generate ()
     {
       var commandBuilder = new SqlCommandBuilder();
-      var visitor = MockRepository.GenerateMock<ExpressionTreeVisitor>();
+      var visitor = MockRepository.GenerateMock<ExpressionVisitor>();
       var stage = MockRepository.GenerateMock<ISqlGenerationStage>();
 
       _sqlCustomTextExpression.Generate (commandBuilder, visitor, stage);
@@ -50,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitChildren_ReturnsThis ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       visitorMock.Replay ();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCustomTextExpression, visitorMock);

@@ -310,7 +310,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = new SqlTableReferenceExpression (_resolvedJoinedGroupingTable);
-      var result = visitor.VisitExpression (input);
+      var result = visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
       Assert.That (result, Is.SameAs (_associatedGroupingSelectExpression.ElementExpression));
@@ -325,7 +325,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new SqlTableReferenceExpression (_resolvedJoinedGroupingTable), 
           new SqlTableReferenceExpression (_resolvedJoinedGroupingTable));
 
-      var result = visitor.VisitExpression (input);
+      var result = visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
       var expectedResult = Expression.Equal (
@@ -340,7 +340,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable());
-      visitor.VisitExpression (input);
+      visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.False);
     }
@@ -351,7 +351,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = Expression.Constant (0);
-      var result = visitor.VisitExpression (input);
+      var result = visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
       Assert.That (result, Is.SameAs (input));

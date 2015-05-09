@@ -62,7 +62,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           groupAggregateSimplifier,
           false,
           sqlStatementBuilder);
-      var result1 = visitor1.VisitExpression (expression);
+      var result1 = visitor1.Visit (expression);
 
       var visitor2 = new ResolvingSelectExpressionVisitor (
           resolver,
@@ -75,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           groupAggregateSimplifier,
           true,
           sqlStatementBuilder);
-      var result2 = visitor2.VisitExpression (result1);
+      var result2 = visitor2.Visit (result1);
 
       return result2;
     }
@@ -120,7 +120,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var sqlTableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
         Context.AddSqlTable (sqlTable, _sqlStatementBuilder);
-        return VisitExpression (sqlTableReferenceExpression);
+        return Visit (sqlTableReferenceExpression);
       }
       return newExpression;
     }

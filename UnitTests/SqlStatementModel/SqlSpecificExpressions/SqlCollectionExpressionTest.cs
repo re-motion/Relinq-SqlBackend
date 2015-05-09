@@ -52,7 +52,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameItems ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
       visitorMock
           .Expect (mock => mock.VisitAndConvert (_collectionExpression.Items, "SqlCollectionExpression.VisitChildren"))
           .Return (_collectionExpression.Items);
@@ -69,7 +69,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       var newItem = Expression.Constant (14);
 
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
       visitorMock
           .Expect (mock => mock.VisitAndConvert (_collectionExpression.Items, "SqlCollectionExpression.VisitChildren"))
           .Return (new ReadOnlyCollection<Expression> (new[] { newItem, _items[1] }));

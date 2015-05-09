@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -75,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       return _identityExpressionGenerator (this);
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)

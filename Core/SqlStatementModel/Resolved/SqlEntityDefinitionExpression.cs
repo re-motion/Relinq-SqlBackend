@@ -43,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       _columns = Array.AsReadOnly (projectionColumns);
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       var newColumns = visitor.VisitAndConvert (Columns, "VisitChildren");
       if (newColumns != Columns)

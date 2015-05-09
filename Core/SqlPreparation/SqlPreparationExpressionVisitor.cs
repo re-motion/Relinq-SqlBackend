@@ -33,7 +33,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   /// <see cref="SqlPreparationExpressionVisitor"/> transforms the expressions stored by <see cref="SqlStatement"/> to a SQL-specific
   /// format.
   /// </summary>
-  public class SqlPreparationExpressionVisitor : ExpressionTreeVisitor, ISqlSubStatementVisitor, IPartialEvaluationExceptionExpressionVisitor
+  public class SqlPreparationExpressionVisitor : RelinqExpressionVisitor, ISqlSubStatementVisitor, IPartialEvaluationExceptionExpressionVisitor
   {
     private readonly ISqlPreparationContext _context;
     private readonly ISqlPreparationStage _stage;
@@ -51,7 +51,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("provider", provider);
 
       var visitor = new SqlPreparationExpressionVisitor (context, stage, provider);
-      var result = visitor.VisitExpression (expression);
+      var result = visitor.Visit (expression);
       return result;
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       get { return _methodCallTransformerProvider; }
     }
 
-    public override Expression VisitExpression (Expression expression)
+    public override Expression Visit (Expression expression)
     {
       if (expression != null)
       {
@@ -91,10 +91,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           expression = replacementExpression;
       }
 
-      return base.VisitExpression (expression);
+      return base.Visit (expression);
     }
 
-    protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
+    protected override Expression VisitQuerySourceReference (QuerySourceReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -115,13 +115,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       }
     }
 
-    protected override Expression VisitSubQueryExpression (SubQueryExpression expression)
+    protected override Expression VisitSubQuery (SubQueryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var newExpression = _stage.PrepareSqlStatement (expression.QueryModel, _context).CreateExpression();
 
-      return VisitExpression (newExpression);
+      return Visit (newExpression);
     }
 
     public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
@@ -137,11 +137,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return expression;
     }
 
-    protected override Expression VisitMemberExpression (MemberExpression expression)
+    protected override Expression VisitMember (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newInnerExpression = VisitExpression (expression.Expression);
+      var newInnerExpression = Visit (expression.Expression);
 
       var innerExpressionAsSqlCaseExpression = newInnerExpression as SqlCaseExpression;
       if (innerExpressionAsSqlCaseExpression != null)
@@ -156,7 +156,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
                 ? typeof (Nullable<>).MakeGenericType (expression.Type)
                 : expression.Type;
         var newSqlCaseExpression = new SqlCaseExpression (caseExpressionType, newCases, newElseCase);
-        return VisitExpression (newSqlCaseExpression);
+        return Visit (newSqlCaseExpression);
       }
 
       if (newInnerExpression.NodeType == ExpressionType.Coalesce)
@@ -166,7 +166,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
             new SqlIsNotNullExpression (innerExpressionAsBinaryExpression.Left), 
             Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Left, expression.Member), 
             Expression.MakeMemberAccess (innerExpressionAsBinaryExpression.Right, expression.Member));
-        return VisitExpression (newConditionalExpression);
+        return Visit (newConditionalExpression);
       }
 
       var innerExpressionAsSqlSubStatementExpression = newInnerExpression as SqlSubStatementExpression;
@@ -175,7 +175,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         var sqlStatementBuilder = new SqlStatementBuilder (innerExpressionAsSqlSubStatementExpression.SqlStatement);
         var namedExpression = (NamedExpression) sqlStatementBuilder.SelectProjection;
         sqlStatementBuilder.SelectProjection = new NamedExpression (
-            namedExpression.Name, VisitExpression (Expression.MakeMemberAccess (namedExpression.Expression, expression.Member)));
+            namedExpression.Name, Visit (Expression.MakeMemberAccess (namedExpression.Expression, expression.Member)));
         sqlStatementBuilder.RecalculateDataInfo (innerExpressionAsSqlSubStatementExpression.SqlStatement.SelectProjection);
         return new SqlSubStatementExpression (sqlStatementBuilder.GetSqlStatement());
       }
@@ -191,40 +191,40 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           if (tranformer != null)
           {
             var tranformedExpression = tranformer.Transform (methodCallExpression);
-            return VisitExpression (tranformedExpression);
+            return Visit (tranformedExpression);
           }
         }
       }
-      return base.VisitMemberExpression (expression);
+      return base.VisitMember (expression);
     }
 
-    protected override Expression VisitBinaryExpression (BinaryExpression expression)
+    protected override Expression VisitBinary (BinaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (IsNullConstant (expression.Left))
       {
         if (expression.NodeType == ExpressionType.Equal)
-          return VisitExpression (new SqlIsNullExpression (expression.Right));
+          return Visit (new SqlIsNullExpression (expression.Right));
         else if (expression.NodeType == ExpressionType.NotEqual)
-          return VisitExpression (new SqlIsNotNullExpression (expression.Right));
+          return Visit (new SqlIsNotNullExpression (expression.Right));
         else
-          return base.VisitBinaryExpression (expression);
+          return base.VisitBinary (expression);
       }
       else if (IsNullConstant (expression.Right))
       {
         if (expression.NodeType == ExpressionType.Equal)
-          return VisitExpression (new SqlIsNullExpression (expression.Left));
+          return Visit (new SqlIsNullExpression (expression.Left));
         else if (expression.NodeType == ExpressionType.NotEqual)
-          return VisitExpression (new SqlIsNotNullExpression (expression.Left));
+          return Visit (new SqlIsNotNullExpression (expression.Left));
         else
-          return base.VisitBinaryExpression (expression);
+          return base.VisitBinary (expression);
       }
       else
-        return base.VisitBinaryExpression (expression);
+        return base.VisitBinary (expression);
     }
 
-    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    protected override Expression VisitMethodCall (MethodCallExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -232,37 +232,37 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       if (transformer != null)
       {
         var transformedExpression = transformer.Transform (expression);
-        return VisitExpression (transformedExpression);
+        return Visit (transformedExpression);
       }
 
-      var namedInstance = expression.Object != null ? NamedExpression.CreateFromMemberName ("Object", VisitExpression (expression.Object)) : null;
-      var namedArguments = expression.Arguments.Select ((a, i) => (Expression) NamedExpression.CreateFromMemberName ("Arg" + i, VisitExpression (a)));
+      var namedInstance = expression.Object != null ? NamedExpression.CreateFromMemberName ("Object", Visit (expression.Object)) : null;
+      var namedArguments = expression.Arguments.Select ((a, i) => (Expression) NamedExpression.CreateFromMemberName ("Arg" + i, Visit (a)));
       return Expression.Call (namedInstance, expression.Method, namedArguments);
     }
 
-    protected override Expression VisitConditionalExpression (ConditionalExpression expression)
+    protected override Expression VisitConditional (ConditionalExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       return SqlCaseExpression.CreateIfThenElse (
-          expression.Type, VisitExpression (expression.Test), VisitExpression (expression.IfTrue), VisitExpression (expression.IfFalse));
+          expression.Type, Visit (expression.Test), Visit (expression.IfTrue), Visit (expression.IfFalse));
     }
 
-    protected override Expression VisitNewExpression (NewExpression expression)
+    protected override Expression VisitNew (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (VisitExpression));
+      return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (Visit));
     }
 
-    public virtual Expression VisitPartialEvaluationExceptionExpression (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
+    public virtual Expression VisitPartialEvaluationException (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
     {
       ArgumentUtility.CheckNotNull ("partialEvaluationExceptionExpression", partialEvaluationExceptionExpression);
       
-      return VisitExpression (partialEvaluationExceptionExpression.EvaluatedExpression);
+      return Visit (partialEvaluationExceptionExpression.EvaluatedExpression);
     }
 
-    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    protected override Expression VisitConstant (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -270,7 +270,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       if (collection != null)
         return new SqlCollectionExpression (expression.Type, collection.Cast<object>().Select (Expression.Constant).Cast<Expression>());
 
-      return base.VisitConstantExpression (expression);
+      return base.VisitConstant (expression);
     }
 
     private bool IsNullConstant (Expression expression)

@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting.Parsing;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -46,14 +45,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void Generate ()
     {
-      var visitor = MockRepository.GeneratePartialMock<TestableExpressionTreeVisitor>();
+      var visitor = MockRepository.GeneratePartialMock<TestableExpressionVisitor>();
       var commandBuilder = new SqlCommandBuilder();
 
       visitor
-          .Expect (mock => mock.VisitExpression (_expression1))
+          .Expect (mock => mock.Visit (_expression1))
           .Return (_expression1);
       visitor
-          .Expect (mock => mock.VisitExpression (_expression2))
+          .Expect (mock => mock.Visit (_expression2))
           .Return (_expression2);
       visitor.Replay();
 
@@ -65,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitChildren_ExpressionsChanged ()
     {
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor> ();
       var expressions = _sqlCompositeCustomTextGeneratorExpression.Expressions;
       visitorMock.Expect (mock => mock.VisitAndConvert (expressions, "VisitChildren")).Return (expressions);
       visitorMock.Replay ();
@@ -79,7 +78,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitChildren_ChangeExpression ()
     {
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor> ();
       var expressions = new ReadOnlyCollection<Expression> (new List<Expression> { Expression.Constant (1) });
       visitorMock.Expect (mock => mock.VisitAndConvert (_sqlCompositeCustomTextGeneratorExpression.Expressions, "VisitChildren")).Return (expressions);
       visitorMock.Replay ();

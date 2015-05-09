@@ -20,8 +20,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
+using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
@@ -90,12 +89,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return new SqlGroupingSelectExpression (newKeyEpression, newElementExpression, aggregations);
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var newKeyExpression = visitor.VisitExpression (KeyExpression);
-      var newElementExpression = visitor.VisitExpression (ElementExpression);
+      var newKeyExpression = visitor.Visit (KeyExpression);
+      var newElementExpression = visitor.Visit (ElementExpression);
 
       var originalAggregationExpressions = AggregationExpressions;
       var newAggregationExpressions = visitor.VisitAndConvert (originalAggregationExpressions, "VisitChildren");
@@ -110,7 +109,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlGroupingSelectExpressionVisitor;
       if (specificVisitor != null)

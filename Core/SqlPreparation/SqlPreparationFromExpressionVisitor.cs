@@ -19,7 +19,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.Utilities;
@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("context", context);
 
       var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator, orderingExtractionPolicy);
-      visitor.VisitExpression (fromExpression);
+      visitor.Visit (fromExpression);
       if (visitor.FromExpressionInfo != null)
         return visitor.FromExpressionInfo.Value;
 
@@ -95,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       get { return _tableGenerator; }
     }
 
-    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    protected override Expression VisitConstant (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -107,7 +107,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return sqlTableReferenceExpression;
     }
 
-    protected override Expression VisitMemberExpression (MemberExpression expression)
+    protected override Expression VisitMember (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -147,7 +147,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return expression;
     }
 
-    protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
+    protected override Expression VisitQuerySourceReference (QuerySourceReferenceExpression expression)
     {
       var groupJoinClause = expression.ReferencedQuerySource as GroupJoinClause;
       if (groupJoinClause != null)
@@ -179,12 +179,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         return new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
       }
 
-      return base.VisitQuerySourceReferenceExpression (expression);
+      return base.VisitQuerySourceReference (expression);
     }
 
     Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
     {
-      return VisitExtensionExpression (expression);
+      return VisitExtension (expression);
     }
   }
 }

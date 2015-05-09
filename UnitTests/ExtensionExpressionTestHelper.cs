@@ -22,7 +22,6 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
@@ -34,7 +33,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
         Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : ExtensionExpression
     {
       var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMultiMock<ExpressionTreeVisitor> (typeof (TVisitorInterface));
+      var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (TVisitorInterface));
 
       var returnedExpression = Expression.Constant (0);
 
@@ -43,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
           .Return (returnedExpression);
       visitorMock.Replay ();
 
-      var result = expression.Accept (visitorMock);
+      var result = CallAccept (expression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
 
@@ -53,23 +52,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests
     public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : ExtensionExpression
     {
       var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = mockRepository.StrictMock<ExpressionVisitor> ();
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtensionExpression", expression))
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtension", expression))
           .Return (returnedExpression);
       visitorMock.Replay ();
 
-      var result = expression.Accept (visitorMock);
+      var result = CallAccept (expression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
-    public static Expression CallVisitChildren (ExtensionExpression target, ExpressionTreeVisitor visitor)
+    public static Expression CallAccept (ExtensionExpression expression, ExpressionVisitor visitor)
+    {
+      return (Expression) PrivateInvoke.InvokeNonPublicMethod (expression, "Accept", visitor);
+    }
+
+    public static Expression CallVisitChildren (ExtensionExpression target, ExpressionVisitor visitor)
     {
       return (Expression) PrivateInvoke.InvokeNonPublicMethod (target, "VisitChildren", visitor);
     }

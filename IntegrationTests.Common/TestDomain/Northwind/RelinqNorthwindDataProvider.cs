@@ -21,7 +21,7 @@ using System.Data.Linq.SqlClient;
 using System.Linq;
 using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers;
 using Remotion.Linq.LinqToSqlAdapter;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
+using Remotion.Linq.Parsing.ExpressionVisitors.Transformation;
 using Remotion.Linq.Parsing.Structure;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Linq.Parsing.Structure.NodeTypeProviders;

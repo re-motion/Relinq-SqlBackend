@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       EnsureNoCollectionExpression (expression);
 
       var visitor = new SqlGeneratingSelectExpressionVisitor (commandBuilder, stage);
-      visitor.VisitExpression (expression);
+      visitor.Visit (expression);
     }
 
     protected static void EnsureNoCollectionExpression (Expression expression)
@@ -75,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      VisitExpression (expression.Expression);
+      Visit (expression.Expression);
       CommandBuilder.Append (" AS ");
       CommandBuilder.AppendIdentifier (expression.Name ?? NamedExpression.DefaultName);
       
@@ -88,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       var groupExpressions = new[] { expression.KeyExpression }.Concat (expression.AggregationExpressions);
 
-      CommandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
+      CommandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => Visit (exp));
 
       return expression;
     }

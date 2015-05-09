@@ -16,8 +16,8 @@
 // 
 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void Accept ()
     {
       var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMultiMock<ExpressionTreeVisitor> (typeof (ISqlCustomTextGeneratorExpressionVisitor));
+      var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (ISqlCustomTextGeneratorExpressionVisitor));
 
       var customTextGeneratorExpression = new TestableSqlCustomTextGeneratorExpression (typeof (Cook));
 
@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Return (customTextGeneratorExpression);
       visitorMock.Replay();
 
-      customTextGeneratorExpression.Accept (visitorMock);
+      ExtensionExpressionTestHelper.CallAccept (customTextGeneratorExpression, visitorMock);
 
       visitorMock.VerifyAllExpectations();
     }

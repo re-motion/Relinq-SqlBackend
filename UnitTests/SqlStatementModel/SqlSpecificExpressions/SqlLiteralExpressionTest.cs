@@ -16,8 +16,8 @@
 // 
 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Rhino.Mocks;
 
@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsThis ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
       visitorMock.Replay();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_literalExpression, visitorMock);

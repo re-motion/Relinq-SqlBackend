@@ -21,7 +21,7 @@ using Remotion.Linq.Parsing;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
-  /// Implemented by <see cref="ExpressionTreeVisitor"/> subclasses handling <see cref="SqlExistsExpression"/> instances.
+  /// Implemented by <see cref="ExpressionVisitor"/> subclasses handling <see cref="SqlExistsExpression"/> instances.
   /// </summary>
   public interface ISqlExistsExpressionVisitor
   {

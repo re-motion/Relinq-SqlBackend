@@ -100,7 +100,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
               "The unresolved projection doesn't match the resolved statement: it has no aggregation.",
               "unresolvedSelectProjection");
         }
-        var newAggregation = visitor.VisitExpression (aggregationExpression);
+        var newAggregation = visitor.Visit (aggregationExpression);
 
         if (visitor.CanBeTransferredToGroupingSource)
         {
@@ -119,7 +119,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return subStatementExpression;
     }
 
-    public class SimplifyingVisitor : ExpressionTreeVisitor, IUnresolvedSqlExpressionVisitor
+    public class SimplifyingVisitor : RelinqExpressionVisitor, IUnresolvedSqlExpressionVisitor
     {
       private readonly SqlTableBase _oldElementSource;
       private readonly Expression _newElementExpression;
@@ -152,7 +152,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
       {
-        return VisitExtensionExpression (expression);
+        return VisitExtension (expression);
       }
     }
   }

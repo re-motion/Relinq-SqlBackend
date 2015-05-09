@@ -46,10 +46,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void VisitChildren_ReturnsSameExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_wrappedExpression))
+          .Expect (mock => mock.Visit (_wrappedExpression))
           .Return (_wrappedExpression);
       visitorMock.Replay ();
 
@@ -63,10 +63,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void VisitChildren_ReturnsNewExpression ()
     {
       var newExpression = Expression.Constant (5);
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_wrappedExpression))
+          .Expect (mock => mock.Visit (_wrappedExpression))
           .Return (newExpression);
       visitorMock.Replay ();
 

@@ -17,8 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
+using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -51,16 +50,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _identityExpression; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newPrimaryKeyExpression = visitor.VisitExpression (_identityExpression);
+      var newPrimaryKeyExpression = visitor.Visit (_identityExpression);
       if (newPrimaryKeyExpression != _identityExpression)
         return new SqlEntityConstantExpression (Type, _value, newPrimaryKeyExpression);
       else
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)

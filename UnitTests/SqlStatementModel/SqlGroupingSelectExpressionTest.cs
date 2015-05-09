@@ -87,9 +87,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void VisitChildren_NoExpressionChanged ()
     {
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
-      visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (_keyExpression);
-      visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (_elementExpression);
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
+      visitorMock.Expect (mock => mock.Visit (_keyExpression)).Return (_keyExpression);
+      visitorMock.Expect (mock => mock.Visit (_elementExpression)).Return (_elementExpression);
       visitorMock
           .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
           .Return (null)
@@ -108,9 +108,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var newAggregationExpression = Expression.Constant ("newAgg");
       var expectedAggregationExpressions = new Expression[] { _aggregateExpression1, newAggregationExpression };
 
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
-      visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (_keyExpression);
-      visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (_elementExpression);
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
+      visitorMock.Expect (mock => mock.Visit (_keyExpression)).Return (_keyExpression);
+      visitorMock.Expect (mock => mock.Visit (_elementExpression)).Return (_elementExpression);
       visitorMock
           .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
           .Return (Array.AsReadOnly (expectedAggregationExpressions));
@@ -129,9 +129,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void VisitChildren_KeyExpressionChanged ()
     {
       var newKeyExpression = Expression.Constant ("newKey");
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
-      visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (newKeyExpression);
-      visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (_elementExpression);
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor> ();
+      visitorMock.Expect (mock => mock.Visit (_keyExpression)).Return (newKeyExpression);
+      visitorMock.Expect (mock => mock.Visit (_elementExpression)).Return (_elementExpression);
       visitorMock
           .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
           .Return (null).WhenCalled (invocation => invocation.ReturnValue = invocation.Arguments[0]);
@@ -149,9 +149,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void VisitChildren_ElementExpressionChanged ()
     {
       var newElementExpression = Expression.Constant ("newElement");
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
-      visitorMock.Expect (mock => mock.VisitExpression (_keyExpression)).Return (_keyExpression);
-      visitorMock.Expect (mock => mock.VisitExpression (_elementExpression)).Return (newElementExpression);
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor> ();
+      visitorMock.Expect (mock => mock.Visit (_keyExpression)).Return (_keyExpression);
+      visitorMock.Expect (mock => mock.Visit (_elementExpression)).Return (newElementExpression);
       visitorMock
           .Expect (mock => mock.VisitAndConvert (Arg<ReadOnlyCollection<Expression>>.Is.Anything, Arg.Is ("VisitChildren")))
           .Return (null)

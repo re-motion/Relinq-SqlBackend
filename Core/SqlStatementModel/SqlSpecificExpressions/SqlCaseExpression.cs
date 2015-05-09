@@ -22,8 +22,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
+using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -60,10 +59,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         get { return _then; }
       }
 
-      public CaseWhenPair VisitChildren (ExpressionTreeVisitor visitor)
+      public CaseWhenPair VisitChildren (ExpressionVisitor visitor)
       {
-        var newWhen = visitor.VisitExpression (_when);
-        var newThen = visitor.VisitExpression (_then);
+        var newWhen = visitor.Visit (_when);
+        var newThen = visitor.Visit (_then);
 
         return Update (newWhen, newThen);
       }
@@ -134,10 +133,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _elseCase; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newCases = visitor.VisitList (_cases, p => p.VisitChildren (visitor));
-      var newElseCase = _elseCase != null ? visitor.VisitExpression (_elseCase) : null;
+      var newCases = ExpressionVisitor.Visit (_cases, p => p.VisitChildren (visitor));
+      var newElseCase = _elseCase != null ? visitor.Visit (_elseCase) : null;
 
       return Update (newCases, newElseCase);
     }
@@ -152,7 +151,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)

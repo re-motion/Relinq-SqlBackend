@@ -19,8 +19,8 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.Clauses.ExpressionVisitors;
+using Remotion.Linq.Parsing.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
 
@@ -131,7 +131,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var combinedComparison = newExpression.Arguments
           .Select ((arg, i) => (Expression) Expression.MakeBinary (expressionType, arg, GetMemberExpression (newExpression.Members[i], otherExpression)))
           .Aggregate ((previous, current) => CombineComparisons (previous, current, expressionType, newExpression, otherExpression));
-      return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (combinedComparison);
+      return PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (combinedComparison);
     }
 
     private Expression GetMemberExpression (MemberInfo memberInfo, Expression instance)

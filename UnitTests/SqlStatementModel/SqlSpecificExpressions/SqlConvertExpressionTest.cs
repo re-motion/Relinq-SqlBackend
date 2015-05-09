@@ -100,11 +100,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NewSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       var newPrefix = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_convertExpresion.Source))
+          .Expect (mock => mock.Visit (_convertExpresion.Source))
           .Return (newPrefix);
       visitorMock.Replay ();
 
@@ -118,10 +118,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_convertExpresion.Source))
+          .Expect (mock => mock.Visit (_convertExpresion.Source))
           .Return (_convertExpresion.Source);
       visitorMock.Replay ();
 
