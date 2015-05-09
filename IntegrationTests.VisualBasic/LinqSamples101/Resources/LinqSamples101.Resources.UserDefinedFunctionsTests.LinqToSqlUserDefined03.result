@@ -7,7 +7,7 @@ Enumerable {
     QuantityPerUnit: '12 - 550 ml bottles'
     ReorderLevel: 25
     SupplierID: 1
-    UnitPrice: 10,0000
+    UnitPrice: 10.0000
     UnitsInStock: 13
     UnitsOnOrder: 70
   ProductsUnderThisUnitPriceResult
@@ -18,7 +18,7 @@ Enumerable {
     QuantityPerUnit: '2 kg box'
     ReorderLevel: 5
     SupplierID: 6
-    UnitPrice: 6,0000
+    UnitPrice: 6.0000
     UnitsInStock: 24
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -29,7 +29,7 @@ Enumerable {
     QuantityPerUnit: '10 boxes x 12 pieces'
     ReorderLevel: 5
     SupplierID: 8
-    UnitPrice: 9,2000
+    UnitPrice: 9.2000
     UnitsInStock: 25
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -40,7 +40,7 @@ Enumerable {
     QuantityPerUnit: '24 pkgs. x 4 pieces'
     ReorderLevel: 5
     SupplierID: 8
-    UnitPrice: 10,0000
+    UnitPrice: 10.0000
     UnitsInStock: 3
     UnitsOnOrder: 40
   ProductsUnderThisUnitPriceResult
@@ -51,7 +51,7 @@ Enumerable {
     QuantityPerUnit: '12 - 250 g pkgs.'
     ReorderLevel: 25
     SupplierID: 9
-    UnitPrice: 9,0000
+    UnitPrice: 9.0000
     UnitsInStock: 61
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -62,7 +62,7 @@ Enumerable {
     QuantityPerUnit: '500 g'
     ReorderLevel: 20
     SupplierID: 15
-    UnitPrice: 2,5000
+    UnitPrice: 2.5000
     UnitsInStock: 112
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -73,7 +73,7 @@ Enumerable {
     QuantityPerUnit: '12 - 12 oz cans'
     ReorderLevel: 10
     SupplierID: 19
-    UnitPrice: 9,6500
+    UnitPrice: 9.6500
     UnitsInStock: 85
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -84,7 +84,7 @@ Enumerable {
     QuantityPerUnit: '1k pkg.'
     ReorderLevel: 15
     SupplierID: 21
-    UnitPrice: 9,5000
+    UnitPrice: 9.5000
     UnitsInStock: 5
     UnitsOnOrder: 70
   ProductsUnderThisUnitPriceResult
@@ -95,7 +95,7 @@ Enumerable {
     QuantityPerUnit: '10 - 4 oz boxes'
     ReorderLevel: 0
     SupplierID: 22
-    UnitPrice: 9,5000
+    UnitPrice: 9.5000
     UnitsInStock: 36
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -106,7 +106,7 @@ Enumerable {
     QuantityPerUnit: '16 - 2 kg boxes'
     ReorderLevel: 25
     SupplierID: 24
-    UnitPrice: 7,0000
+    UnitPrice: 7.0000
     UnitsInStock: 38
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -117,7 +117,7 @@ Enumerable {
     QuantityPerUnit: '16 pies'
     ReorderLevel: 10
     SupplierID: 25
-    UnitPrice: 7,4500
+    UnitPrice: 7.4500
     UnitsInStock: 21
     UnitsOnOrder: 0
   ProductsUnderThisUnitPriceResult
@@ -128,7 +128,7 @@ Enumerable {
     QuantityPerUnit: '5 kg pkg.'
     ReorderLevel: 5
     SupplierID: 4
-    UnitPrice: 10,0000
+    UnitPrice: 10.0000
     UnitsInStock: 4
     UnitsOnOrder: 20
   ProductsUnderThisUnitPriceResult
@@ -139,7 +139,7 @@ Enumerable {
     QuantityPerUnit: '24 - 0.5 l bottles'
     ReorderLevel: 25
     SupplierID: 12
-    UnitPrice: 7,7500
+    UnitPrice: 7.7500
     UnitsInStock: 125
     UnitsOnOrder: 0
 }
