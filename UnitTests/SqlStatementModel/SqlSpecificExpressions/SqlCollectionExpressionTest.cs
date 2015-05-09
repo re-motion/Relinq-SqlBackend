@@ -53,9 +53,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     public void VisitChildren_SameItems ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
-      visitorMock
-          .Expect (mock => mock.VisitAndConvert (_collectionExpression.Items, "SqlCollectionExpression.VisitChildren"))
-          .Return (_collectionExpression.Items);
+      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[0])).Return (_collectionExpression.Items[0]);
+      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[1])).Return (_collectionExpression.Items[1]);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock);
 
@@ -70,9 +69,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var newItem = Expression.Constant (14);
 
       var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
-      visitorMock
-          .Expect (mock => mock.VisitAndConvert (_collectionExpression.Items, "SqlCollectionExpression.VisitChildren"))
-          .Return (new ReadOnlyCollection<Expression> (new[] { newItem, _items[1] }));
+      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[0])).Return (newItem);
+      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[1])).Return (_collectionExpression.Items[1]);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock);
 
@@ -81,7 +79,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       Assert.That (result, Is.Not.SameAs (_collectionExpression));
       Assert.That (result, Is.TypeOf<SqlCollectionExpression>());
       Assert.That (result.Type, Is.SameAs (_collectionExpression.Type));
-      Assert.That (((SqlCollectionExpression) result).Items, Is.EqualTo (new[] { newItem, _items[1] }));
+      Assert.That (((SqlCollectionExpression) result).Items, Is.EqualTo (new[] { newItem, _collectionExpression.Items[1] }));
     }
 
     [Test]

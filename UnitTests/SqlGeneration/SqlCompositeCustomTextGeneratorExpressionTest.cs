@@ -62,11 +62,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void VisitChildren_ExpressionsChanged ()
+    public void VisitChildren_ExpressionsNotChanged ()
     {
       var visitorMock = MockRepository.GenerateMock<ExpressionVisitor> ();
       var expressions = _sqlCompositeCustomTextGeneratorExpression.Expressions;
-      visitorMock.Expect (mock => mock.VisitAndConvert (expressions, "VisitChildren")).Return (expressions);
+      visitorMock.Expect (mock => mock.Visit (expressions[0])).Return (expressions[0]);
+      visitorMock.Expect (mock => mock.Visit (expressions[1])).Return (expressions[1]);
       visitorMock.Replay ();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCompositeCustomTextGeneratorExpression, visitorMock);
@@ -79,8 +80,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void VisitChildren_ChangeExpression ()
     {
       var visitorMock = MockRepository.GenerateMock<ExpressionVisitor> ();
-      var expressions = new ReadOnlyCollection<Expression> (new List<Expression> { Expression.Constant (1) });
-      visitorMock.Expect (mock => mock.VisitAndConvert (_sqlCompositeCustomTextGeneratorExpression.Expressions, "VisitChildren")).Return (expressions);
+      var expressions = new ReadOnlyCollection<Expression> (new List<Expression> { Expression.Constant (1), Expression.Constant (2) });
+      visitorMock.Expect (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[0])).Return (expressions[0]);
+      visitorMock.Expect (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[1])).Return (expressions[1]);
       visitorMock.Replay ();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCompositeCustomTextGeneratorExpression, visitorMock);

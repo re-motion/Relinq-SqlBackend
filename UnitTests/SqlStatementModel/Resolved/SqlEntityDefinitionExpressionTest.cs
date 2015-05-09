@@ -76,7 +76,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     public void VisitChildren_NoColumnChanged ()
     {
       var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
-      visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (_originalColumnsReadonly);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[0])).Return (_originalColumnsReadonly[0]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[1])).Return (_originalColumnsReadonly[1]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[2])).Return (_originalColumnsReadonly[2]);
       visitorMock.Replay();
 
       var expression = ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);
@@ -93,7 +95,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
       var expectedColumns = new[] { _columnExpression1, newColumnExpression, _columnExpression3 };
 
-      visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (Array.AsReadOnly (expectedColumns));
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[0])).Return (expectedColumns[0]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[1])).Return (expectedColumns[1]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[2])).Return (expectedColumns[2]);
       visitorMock.Replay();
 
       var expression = (SqlEntityExpression) ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);
