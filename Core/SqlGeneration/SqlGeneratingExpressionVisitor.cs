@@ -433,7 +433,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected virtual void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
-      column.Accept (this);
+      Visit (column);
     }
 
     protected virtual void AppendColumn (string columnName, string prefix, string referencedEntityName)

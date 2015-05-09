@@ -95,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected override void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
-      column.Accept (this);
+      Visit (column);
       
       string alias = GetAliasForColumnOfEntity(column, entity);
       if (alias != null)
