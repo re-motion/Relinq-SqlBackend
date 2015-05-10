@@ -19,7 +19,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -27,17 +26,26 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlRowNumberExpression"/> represents the Sql ROW_NUMBER() function.
   /// </summary>
-  public class SqlRowNumberExpression : ExtensionExpression
+  public class SqlRowNumberExpression : Expression
   {
     private readonly ReadOnlyCollection<Ordering> _orderings;
 
     public SqlRowNumberExpression (Ordering[] orderings)
-        : base (typeof (int))
     {
       ArgumentUtility.CheckNotNull ("orderings", orderings);
       ArgumentUtility.CheckNotEmpty ("orderings", orderings);
       
       _orderings = Array.AsReadOnly (orderings);
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(int); }
     }
 
     public ReadOnlyCollection<Ordering> Orderings

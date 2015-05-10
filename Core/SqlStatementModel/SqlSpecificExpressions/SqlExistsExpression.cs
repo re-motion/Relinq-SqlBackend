@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -26,16 +25,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlExistsExpression"/> is used to represent a sql exists expression.
   /// </summary>
-  public class SqlExistsExpression : ExtensionExpression
+  public class SqlExistsExpression : Expression
   {
     private readonly Expression _expression;
 
     public SqlExistsExpression (Expression expression)
-        : base(typeof(bool))
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       _expression = expression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(bool); }
     }
 
     public Expression Expression

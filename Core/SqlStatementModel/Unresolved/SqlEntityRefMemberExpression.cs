@@ -18,7 +18,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.Utilities;
@@ -29,18 +28,30 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// Describes a member reference representing an entity rather than a simple column.
   /// </summary>
-  public class SqlEntityRefMemberExpression : ExtensionExpression
+  public class SqlEntityRefMemberExpression : Expression
   {
+    private readonly Type _type;
     private readonly SqlEntityExpression _originatingEntity;
     private readonly MemberInfo _memberInfo;
     
     public SqlEntityRefMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
-      : base (ReflectionUtility.GetMemberReturnType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
     {
-      ArgumentUtility.CheckNotNull ("entityExpression", originatingEntity);
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo); 
 
+      _type = ReflectionUtility.GetMemberReturnType (memberInfo);
       _originatingEntity = originatingEntity;
       _memberInfo = memberInfo;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public SqlEntityExpression OriginatingEntity

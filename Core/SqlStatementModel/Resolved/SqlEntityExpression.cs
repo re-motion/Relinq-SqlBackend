@@ -17,7 +17,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -27,24 +26,36 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// part of the columns list), and a table alias identifying the table or substatement the entity stems from. An entity can have a name, which
   /// is used to prefix all of its columns with in the generated SQL. 
   /// </summary>
-  public abstract class SqlEntityExpression : ExtensionExpression
+  public abstract class SqlEntityExpression : Expression
   {
+    private readonly Type _entityType;
     private readonly string _tableAlias;
     private readonly string _name;
     private readonly Func<SqlEntityExpression, Expression> _identityExpressionGenerator;
 
     protected SqlEntityExpression (Type entityType, string tableAlias, string entityName, Func<SqlEntityExpression, Expression> identityExpressionGenerator)
-      : base (ArgumentUtility.CheckNotNull ("entityType", entityType))
     {
       ArgumentUtility.CheckNotNull ("tableAlias", tableAlias);
       ArgumentUtility.CheckNotNull ("identityExpressionGenerator", identityExpressionGenerator);
-      
+
+      _entityType = entityType;
       _tableAlias = tableAlias;
       _name = entityName;
       _identityExpressionGenerator = identityExpressionGenerator;
     }
 
     public abstract ReadOnlyCollection<SqlColumnExpression> Columns { get; }
+    
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _entityType; }
+    }
 
     public string TableAlias
     {

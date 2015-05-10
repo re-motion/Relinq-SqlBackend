@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -30,7 +29,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// Represents a SQL CASE WHEN expression.
   /// </summary>
-  public class SqlCaseExpression : ExtensionExpression
+  public class SqlCaseExpression : Expression
   {
     public class CaseWhenPair
     {
@@ -101,12 +100,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       return new SqlCaseExpression (type, new[] { new CaseWhenPair (test, trueCase), new CaseWhenPair (Not (test), falseCase) }, Constant (null, type));
     }
 
+    private readonly Type _type;
     private readonly ReadOnlyCollection<CaseWhenPair> _cases;
     private readonly Expression _elseCase;
-    
+
     public SqlCaseExpression (Type type, IEnumerable<CaseWhenPair> cases, Expression elseCase)
-      : base (ArgumentUtility.CheckNotNull ("type", type))
     {
+      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("cases", cases);
 
       if (elseCase == null && type.IsValueType && Nullable.GetUnderlyingType (type) == null)
@@ -119,8 +119,19 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       if (elseCase != null && !type.IsAssignableFrom (elseCase.Type))
         throw new ArgumentException ("The ELSE expression's type must match the expression type.", "elseCase");
 
+      _type = type;
       _cases = Array.AsReadOnly (casesArray);
       _elseCase = elseCase;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public ReadOnlyCollection<CaseWhenPair> Cases

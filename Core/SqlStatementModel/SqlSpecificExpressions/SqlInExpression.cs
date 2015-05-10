@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -26,19 +25,28 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// Represents a SQL "a IN b" expression.
   /// </summary>
-  public class SqlInExpression : ExtensionExpression
+  public class SqlInExpression : Expression
   {
     private readonly Expression _leftExpression;
     private readonly Expression _rightExpression;
 
     public SqlInExpression (Expression leftExpression, Expression rightExpression)
-      : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
       ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
 
       _leftExpression = leftExpression;
       _rightExpression = rightExpression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(bool); }
     }
 
     public Expression LeftExpression

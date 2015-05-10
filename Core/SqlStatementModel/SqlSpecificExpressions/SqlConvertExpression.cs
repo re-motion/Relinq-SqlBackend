@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -26,10 +25,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlConvertExpression"/> is used to represent a convert expression.
   /// </summary>
-  public class SqlConvertExpression : ExtensionExpression
+  public class SqlConvertExpression : Expression
   {
-    private readonly Expression _source;
-
     private static readonly Dictionary<Type, string> s_sqlTypeMapping = new Dictionary<Type, string> 
                                                           {
                                                               { typeof (string), "NVARCHAR(MAX)" },
@@ -58,12 +55,26 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       return null;
     }
 
+    private readonly Type _targetType;
+    private readonly Expression _source;
+
     public SqlConvertExpression (Type targetType, Expression source)
-        : base (targetType)
     {
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("source", source);
 
+      _targetType = targetType;
       _source = source;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _targetType; }
     }
 
     public Expression Source

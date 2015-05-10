@@ -18,7 +18,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Text;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -27,7 +26,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// Represents a sql 'LIKE' command
   /// </summary>
-  public class SqlLikeExpression : ExtensionExpression
+  public class SqlLikeExpression : Expression
   {
     private readonly Expression _left;
     private readonly Expression _right;
@@ -110,7 +109,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     }
 
     public SqlLikeExpression (Expression left, Expression right, Expression escapeExpression)
-        : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("left", left);
       ArgumentUtility.CheckNotNull ("right", right);
@@ -119,6 +117,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       _left = left;
       _right = right;
       _escapeExpression = escapeExpression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(bool); }
     }
 
     public Expression Left

@@ -17,16 +17,29 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
-  public class TestExtensionExpressionWithoutChildren : ExtensionExpression
+  public class TestExtensionExpressionWithoutChildren : Expression
   {
+    private readonly Type _type;
+
     public TestExtensionExpressionWithoutChildren (Type type)
-        : base (type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+      _type = type;
+    }
+
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)

@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -30,16 +29,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <see cref="SqlSubStatementExpression"/> represents a SQL database subquery. The <see cref="QueryModel"/> of the subquery is translated to 
   /// this model, and the <see cref="SqlSubStatementExpression"/> is transformed several times until it can easily be translated to SQL text.
   /// </summary>
-  public class SqlSubStatementExpression : ExtensionExpression
+  public class SqlSubStatementExpression : Expression
   {
     private readonly SqlStatement _sqlStatement;
 
     public SqlSubStatementExpression (SqlStatement sqlStatement)
-        : base (sqlStatement.DataInfo.DataType)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       _sqlStatement = sqlStatement;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _sqlStatement.DataInfo.DataType; }
     }
 
     public SqlStatement SqlStatement

@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Linq.Clauses.Expressions;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
@@ -30,7 +29,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
   {
     public static void CheckAcceptForVisitorSupportingType<TExpression, TVisitorInterface> (
         TExpression expression,
-        Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : ExtensionExpression
+        Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : Expression
     {
       var mockRepository = new MockRepository ();
       var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (TVisitorInterface));
@@ -49,7 +48,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
-    public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : ExtensionExpression
+    public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : Expression
     {
       var mockRepository = new MockRepository ();
       var visitorMock = mockRepository.StrictMock<ExpressionVisitor> ();
@@ -68,12 +67,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
-    public static Expression CallAccept (ExtensionExpression expression, ExpressionVisitor visitor)
+    public static Expression CallAccept (Expression expression, ExpressionVisitor visitor)
     {
       return (Expression) PrivateInvoke.InvokeNonPublicMethod (expression, "Accept", visitor);
     }
 
-    public static Expression CallVisitChildren (ExtensionExpression target, ExpressionVisitor visitor)
+    public static Expression CallVisitChildren (Expression target, ExpressionVisitor visitor)
     {
       return (Expression) PrivateInvoke.InvokeNonPublicMethod (target, "VisitChildren", visitor);
     }

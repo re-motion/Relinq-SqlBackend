@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -27,20 +26,31 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlFunctionExpression"/> holds the sql specific function with its parameters.
   /// </summary>
-  public class SqlFunctionExpression : ExtensionExpression
+  public class SqlFunctionExpression : Expression
   {
+    private readonly Type _type;
     private readonly string _sqlFunctioName;
     private readonly ReadOnlyCollection<Expression> _args;
 
     public SqlFunctionExpression (Type type, string sqlFunctioName, params Expression[] args)
-        : base (type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFunctioName", sqlFunctioName);
       ArgumentUtility.CheckNotNull ("args", args);
 
+      _type = type;
       _args = Array.AsReadOnly(args);
       _sqlFunctioName = sqlFunctioName;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public string SqlFunctioName

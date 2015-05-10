@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -25,19 +24,31 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="SqlEntityConstantExpression"/> holds the primary key for a constant entity.
   /// </summary>
-  public class SqlEntityConstantExpression : ExtensionExpression
+  public class SqlEntityConstantExpression : Expression
   {
+    private readonly Type _type;
     private readonly object _value;
     private readonly Expression _identityExpression;
 
     public SqlEntityConstantExpression (Type type, object value, Expression identityExpression)
-        : base(type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("identityExpression", identityExpression);
 
+      _type = type;
       _value = value;
       _identityExpression = identityExpression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public object Value

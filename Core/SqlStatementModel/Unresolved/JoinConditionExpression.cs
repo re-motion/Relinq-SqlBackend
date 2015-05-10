@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -25,16 +24,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// <see cref="JoinConditionExpression"/> represents the data source defined by a member access in the from part of a linq expression.
   /// </summary>
-  public class JoinConditionExpression : ExtensionExpression
+  public class JoinConditionExpression : Expression
   {
     private readonly SqlJoinedTable _joinedTable;
 
     public JoinConditionExpression (SqlJoinedTable joinedTable)
-        : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
       _joinedTable = joinedTable;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(bool); }
     }
 
     public SqlJoinedTable JoinedTable

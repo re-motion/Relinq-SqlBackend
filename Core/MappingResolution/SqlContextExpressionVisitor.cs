@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -429,7 +428,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       throw new NotSupportedException (message);
     }
 
-    private Expression VisitChildrenWithGivenSemantics (ExtensionExpression expression, SqlExpressionContext childContext)
+    private Expression VisitChildrenWithGivenSemantics (Expression expression, SqlExpressionContext childContext)
     {
       var visitor = new SqlContextExpressionVisitor (childContext, _stage, _context);
       return visitor.VisitExtension (expression);

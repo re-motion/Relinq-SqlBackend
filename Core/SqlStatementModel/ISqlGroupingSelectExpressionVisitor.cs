@@ -17,12 +17,11 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Defines a custom visit method for <see cref="SqlGroupingSelectExpression"/> <see cref="ExtensionExpression"/> instances.
+  /// Defines a custom visit method for <see cref="SqlGroupingSelectExpression"/> instances.
   /// </summary>
   public interface ISqlGroupingSelectExpressionVisitor
   {

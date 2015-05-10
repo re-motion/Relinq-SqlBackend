@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -28,7 +27,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="SqlGroupingSelectExpression"/> represents the data returned by a Group-By query.
   /// </summary>
-  public class SqlGroupingSelectExpression : ExtensionExpression
+  public class SqlGroupingSelectExpression : Expression
   {
     public static SqlGroupingSelectExpression CreateWithNames (Expression unnamedKeySelector, Expression unnamedElementSelector)
     {
@@ -40,6 +39,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
           new NamedExpression ("element", unnamedElementSelector));
     }
 
+    private readonly Type _type;
     private readonly Expression _keyExpression;
     private readonly Expression _elementExpression;
     private readonly List<Expression> _aggregationExpressions;
@@ -50,14 +50,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     }
 
     public SqlGroupingSelectExpression (Expression keyExpression, Expression elementExpression, IEnumerable<Expression> aggregationExpressions)
-     : base (
-          typeof (IGrouping<,>).MakeGenericType (
-              ArgumentUtility.CheckNotNull ("keyExpression", keyExpression).Type, 
-              ArgumentUtility.CheckNotNull ("elementExpression", elementExpression).Type))
     {
+      ArgumentUtility.CheckNotNull ("keyExpression", keyExpression);
+      ArgumentUtility.CheckNotNull ("elementExpression", elementExpression);
+      ArgumentUtility.CheckNotNull ("aggregationExpressions", aggregationExpressions);
+
+      _type = typeof (IGrouping<,>).MakeGenericType (keyExpression.Type,elementExpression.Type);
       _keyExpression = keyExpression;
       _elementExpression = elementExpression;
       _aggregationExpressions = aggregationExpressions.ToList();
+    }
+    
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public Expression KeyExpression

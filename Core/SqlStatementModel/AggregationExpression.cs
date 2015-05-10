@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
@@ -25,18 +24,30 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="AggregationExpression"/> holds an aggregation modifier for a warapped expression.
   /// </summary>
-  public class AggregationExpression : ExtensionExpression
+  public class AggregationExpression : Expression
   {
+    private readonly Type _type;
     private readonly Expression _expression;
     private readonly AggregationModifier _aggregationModifier;
 
     public AggregationExpression (Type type, Expression expression, AggregationModifier aggregationModifier)
-        : base (ArgumentUtility.CheckNotNull ("type", type)) 
     {
+      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      _type = type;
       _expression = expression;
       _aggregationModifier = aggregationModifier;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public Expression Expression

@@ -16,22 +16,38 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   /// <summary>
   /// Acts as a base class for expression nodes that need to take part in the SQL generation peformed by <see cref="SqlGeneratingExpressionVisitor"/>.
   /// </summary>
-  public abstract class SqlCustomTextGeneratorExpressionBase : ExtensionExpression
+  public abstract class SqlCustomTextGeneratorExpressionBase : Expression
   {
+    private readonly Type _type;
 
-    protected SqlCustomTextGeneratorExpressionBase (Type expressionType) : base(expressionType)
+    protected SqlCustomTextGeneratorExpressionBase (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      _type = type;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public abstract void Generate (ISqlCommandBuilder commandBuilder, ExpressionVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage);
-    
+
+    protected abstract override Expression VisitChildren (ExpressionVisitor visitor);
+
     protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
