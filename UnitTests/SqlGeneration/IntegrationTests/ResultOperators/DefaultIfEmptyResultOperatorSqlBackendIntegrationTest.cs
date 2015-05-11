@@ -31,9 +31,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       CheckQuery (
           Cooks.DefaultIfEmpty(),
-          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] " 
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t0] ON (1 = 1)",
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [CookTable] AS [t0]",
+          row => (object) row.GetEntity<Cook> (
+              new ColumnID ("ID", 0),
+              new ColumnID ("FirstName", 1),
+              new ColumnID ("Name", 2),
+              new ColumnID ("IsStarredCook", 3),
+              new ColumnID ("IsFullTimeCook", 4),
+              new ColumnID ("SubstitutedID", 5),
+              new ColumnID ("KitchenID", 6),
+              new ColumnID ("KnifeID", 7),
+              new ColumnID ("KnifeClassID", 8),
+              new ColumnID ("CookRating", 9)));
+    }
+
+    [Test]
+    public void DefaultIfEmpty_WithWhereCondition ()
+    {
+      CheckQuery (
+          Cooks.Where(c => c.Name != null).DefaultIfEmpty(),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY (SELECT ... FROM [CookTable] AS [t0] WHERE [t0].[Name] IS NOT NULL) [q1]",
           row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
               new ColumnID ("FirstName", 1),
@@ -62,8 +81,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       CheckQuery (
           from s in Cooks where (from s2 in Cooks select s2.ID).DefaultIfEmpty().Max() > 5 select s.Name,
-          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MAX([t1].[ID]) AS [value] FROM "
-          + "(SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t1] ON (1 = 1)) > @1)",
+          "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ((SELECT MAX([t1].[ID]) AS [value] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [CookTable] AS [t1]) > @1)",
           new CommandParameter ("@1", 5));
     }
 
@@ -74,12 +93,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           from c in Cooks
           from k in Kitchens.Where (k => k == c.Kitchen).DefaultIfEmpty()
           select new { CookID = c.ID, KitchenID = k.ID },
-          "SELECT [t1].[ID] AS [CookID],[q0].[ID] AS [KitchenID] "
-          + "FROM [CookTable] AS [t1] "
-          + "CROSS APPLY ("
-          + "SELECT [t2].[ID],[t2].[Name],[t2].[RestaurantID],[t2].[LastCleaningDay],[t2].[PassedLastInspection],[t2].[LastInspectionScore] "
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID])"
-          + ") AS [q0]");
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] " 
+          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID])");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithNewExpressionInProjection ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens.Where (k => k == c.Kitchen).Select (k => new { k.ID, k.Name }).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID, KitchenName = k.Name },
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID],[t2].[Name] AS [KitchenName] "
+          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID])");
     }
 
     [Test]
@@ -90,12 +116,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           join k in Kitchens on c.Kitchen equals k into kitchens
           from k in kitchens.DefaultIfEmpty()
           select new { CookID = c.ID, KitchenID = k.ID },
-          "SELECT [t1].[ID] AS [CookID],[q0].[ID] AS [KitchenID] "
-          + "FROM [CookTable] AS [t1] "
-          + "CROSS APPLY ("
-          + "SELECT [t2].[ID],[t2].[Name],[t2].[RestaurantID],[t2].[LastCleaningDay],[t2].[PassedLastInspection],[t2].[LastInspectionScore] "
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[KitchenID] = [t2].[ID])"
-          + ") AS [q0]");
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[KitchenID] = [t2].[ID])");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_OnMemberExpression ()
+    {
+      CheckQuery (
+          from r in Restaurants
+          from c in r.Cooks.DefaultIfEmpty()
+          select new { RestaurantID = r.ID, CookID = c.ID, CookName = c.Name },
+          "SELECT [t1].[ID] AS [RestaurantID],[t2].[ID] AS [CookID],[t2].[Name] AS [CookName] "
+          + "FROM [RestaurantTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID])");
     }
 
     [Test]
@@ -108,12 +141,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
             select new { CookID = c.ID, KitchenID = k.ID }).DefaultIfEmpty(),
           "SELECT [q0].[CookID] AS [CookID],[q0].[KitchenID] AS [KitchenID] "
           + "FROM (SELECT NULL AS [Empty]) AS [Empty] "
-          + "LEFT OUTER JOIN ("
+          + "OUTER APPLY ("
           + "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
           + "FROM [CookTable] AS [t1] "
           + "CROSS JOIN [KitchenTable] AS [t2] "
           + "WHERE ([t2].[ID] = [t1].[KitchenID])"
-          + ") AS [q0] ON (1 = 1)");
+          + ") AS [q0]");
     }
 
     // TODO RMLNQSQL-77: This test would generate invalid SQL if optimization is implemented incorrectly.

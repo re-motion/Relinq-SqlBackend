@@ -62,6 +62,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
       }
 
+      // TODO RMLNQSQL-77: This still contains a bug (see test DefaultIfEmpty_WithWhereCondition). If the sqlStatementBuilder has a Where condition, 
+      // the WHERE condition must be evaluated _within_ the OUTER APPLY, but this code moves it to after the OUTER APPLY.
+      // Problems:
+      // - If the check above is changed to detect WHERE conditions, it will also wrap in situations that we want to optimize, i.e., it wraps too much.
+      // - If the code below is restored (to wrap into LEFT OUTER JOINs rather than OUTER APPLYs), it gets much, much more difficult to detect the
+      //   optimizable scenario in SqlPreparationQueryModelVisitor.
+
       // Change the single table to have LEFT JOIN semantics.
       var table = sqlStatementBuilder.SqlTables.Single();
       sqlStatementBuilder.SqlTables.Clear();

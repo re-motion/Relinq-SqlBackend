@@ -258,16 +258,18 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
               // criteria for optimizable scenario
           && subStatementTableInfo.SqlStatement.SqlTables.Count == 1
           && subStatementTableInfo.SqlStatement.SqlTables.Single().JoinSemantics == JoinSemantics.Left
-          && subStatementTableInfo.SqlStatement.SelectProjection is NamedExpression
-          && ((NamedExpression) subStatementTableInfo.SqlStatement.SelectProjection).Expression is SqlTableReferenceExpression
-          && ((SqlTableReferenceExpression) ((NamedExpression) subStatementTableInfo.SqlStatement.SelectProjection).Expression).SqlTable == subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable
+          // TODO RMLNQSQL-77: add Select check? should not contain aggregation (wouldn't work, but shouldn't be possible anyway) or subquery (might be no "optimization" any more), maybe whitelist NewExpressions, MemberExpressions, table references, constants, BinaryExpressions, UnaryExpressions, SqlIs/NotNull, SqlLike, SqlCase, SqlFunction, etc.?
+          // Select check below constrains to table references only, is probably too strict.
+          //&& subStatementTableInfo.SqlStatement.SelectProjection is NamedExpression
+          //&& ((NamedExpression) subStatementTableInfo.SqlStatement.SelectProjection).Expression is SqlTableReferenceExpression
+          //&& ((SqlTableReferenceExpression) ((NamedExpression) subStatementTableInfo.SqlStatement.SelectProjection).Expression).SqlTable == subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable
+          // TODO RMLNQSQL-77: SqlStatementbuilder/SqlStatement: add flag IsDependentSugQuery, calculate when building SqlStatemnentBuilder. If it is dependent, it cannot be optimized.
           && !subStatementTableInfo.SqlStatement.SetOperationCombinedStatements.Any()
           && !subStatementTableInfo.SqlStatement.IsDistinctQuery
           && subStatementTableInfo.SqlStatement.GroupByExpression == null
           && !subStatementTableInfo.SqlStatement.Orderings.Any()
           && subStatementTableInfo.SqlStatement.RowNumberSelector == null
           && subStatementTableInfo.SqlStatement.TopExpression == null
-          // TODO RMLNQSQL-77: add Select check? should not contain aggregation (wouldn't work, but shouldn't be possible anyway) or subquery (might be no "optimization" any more)
           // TODO RMLNQSQL-77: Check subStatementTableInfo.SqlStatement.SqlTables.Single() for escaping references! LEFT JOINS must not contain any references to SqlTables outside of this subtree... See DefaultIfEmpty_WithEscapingReferenceInSubstatement.
           )
       {
