@@ -192,6 +192,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitBinaryExpression (BinaryExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       var baseVisitedExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
 
       var binaryExpressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
@@ -248,6 +250,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       var baseVisitedExpression = (SqlExistsExpression) VisitExtensionExpression (expression);
 
       // Within an EXISTS query, an entity can be replaced by its IdentityExpression, so try to simplify it.
@@ -261,6 +265,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlInExpression (SqlInExpression expression)
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       var baseVisitedExpression = (SqlInExpression) VisitExtensionExpression (expression);
 
       var expressionWithSimplifiedEntities = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
