@@ -275,7 +275,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var baseVisitedExpression = (SqlIsNullExpression) base.VisitExtensionExpression (expression);
+      var baseVisitedExpression = (SqlIsNullExpression) VisitExtensionExpression (expression);
 
       var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
       var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (expressionWithEntityComparisonResolved);
@@ -290,7 +290,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var baseVisitedExpression = (SqlIsNotNullExpression) base.VisitExtensionExpression (expression);
+      var baseVisitedExpression = (SqlIsNotNullExpression) VisitExtensionExpression (expression);
 
       var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
       var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (expressionWithEntityComparisonResolved);
