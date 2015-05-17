@@ -218,7 +218,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
 
     private Expression ReplaceConvertExpressionMarker (Expression simplifiedExpectedInMemoryProjection)
     {
-      return AdHocExpressionTreeVisitor.Transform(simplifiedExpectedInMemoryProjection, expr =>
+      return AdHocExpressionVisitor.Transform(simplifiedExpectedInMemoryProjection, expr =>
       {
         var methodCallExpression = expr as MethodCallExpression;
         if (methodCallExpression != null && methodCallExpression.Method.Name == "ConvertExpressionMarker")
@@ -236,22 +236,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       });
     }
 
-    protected class AdHocExpressionTreeVisitor : RelinqExpressionVisitor
+    protected class AdHocExpressionVisitor : RelinqExpressionVisitor
     {
       public static Expression Transform (Expression expression, Func<Expression, Expression> transformation)
       {
-        return new AdHocExpressionTreeVisitor (transformation).Visit (expression);
+        return new AdHocExpressionVisitor (transformation).Visit (expression);
       }
 
       public static T TransformAndRetainType<T> (T expression, Func<Expression, Expression> transformation)
         where T : Expression
       {
-        return (T) new AdHocExpressionTreeVisitor (transformation).Visit (expression);
+        return (T) new AdHocExpressionVisitor (transformation).Visit (expression);
       }
 
       private readonly Func<Expression, Expression> _transformation;
 
-      public AdHocExpressionTreeVisitor (Func<Expression, Expression> transformation)
+      public AdHocExpressionVisitor (Func<Expression, Expression> transformation)
       {
         _transformation = transformation;
       }
