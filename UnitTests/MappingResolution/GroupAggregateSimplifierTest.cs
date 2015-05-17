@@ -305,7 +305,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ReferenceToRightTable ()
+    public void Visit_ReferenceToRightTable ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
@@ -317,7 +317,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ReferenceToRightTable_Nested ()
+    public void Visit_ReferenceToRightTable_Nested ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
@@ -335,7 +335,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ReferenceToOtherTable ()
+    public void Visit_ReferenceToOtherTable ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
@@ -346,7 +346,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_AnyOtherExpression ()
+    public void Visit_AnyOtherExpression ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 

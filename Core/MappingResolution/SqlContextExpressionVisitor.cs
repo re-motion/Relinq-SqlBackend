@@ -88,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
     }
 
-    public Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
+    public Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -122,7 +122,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression; // rely on Visit to apply correct semantics
     }
 
-    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
+    public Expression VisitSqlColumn (SqlColumnExpression expression)
     {
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
       if (BooleanUtility.IsBooleanType (expression.Type))
@@ -135,7 +135,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression; // rely on Visit to apply correct semantics
     }
 
-    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
@@ -216,7 +216,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
+    public Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -226,7 +226,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    public Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -236,7 +236,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    public Expression VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -251,7 +251,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression; // rely on Visit to apply correct semantics
     }
 
-    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -297,7 +297,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
       var newInnerExpression = Visit (expression.Expression);
       if (newInnerExpression is SqlConvertedBooleanExpression)
@@ -313,7 +313,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       var newKeyExpression = ApplyValueContext (expression.KeyExpression);
       var newElementExpression = ApplyValueContext (expression.ElementExpression);
@@ -329,37 +329,37 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    public Expression VisitSqlFunction (SqlFunctionExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
+    public Expression VisitSqlConvert (SqlConvertExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
+    public Expression VisitSqlExists (SqlExistsExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.ValueRequired);
     }
 
-    public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
+    public Expression VisitSqlRowNumber (SqlRowNumberExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlLikeExpression (SqlLikeExpression expression)
+    public Expression VisitSqlLike (SqlLikeExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlLengthExpression (SqlLengthExpression expression)
+    public Expression VisitSqlLength (SqlLengthExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    public Expression VisitSqlCase (SqlCaseExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -375,13 +375,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression.Update (newCases, newElseCase);
     }
 
-    public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
+    public Expression VisitSqlLiteral (SqlLiteralExpression expression)
     {
       // No children.
       return expression;
     }
 
-    public Expression VisitSqlInExpression (SqlInExpression expression)
+    public Expression VisitSqlIn (SqlInExpression expression)
     {
       try
       {
@@ -397,7 +397,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
     }
 
-    public Expression VisitAggregationExpression (AggregationExpression expression)
+    public Expression VisitAggregation (AggregationExpression expression)
     {
       Expression newInnerExpression;
       if (expression.AggregationModifier == AggregationModifier.Count)

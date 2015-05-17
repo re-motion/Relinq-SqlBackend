@@ -58,17 +58,17 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected int ColumnPosition { get; set; }
 
-    public override Expression VisitNamedExpression (NamedExpression expression)
+    public override Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var result = base.VisitNamedExpression (expression);
+      var result = base.VisitNamed (expression);
       SetInMemoryProjectionForNamedExpression (expression.Type, Expression.Constant (GetNextColumnID (expression.Name ?? NamedExpression.DefaultName)));
 
       return result;
     }
 
-    public virtual Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
+    public virtual Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -90,7 +90,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    public override Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public override Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -98,7 +98,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
           .Select (e => GetNextColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName))
           .ToArray();
 
-      var result = base.VisitSqlEntityExpression (expression);
+      var result = base.VisitSqlEntity (expression);
 
       var newInMemoryProjectionBody = Expression.Call (
           CommandBuilder.InMemoryProjectionRowParameter,
@@ -183,7 +183,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return result;
     }
 
-    public override Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public override Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       throw new NotSupportedException (
           "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "

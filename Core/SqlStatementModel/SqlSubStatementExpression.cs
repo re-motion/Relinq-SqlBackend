@@ -68,7 +68,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       var specificVisitor = visitor as ISqlSubStatementVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlSubStatementExpression (this);
+        return specificVisitor.VisitSqlSubStatement (this);
       else
         return base.Accept (visitor);
     }

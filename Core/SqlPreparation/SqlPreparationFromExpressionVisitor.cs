@@ -122,7 +122,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return sqlTableReferenceExpression;
     }
 
-    public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public override Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -135,7 +135,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return new SqlTableReferenceExpression (FromExpressionInfo.Value.SqlTable);
     }
 
-    public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -181,7 +181,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return base.VisitQuerySourceReference (expression);
     }
 
-    Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
       return VisitExtension (expression);
     }

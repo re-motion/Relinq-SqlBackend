@@ -25,6 +25,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public interface ISqlExistsExpressionVisitor
   {
-    Expression VisitSqlExistsExpression (SqlExistsExpression expression);
+    Expression VisitSqlExists (SqlExistsExpression expression);
   }
 }

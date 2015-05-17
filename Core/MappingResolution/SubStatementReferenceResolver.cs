@@ -63,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _context = context;
     }
     
-    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return reference;
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -93,7 +93,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, resolvedArguments);
     }
 
-    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -115,12 +115,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return ResolveSubStatementReferenceExpression (childExpression, _tableInfo, _sqlTable, _context);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlColumn (SqlColumnExpression expression)
     {
       throw new InvalidOperationException ("SqlColumnExpression is not valid at this point. (Must be wrapped within a NamedExpression.)");
     }
 
-    public Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    public Expression VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
       throw new InvalidOperationException ("SqlEntityConstantExpression is not valid at this point. (Must be wrapped within a NamedExpression.)");
     }

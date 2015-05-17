@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
@@ -26,6 +25,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public interface IAggregationExpressionVisitor
   {
-    Expression VisitAggregationExpression (AggregationExpression expression);
+    Expression VisitAggregation (AggregationExpression expression);
   }
 }

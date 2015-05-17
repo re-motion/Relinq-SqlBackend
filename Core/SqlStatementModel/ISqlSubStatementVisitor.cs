@@ -25,6 +25,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public interface ISqlSubStatementVisitor
   {
-    Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression);
+    Expression VisitSqlSubStatement (SqlSubStatementExpression expression);
   }
 }

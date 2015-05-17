@@ -77,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlFunctionExpression, ISqlSpecificExpressionVisitor> (
           _sqlFunctionExpression,
-          mock => mock.VisitSqlFunctionExpression (_sqlFunctionExpression));
+          mock => mock.VisitSqlFunction (_sqlFunctionExpression));
     }
 
     [Test]

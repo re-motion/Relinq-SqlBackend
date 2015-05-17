@@ -26,6 +26,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public interface ISqlConvertedBooleanExpressionVisitor
   {
-    Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression);
+    Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression);
   }
 }

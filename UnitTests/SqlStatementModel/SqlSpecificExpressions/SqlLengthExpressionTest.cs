@@ -105,7 +105,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlLengthExpression, ISqlSpecificExpressionVisitor> (
           _lengthExpression,
-          mock => mock.VisitSqlLengthExpression (_lengthExpression));
+          mock => mock.VisitSqlLength (_lengthExpression));
     }
 
     [Test]

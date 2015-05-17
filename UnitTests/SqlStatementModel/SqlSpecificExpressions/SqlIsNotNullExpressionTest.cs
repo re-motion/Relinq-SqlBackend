@@ -74,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlIsNotNullExpression, ISqlNullCheckExpressionVisitor> (
           _sqlIsNotNullExpression,
-          mock => mock.VisitSqlIsNotNullExpression (_sqlIsNotNullExpression));
+          mock => mock.VisitSqlIsNotNull (_sqlIsNotNullExpression));
     }
 
     [Test]

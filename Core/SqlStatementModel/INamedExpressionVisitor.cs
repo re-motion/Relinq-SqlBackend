@@ -25,6 +25,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public interface INamedExpressionVisitor
   {
-    Expression VisitNamedExpression (NamedExpression expression);
+    Expression VisitNamed (NamedExpression expression);
   }
 }

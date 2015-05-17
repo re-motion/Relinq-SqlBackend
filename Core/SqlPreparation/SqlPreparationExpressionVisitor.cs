@@ -124,7 +124,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return Visit (newExpression);
     }
 
-    public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public virtual Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 

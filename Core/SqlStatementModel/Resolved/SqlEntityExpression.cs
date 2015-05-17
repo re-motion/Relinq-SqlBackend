@@ -89,7 +89,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlEntityExpression (this);
+        return specificVisitor.VisitSqlEntity (this);
       else
         return base.Accept (visitor);
     }

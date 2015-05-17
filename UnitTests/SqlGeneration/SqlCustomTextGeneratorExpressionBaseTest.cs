@@ -36,7 +36,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var customTextGeneratorExpression = new TestableSqlCustomTextGeneratorExpression (typeof (Cook));
 
       visitorMock
-          .Expect (mock => ((ISqlCustomTextGeneratorExpressionVisitor)mock).VisitSqlCustomTextGeneratorExpression (customTextGeneratorExpression))
+          .Expect (mock => ((ISqlCustomTextGeneratorExpressionVisitor)mock).VisitSqlCustomTextGenerator (customTextGeneratorExpression))
           .Return (customTextGeneratorExpression);
       visitorMock.Replay();
 

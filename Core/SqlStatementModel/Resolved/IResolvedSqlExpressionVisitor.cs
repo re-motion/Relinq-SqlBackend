@@ -25,8 +25,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// </summary>
   public interface IResolvedSqlExpressionVisitor
   {
-    Expression VisitSqlEntityExpression (SqlEntityExpression expression);
-    Expression VisitSqlColumnExpression (SqlColumnExpression expression);
-    Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression);
+    Expression VisitSqlEntity (SqlEntityExpression expression);
+    Expression VisitSqlColumn (SqlColumnExpression expression);
+    Expression VisitSqlEntityConstant (SqlEntityConstantExpression expression);
   }
 }

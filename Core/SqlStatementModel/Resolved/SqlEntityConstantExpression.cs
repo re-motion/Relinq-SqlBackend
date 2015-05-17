@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlEntityConstantExpression(this);
+        return specificVisitor.VisitSqlEntityConstant(this);
       else
         return base.Accept (visitor);
     }

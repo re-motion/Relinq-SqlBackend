@@ -107,7 +107,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       }
     }
 
-    public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    public Expression VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -123,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return Visit (entityExpression);
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -166,7 +166,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
                 expression));
     }
 
-    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -189,7 +189,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
     }
 
-    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
+    public Expression VisitSqlColumn (SqlColumnExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -199,7 +199,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
     }
 
-    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -211,7 +211,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _context.RemoveNamesAndUpdateMapping (expression.KeyExpression);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       // Not supported, required by IUnresolvedSqlExpressionVisitor.

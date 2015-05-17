@@ -63,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
       var specificVisitor = visitor as ISqlTableReferenceExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlTableReferenceExpression (this);
+        return specificVisitor.VisitSqlTableReference (this);
       else
         return base.Accept (visitor);
     }

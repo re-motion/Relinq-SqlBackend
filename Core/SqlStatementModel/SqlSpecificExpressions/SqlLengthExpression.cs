@@ -75,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlLengthExpression (this);
+        return specificVisitor.VisitSqlLength (this);
       else
         return base.Accept (visitor);
     }

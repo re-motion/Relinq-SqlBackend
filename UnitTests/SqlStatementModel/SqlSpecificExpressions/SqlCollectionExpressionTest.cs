@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlCollectionExpression, ISqlCollectionExpressionVisitor> (
           _collectionExpression,
-          mock => mock.VisitSqlCollectionExpression (_collectionExpression));
+          mock => mock.VisitSqlCollection (_collectionExpression));
     }
 
     [Test]

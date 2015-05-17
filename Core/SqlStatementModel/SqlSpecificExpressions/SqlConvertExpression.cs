@@ -107,7 +107,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlConvertExpression (this);
+        return specificVisitor.VisitSqlConvert (this);
       else
         return base.Accept (visitor);
     }

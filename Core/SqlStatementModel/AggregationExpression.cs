@@ -76,7 +76,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       var specificVisitor = visitor as IAggregationExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitAggregationExpression (this);
+        return specificVisitor.VisitAggregation (this);
       else
         return base.Accept (visitor);
     }

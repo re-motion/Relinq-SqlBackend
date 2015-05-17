@@ -25,6 +25,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public interface ISqlInExpressionVisitor
   {
-    Expression VisitSqlInExpression (SqlInExpression expression);
+    Expression VisitSqlIn (SqlInExpression expression);
   }
 }

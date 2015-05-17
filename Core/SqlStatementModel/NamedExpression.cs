@@ -142,7 +142,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       var specificVisitor = visitor as INamedExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitNamedExpression (this);
+        return specificVisitor.VisitNamed (this);
       else
         return base.Accept (visitor);
     }

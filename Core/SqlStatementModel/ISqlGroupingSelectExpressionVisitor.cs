@@ -25,6 +25,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public interface ISqlGroupingSelectExpressionVisitor
   {
-    Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression);
+    Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression);
   }
 }

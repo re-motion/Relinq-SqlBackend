@@ -66,7 +66,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       var specificVisitor = visitor as ISqlConvertedBooleanExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlConvertedBooleanExpression (this);
+        return specificVisitor.VisitSqlConvertedBoolean (this);
       else
         return base.Accept (visitor);
     }

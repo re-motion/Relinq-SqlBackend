@@ -163,7 +163,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlGroupingSelectExpression, ISqlGroupingSelectExpressionVisitor> (
           _sqlGroupingSelectExpression,
-          mock => mock.VisitSqlGroupingSelectExpression (_sqlGroupingSelectExpression));
+          mock => mock.VisitSqlGroupingSelect (_sqlGroupingSelectExpression));
     }
 
     [Test]

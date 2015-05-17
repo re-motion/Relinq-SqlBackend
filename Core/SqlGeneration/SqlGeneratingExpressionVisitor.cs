@@ -78,7 +78,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     // ReSharper restore UnusedMember.Global
 
-    public virtual Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public virtual Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -86,7 +86,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlColumnDefinitionExpression (SqlColumnDefinitionExpression expression)
+    public virtual Expression VisitSqlColumnDefinition (SqlColumnDefinitionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -95,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlColumnReferenceExpression (SqlColumnReferenceExpression expression)
+    public virtual Expression VisitSqlColumnReference (SqlColumnReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -126,7 +126,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
+    public virtual Expression VisitSqlLiteral (SqlLiteralExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -137,7 +137,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlInExpression (SqlInExpression expression)
+    public virtual Expression VisitSqlIn (SqlInExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -148,7 +148,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
+    public virtual Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -160,7 +160,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    public virtual Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -172,7 +172,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    public virtual Expression VisitSqlFunction (SqlFunctionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -183,7 +183,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlConvertExpression (SqlConvertExpression expression)
+    public virtual Expression VisitSqlConvert (SqlConvertExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -197,7 +197,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlExistsExpression (SqlExistsExpression expression)
+    public virtual Expression VisitSqlExists (SqlExistsExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -209,7 +209,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
+    public virtual Expression VisitSqlRowNumber (SqlRowNumberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -220,7 +220,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitSqlLikeExpression (SqlLikeExpression expression)
+    public Expression VisitSqlLike (SqlLikeExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -233,7 +233,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public Expression VisitSqlLengthExpression (SqlLengthExpression expression)
+    public Expression VisitSqlLength (SqlLengthExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -250,7 +250,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return Visit (newExpression);
     }
 
-    public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    public Expression VisitSqlCase (SqlCaseExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -331,7 +331,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       throw new NotSupportedException (message);
     }
 
-    public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public virtual Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       _commandBuilder.Append ("(");
       _stage.GenerateTextForSqlStatement (_commandBuilder, expression.SqlStatement);
@@ -339,14 +339,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression)
+    public virtual Expression VisitSqlCustomTextGenerator (SqlCustomTextGeneratorExpressionBase expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       expression.Generate (_commandBuilder, this, _stage);
       return expression;
     }
 
-    public virtual Expression VisitNamedExpression (NamedExpression expression)
+    public virtual Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -355,7 +355,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitAggregationExpression (AggregationExpression expression)
+    public virtual Expression VisitAggregation (AggregationExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -387,7 +387,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlCollectionExpression (SqlCollectionExpression expression)
+    public virtual Expression VisitSqlCollection (SqlCollectionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -410,12 +410,12 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlColumn (SqlColumnExpression expression)
     {
       return VisitExtension (expression);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 

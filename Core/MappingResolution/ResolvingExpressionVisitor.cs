@@ -154,7 +154,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _resolveEntityRefMemberExpressions = resolveEntityRefMemberExpressions;
     }
 
-    public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -213,7 +213,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return Visit (resolvedTypeExpression);
     }
 
-    public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public virtual Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -225,7 +225,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _groupAggregateSimplifier.SimplifyIfPossible (resolvedExpression, expression.SqlStatement.SelectProjection);
     }
 
-    public virtual Expression VisitJoinConditionExpression (JoinConditionExpression expression)
+    public virtual Expression VisitJoinCondition (JoinConditionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -233,7 +233,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return Visit (resolvedLeftJoinInfo.JoinCondition);
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -247,7 +247,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
+    public Expression VisitSqlExists (SqlExistsExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -262,7 +262,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlInExpression (SqlInExpression expression)
+    public Expression VisitSqlIn (SqlInExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -276,7 +276,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
+    public Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -291,7 +291,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    public Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -306,7 +306,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return baseVisitedExpression;
     }
 
-    public virtual Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    public virtual Expression VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 

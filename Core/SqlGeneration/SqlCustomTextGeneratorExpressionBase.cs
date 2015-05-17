@@ -52,7 +52,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       var specificVisitor = visitor as ISqlCustomTextGeneratorExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlCustomTextGeneratorExpression (this);
+        return specificVisitor.VisitSqlCustomTextGenerator (this);
       else
         return base.Accept (visitor);
     }

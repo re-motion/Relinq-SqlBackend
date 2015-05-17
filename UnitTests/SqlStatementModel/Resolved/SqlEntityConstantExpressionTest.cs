@@ -76,7 +76,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityConstantExpression, IResolvedSqlExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlEntityConstantExpression(_expression));
+          mock => mock.VisitSqlEntityConstant(_expression));
     }
 
     [Test]

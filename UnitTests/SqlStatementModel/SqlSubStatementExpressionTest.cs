@@ -66,7 +66,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlSubStatementExpression, ISqlSubStatementVisitor> (
           _expression,
-          mock => mock.VisitSqlSubStatementExpression (_expression));
+          mock => mock.VisitSqlSubStatement (_expression));
     }
 
     [Test]

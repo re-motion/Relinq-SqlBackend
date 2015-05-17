@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
     }
 
-    public override Expression VisitNamedExpression (NamedExpression expression)
+    public override Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -82,7 +82,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public virtual Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 

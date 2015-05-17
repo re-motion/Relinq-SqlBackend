@@ -22,6 +22,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
   public interface ISqlCustomTextGeneratorExpressionVisitor
   {
-    Expression VisitSqlCustomTextGeneratorExpression (SqlCustomTextGeneratorExpressionBase expression);
+    Expression VisitSqlCustomTextGenerator (SqlCustomTextGeneratorExpressionBase expression);
   }
 }

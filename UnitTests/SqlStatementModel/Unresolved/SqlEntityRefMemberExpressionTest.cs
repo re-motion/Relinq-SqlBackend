@@ -64,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityRefMemberExpression, ISqlEntityRefMemberExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlEntityRefMemberExpression (_expression));
+          mock => mock.VisitSqlEntityRefMember (_expression));
     }
 
     [Test]

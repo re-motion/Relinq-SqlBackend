@@ -105,7 +105,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlConvertedBooleanExpression, ISqlConvertedBooleanExpressionVisitor> (
           _sqlConvertedBooleanExpression,
-          mock => mock.VisitSqlConvertedBooleanExpression (_sqlConvertedBooleanExpression));
+          mock => mock.VisitSqlConvertedBoolean (_sqlConvertedBooleanExpression));
     }
 
     [Test]

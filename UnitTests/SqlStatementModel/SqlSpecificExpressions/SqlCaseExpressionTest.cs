@@ -360,7 +360,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlCaseExpression, ISqlSpecificExpressionVisitor> (
           _caseExpressionWithElse,
-          mock => mock.VisitSqlCaseExpression (_caseExpressionWithElse));
+          mock => mock.VisitSqlCase (_caseExpressionWithElse));
     }
 
     [Test]

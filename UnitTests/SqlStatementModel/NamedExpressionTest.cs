@@ -99,7 +99,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<NamedExpression, INamedExpressionVisitor> (
           _namedExpression,
-          mock => mock.VisitNamedExpression (_namedExpression));
+          mock => mock.VisitNamed (_namedExpression));
     }
 
     [Test]

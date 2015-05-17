@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
       var collectionExpressionVisitor = visitor as ISqlCollectionExpressionVisitor;
       if (collectionExpressionVisitor != null)
-        return collectionExpressionVisitor.VisitSqlCollectionExpression (this);
+        return collectionExpressionVisitor.VisitSqlCollection (this);
 
       return base.Accept (visitor);
     }

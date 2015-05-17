@@ -25,7 +25,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public interface ISqlNullCheckExpressionVisitor
   {
-    Expression VisitSqlIsNullExpression (SqlIsNullExpression expression);
-    Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression);
+    Expression VisitSqlIsNull (SqlIsNullExpression expression);
+    Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression);
   }
 }

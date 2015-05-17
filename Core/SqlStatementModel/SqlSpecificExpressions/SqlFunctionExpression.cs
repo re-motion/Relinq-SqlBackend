@@ -76,7 +76,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlFunctionExpression (this);
+        return specificVisitor.VisitSqlFunction (this);
       else
         return base.Accept (visitor);
     }

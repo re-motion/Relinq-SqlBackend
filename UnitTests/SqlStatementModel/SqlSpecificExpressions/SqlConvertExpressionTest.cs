@@ -137,7 +137,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlConvertExpression, ISqlSpecificExpressionVisitor> (
           _convertExpresion,
-          mock => mock.VisitSqlConvertExpression (_convertExpresion));
+          mock => mock.VisitSqlConvert (_convertExpresion));
     }
 
     [Test]

@@ -137,7 +137,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       public bool CanBeTransferredToGroupingSource { get; protected set; }
 
-      public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+      public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
       {
         if (expression.SqlTable == _oldElementSource)
         {
@@ -150,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         }
       }
 
-      Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+      Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
       {
         return VisitExtension (expression);
       }

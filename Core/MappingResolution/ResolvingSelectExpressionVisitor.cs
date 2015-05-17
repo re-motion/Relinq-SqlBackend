@@ -105,9 +105,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _sqlStatementBuilder = sqlStatementBuilder;
     }
 
-    public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public override Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
-      var newExpression = base.VisitSqlSubStatementExpression (expression);
+      var newExpression = base.VisitSqlSubStatement (expression);
       var newExpressionAsSqlSubStatementExpression = newExpression as SqlSubStatementExpression;
 
       // Substatements returning a single value need to be moved to the FROM part of the SQL statement because they might return more than one column.

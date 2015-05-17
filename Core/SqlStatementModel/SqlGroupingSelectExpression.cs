@@ -123,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       var specificVisitor = visitor as ISqlGroupingSelectExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlGroupingSelectExpression (this);
+        return specificVisitor.VisitSqlGroupingSelect (this);
       else
         return base.Accept (visitor);
     }

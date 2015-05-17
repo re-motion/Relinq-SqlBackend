@@ -95,14 +95,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_Null_Ignored ()
+    public void Visit_Null_Ignored ()
     {
       var result = _valueRequiredVisitor.Visit ((Expression) null);
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    public void VisitExpression_CallsNodeSpecificVisitMethods ()
+    public void Visit_CallsNodeSpecificVisitMethods ()
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
@@ -111,7 +111,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ValueRequired_ConvertsBool_ToValue ()
+    public void Visit_ValueRequired_ConvertsBool_ToValue ()
     {
       var expression = new CustomExpression (typeof (bool));
       var nullableExpression = new CustomExpression (typeof (bool?));
@@ -127,7 +127,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_SingleValueRequired_ConvertsBool_ToSingleValue ()
+    public void Visit_SingleValueRequired_ConvertsBool_ToSingleValue ()
     {
       var expression = new CustomExpression (typeof (bool));
       var nullableExpression = new CustomExpression (typeof (bool?));
@@ -143,7 +143,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ValueRequired_LeavesExistingValue ()
+    public void Visit_ValueRequired_LeavesExistingValue ()
     {
       var expression = CreateNewExpression ();
 
@@ -154,7 +154,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_SingleValueRequired_LeavesExistingSingleValue ()
+    public void Visit_SingleValueRequired_LeavesExistingSingleValue ()
     {
       var expression = new CustomExpression (typeof (int));
 
@@ -165,7 +165,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ValueSemantics_LeavesExistingSqlConvertedBooleanExpression ()
+    public void Visit_ValueSemantics_LeavesExistingSqlConvertedBooleanExpression ()
     {
       var convertedBooleanExpression = new SqlConvertedBooleanExpression (Expression.Constant (1));
 
@@ -175,7 +175,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ValueSemantics_LeavesMethodCallExpression ()
+    public void Visit_ValueSemantics_LeavesMethodCallExpression ()
     {
       var methodWithBoolResultExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => MethodWithBoolResult()));
 
@@ -185,7 +185,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_LeavesExistingPredicate ()
+    public void Visit_LeavesExistingPredicate ()
     {
       var expression = new CustomExpression (typeof (bool));
       var nullableExpression = new CustomExpression (typeof (bool?));
@@ -199,7 +199,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ConvertedInt_ToPredicate ()
+    public void Visit_ConvertedInt_ToPredicate ()
     {
       var expression = new SqlConvertedBooleanExpression (new CustomExpression (typeof (int)));
       var nullableExpression = new SqlConvertedBooleanExpression (new CustomExpression (typeof (int?)));
@@ -217,7 +217,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Cannot convert an expression of type 'System.String' to a boolean expression. Expression: 'CustomExpression'")]
-    public void VisitExpression_ThrowsOnNonConvertible_ToPredicate ()
+    public void Visit_ThrowsOnNonConvertible_ToPredicate ()
     {
       var expression = new CustomExpression (typeof (string));
 
@@ -227,7 +227,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid enum value: -1")]
-    public void VisitExpression_ThrowsOnInvalidContext ()
+    public void Visit_ThrowsOnInvalidContext ()
     {
       var expression = new CustomExpression (typeof (string));
 
@@ -236,7 +236,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_AppliesSpecifiedSemantics ()
+    public void Visit_AppliesSpecifiedSemantics ()
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
@@ -251,7 +251,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var converted = new SqlConvertedBooleanExpression (Expression.Constant (0));
 
-      var result = _valueRequiredVisitor.VisitSqlConvertedBooleanExpression (converted);
+      var result = _valueRequiredVisitor.VisitSqlConvertedBoolean (converted);
 
       Assert.That (result, Is.SameAs (converted));
     }
@@ -353,8 +353,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var column = new SqlColumnDefinitionExpression (typeof (bool), "x", "y", false);
       var nullableColumn = new SqlColumnDefinitionExpression (typeof (bool?), "x", "y", false);
 
-      var result = _valueRequiredVisitor.VisitSqlColumnExpression (column);
-      var nullableResult = _valueRequiredVisitor.VisitSqlColumnExpression (nullableColumn);
+      var result = _valueRequiredVisitor.VisitSqlColumn (column);
+      var nullableResult = _valueRequiredVisitor.VisitSqlColumn (nullableColumn);
 
       var expectedExpression = new SqlConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "x", "y", false));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -367,7 +367,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var column = new SqlColumnDefinitionExpression (typeof (bool), "x", "y", true);
 
-      var result = _valueRequiredVisitor.VisitSqlColumnExpression (column);
+      var result = _valueRequiredVisitor.VisitSqlColumn (column);
 
       var expectedExpression = new SqlConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "x", "y", true));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -379,8 +379,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var column = new SqlColumnDefinitionExpression (typeof (bool), "x", "y", false);
       var nullableColumn = new SqlColumnDefinitionExpression (typeof (bool?), "x", "y", false);
 
-      var result = _singleValueRequiredVisitor.VisitSqlColumnExpression (column);
-      var nullableResult = _singleValueRequiredVisitor.VisitSqlColumnExpression (nullableColumn);
+      var result = _singleValueRequiredVisitor.VisitSqlColumn (column);
+      var nullableResult = _singleValueRequiredVisitor.VisitSqlColumn (nullableColumn);
 
       var expectedExpression = new SqlConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "x", "y", false));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -394,8 +394,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var nullableColumn = new SqlColumnDefinitionExpression (typeof (bool?), "x", "y", false);
       var column = new SqlColumnDefinitionExpression (typeof (bool), "x", "y", false);
 
-      var result = _predicateRequiredVisitor.VisitSqlColumnExpression (column);
-      var nullableResult = _predicateRequiredVisitor.VisitSqlColumnExpression (nullableColumn);
+      var result = _predicateRequiredVisitor.VisitSqlColumn (column);
+      var nullableResult = _predicateRequiredVisitor.VisitSqlColumn (nullableColumn);
 
       var expectedExpression = new SqlConvertedBooleanExpression (new SqlColumnDefinitionExpression (typeof (int), "x", "y", false));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
@@ -408,7 +408,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var column = new SqlColumnDefinitionExpression (typeof (string), "x", "y", false);
 
-      var result = _valueRequiredVisitor.VisitSqlColumnExpression (column);
+      var result = _valueRequiredVisitor.VisitSqlColumn (column);
 
       Assert.That (result, Is.SameAs (column));
     }
@@ -419,7 +419,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "t");
 
       Assert.That (
-          () => _singleValueRequiredVisitor.VisitSqlEntityExpression (entityExpression), 
+          () => _singleValueRequiredVisitor.VisitSqlEntity (entityExpression), 
           Throws.TypeOf<NotSupportedException>().With.Message.EqualTo (
             "Cannot use an entity expression ('[t]' of type 'Cook') in a place where SQL requires a single value."));
     }
@@ -430,7 +430,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
-      var result = visitor.VisitSqlEntityExpression (entityExpression);
+      var result = visitor.VisitSqlEntity (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
     }
@@ -800,7 +800,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var sqlIsNullExpressionWithValue = new SqlIsNullExpression (Expression.Constant (1));
 
-      var resultWithValue = _valueRequiredVisitor.VisitSqlIsNullExpression (sqlIsNullExpressionWithValue);
+      var resultWithValue = _valueRequiredVisitor.VisitSqlIsNull (sqlIsNullExpressionWithValue);
 
       Assert.That (resultWithValue, Is.SameAs (sqlIsNullExpressionWithValue));
     }
@@ -811,7 +811,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var sqlIsNullExpressionWithEntity = new SqlIsNullExpression (entityExpression);
 
-      Assert.That (() => _valueRequiredVisitor.VisitSqlIsNullExpression (sqlIsNullExpressionWithEntity), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitSqlIsNull (sqlIsNullExpressionWithEntity), Throws.TypeOf<NotSupportedException> ());
     }
 
     [Test]
@@ -819,7 +819,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var sqlIsNotNullExpressionWithValue = new SqlIsNotNullExpression (Expression.Constant (1));
 
-      var resultWithValue = _valueRequiredVisitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpressionWithValue);
+      var resultWithValue = _valueRequiredVisitor.VisitSqlIsNotNull (sqlIsNotNullExpressionWithValue);
 
       Assert.That (resultWithValue, Is.SameAs (sqlIsNotNullExpressionWithValue));
     }
@@ -830,14 +830,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var sqlIsNotNullExpressionWithEntity = new SqlIsNotNullExpression (entityExpression);
 
-      Assert.That (() => _valueRequiredVisitor.VisitSqlIsNotNullExpression (sqlIsNotNullExpressionWithEntity), Throws.TypeOf<NotSupportedException> ());
+      Assert.That (() => _valueRequiredVisitor.VisitSqlIsNotNull (sqlIsNotNullExpressionWithEntity), Throws.TypeOf<NotSupportedException> ());
     }
 
     [Test]
     public void VisitSqlEntityConstantExpression_ValueRequired ()
     {
       var expression = new SqlEntityConstantExpression (typeof (int), 5, Expression.Constant (1));
-      var result = _valueRequiredVisitor.VisitSqlEntityConstantExpression (expression);
+      var result = _valueRequiredVisitor.VisitSqlEntityConstant (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -848,7 +848,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), Expression.Constant (0));
 
       Assert.That (
-          () => _singleValueRequiredVisitor.VisitSqlEntityConstantExpression (entityConstantExpression), 
+          () => _singleValueRequiredVisitor.VisitSqlEntityConstant (entityConstantExpression), 
           Throws.TypeOf<NotSupportedException>().With.Message.EqualTo (
             "Cannot use an entity constant ('ENTITY(0)' of type 'Cook') in a place where SQL requires a single value."));
     }
@@ -865,7 +865,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (fakeResult);
       _stageMock.Replay();
 
-      var result = _valueRequiredVisitor.VisitSqlSubStatementExpression (sqlSubStatementExpression);
+      var result = _valueRequiredVisitor.VisitSqlSubStatement (sqlSubStatementExpression);
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.Not.SameAs (sqlStatement));
@@ -989,7 +989,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       _mappingResolutionContext.AddGroupReferenceMapping (expression, sqlTable);
 
-      var result = _singleValueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
+      var result = _singleValueRequiredVisitor.VisitSqlGroupingSelect (expression);
 
       Assert.That (result, Is.SameAs (expression));
       Assert.That (_mappingResolutionContext.GetReferencedGroupSource (((SqlGroupingSelectExpression) result)), Is.SameAs (sqlTable));
@@ -1006,7 +1006,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook));
       _mappingResolutionContext.AddGroupReferenceMapping (expression, sqlTable);
 
-      var result = (SqlGroupingSelectExpression) _singleValueRequiredVisitor.VisitSqlGroupingSelectExpression (expression);
+      var result = (SqlGroupingSelectExpression) _singleValueRequiredVisitor.VisitSqlGroupingSelect (expression);
 
       Assert.That (result, Is.Not.SameAs (expression));
 
@@ -1022,7 +1022,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlFunctionExpression (typeof (int), "Test", Expression.Constant (true));
       var expectedResult = new SqlFunctionExpression (typeof (int), "Test", new SqlConvertedBooleanExpression (Expression.Constant (1)));
 
-      var result = _predicateRequiredVisitor.VisitSqlFunctionExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlFunction (expression);
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -1033,7 +1033,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlConvertExpression (typeof (bool), Expression.Constant (true));
       var expectedResult = new SqlConvertExpression (typeof (bool), new SqlConvertedBooleanExpression (Expression.Constant (1)));
 
-      var result = _predicateRequiredVisitor.VisitSqlConvertExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlConvert (expression);
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -1044,7 +1044,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlExistsExpression (Expression.Constant (true));
       var expectedResult = new SqlExistsExpression (new SqlConvertedBooleanExpression (Expression.Constant (1)));
 
-      var result = _predicateRequiredVisitor.VisitSqlExistsExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlExists (expression);
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -1054,7 +1054,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = new SqlExistsExpression (CreateNewExpression());
 
-      var result = _predicateRequiredVisitor.VisitSqlExistsExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlExists (expression);
 
       Assert.That(result, Is.SameAs (expression));
     }
@@ -1066,7 +1066,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedResult = new SqlLikeExpression (
           new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlLiteralExpression (@"\"));
 
-      var result = _predicateRequiredVisitor.VisitSqlLikeExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlLike (expression);
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -1076,7 +1076,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = new SqlLengthExpression (Expression.Constant ("test"));
 
-      var result = _predicateRequiredVisitor.VisitSqlLengthExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlLength (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -1089,7 +1089,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var elseCase = Expression.Constant (true);
       var expression = new SqlCaseExpression (typeof (bool), new[] { case1, case2 }, elseCase);
 
-      var result = _valueRequiredVisitor.VisitSqlCaseExpression (expression);
+      var result = _valueRequiredVisitor.VisitSqlCase (expression);
 
       var expectedCase1 = new SqlCaseExpression.CaseWhenPair (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
@@ -1111,7 +1111,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlCaseExpression (typeof (Cook), new[] { case1 }, elseCase);
 
       Assert.That (
-          () => _valueRequiredVisitor.VisitSqlCaseExpression (expression),
+          () => _valueRequiredVisitor.VisitSqlCase (expression),
           Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
               "Cannot use an entity expression ('[t0]' of type 'Cook') in a place where SQL requires a single value."));
     }
@@ -1127,7 +1127,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlCaseExpression (typeof (Cook), new[] { case1 }, elseCase);
 
       Assert.That (
-          () => _valueRequiredVisitor.VisitSqlCaseExpression (expression),
+          () => _valueRequiredVisitor.VisitSqlCase (expression),
           Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
               "Cannot use an entity expression ('[t0]' of type 'Cook') in a place where SQL requires a single value."));
     }
@@ -1139,7 +1139,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var case2 = new SqlCaseExpression.CaseWhenPair (Expression.Constant (false), Expression.Constant (false));
       var expression = new SqlCaseExpression (typeof (bool?), new[] { case1, case2 }, null);
 
-      var result = _valueRequiredVisitor.VisitSqlCaseExpression (expression);
+      var result = _valueRequiredVisitor.VisitSqlCase (expression);
 
       var expectedCase1 = new SqlCaseExpression.CaseWhenPair (
           Expression.Equal (Expression.Constant (1), new SqlLiteralExpression (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
@@ -1156,7 +1156,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedResult =
           new SqlRowNumberExpression (new[] { new Ordering (new SqlConvertedBooleanExpression (Expression.Constant (1)), OrderingDirection.Asc) });
 
-      var result = _predicateRequiredVisitor.VisitSqlRowNumberExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlRowNumber (expression);
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult.Orderings[0].Expression, ((SqlRowNumberExpression) result).Orderings[0].Expression);
     }
@@ -1166,7 +1166,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = new SqlLiteralExpression (1);
 
-      var result = _predicateRequiredVisitor.VisitSqlLiteralExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlLiteral (expression);
 
       Assert.That (result, Is.SameAs (expression));
     }
@@ -1177,7 +1177,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlInExpression (Expression.Constant (true), Expression.Constant (true));
       var expectedResult = new SqlInExpression (new SqlConvertedBooleanExpression (Expression.Constant (1)), new SqlConvertedBooleanExpression (Expression.Constant (1)));
 
-      var result = _predicateRequiredVisitor.VisitSqlInExpression (expression);
+      var result = _predicateRequiredVisitor.VisitSqlIn (expression);
 
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
@@ -1189,7 +1189,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlInExpression (newExpression, Expression.Constant (new[] { 1, 2, 3 }));
 
       Assert.That (
-          () => _predicateRequiredVisitor.VisitSqlInExpression (expression),
+          () => _predicateRequiredVisitor.VisitSqlIn (expression),
           Throws.TypeOf<NotSupportedException> ().With.Message.EqualTo (
               "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression "
               + "cannot be translated to SQL: 'new TypeForNewExpression(0) IN value(System.Int32[])'."));

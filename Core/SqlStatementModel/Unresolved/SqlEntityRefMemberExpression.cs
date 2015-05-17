@@ -75,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
       var specificVisitor = visitor as ISqlEntityRefMemberExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlEntityRefMemberExpression(this);
+        return specificVisitor.VisitSqlEntityRefMember(this);
       else
         return base.Accept (visitor);
     }

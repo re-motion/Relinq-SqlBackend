@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlRowNumberExpression, ISqlSpecificExpressionVisitor> (
           _sqlRowNumberExpression,
-          mock => mock.VisitSqlRowNumberExpression (_sqlRowNumberExpression));
+          mock => mock.VisitSqlRowNumber (_sqlRowNumberExpression));
     }
 
     [Test]

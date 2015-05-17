@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
       var specificVisitor = visitor as IJoinConditionExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitJoinConditionExpression (this);
+        return specificVisitor.VisitJoinCondition (this);
       else
         return base.Accept (visitor);
     }

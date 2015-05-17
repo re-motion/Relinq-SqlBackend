@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<AggregationExpression, IAggregationExpressionVisitor> (
           _aggregationEpression,
-          mock => mock.VisitAggregationExpression(_aggregationEpression));
+          mock => mock.VisitAggregation(_aggregationEpression));
     }
 
     [Test]
