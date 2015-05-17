@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -72,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return string.Format ("{0} IS NULL", FormattingExpressionTreeVisitor.Format(_expression));
+      return string.Format ("{0} IS NULL", _expression);
     }
   }
 }

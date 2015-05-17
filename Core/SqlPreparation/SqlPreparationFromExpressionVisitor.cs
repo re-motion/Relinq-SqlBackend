@@ -19,7 +19,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.Utilities;
@@ -55,7 +54,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
       var message = string.Format (
           "Error parsing expression '{0}'. Expressions of type '{1}' cannot be used as the SqlTables of a from clause.",
-          FormattingExpressionTreeVisitor.Format (fromExpression),
+          fromExpression,
           fromExpression.Type.Name);
       throw new NotSupportedException (message);
     }

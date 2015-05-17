@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -81,10 +80,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return string.Format (
-          "{0} IN {1}",
-          FormattingExpressionTreeVisitor.Format (_leftExpression),
-          FormattingExpressionTreeVisitor.Format (_rightExpression));
+      return string.Format ("{0} IN {1}", _leftExpression, _rightExpression);
     }
   }
 }

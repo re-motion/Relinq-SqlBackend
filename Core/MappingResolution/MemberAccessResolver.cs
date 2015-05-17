@@ -19,7 +19,6 @@ using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -87,7 +86,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           string.Format (
               "Cannot resolve member '{0}' applied to expression '{1}'; the expression type '{2}' is not supported in member expressions.",
               _memberInfo.Name,
-              unhandledItem is Expression ? FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem) : unhandledItem.ToString(),
+              unhandledItem,
               unhandledItem.GetType().Name));
     }
 
@@ -164,7 +163,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
                 "The member '{0}.{1}' cannot be translated to SQL. Expression: '{2}'",
                 expression.Type.Name,
                 _memberInfo.Name,
-                FormattingExpressionTreeVisitor.Format (expression)));
+                expression));
     }
 
     public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
@@ -183,7 +182,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed. Expression: '{2}'",
             _memberInfo.DeclaringType.Name,
             _memberInfo.Name,
-            FormattingExpressionTreeVisitor.Format (expression));
+            expression);
         throw new NotSupportedException (message);
       }
 

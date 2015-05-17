@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -84,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return string.Format ("{0}({1})", _sqlFunctioName, String.Join (",", _args.Select (arg => FormattingExpressionTreeVisitor.Format(arg)).ToArray()));
+      return string.Format ("{0}({1})", _sqlFunctioName, string.Join (",", _args.Select (arg => arg.ToString()).ToArray()));
     }
   }
 }

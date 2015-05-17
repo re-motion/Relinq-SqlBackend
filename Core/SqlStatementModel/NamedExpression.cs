@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
@@ -150,7 +149,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return String.Format ("{0} AS {1}", FormattingExpressionTreeVisitor.Format (_expression), _name ?? DefaultName);
+      return String.Format ("{0} AS {1}", _expression, _name ?? DefaultName);
     }
   }
 

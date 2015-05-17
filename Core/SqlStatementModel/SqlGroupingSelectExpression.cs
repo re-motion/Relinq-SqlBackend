@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
@@ -133,9 +132,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       return String.Format (
           "GROUPING (KEY: {0}, ELEMENT: {1}, AGGREGATIONS: ({2}))", 
-          FormattingExpressionTreeVisitor.Format (KeyExpression), 
-          FormattingExpressionTreeVisitor.Format (ElementExpression),
-          string.Join (", ", AggregationExpressions.Select (FormattingExpressionTreeVisitor.Format)));
+          KeyExpression, 
+          ElementExpression,
+          string.Join (", ", AggregationExpressions.Select (e => e.ToString())));
     }
   }
 }

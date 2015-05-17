@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -142,7 +141,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         string message = string.Format (
             "Cannot use an entity expression ('{0}' of type '{1}') in a place where SQL requires a single value.",
-            FormattingExpressionTreeVisitor.Format (expression),
+            expression,
             expression.Type.Name);
         throw new NotSupportedException (message);
       }
@@ -245,7 +244,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         string message = string.Format (
             "Cannot use an entity constant ('{0}' of type '{1}') in a place where SQL requires a single value.",
-            FormattingExpressionTreeVisitor.Format (expression),
+            expression,
             expression.Type.Name);
         throw new NotSupportedException (message);
       }
@@ -268,9 +267,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
-        string message = string.Format (
-            "Cannot use a complex expression ('{0}') in a place where SQL requires a single value.",
-            FormattingExpressionTreeVisitor.Format (expression));
+        string message = string.Format ("Cannot use a complex expression ('{0}') in a place where SQL requires a single value.", expression);
         throw new NotSupportedException (message);
       }
 
@@ -395,7 +392,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var message = string.Format (
             "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot "
             + "be translated to SQL: '{0}'.",
-            FormattingExpressionTreeVisitor.Format (expression));
+            expression);
         throw new NotSupportedException (message, ex);
       }
     }
@@ -416,15 +413,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitInvocation (InvocationExpression expression)
     {
-      var message = string.Format (
-          "InvocationExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+      var message = string.Format ("InvocationExpressions are not supported in the SQL backend. Expression: '{0}'.", expression);
       throw new NotSupportedException (message);
     }
 
     protected override Expression VisitLambda<T> (Expression<T> expression)
     {
-      var message = string.Format (
-          "LambdaExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+      var message = string.Format ("LambdaExpressions are not supported in the SQL backend. Expression: '{0}'.", expression);
       throw new NotSupportedException (message);
     }
 
@@ -506,7 +501,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var message = string.Format (
             "Cannot convert an expression of type '{0}' to a boolean expression. Expression: '{1}'", 
             newExpression.Type, 
-            FormattingExpressionTreeVisitor.Format(expression));
+            expression);
         throw new NotSupportedException (message);
       }
 

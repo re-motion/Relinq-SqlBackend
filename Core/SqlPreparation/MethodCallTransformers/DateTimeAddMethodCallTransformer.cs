@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
@@ -71,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             var message =
                 string.Format (
                     "The method 'System.DateTime.Add' can only be transformed to SQL when its argument is a constant value. Expression: '{0}'.",
-                    FormattingExpressionTreeVisitor.Format (methodCallExpression));
+                    methodCallExpression);
             throw new NotSupportedException (message);
           }
 

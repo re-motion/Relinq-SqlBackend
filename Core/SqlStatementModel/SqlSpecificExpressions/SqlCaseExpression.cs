@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -76,7 +75,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
       public override string ToString ()
       {
-        return string.Format ("WHEN {0} THEN {1}", FormattingExpressionTreeVisitor.Format (_when), FormattingExpressionTreeVisitor.Format (_then));
+        return string.Format ("WHEN {0} THEN {1}", _when, _then);
       }
     }
 
@@ -184,7 +183,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       if (_elseCase != null)
       {
         stringBuilder.Append (" ELSE ");
-        stringBuilder.Append (FormattingExpressionTreeVisitor.Format (_elseCase));
+        stringBuilder.Append (_elseCase);
       }
       stringBuilder.Append (" END");
       return stringBuilder.ToString();

@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
@@ -34,9 +33,7 @@ namespace Remotion.Linq.SqlBackend.Development.UnitTesting
       ArgumentUtility.CheckNotNull ("expectedTree", expectedTree);
       ArgumentUtility.CheckNotNull ("actualTree", actualTree);
 
-      var comparer = new SqlExpressionTreeComparer (
-          FormattingExpressionTreeVisitor.Format (expectedTree),
-          FormattingExpressionTreeVisitor.Format (actualTree));
+      var comparer = new SqlExpressionTreeComparer (expectedTree.ToString(), actualTree.ToString());
       comparer.CheckAreEqualNodes (expectedTree, actualTree);
     }
 

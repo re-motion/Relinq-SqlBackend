@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
@@ -37,7 +36,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             "Only expressions that can be evaluated locally can be used as an argument for {0} ('{1}'). Expression: '{2}'", 
             methodName, 
             parameterName,
-            FormattingExpressionTreeVisitor.Format (argument));
+            argument);
         throw new NotSupportedException (message);
       }
       return argumentAsConstantExpression;
@@ -75,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
             "{0} function with {1} arguments is not supported. Expression: '{2}'", 
             methodCallExpression.Method.Name, 
             methodCallExpression.Arguments.Count,
-            FormattingExpressionTreeVisitor.Format (methodCallExpression));
+            methodCallExpression);
         throw new NotSupportedException (
             message);
       }
@@ -90,7 +89,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         var message = string.Format (
             "Method {0} is not supported by this transformer. Expression: '{1}'",
             methodCallExpression.Method.Name,
-            FormattingExpressionTreeVisitor.Format (methodCallExpression));
+            methodCallExpression);
         throw new NotSupportedException (message);
       }
     }
@@ -104,7 +103,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         var message = string.Format (
             "Method {0} is not supported by this transformer. Expression: '{1}'",
             methodCallExpression.Method.Name,
-            FormattingExpressionTreeVisitor.Format (methodCallExpression));
+            methodCallExpression);
         throw new NotSupportedException (message);
       }
     }

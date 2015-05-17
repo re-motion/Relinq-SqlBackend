@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
@@ -61,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public override string ToString ()
     {
-      return String.Join (" ", _expressions.Select (expr => FormattingExpressionTreeVisitor.Format (expr)).ToArray());
+      return string.Join (" ", _expressions.Select (expr => expr.ToString()).ToArray());
     }
 
   }

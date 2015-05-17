@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -81,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override string ToString ()
     {
-      return string.Format ("ENTITY({0})", FormattingExpressionTreeVisitor.Format (_identityExpression));
+      return string.Format ("ENTITY({0})", _identityExpression);
     }
   }
 }

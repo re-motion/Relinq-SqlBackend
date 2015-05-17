@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Utilities;
 
@@ -70,10 +69,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override string ToString ()
     {
-      return string.Format (
-          "{0} ON {1}", 
-          ForeignTableInfo, 
-          FormattingExpressionTreeVisitor.Format (JoinCondition));
+      return string.Format ("{0} ON {1}", ForeignTableInfo, JoinCondition);
     }
   }
 }

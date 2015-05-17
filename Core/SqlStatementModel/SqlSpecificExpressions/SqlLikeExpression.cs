@@ -18,7 +18,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Text;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -166,11 +165,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return string.Format (
-          "{0} LIKE {1} ESCAPE {2}",
-          FormattingExpressionTreeVisitor.Format (_left),
-          FormattingExpressionTreeVisitor.Format (_right),
-          FormattingExpressionTreeVisitor.Format (_escapeExpression));
+      return string.Format ("{0} LIKE {1} ESCAPE {2}", _left, _right, _escapeExpression);
     }
   }
 }

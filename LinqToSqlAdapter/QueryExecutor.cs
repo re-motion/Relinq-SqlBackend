@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
@@ -111,7 +110,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       {
         Console.WriteLine (command.CommandText);
         Console.WriteLine (string.Join (", ", command.Parameters.Select (p => p.Name + "=" + p.Value)));
-        Console.WriteLine (FormattingExpressionTreeVisitor.Format (command.GetInMemoryProjection<object>()));
+        Console.WriteLine (command.GetInMemoryProjection<object>());
       }
       return command;
     }

@@ -19,7 +19,6 @@ using System.Collections;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -303,7 +302,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         case ExpressionType.ConvertChecked:
           break;
         default:
-          var message = string.Format ("Cannot generate SQL for unary expression '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+          var message = string.Format ("Cannot generate SQL for unary expression '{0}'.", expression);
           throw new NotSupportedException (message);
       }
 
@@ -318,7 +317,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
           "The method '{0}.{1}' is not supported by this code generator, and no custom transformer has been registered. Expression: '{2}'",
           expression.Method.DeclaringType,
           expression.Method.Name,
-          FormattingExpressionTreeVisitor.Format (expression));
+          expression);
       throw new NotSupportedException (message);
     }
 
@@ -326,7 +325,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       var message = string.Format (
           "The expression '{0}' cannot be translated to SQL text by this SQL generator. Expression type '{1}' is not supported.",
-          unhandledItem is Expression ? FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem) : unhandledItem.ToString(),
+          unhandledItem,
           unhandledItem.GetType().Name);
 
       throw new NotSupportedException (message);
@@ -376,10 +375,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         _commandBuilder.Append ("SUM");
       else
       {
-        var message = string.Format (
-            "Cannot generate SQL for aggregation '{0}'. Expression: '{1}'",
-            expression.AggregationModifier,
-            FormattingExpressionTreeVisitor.Format (expression));
+        var message = string.Format ("Cannot generate SQL for aggregation '{0}'. Expression: '{1}'", expression.AggregationModifier, expression);
         throw new NotSupportedException (message);
       }
 
@@ -426,7 +422,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       var message = string.Format (
           "It is not supported to use a constant entity object in any other context than to compare it with another entity. "
           + "Expression: {0} (of type: '{1}').",
-          FormattingExpressionTreeVisitor.Format (expression),
+          expression,
           expression.Type);
       throw new NotSupportedException (message);
     }

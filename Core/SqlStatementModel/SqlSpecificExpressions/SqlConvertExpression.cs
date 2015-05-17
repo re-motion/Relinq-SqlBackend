@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -87,10 +86,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       var typeName = GetSqlTypeName(Type);
       if (typeName == null)
       {
-        var message = string.Format (
-            "Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'",
-            Type.Name,
-            FormattingExpressionTreeVisitor.Format (_source));
+        var message = string.Format ("Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'", Type.Name, _source);
         throw new NotSupportedException (message);
       }
 
@@ -118,7 +114,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public override string ToString ()
     {
-      return string.Format ("CONVERT({0}, {1})", GetSqlTypeName (), FormattingExpressionTreeVisitor.Format (_source));
+      return string.Format ("CONVERT({0}, {1})", GetSqlTypeName (), _source);
     }
   }
 }

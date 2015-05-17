@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
@@ -84,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return string.Format ("{0}({1})", _aggregationModifier, FormattingExpressionTreeVisitor.Format(_expression));
+      return string.Format ("{0}({1})", _aggregationModifier, _expression);
     }
   }
 }
