@@ -93,7 +93,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           from c in Cooks
           from k in Kitchens.Where (k => k == c.Kitchen).DefaultIfEmpty()
           select new { CookID = c.ID, KitchenID = k.ID },
-          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] " 
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
           + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID])");
     }
 

@@ -55,6 +55,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         throw new NotSupportedException (message);
       }
 
+      // TODO RMLNQSQL-77: Changed this code here back to the "correct" solution which avoids substatements by putting the WHERE condition into
+      // a LEFT JOIN condition, but generates unnecessary "ON (1 = 1)" stuff when no JOIN is needed.
+
       // If there's more than one table, convert the current statement into a substatement.
       // This ensures that there is exactly one table that holds everything we want to put into a LEFT JOIN.
       if (sqlStatementBuilder.SqlTables.Count != 1 || sqlStatementBuilder.SetOperationCombinedStatements.Any())
@@ -62,46 +65,34 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
       }
 
-      // TODO RMLNQSQL-77: This still contains a bug (see test DefaultIfEmpty_WithWhereCondition). If the sqlStatementBuilder has a Where condition, 
-      // the WHERE condition must be evaluated _within_ the OUTER APPLY, but this code moves it to after the OUTER APPLY.
-      // Problems:
-      // - If the check above is changed to detect WHERE conditions, it will also wrap in situations that we want to optimize, i.e., it wraps too much.
-      // - If the code below is restored (to wrap into LEFT OUTER JOINs rather than OUTER APPLYs), it gets much, much more difficult to detect the
-      //   optimizable scenario in SqlPreparationQueryModelVisitor.
+      // Now, since there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by 
+      // converting that table into the right part of a left join with a dummy table.
+      // It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
+      // _during_ the left join.
 
-      // Change the single table to have LEFT JOIN semantics.
-      var table = sqlStatementBuilder.SqlTables.Single();
-      sqlStatementBuilder.SqlTables.Clear();
-      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable (table.SqlTable, JoinSemantics.Left));
-      
-      //// Now, since there is exactly one top-level table in this statement (and no UNIONS etc.), "DefaultIfEmpty" can be implemented simply by 
-      //// converting that table into the right part of a left join with a dummy table.
-      //// It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
-      //// _during_ the left join.
-
-      //// Create a new dummy table: (SELECT NULL AS [Empty]) AS [Empty]
+      // Create a new dummy table: (SELECT NULL AS [Empty]) AS [Empty]
       //var dummyRowTable = new SqlTable (UnresolvedDummyRowTableInfo.Instance);
 
-      //// Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
-      //var originalSqlTable = sqlStatementBuilder.SqlTables[0];
-      //var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
-      //var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
-      //// The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
-      //// here because the left side is just the dummyRowTable (and there is nothing else in this statement).
-      //// TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
-      //// care that this restriction is _not_ broken.
-      //dummyRowTable.AddJoin (@join);
+      // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
+      var originalSqlTable = sqlStatementBuilder.SqlTables[0];
+      var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
+      var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
+      // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
+      // here because the left side is just the dummyRowTable (and there is nothing else in this statement).
+      // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
+      // care that this restriction is _not_ broken.
+      dummyRowTable.AddJoin (@join);
 
-      //// Replace original table with dummy table:
-      //sqlStatementBuilder.SqlTables.Clear();
-      //sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable(dummyRowTable, JoinSemantics.Inner));
+      // Replace original table with dummy table:
+      sqlStatementBuilder.SqlTables.Clear();
+      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable(dummyRowTable, JoinSemantics.Inner));
 
-      //// WHERE condition was moved to JOIN condition => no longer needed.
-      //sqlStatementBuilder.WhereCondition = null;
+      // WHERE condition was moved to JOIN condition => no longer needed.
+      sqlStatementBuilder.WhereCondition = null;
 
-      //// Further TODOs:
-      //// TODO RMLNQSQL-81: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
-      //// TODO RMLNQSQL-81: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
+      // Further TODOs:
+      // TODO RMLNQSQL-81: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
+      // TODO RMLNQSQL-81: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
     }
   }
 }
