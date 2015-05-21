@@ -239,7 +239,19 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       //       FROM joinedTable
       //       WHERE joinCondition
       //     ) [q0]
-      // )
+      // ) [q1]
+      // into:
+      // ... LEFT OUTER JOIN joinedTable ON joinCondition
+      // (with [q1] being replaced by "actualProjection")
+
+      // TODO RMLNQSQL-77: Change to detect this instead:
+      // ... CROSS APPLY (
+      //   SELECT [q0] 
+      //   FROM (SELECT NULL AS Empty) AS [Empty]
+      //     LEFT OUTER JOIN joinedTable
+      //     ON WHERE joinCondition
+      // ) [q1]
+      // Best way would be to have a dedicated TableInfo for (SELECT NULL AS Empty). That way it would be easy to detect that here.
 
       ResolvedSubStatementTableInfo subStatementTableInfo;
       if (

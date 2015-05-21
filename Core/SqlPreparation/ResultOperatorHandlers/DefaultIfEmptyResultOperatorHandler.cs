@@ -57,6 +57,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       // TODO RMLNQSQL-77: Changed this code here back to the "correct" solution which avoids substatements by putting the WHERE condition into
       // a LEFT JOIN condition, but generates unnecessary "ON (1 = 1)" stuff when no JOIN is needed.
+      // TODO RMLNQSQL-77: Idea: Do not generate "(1 = 1)" as a join condition, but make this a "NullJoinConditionExpression" instead. Then, detect
+      // that expression when generating SQL and generate an OUTER APPLY instead of a LEFT JOIN. Should be the best of both worlds.
 
       // If there's more than one table, convert the current statement into a substatement.
       // This ensures that there is exactly one table that holds everything we want to put into a LEFT JOIN.
