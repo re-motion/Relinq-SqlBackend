@@ -62,6 +62,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       // If there's more than one table, convert the current statement into a substatement.
       // This ensures that there is exactly one table that holds everything we want to put into a LEFT JOIN.
+      // TODO RMLNQSQL-77: This is probably missing conditions. E.g., what about GroupBy?
       if (sqlStatementBuilder.SqlTables.Count != 1 || sqlStatementBuilder.SetOperationCombinedStatements.Any())
       {
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, stage);
