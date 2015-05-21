@@ -50,9 +50,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     public void DefaultIfEmpty_WithWhereCondition ()
     {
       CheckQuery (
-          Cooks.Where(c => c.Name != null).DefaultIfEmpty(),
+          Cooks.Where (c => c.Name != null).DefaultIfEmpty(),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY (SELECT ... FROM [CookTable] AS [t0] WHERE [t0].[Name] IS NOT NULL) [q1]",
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t0] ON ([t0].[Name] IS NOT NULL)",
           row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
               new ColumnID ("FirstName", 1),
