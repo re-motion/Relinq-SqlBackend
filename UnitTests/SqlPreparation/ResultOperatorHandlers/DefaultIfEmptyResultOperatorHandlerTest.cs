@@ -90,7 +90,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (sqlStatementBuilder.SqlTables[0].JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
       // The new table now contains a dummy statement (SELECT NULL AS Empty)...
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo, Is.TypeOf<UnresolvedDummyRowTableInfo>());
-      
+
       // ... as well as a join for the original table ...
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
       var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();

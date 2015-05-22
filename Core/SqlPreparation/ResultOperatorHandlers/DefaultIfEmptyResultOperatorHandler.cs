@@ -73,8 +73,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
       // _during_ the left join.
 
-      // Create a new dummy table: (SELECT NULL AS [Empty]) AS [Empty]
-      //var dummyRowTable = new SqlTable (UnresolvedDummyRowTableInfo.Instance);
+      // Create a new dummy table that guarantees delivering a single row. This is important to get a "default" row if the joined table doesn't return 
+      // anything.
+      var dummyRowTable = new SqlTable (UnresolvedDummyRowTableInfo.Instance);
 
       // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
       var originalSqlTable = sqlStatementBuilder.SqlTables[0];
