@@ -70,6 +70,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       _tableInfo = tableInfo;
     }
 
+    // TODO RMLNQSQL-77: Rename to just "Joins".
     public IEnumerable<SqlJoin> OrderedJoins
     {
       get { return _orderedJoins; }
