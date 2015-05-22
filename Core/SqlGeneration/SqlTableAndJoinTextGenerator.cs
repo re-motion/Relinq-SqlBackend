@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
 
@@ -73,15 +74,29 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
-      if (join.JoinSemantics == JoinSemantics.Inner)
+        // TODO RMLNQSQL-77: Test.
+      bool isOptimizableJoinCondition = false;
+      SqlLiteralExpression literalExpression;
+      if ((literalExpression = join.JoinCondition as SqlLiteralExpression) != null && Equals (literalExpression.Value, true))
+        isOptimizableJoinCondition = true;
+
+      if (join.JoinSemantics == JoinSemantics.Inner && isOptimizableJoinCondition)
+        commandBuilder.Append (" CROSS JOIN ");
+      else if (join.JoinSemantics == JoinSemantics.Inner)
         commandBuilder.Append (" INNER JOIN ");
+      else if (isOptimizableJoinCondition)
+        commandBuilder.Append (" OUTER APPLY ");
       else
         commandBuilder.Append (" LEFT OUTER JOIN ");
 
       join.JoinedTable.TableInfo.Accept (visitor);
-      commandBuilder.Append (" ON ");
-      
-      stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
+
+
+      if (!isOptimizableJoinCondition)
+      {
+        commandBuilder.Append (" ON ");
+        stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
+      }
     }
 
     private readonly ISqlCommandBuilder _commandBuilder;
