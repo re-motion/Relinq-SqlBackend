@@ -96,6 +96,15 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       Append ("'");
     }
 
+    // TODO RMLNQSQL-77: Test.
+    public void AppendBooleanLiteral (bool value)
+    {
+      if (value)
+        Append ("(1 = 1)");
+      else
+        Append ("(1 = 0)");
+    }
+
     public void AppendFormat (string stringToAppend, params object[] parameters)
     {
       ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);

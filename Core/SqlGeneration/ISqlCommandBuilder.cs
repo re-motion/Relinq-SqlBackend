@@ -35,12 +35,13 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<ISqlCommandBuilder, T> appender);
     void AppendIdentifier (string identifier);
     void AppendStringLiteral (string value);
+    void AppendBooleanLiteral (bool value);
     void AppendFormat (string stringToAppend, params object[] parameters);
     CommandParameter AppendParameter (object value);
 
     void SetInMemoryProjectionBody (Expression body);
     Expression GetInMemoryProjectionBody ();
- 
+
     string GetCommandText ();
     CommandParameter[] GetCommandParameters ();
     SqlCommandData GetCommand ();

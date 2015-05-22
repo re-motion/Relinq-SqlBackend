@@ -63,6 +63,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
     }
 
+    // TODO RMLNQSQL-77: Test.
+    public SqlLiteralExpression (bool value, bool nullable = false)
+      : this (value, nullable ? typeof (bool?) : typeof (bool))
+    {
+    }
+
     private SqlLiteralExpression ([CanBeNull]object value, [NotNull]Type type)
     {
       _type = type;

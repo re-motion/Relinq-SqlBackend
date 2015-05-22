@@ -132,8 +132,11 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       if (expression.Value == null)
         _commandBuilder.Append ("NULL");
-      else if (expression.Type == typeof (string))
+      else if (expression.Value is string)
         _commandBuilder.AppendStringLiteral ((string) expression.Value);
+      // TODO RMLNQSQL-77: Test.
+      else if (expression.Value is bool)
+        _commandBuilder.AppendBooleanLiteral ((bool) expression.Value);
       else
         _commandBuilder.Append (Convert.ToString (expression.Value, CultureInfo.InvariantCulture));
       return expression;
