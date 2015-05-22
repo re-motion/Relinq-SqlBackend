@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using JetBrains.Annotations;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Utilities;
@@ -28,7 +29,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   /// </summary>
   public struct FromExpressionInfo
   {
-    public FromExpressionInfo (SqlAppendedTable appendedTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition)
+    public FromExpressionInfo (
+        [NotNull] SqlAppendedTable appendedTable,
+        [NotNull] Ordering[] extractedOrderings,
+        [NotNull] Expression itemSelector,
+        [CanBeNull] Expression whereCondition)
     {
       ArgumentUtility.CheckNotNull ("appendedTable", appendedTable);
       ArgumentUtility.CheckNotNull ("extractedOrderings", extractedOrderings);
@@ -40,9 +45,31 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       WhereCondition = whereCondition;
     }
 
+    /// <summary>
+    /// Holds the table that was constructed from the analyzed FROM expression. See <see cref="SqlPreparationFromExpressionVisitor"/> for details.
+    /// </summary>
+    [NotNull]
     public readonly SqlAppendedTable AppendedTable;
+
+    /// <summary>
+    /// Because substatements cannot contain ORDER BY clauses in SQL (except when there is a TOP statement or something similar), the code preparing
+    /// <see cref="FromExpressionInfo"/> objects needs to extract ORDER BY clauses and puts them into <see cref="ExtractedOrderings"/>.
+    /// </summary>
+    [NotNull]
     public readonly ReadOnlyCollection<Ordering> ExtractedOrderings;
+
+    /// <summary>
+    /// If ORDER BY statements are extracted from a substatement, the projection needs to be extended to include the expressions used as ORDER BY
+    /// criteria. Then, if someone wants to access the actual items delivered by the substatement, they need to select the original items.
+    /// <see cref="ItemSelector"/> contains an expression that automatically contains this selection if needed.
+    /// </summary>
+    [NotNull]
     public readonly Expression ItemSelector;
+
+    /// <summary>
+    /// A WHERE condition to be appended to the outer statement. Used for joins on collection members.
+    /// </summary>
+    [CanBeNull]
     public readonly Expression WhereCondition;
   }
 }
