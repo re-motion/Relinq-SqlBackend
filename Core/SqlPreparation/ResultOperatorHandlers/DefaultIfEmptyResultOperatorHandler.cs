@@ -83,8 +83,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
       // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
       // here because the left side is just the dummyRowTable (and there is nothing else in this statement).
-      // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
-      // care that this restriction is _not_ broken.
       dummyRowTable.AddJoin (@join);
 
       // Replace original table with dummy table:
