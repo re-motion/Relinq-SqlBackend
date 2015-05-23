@@ -16,9 +16,7 @@
 // 
 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -75,26 +73,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests
     public static Expression CallVisitChildren (Expression target, ExpressionVisitor visitor)
     {
       return (Expression) PrivateInvoke.InvokeNonPublicMethod (target, "VisitChildren", visitor);
-    }
-
-    public static void CheckUniqueNodeType (Type expressionType, ExpressionType nodeType)
-    {
-      Assert.That (Enum.IsDefined (typeof (ExpressionType), nodeType), Is.False, "Type is one of the standard types");
-      var allExpressionTypeFields = from asm in AppDomain.CurrentDomain.GetAssemblies()
-                                    from type in asm.GetTypes()
-                                    from field in type.GetFields (BindingFlags.Public | BindingFlags.Static)
-                                    where field.FieldType == typeof (ExpressionType)
-                                    select field;
-      var fieldValues = from field in allExpressionTypeFields
-                        select new { Field = field, Value = field.GetValue (null) };
-      var lookup = fieldValues.ToLookup (x => x.Value);
-      var matches = lookup[nodeType].Where (field => field.Field.DeclaringType != expressionType).ToArray();
-      Assert.That (
-          matches, 
-          Is.Empty, 
-          "'{0}' declares the same node type as {1}.", 
-          expressionType.Name, 
-          string.Join (", ", matches.Select (field => string.Format ("{0} ({1})", field.Field.DeclaringType.Name, field.Field.Name))));
     }
   }
 }
