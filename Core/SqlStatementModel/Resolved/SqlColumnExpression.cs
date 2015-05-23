@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -25,22 +23,34 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="SqlColumnExpression"/> represents a sql-specific column expression.
   /// </summary>
-  public abstract class SqlColumnExpression : ExtensionExpression
+  public abstract class SqlColumnExpression : Expression
   {
+    private readonly Type _type;
     private readonly string _owningTableAlias;
     private readonly string _columnName;
     private readonly bool _isPrimaryKey;
 
     protected SqlColumnExpression (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
-        : base(type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("owningTableAlias", owningTableAlias);
       ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
       ArgumentUtility.CheckNotNull ("isPrimaryKey", isPrimaryKey);
 
+      _type = type;
       _owningTableAlias = owningTableAlias;
       _columnName = columnName;
       _isPrimaryKey = isPrimaryKey;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public string OwningTableAlias
@@ -60,16 +70,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public abstract SqlColumnExpression Update (Type type, string owningTableAlias, string columnName, bool isPrimaryKey);
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if(specificVisitor!=null)
-        return specificVisitor.VisitSqlColumnExpression (this);
+        return specificVisitor.VisitSqlColumn (this);
       else
         return base.Accept (visitor);
     }

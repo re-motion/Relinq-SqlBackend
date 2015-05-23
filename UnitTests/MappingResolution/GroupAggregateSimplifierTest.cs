@@ -305,19 +305,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void VisitExpression_ReferenceToRightTable ()
+    public void Visit_ReferenceToRightTable ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = new SqlTableReferenceExpression (_resolvedJoinedGroupingTable);
-      var result = visitor.VisitExpression (input);
+      var result = visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
       Assert.That (result, Is.SameAs (_associatedGroupingSelectExpression.ElementExpression));
     }
 
     [Test]
-    public void VisitExpression_ReferenceToRightTable_Nested ()
+    public void Visit_ReferenceToRightTable_Nested ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
@@ -325,33 +325,33 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new SqlTableReferenceExpression (_resolvedJoinedGroupingTable), 
           new SqlTableReferenceExpression (_resolvedJoinedGroupingTable));
 
-      var result = visitor.VisitExpression (input);
+      var result = visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
-      var expectedResult = Expression.Equal (
+      var expectedResult = Expression.ReferenceEqual (
           _associatedGroupingSelectExpression.ElementExpression,
           _associatedGroupingSelectExpression.ElementExpression);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
 
     [Test]
-    public void VisitExpression_ReferenceToOtherTable ()
+    public void Visit_ReferenceToOtherTable ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable());
-      visitor.VisitExpression (input);
+      visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.False);
     }
 
     [Test]
-    public void VisitExpression_AnyOtherExpression ()
+    public void Visit_AnyOtherExpression ()
     {
       var visitor = new GroupAggregateSimplifier.SimplifyingVisitor (_resolvedJoinedGroupingTable, _associatedGroupingSelectExpression.ElementExpression);
 
       var input = Expression.Constant (0);
-      var result = visitor.VisitExpression (input);
+      var result = visitor.Visit (input);
 
       Assert.That (visitor.CanBeTransferredToGroupingSource, Is.True);
       Assert.That (result, Is.SameAs (input));

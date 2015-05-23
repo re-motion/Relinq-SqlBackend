@@ -49,13 +49,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameOrderingExpressions ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_orderingExpression1))
+          .Expect (mock => mock.Visit (_orderingExpression1))
           .Return (_orderingExpression1);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_orderingExpression2))
+          .Expect (mock => mock.Visit (_orderingExpression2))
           .Return (_orderingExpression2);
       visitorMock.Replay ();
 
@@ -69,14 +69,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NewOrderingExpressions ()
     {
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor> ();
       var fakeResult = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_orderingExpression1))
+          .Expect (mock => mock.Visit (_orderingExpression1))
           .Return (fakeResult);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_orderingExpression2))
+          .Expect (mock => mock.Visit (_orderingExpression2))
           .Return (_orderingExpression2);
       visitorMock.Replay ();
 
@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlRowNumberExpression, ISqlSpecificExpressionVisitor> (
           _sqlRowNumberExpression,
-          mock => mock.VisitSqlRowNumberExpression (_sqlRowNumberExpression));
+          mock => mock.VisitSqlRowNumber (_sqlRowNumberExpression));
     }
 
     [Test]

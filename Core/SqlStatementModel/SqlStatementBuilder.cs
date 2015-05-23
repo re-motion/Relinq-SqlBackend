@@ -20,7 +20,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Utilities;
 
@@ -127,9 +126,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       if (IsDistinctQuery)
         sb.Append ("DISTINCT ");
       if (TopExpression != null)
-        sb.Append ("TOP (").Append (FormattingExpressionTreeVisitor.Format (TopExpression)).Append (") ");
+        sb.Append ("TOP (").Append (TopExpression).Append (") ");
       if (SelectProjection != null)
-        sb.Append (FormattingExpressionTreeVisitor.Format (SelectProjection));
+        sb.Append (SelectProjection);
       if (SqlTables.Count > 0)
       {
         sb.Append (" FROM ");
@@ -137,16 +136,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         SqlTables.Skip (1).Aggregate (sb, (builder, table) => builder.Append (", ").Append (table));
       }
       if (WhereCondition != null)
-        sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));
+        sb.Append (" WHERE ").Append (WhereCondition);
       if (GroupByExpression != null)
-        sb.Append (" GROUP BY ").Append (FormattingExpressionTreeVisitor.Format (GroupByExpression));
+        sb.Append (" GROUP BY ").Append (GroupByExpression);
       if (Orderings.Count > 0)
       {
         sb.Append (" ORDER BY ");
         Orderings.Aggregate (
             sb,
             (builder, ordering) => builder
-                                       .Append (FormattingExpressionTreeVisitor.Format (ordering.Expression))
+                                       .Append (ordering.Expression)
                                        .Append (" ")
                                        .Append (ordering.OrderingDirection.ToString().ToUpper()));
       }

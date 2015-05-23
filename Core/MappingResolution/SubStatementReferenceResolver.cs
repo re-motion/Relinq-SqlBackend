@@ -30,7 +30,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// <see cref="NamedExpression"/> is referenced via a <see cref="SqlColumnExpression"/>; but a <see cref="NewExpression"/> is referenced by an
   /// equivalent <see cref="NewExpression"/> (whose arguments reference the arguments of the original <see cref="NewExpression"/>).
   /// </summary>
-  public class SubStatementReferenceResolver : ExpressionTreeVisitor, IResolvedSqlExpressionVisitor, INamedExpressionVisitor, ISqlGroupingSelectExpressionVisitor
+  public class SubStatementReferenceResolver : RelinqExpressionVisitor, IResolvedSqlExpressionVisitor, INamedExpressionVisitor, ISqlGroupingSelectExpressionVisitor
   {
     public static Expression ResolveSubStatementReferenceExpression (
         Expression referencedExpression,
@@ -43,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("containingSqlTable", containingSqlTable);
       
       var visitor = new SubStatementReferenceResolver (containingSubStatementTableInfo, containingSqlTable, context);
-      var result = visitor.VisitExpression (referencedExpression);
+      var result = visitor.Visit (referencedExpression);
 
       return result;
     }
@@ -63,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _context = context;
     }
     
-    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return reference;
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -85,7 +85,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     // NewExpressions are referenced by creating a new NewExpression holding references to the original arguments. We need to explicitly name each 
     // argument reference, otherwise all of them would be called "value"...
-    protected override Expression VisitNewExpression (NewExpression expression)
+    protected override Expression VisitNew (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -93,7 +93,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, resolvedArguments);
     }
 
-    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -115,12 +115,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return ResolveSubStatementReferenceExpression (childExpression, _tableInfo, _sqlTable, _context);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlColumnExpression (SqlColumnExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlColumn (SqlColumnExpression expression)
     {
       throw new InvalidOperationException ("SqlColumnExpression is not valid at this point. (Must be wrapped within a NamedExpression.)");
     }
 
-    public Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
       throw new InvalidOperationException ("SqlEntityConstantExpression is not valid at this point. (Must be wrapped within a NamedExpression.)");
     }

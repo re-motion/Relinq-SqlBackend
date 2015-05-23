@@ -16,13 +16,9 @@
 // 
 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
@@ -31,10 +27,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests
   {
     public static void CheckAcceptForVisitorSupportingType<TExpression, TVisitorInterface> (
         TExpression expression,
-        Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : ExtensionExpression
+        Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : Expression
     {
       var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMultiMock<ExpressionTreeVisitor> (typeof (TVisitorInterface));
+      var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (TVisitorInterface));
 
       var returnedExpression = Expression.Constant (0);
 
@@ -43,55 +39,40 @@ namespace Remotion.Linq.SqlBackend.UnitTests
           .Return (returnedExpression);
       visitorMock.Replay ();
 
-      var result = expression.Accept (visitorMock);
+      var result = CallAccept (expression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
-    public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : ExtensionExpression
+    public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : Expression
     {
       var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = mockRepository.StrictMock<ExpressionVisitor> ();
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtensionExpression", expression))
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtension", expression))
           .Return (returnedExpression);
       visitorMock.Replay ();
 
-      var result = expression.Accept (visitorMock);
+      var result = CallAccept (expression, visitorMock);
 
       visitorMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
-    public static Expression CallVisitChildren (ExtensionExpression target, ExpressionTreeVisitor visitor)
+    public static Expression CallAccept (Expression expression, ExpressionVisitor visitor)
     {
-      return (Expression) PrivateInvoke.InvokeNonPublicMethod (target, "VisitChildren", visitor);
+      return (Expression) PrivateInvoke.InvokeNonPublicMethod (expression, "Accept", visitor);
     }
 
-    public static void CheckUniqueNodeType (Type expressionType, ExpressionType nodeType)
+    public static Expression CallVisitChildren (Expression target, ExpressionVisitor visitor)
     {
-      Assert.That (Enum.IsDefined (typeof (ExpressionType), nodeType), Is.False, "Type is one of the standard types");
-      var allExpressionTypeFields = from asm in AppDomain.CurrentDomain.GetAssemblies()
-                                    from type in asm.GetTypes()
-                                    from field in type.GetFields (BindingFlags.Public | BindingFlags.Static)
-                                    where field.FieldType == typeof (ExpressionType)
-                                    select field;
-      var fieldValues = from field in allExpressionTypeFields
-                        select new { Field = field, Value = field.GetValue (null) };
-      var lookup = fieldValues.ToLookup (x => x.Value);
-      var matches = lookup[nodeType].Where (field => field.Field.DeclaringType != expressionType).ToArray();
-      Assert.That (
-          matches, 
-          Is.Empty, 
-          "'{0}' declares the same node type as {1}.", 
-          expressionType.Name, 
-          string.Join (", ", matches.Select (field => string.Format ("{0} ({1})", field.Field.DeclaringType.Name, field.Field.Name))));
+      return (Expression) PrivateInvoke.InvokeNonPublicMethod (target, "VisitChildren", visitor);
     }
   }
 }

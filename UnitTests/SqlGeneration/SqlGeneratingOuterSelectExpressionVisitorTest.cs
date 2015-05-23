@@ -90,7 +90,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
 
-      _visitor.VisitNamedExpression (_namedIntExpression);
+      _visitor.VisitNamed (_namedIntExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
@@ -106,7 +106,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _commandBuilder.SetInMemoryProjectionBody (Expression.Constant (0));
       var nestedNamedExpression = new NamedExpression ("outer", Expression.Convert (Expression.Constant (0), typeof (double)));
 
-      _visitor.VisitNamedExpression (nestedNamedExpression);
+      _visitor.VisitNamed (nestedNamedExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
@@ -123,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
        Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
 
-      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+      _visitor.VisitSqlConvertedBoolean (sqlConvertedBooleanExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
@@ -138,7 +138,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (_namedIntExpression);
 
-      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+      var result = _visitor.VisitSqlConvertedBoolean (sqlConvertedBooleanExpression);
 
       var expectedResult = new NamedExpression (_namedIntExpression.Name, new SqlConvertExpression (typeof (bool), _namedIntExpression.Expression));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
@@ -150,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var namedNullableIntExpression = new NamedExpression ("test", Expression.Constant (0, typeof (int?)));
       var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (namedNullableIntExpression);
 
-      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+      _visitor.VisitSqlConvertedBoolean (sqlConvertedBooleanExpression);
 
       var expectedProjection = GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (bool?));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedProjection, _commandBuilder.GetInMemoryProjectionBody());
@@ -164,7 +164,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var namedNullableIntExpression = new NamedExpression ("test", Expression.Constant (0, typeof (int?)));
       var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (namedNullableIntExpression);
 
-      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+      var result = _visitor.VisitSqlConvertedBoolean (sqlConvertedBooleanExpression);
 
       var expectedResult = new NamedExpression (
           namedNullableIntExpression.Name, new SqlConvertExpression (typeof (bool?), namedNullableIntExpression.Expression));
@@ -179,7 +179,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
        Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
 
-      _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+      _visitor.VisitSqlConvertedBoolean (sqlConvertedBooleanExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (1));
 
@@ -194,7 +194,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var sqlConvertedBooleanExpression = new SqlConvertedBooleanExpression (new SqlLiteralExpression (0));
 
-      var result = _visitor.VisitSqlConvertedBooleanExpression (sqlConvertedBooleanExpression);
+      var result = _visitor.VisitSqlConvertedBoolean (sqlConvertedBooleanExpression);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("0"));
       Assert.That (result, Is.SameAs (sqlConvertedBooleanExpression));
@@ -205,7 +205,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (0));
 
-      _visitor.VisitSqlEntityExpression (_entityExpression);
+      _visitor.VisitSqlEntity (_entityExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (3));
 
@@ -223,7 +223,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var newExpression = Expression.New (
           typeof (KeyValuePair<string, Cook>).GetConstructor (new[] { typeof(string), typeof (Cook)}), 
           new Expression[] { _namedNameColumnExpression, _entityExpression });
-      _visitor.VisitNewExpression (newExpression);
+      _visitor.VisitNew (newExpression);
 
       Assert.That (_visitor.ColumnPosition, Is.EqualTo (4));
 
@@ -251,7 +251,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           keyValueType.GetProperty("Key"),
           keyValueType.GetProperty("Value"));
 
-      _visitor.VisitNewExpression (newExpression);
+      _visitor.VisitNew (newExpression);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       var expectedProjectionForNamedExpression = GetExpectedProjectionForNamedExpression (expectedRowParameter, "SomeName", 0, typeof (string));
@@ -274,7 +274,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var newExpression = Expression.New (
           typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
           new Expression[] { _namedIntExpression, _entityExpression });
-      visitor.VisitNewExpression (newExpression);
+      visitor.VisitNew (newExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (4));
 
@@ -302,7 +302,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var newExpression = Expression.New (
           typeof (KeyValuePair<int, Cook>).GetConstructor (new[] { typeof (int), typeof (Cook) }),
           new Expression[] { _namedIntExpression, _entityExpression });
-      visitor.VisitNewExpression (newExpression);
+      visitor.VisitNew (newExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (4));
 
@@ -332,7 +332,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           _namedIntExpression,
           MemberInfoFromExpressionUtility.GetMethod (() => 0.ToString ("")),
           new Expression[] { _namedNameColumnExpression });
-      visitor.VisitMethodCallExpression (methodCallExpression);
+      visitor.VisitMethodCall (methodCallExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (2));
 
@@ -361,7 +361,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var methodCallExpression = Expression.Call (
           MemberInfoFromExpressionUtility.GetMethod (() => int.Parse ("")),
           new Expression[] { _namedNameColumnExpression });
-      visitor.VisitMethodCallExpression (methodCallExpression);
+      visitor.VisitMethodCall (methodCallExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (1));
 
@@ -385,7 +385,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (visitor.ColumnPosition, Is.EqualTo (0));
 
       var methodCallExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => StaticMethodWithoutArguments()));
-      visitor.VisitMethodCallExpression (methodCallExpression);
+      visitor.VisitMethodCall (methodCallExpression);
 
       Assert.That (visitor.ColumnPosition, Is.EqualTo (1));
 
@@ -402,7 +402,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       var methodCallExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => StaticMethodWithoutArguments()));
       Assert.That (
-          () => visitor.VisitMethodCallExpression (methodCallExpression),
+          () => visitor.VisitMethodCall (methodCallExpression),
           Throws.TypeOf<NotSupportedException>().With.Message.StringContaining (
               "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. Rewrite "
               + "the query to perform the in-memory operation after the set operation has been performed."));
@@ -413,7 +413,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var expression = Expression.Convert (Expression.Constant (1), typeof (double));
 
-      _visitor.VisitUnaryExpression (expression);
+      _visitor.VisitUnary (expression);
 
       Assert.That (_commandBuilder.GetInMemoryProjectionBody (), Is.Null);
     }
@@ -424,7 +424,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
       var expression = Expression.Convert (_namedIntExpression, typeof (double), methodInfo);
 
-      _visitor.VisitUnaryExpression (expression);
+      _visitor.VisitUnary (expression);
 
       var expectedProjection = Expression.Convert (
           GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)),
@@ -438,7 +438,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var expression = Expression.ConvertChecked (Expression.Constant (1), typeof (double));
 
-      _visitor.VisitUnaryExpression (expression);
+      _visitor.VisitUnary (expression);
 
       Assert.That (_commandBuilder.GetInMemoryProjectionBody (), Is.Null);
     }
@@ -449,7 +449,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var methodInfo = typeof (Convert).GetMethod ("ToDouble", new[] { typeof (int) });
       var expression = Expression.ConvertChecked (_namedIntExpression, typeof (double), methodInfo);
 
-      _visitor.VisitUnaryExpression (expression);
+      _visitor.VisitUnary (expression);
 
       var expectedProjection = Expression.ConvertChecked (
           GetExpectedProjectionForNamedExpression (_commandBuilder.InMemoryProjectionRowParameter, "test", 0, typeof (int)),
@@ -466,7 +466,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void VisitSqlGroupingSelectExpression ()
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
-      _visitor.VisitSqlGroupingSelectExpression (expression);
+      _visitor.VisitSqlGroupingSelect (expression);
     }
 
     private TestableSqlGeneratingOuterSelectExpressionVisitor CreateVisitor (SetOperationsMode setOperationsMode)

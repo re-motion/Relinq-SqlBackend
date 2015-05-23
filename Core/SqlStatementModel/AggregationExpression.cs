@@ -16,9 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
@@ -26,18 +23,30 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="AggregationExpression"/> holds an aggregation modifier for a warapped expression.
   /// </summary>
-  public class AggregationExpression : ExtensionExpression
+  public class AggregationExpression : Expression
   {
+    private readonly Type _type;
     private readonly Expression _expression;
     private readonly AggregationModifier _aggregationModifier;
 
     public AggregationExpression (Type type, Expression expression, AggregationModifier aggregationModifier)
-        : base (ArgumentUtility.CheckNotNull ("type", type)) 
     {
+      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      _type = type;
       _expression = expression;
       _aggregationModifier = aggregationModifier;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public Expression Expression
@@ -50,31 +59,31 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _aggregationModifier; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var newExpression = visitor.VisitExpression (_expression);
+      var newExpression = visitor.Visit (_expression);
       if (newExpression != _expression)
         return new AggregationExpression(Type, newExpression,  _aggregationModifier);
       else
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as IAggregationExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitAggregationExpression (this);
+        return specificVisitor.VisitAggregation (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format ("{0}({1})", _aggregationModifier, FormattingExpressionTreeVisitor.Format(_expression));
+      return string.Format ("{0}({1})", _aggregationModifier, _expression);
     }
   }
 }

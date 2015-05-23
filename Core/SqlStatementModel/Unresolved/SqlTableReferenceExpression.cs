@@ -17,8 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
@@ -27,16 +25,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// <see cref="SqlTableReferenceExpression"/> represents a data row in a <see cref="SqlTable"/>.
   /// </summary>
-  public class SqlTableReferenceExpression : ExtensionExpression
+  public class SqlTableReferenceExpression : Expression
   {
     private readonly SqlTableBase _sqlTableBase;
 
     public SqlTableReferenceExpression (SqlTableBase sqlTable)
-        : base(sqlTable.ItemType)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
       _sqlTableBase = sqlTable;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _sqlTableBase.ItemType; }
     }
 
     public SqlTableBase SqlTable
@@ -44,19 +51,19 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _sqlTableBase; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as ISqlTableReferenceExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlTableReferenceExpression (this);
+        return specificVisitor.VisitSqlTableReference (this);
       else
         return base.Accept (visitor);
     }

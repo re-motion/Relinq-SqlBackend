@@ -49,15 +49,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsNewSqlInExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
       var newLeftExpression = Expression.Constant (3);
       var newRightExpression = Expression.Constant (4);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_leftExpression))
+          .Expect (mock => mock.Visit (_leftExpression))
           .Return (newLeftExpression);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_rightExpression))
+          .Expect (mock => mock.Visit (_rightExpression))
           .Return (newRightExpression);
       visitorMock.Replay();
 
@@ -74,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlInExpression, ISqlInExpressionVisitor> (
           _expression,
-          mock => mock.VisitSqlInExpression(_expression));
+          mock => mock.VisitSqlIn(_expression));
     }
 
     [Test]

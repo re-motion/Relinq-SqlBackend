@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Utilities;
 
@@ -51,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
             "The '" + _operationName + "' operation is only supported for combining two query results, but a '{0}' was supplied as the "
             + "second sequence: {1}",
             source2.GetType().Name,
-            FormattingExpressionTreeVisitor.Format (source2));
+            source2);
         throw new NotSupportedException (message);
       }
 

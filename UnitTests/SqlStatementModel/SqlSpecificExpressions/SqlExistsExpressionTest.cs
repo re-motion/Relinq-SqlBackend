@@ -44,10 +44,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlExistsExpression.Expression))
+          .Expect (mock => mock.Visit (_sqlExistsExpression.Expression))
           .Return (_sqlExistsExpression.Expression);
       visitorMock.Replay ();
 
@@ -61,11 +61,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NewSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       var newPrefix = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlExistsExpression.Expression))
+          .Expect (mock => mock.Visit (_sqlExistsExpression.Expression))
           .Return (newPrefix);
       visitorMock.Replay ();
 
@@ -81,7 +81,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlExistsExpression, ISqlExistsExpressionVisitor> (
           _sqlExistsExpression,
-          mock => mock.VisitSqlExistsExpression(_sqlExistsExpression));
+          mock => mock.VisitSqlExists(_sqlExistsExpression));
     }
 
     [Test]

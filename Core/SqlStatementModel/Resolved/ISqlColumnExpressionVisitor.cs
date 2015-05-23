@@ -22,7 +22,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   public interface ISqlColumnExpressionVisitor
   {
-    Expression VisitSqlColumnDefinitionExpression (SqlColumnDefinitionExpression expression);
-    Expression VisitSqlColumnReferenceExpression (SqlColumnReferenceExpression expression);
+    Expression VisitSqlColumnDefinition (SqlColumnDefinitionExpression expression);
+    Expression VisitSqlColumnReference (SqlColumnReferenceExpression expression);
   }
 }

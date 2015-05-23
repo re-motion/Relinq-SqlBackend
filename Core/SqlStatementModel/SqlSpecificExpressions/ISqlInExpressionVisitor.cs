@@ -21,10 +21,10 @@ using Remotion.Linq.Parsing;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
   /// <summary>
-  /// Implemented by <see cref="ExpressionTreeVisitor"/> subclasses handling <see cref="SqlInExpression"/> instances.
+  /// Implemented by <see cref="ExpressionVisitor"/> subclasses handling <see cref="SqlInExpression"/> instances.
   /// </summary>
   public interface ISqlInExpressionVisitor
   {
-    Expression VisitSqlInExpression (SqlInExpression expression);
+    Expression VisitSqlIn (SqlInExpression expression);
   }
 }

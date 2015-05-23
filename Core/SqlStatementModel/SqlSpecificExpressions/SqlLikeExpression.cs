@@ -18,9 +18,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Text;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -28,7 +25,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// Represents a sql 'LIKE' command
   /// </summary>
-  public class SqlLikeExpression : ExtensionExpression
+  public class SqlLikeExpression : Expression
   {
     private readonly Expression _left;
     private readonly Expression _right;
@@ -111,7 +108,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     }
 
     public SqlLikeExpression (Expression left, Expression right, Expression escapeExpression)
-        : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("left", left);
       ArgumentUtility.CheckNotNull ("right", right);
@@ -120,6 +116,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       _left = left;
       _right = right;
       _escapeExpression = escapeExpression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(bool); }
     }
 
     public Expression Left
@@ -137,33 +143,29 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _escapeExpression; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newLeftExpression = visitor.VisitExpression (_left);
-      var newRightExpression = visitor.VisitExpression (_right);
-      var newEscapeExpression = visitor.VisitExpression (_escapeExpression);
+      var newLeftExpression = visitor.Visit (_left);
+      var newRightExpression = visitor.Visit (_right);
+      var newEscapeExpression = visitor.Visit (_escapeExpression);
 
       if (newLeftExpression != _left || newRightExpression != _right || newEscapeExpression != _escapeExpression)
         return new SqlLikeExpression (newLeftExpression, newRightExpression, newEscapeExpression);
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlLikeExpression (this);
+        return specificVisitor.VisitSqlLike (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format (
-          "{0} LIKE {1} ESCAPE {2}",
-          FormattingExpressionTreeVisitor.Format (_left),
-          FormattingExpressionTreeVisitor.Format (_right),
-          FormattingExpressionTreeVisitor.Format (_escapeExpression));
+      return string.Format ("{0} LIKE {1} ESCAPE {2}", _left, _right, _escapeExpression);
     }
   }
 }

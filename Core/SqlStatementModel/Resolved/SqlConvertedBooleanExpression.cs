@@ -17,9 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -28,28 +25,27 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// Holds an <see cref="Expression"/> that originally had <see cref="bool"/> type, but was converted to <see cref="int"/> because SQL doesn't know
   /// a boolean data type.
   /// </summary>
-  public class SqlConvertedBooleanExpression : ExtensionExpression
+  public class SqlConvertedBooleanExpression : Expression
   {
-    private static Type GetMatchingBoolType (Expression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      try
-      {
-        return BooleanUtility.GetMatchingBoolType (ArgumentUtility.CheckNotNull ("expression", expression).Type);
-      }
-      catch (ArgumentException ex)
-      {
-        throw new ArgumentException ("The inner expression must be an expression of type Int32 or Nullable<Int32>.", "expression", ex);
-      }
-    }
-
+    private readonly Type _type;
     private readonly Expression _expression;
 
     public SqlConvertedBooleanExpression (Expression expression)
-      : base (GetMatchingBoolType (expression))
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      _type = GetMatchingBoolType (expression);
       _expression = expression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public Expression Expression
@@ -57,20 +53,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _expression; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newExpression = visitor.VisitExpression (_expression);
+      var newExpression = visitor.Visit (_expression);
       if (newExpression != _expression)
         return new SqlConvertedBooleanExpression (newExpression);
 
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlConvertedBooleanExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlConvertedBooleanExpression (this);
+        return specificVisitor.VisitSqlConvertedBoolean (this);
       else
         return base.Accept (visitor);
     }
@@ -87,7 +83,19 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public override string ToString ()
     {
-      return string.Format ("ConvertedBoolean({0})", FormattingExpressionTreeVisitor.Format (_expression));
+      return string.Format ("ConvertedBoolean({0})", _expression);
+    }
+
+    private Type GetMatchingBoolType (Expression expression)
+    {
+      try
+      {
+        return BooleanUtility.GetMatchingBoolType (expression.Type);
+      }
+      catch (ArgumentException ex)
+      {
+        throw new ArgumentException ("The inner expression must be an expression of type Int32 or Nullable<Int32>.", "expression", ex);
+      }
     }
   }
 }

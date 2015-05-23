@@ -28,10 +28,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   public class BinaryExpressionTextGenerator
   {
     private readonly ISqlCommandBuilder _commandBuilder;
-    private readonly ExpressionTreeVisitor _expressionVisitor;
+    private readonly ExpressionVisitor _expressionVisitor;
     private readonly Dictionary<ExpressionType, string> _simpleOperatorRegistry;
 
-    public BinaryExpressionTextGenerator (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionVisitor)
+    public BinaryExpressionTextGenerator (ISqlCommandBuilder commandBuilder, ExpressionVisitor expressionVisitor)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expressionVisitor", expressionVisitor);
@@ -83,9 +83,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       _commandBuilder.Append (sqlOperatorString);
       _commandBuilder.Append (" (");
-      _expressionVisitor.VisitExpression (left);
+      _expressionVisitor.Visit (left);
       _commandBuilder.Append (", ");
-      _expressionVisitor.VisitExpression (right);
+      _expressionVisitor.Visit (right);
       _commandBuilder.Append (")");
     }
 
@@ -101,17 +101,17 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         var exclusiveOrSimulationExpression = Expression.OrElse (
             Expression.AndAlso (left, Expression.Not (right)), 
             Expression.AndAlso (Expression.Not (left), right));
-        _expressionVisitor.VisitExpression (exclusiveOrSimulationExpression);
+        _expressionVisitor.Visit (exclusiveOrSimulationExpression);
       }
       else
       {
         string operatorString = GetRegisteredOperatorString (nodeType);
 
-        _expressionVisitor.VisitExpression (left);
+        _expressionVisitor.Visit (left);
         _commandBuilder.Append (" ");
         _commandBuilder.Append (operatorString);
         _commandBuilder.Append (" ");
-        _expressionVisitor.VisitExpression (right);
+        _expressionVisitor.Visit (right);
       }
     }
 

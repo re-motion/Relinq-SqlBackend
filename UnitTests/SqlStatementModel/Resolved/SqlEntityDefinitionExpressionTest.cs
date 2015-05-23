@@ -17,8 +17,8 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
@@ -63,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlEntityExpression, IResolvedSqlExpressionVisitor> (
           _entityExpression,
-          mock => mock.VisitSqlEntityExpression (_entityExpression));
+          mock => mock.VisitSqlEntity (_entityExpression));
     }
 
     [Test]
@@ -75,8 +75,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void VisitChildren_NoColumnChanged ()
     {
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
-      visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (_originalColumnsReadonly);
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[0])).Return (_originalColumnsReadonly[0]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[1])).Return (_originalColumnsReadonly[1]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[2])).Return (_originalColumnsReadonly[2]);
       visitorMock.Replay();
 
       var expression = ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);
@@ -90,10 +92,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       var newColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Test", false);
 
-      var visitorMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
+      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
       var expectedColumns = new[] { _columnExpression1, newColumnExpression, _columnExpression3 };
 
-      visitorMock.Expect (mock => mock.VisitAndConvert (_originalColumnsReadonly, "VisitChildren")).Return (Array.AsReadOnly (expectedColumns));
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[0])).Return (expectedColumns[0]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[1])).Return (expectedColumns[1]);
+      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[2])).Return (expectedColumns[2]);
       visitorMock.Replay();
 
       var expression = (SqlEntityExpression) ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);

@@ -341,7 +341,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock.Replay();
 
       var visitor = CreateTestableVisitor(_someOrderingExtractionPolicy);
-      var result = visitor.VisitQuerySourceReferenceExpression (querySourceReferenceExpression);
+      var result = visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
       _stageMock.VerifyAllExpectations();
 
@@ -386,7 +386,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock.Replay();
 
       var visitor = CreateTestableVisitor(_someOrderingExtractionPolicy);
-      visitor.VisitQuerySourceReferenceExpression (querySourceReferenceExpression);
+      visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
       _stageMock.VerifyAllExpectations();
 
@@ -448,7 +448,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock.Replay ();
 
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
-      visitor.VisitQuerySourceReferenceExpression (querySourceReferenceExpression);
+      visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
       _stageMock.VerifyAllExpectations ();
 
@@ -514,7 +514,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock.Replay ();
 
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.DoNotExtractOrderings);
-      visitor.VisitQuerySourceReferenceExpression (querySourceReferenceExpression);
+      visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
       _stageMock.VerifyAllExpectations ();
 

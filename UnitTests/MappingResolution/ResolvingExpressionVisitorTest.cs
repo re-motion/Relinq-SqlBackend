@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (constantExpression);
       _resolverMock.Replay ();
 
-      var result = _visitor.VisitExpression (constantExpression);
+      var result = _visitor.Visit (constantExpression);
 
       _stageMock.VerifyAllExpectations ();
       _resolverMock.VerifyAllExpectations ();
@@ -95,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay ();
 
-      var result = _visitor.VisitExpression (constantExpression);
+      var result = _visitor.Visit (constantExpression);
 
       _stageMock.VerifyAllExpectations ();
       _resolverMock.VerifyAllExpectations ();
@@ -118,7 +118,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = _visitor.VisitExpression (tableReferenceExpression);
+      var result = _visitor.Visit (tableReferenceExpression);
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
@@ -140,7 +140,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (fakeResult);
       _resolverMock.Replay();
 
-      var result = _visitor.VisitExpression (tableReferenceExpression);
+      var result = _visitor.Visit (tableReferenceExpression);
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
@@ -185,7 +185,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (fakeResolvedExpression);
       _stageMock.Replay();
 
-      _visitor.VisitExpression (memberExpression);
+      _visitor.Visit (memberExpression);
 
       _resolverMock.VerifyAllExpectations();
       _stageMock.VerifyAllExpectations();
@@ -207,7 +207,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Expect (mock => mock.ResolveConstantExpression (fakeResult1))
           .Return (fakeResult2);
 
-      var result = _visitor.VisitExpression (memberExpression);
+      var result = _visitor.Visit (memberExpression);
 
       _stageMock.VerifyAllExpectations();
       _resolverMock.VerifyAllExpectations();
@@ -218,7 +218,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void UnknownExpression ()
     {
       var unknownExpression = new CustomExpression (typeof (int));
-      var result = _visitor.VisitExpression (unknownExpression);
+      var result = _visitor.Visit (unknownExpression);
 
       Assert.That (result, Is.SameAs (unknownExpression));
     }
@@ -236,7 +236,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Expect (mock => mock.SimplifyIfPossible (expression, expression.SqlStatement.SelectProjection))
           .Return (expression);
 
-      var result = _visitor.VisitExpression (expression);
+      var result = _visitor.Visit (expression);
 
       _stageMock.VerifyAllExpectations ();
       _groupAggregateSimplifierMock.VerifyAllExpectations();
@@ -261,7 +261,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                   Arg.Is (expression.SqlStatement.SelectProjection)))
           .Return (fakeSimplifiedExpression);
 
-      var result = _visitor.VisitExpression (expression);
+      var result = _visitor.Visit (expression);
 
       _stageMock.VerifyAllExpectations ();
       _groupAggregateSimplifierMock.VerifyAllExpectations ();
@@ -284,7 +284,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (resolvedRevisitedResult);
       _resolverMock.Replay();
 
-      var result = _visitor.VisitExpression (typeBinaryExpression);
+      var result = _visitor.Visit (typeBinaryExpression);
 
       _resolverMock.VerifyAllExpectations();
 
@@ -321,7 +321,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _entityIdentityResolverMock.Expect (mock => mock.ResolvePotentialEntityComparison (fakeSplitComparison)).Return (fakeSplitComparison);
       _compoundComparisonSplitterMock.Expect (mock => mock.SplitPotentialCompoundComparison (fakeSplitComparison)).Return (fakeSplitComparison);
 
-      var result = _visitor.VisitExpression (binary);
+      var result = _visitor.Visit (binary);
 
       _resolverMock.VerifyAllExpectations();
       _entityIdentityResolverMock.VerifyAllExpectations();
@@ -354,7 +354,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       // No revisiting
 
-      var result = _visitor.VisitExpression (binary);
+      var result = _visitor.Visit (binary);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -388,7 +388,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (null)
           .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
 
-      var result = _visitor.VisitExpression (joinConditionExpression);
+      var result = _visitor.Visit (joinConditionExpression);
 
       _entityIdentityResolverMock.VerifyAllExpectations();
       _compoundComparisonSplitterMock.VerifyAllExpectations();
@@ -421,7 +421,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (null)
           .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
 
-      var result = _visitor.VisitExpression (namedExpression);
+      var result = _visitor.Visit (namedExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _namedExpressionCombinerMock.VerifyAllExpectations ();
@@ -447,7 +447,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       // No revisiting
 
-      var result = _visitor.VisitExpression (namedExpression);
+      var result = _visitor.Visit (namedExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _namedExpressionCombinerMock.VerifyAllExpectations ();
@@ -475,7 +475,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock.Expect (mock => mock.ResolveConstantExpression (fakeResolvedEntityIdentity)).Return (fakeResolvedEntityIdentity);
       _entityIdentityResolverMock.Expect (mock => mock.ResolvePotentialEntity (fakeResolvedEntityIdentity)).Return (fakeResolvedEntityIdentity);
 
-      var result = _visitor.VisitExpression (existsExpression);
+      var result = _visitor.Visit (existsExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -499,7 +499,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       // No revisiting!
 
-      var result = _visitor.VisitExpression (existsExpression);
+      var result = _visitor.Visit (existsExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -538,7 +538,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Expect (mock => mock.ResolvePotentialEntityComparison (fakeResolvedInExpression))
           .Return (fakeResolvedInExpression);
 
-      var result = _visitor.VisitExpression (inExpression);
+      var result = _visitor.Visit (inExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -565,7 +565,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       // No revisiting
 
-      var result = _visitor.VisitExpression (inExpression);
+      var result = _visitor.Visit (inExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -605,7 +605,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Expect (mock => mock.SplitPotentialCompoundComparison (fakeSplitCompoundComparison))
           .Return (fakeSplitCompoundComparison);
      
-      var result = _visitor.VisitExpression (isNullExpression);
+      var result = _visitor.Visit (isNullExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -634,7 +634,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       // No revisiting
 
-      var result = _visitor.VisitExpression (isNullExpression);
+      var result = _visitor.Visit (isNullExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -674,7 +674,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Expect (mock => mock.SplitPotentialCompoundComparison (fakeSplitCompoundComparison))
           .Return (fakeSplitCompoundComparison);
 
-      var result = _visitor.VisitExpression (isNotNullExpression);
+      var result = _visitor.Visit (isNotNullExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -704,7 +704,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       // No revisiting
 
-      var result = _visitor.VisitExpression (isNotNullExpression);
+      var result = _visitor.Visit (isNotNullExpression);
 
       _resolverMock.VerifyAllExpectations ();
       _entityIdentityResolverMock.VerifyAllExpectations ();
@@ -720,7 +720,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityRefMemberExpression = SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression();
 
       var visitor = CreateVisitor (false);
-      var result = visitor.VisitExpression (entityRefMemberExpression);
+      var result = visitor.Visit (entityRefMemberExpression);
 
       Assert.That (result, Is.SameAs (entityRefMemberExpression));
     }
@@ -743,7 +743,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (fakeResolvedExpression);
 
       var visitor = CreateVisitor (true);
-      var result = visitor.VisitExpression (entityRefMemberExpression);
+      var result = visitor.Visit (entityRefMemberExpression);
 
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }

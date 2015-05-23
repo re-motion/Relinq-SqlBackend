@@ -65,7 +65,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (expression);
 
       var visitor = CreateVisitor (new SqlStatementBuilder (sqlStatement));
-      var result = visitor.VisitExpression (expression);
+      var result = visitor.Visit (expression);
 
       _stageMock.VerifyAllExpectations();
       _groupAggregateSimplifier.VerifyAllExpectations ();
@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Return (expression);
 
       var visitor = CreateVisitor (new SqlStatementBuilder (sqlStatement));
-      var result = visitor.VisitExpression (expression);
+      var result = visitor.Visit (expression);
 
       _stageMock.VerifyAllExpectations();
       _groupAggregateSimplifier.VerifyAllExpectations ();
@@ -134,7 +134,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       Assert.That (sqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
       
-      var result = visitor.VisitExpression (expression);
+      var result = visitor.Visit (expression);
 
       _stageMock.VerifyAllExpectations();
       _groupAggregateSimplifier.VerifyAllExpectations();

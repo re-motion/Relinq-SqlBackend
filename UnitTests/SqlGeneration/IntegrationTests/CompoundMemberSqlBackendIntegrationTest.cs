@@ -282,7 +282,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     // Adds Value = ... and ClassID = ... member decorations to all NewExpressions for MetaID within the given expression.
     private Expression<Func<IDatabaseResultRow, object>> AddNewMetaIDMemberDecoration (Expression<Func<IDatabaseResultRow, object>> expression)
     {
-      return AdHocExpressionTreeVisitor.TransformAndRetainType (
+      return AdHocExpressionVisitor.TransformAndRetainType (
           expression,
           expr =>
           {

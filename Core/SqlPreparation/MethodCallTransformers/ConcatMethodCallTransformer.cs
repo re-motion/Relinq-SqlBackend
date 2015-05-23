@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
 
@@ -86,7 +85,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
           var message = string.Format (
               "The method call '{0}' is not supported. When the array overloads of String.Concat are used, only constant or new array expressions can "
               + "be translated to SQL; in this usage, the expression has type '{1}'.",
-              FormattingExpressionTreeVisitor.Format (methodCallExpression),
+              methodCallExpression,
               methodCallExpression.Arguments[0].GetType ());
           throw new NotSupportedException (message);
         }

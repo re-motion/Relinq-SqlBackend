@@ -64,13 +64,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    public void VisitExpression ()
+    public void Visit ()
     {
       var visitor = new TestableSqlPreparationExpressionVisitorTest (_context, _stageMock, _methodCallTransformerProvider);
       var tableReferenceExpression = new SqlTableReferenceExpression (_sqlTable);
       _context.AddExpressionMapping (_cookQuerySourceReferenceExpression, tableReferenceExpression);
 
-      var result = visitor.VisitExpression (_cookQuerySourceReferenceExpression);
+      var result = visitor.Visit (_cookQuerySourceReferenceExpression);
 
       Assert.That (result, Is.SameAs (tableReferenceExpression));
     }

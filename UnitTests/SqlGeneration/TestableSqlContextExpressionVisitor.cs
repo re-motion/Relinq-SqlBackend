@@ -28,29 +28,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
     }
 
-    public new Expression VisitBinaryExpression (BinaryExpression expression)
+    public new Expression VisitBinary (BinaryExpression expression)
     {
-      return base.VisitBinaryExpression (expression);
+      return base.VisitBinary (expression);
     }
 
-    public new Expression VisitUnaryExpression (UnaryExpression expression)
+    public new Expression VisitUnary (UnaryExpression expression)
     {
-      return base.VisitUnaryExpression (expression);
+      return base.VisitUnary (expression);
     }
 
-    public new Expression VisitNewExpression (NewExpression expression)
+    public new Expression VisitNew (NewExpression expression)
     {
-      return base.VisitNewExpression (expression);
+      return base.VisitNew (expression);
     }
 
-    public new Expression VisitMethodCallExpression (MethodCallExpression expression)
+    public new Expression VisitMethodCall (MethodCallExpression expression)
     {
-      return base.VisitMethodCallExpression (expression);
+      return base.VisitMethodCall (expression);
     }
 
-    public new Expression VisitConstantExpression (ConstantExpression expression)
+    public new Expression VisitConstant (ConstantExpression expression)
     {
-      return base.VisitConstantExpression (expression);
+      return base.VisitConstant (expression);
     }
   }
 }

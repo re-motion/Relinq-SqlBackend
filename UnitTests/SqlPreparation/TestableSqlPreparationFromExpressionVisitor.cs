@@ -41,9 +41,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       get { return base.FromExpressionInfo; }
     }
 
-    public new Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
+    public new Expression VisitQuerySourceReference (QuerySourceReferenceExpression expression)
     {
-      return base.VisitQuerySourceReferenceExpression (expression);
+      return base.VisitQuerySourceReference (expression);
     }
   }
 }

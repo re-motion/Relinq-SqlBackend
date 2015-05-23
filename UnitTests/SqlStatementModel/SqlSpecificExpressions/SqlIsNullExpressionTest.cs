@@ -38,11 +38,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       var expression = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlIsNullExpression.Expression))
+          .Expect (mock => mock.Visit (_sqlIsNullExpression.Expression))
           .Return (expression);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock);
@@ -55,10 +55,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       
       visitorMock
-          .Expect (mock => mock.VisitExpression (_sqlIsNullExpression.Expression))
+          .Expect (mock => mock.Visit (_sqlIsNullExpression.Expression))
           .Return (_sqlIsNullExpression.Expression);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock);
@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlIsNullExpression, ISqlNullCheckExpressionVisitor> (
           _sqlIsNullExpression,
-          mock => mock.VisitSqlIsNullExpression (_sqlIsNullExpression));
+          mock => mock.VisitSqlIsNull (_sqlIsNullExpression));
     }
 
     [Test]

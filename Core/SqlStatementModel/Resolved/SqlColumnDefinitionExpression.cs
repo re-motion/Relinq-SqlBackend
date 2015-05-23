@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
@@ -35,11 +34,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       return new SqlColumnDefinitionExpression (type, owningTableAlias, columnName, isPrimaryKey);
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlColumnExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlColumnDefinitionExpression (this);
+        return specificVisitor.VisitSqlColumnDefinition (this);
       else
         return base.Accept (visitor);
     }

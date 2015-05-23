@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -200,7 +200,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
         Expression checkedInMemoryProjection = expectedInMemoryProjection;
         if (simplifyInMemoryProjection)
         {
-          checkedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
+          checkedInMemoryProjection = PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
           checkedInMemoryProjection = ReplaceConvertExpressionMarker (checkedInMemoryProjection);
         }
         SqlExpressionTreeComparer.CheckAreEqualTrees (checkedInMemoryProjection, result.GetInMemoryProjection<object> ());
@@ -218,7 +218,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
 
     private Expression ReplaceConvertExpressionMarker (Expression simplifiedExpectedInMemoryProjection)
     {
-      return AdHocExpressionTreeVisitor.Transform(simplifiedExpectedInMemoryProjection, expr =>
+      return AdHocExpressionVisitor.Transform(simplifiedExpectedInMemoryProjection, expr =>
       {
         var methodCallExpression = expr as MethodCallExpression;
         if (methodCallExpression != null && methodCallExpression.Method.Name == "ConvertExpressionMarker")
@@ -236,29 +236,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       });
     }
 
-    protected class AdHocExpressionTreeVisitor : ExpressionTreeVisitor
+    protected class AdHocExpressionVisitor : RelinqExpressionVisitor
     {
       public static Expression Transform (Expression expression, Func<Expression, Expression> transformation)
       {
-        return new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+        return new AdHocExpressionVisitor (transformation).Visit (expression);
       }
 
       public static T TransformAndRetainType<T> (T expression, Func<Expression, Expression> transformation)
         where T : Expression
       {
-        return (T) new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+        return (T) new AdHocExpressionVisitor (transformation).Visit (expression);
       }
 
       private readonly Func<Expression, Expression> _transformation;
 
-      public AdHocExpressionTreeVisitor (Func<Expression, Expression> transformation)
+      public AdHocExpressionVisitor (Func<Expression, Expression> transformation)
       {
         _transformation = transformation;
       }
 
-      public override Expression VisitExpression (Expression expression)
+      public override Expression Visit (Expression expression)
       {
-        return _transformation (base.VisitExpression (expression));
+        return _transformation (base.Visit (expression));
       }
     }
   }

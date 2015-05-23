@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -90,7 +89,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var message = string.Format (
           "Only entities can be used as the collection source in from expressions, '{0}' cannot. Member: '{1}'",
-          FormattingExpressionTreeVisitor.Format (resolvedExpression),
+          resolvedExpression,
           joinInfo.MemberInfo);
       throw new NotSupportedException (message);
     }

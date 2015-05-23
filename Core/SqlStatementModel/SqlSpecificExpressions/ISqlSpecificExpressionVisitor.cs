@@ -25,12 +25,12 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// </summary>
   public interface ISqlSpecificExpressionVisitor : ISqlNullCheckExpressionVisitor, ISqlInExpressionVisitor, ISqlExistsExpressionVisitor
   {
-    Expression VisitSqlLiteralExpression (SqlLiteralExpression expression);
-    Expression VisitSqlFunctionExpression (SqlFunctionExpression expression);
-    Expression VisitSqlConvertExpression (SqlConvertExpression expression);
-    Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression);
-    Expression VisitSqlLikeExpression (SqlLikeExpression expression);
-    Expression VisitSqlLengthExpression (SqlLengthExpression expression);
-    Expression VisitSqlCaseExpression (SqlCaseExpression expression);
+    Expression VisitSqlLiteral (SqlLiteralExpression expression);
+    Expression VisitSqlFunction (SqlFunctionExpression expression);
+    Expression VisitSqlConvert (SqlConvertExpression expression);
+    Expression VisitSqlRowNumber (SqlRowNumberExpression expression);
+    Expression VisitSqlLike (SqlLikeExpression expression);
+    Expression VisitSqlLength (SqlLengthExpression expression);
+    Expression VisitSqlCase (SqlCaseExpression expression);
   }
 }
