@@ -236,7 +236,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       //       SELECT actualProjection
       //       FROM (SELECT NULL AS Empty) AS [Empty]
       //         LEFT OUTER JOIN joinedTable
-      //         ON WHERE joinCondition
+      //         ON joinCondition
       //    ) [q1]
       //
       // and generates:
@@ -262,12 +262,14 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           // - substatements must be a simply LEFT JOIN to a dummy table
           && subStatementTableInfo.SqlStatement.SqlTables.Count == 1 // TODO RMLNQSQL-77: Integration test possible?
           && subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable.TableInfo is UnresolvedDummyRowTableInfo
-          && subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable.OrderedJoins.Count() == 1 // TODO RMLNQSQL-77: Is it possible to repeat this multiple times?
+          && subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable.OrderedJoins.Count() == 1 // TODO RMLNQSQL-77: Probably no integration test possible, added for defensiveness.
           && subStatementTableInfo.SqlStatement.SqlTables.Single().SqlTable.OrderedJoins.Single().JoinSemantics == JoinSemantics.Left // TODO RMLNQSQL-77: No integration test possible.
           // - substatements must not contain any complexities TODO RMLNQSQL-77: Integration tests for each of those
-          // TODO RMLNQSQL-77: add Select check? should not contain aggregation (wouldn't work, but shouldn't be possible anyway) or subquery (might be no "optimization" any more), maybe whitelist NewExpressions, MemberExpressions, table references, constants, BinaryExpressions, UnaryExpressions, SqlIs/NotNull, SqlLike, SqlCase, SqlFunction, etc.?
+          // TODO RMLNQSQL-77: add Select check? should not contain aggregation (wouldn't work, but shouldn't be possible anyway) or subquery (might be no "optimization" any more), maybe whitelist NewExpressions, MemberExpressions, table references, constants, BinaryExpressions, UnaryExpressions, SqlIs/NotNull, SqlLike, SqlCase, etc.?
+
           && !subStatementTableInfo.SqlStatement.SetOperationCombinedStatements.Any()
           && !subStatementTableInfo.SqlStatement.IsDistinctQuery
+          && !subStatementTableInfo.SqlStatement.Orderings.Any() // TODO RMLNQSQL-77: Probably not an issue because subqueries never have orderings if they have no TOP or ROW_NUMBER, added for completeness.
           && subStatementTableInfo.SqlStatement.GroupByExpression == null
           && subStatementTableInfo.SqlStatement.RowNumberSelector == null
           && subStatementTableInfo.SqlStatement.TopExpression == null
