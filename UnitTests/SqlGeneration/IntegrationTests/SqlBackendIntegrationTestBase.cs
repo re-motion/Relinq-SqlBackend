@@ -20,6 +20,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.Development.UnitTesting.Parsing;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.Parsing.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
@@ -200,7 +201,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
         Expression checkedInMemoryProjection = expectedInMemoryProjection;
         if (simplifyInMemoryProjection)
         {
-          checkedInMemoryProjection = PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
+          checkedInMemoryProjection = PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (
+              checkedInMemoryProjection,
+              new TestEvaluatableExpressionFilter());
           checkedInMemoryProjection = ReplaceConvertExpressionMarker (checkedInMemoryProjection);
         }
         SqlExpressionTreeComparer.CheckAreEqualTrees (checkedInMemoryProjection, result.GetInMemoryProjection<object> ());

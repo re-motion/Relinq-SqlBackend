@@ -20,6 +20,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.Parsing.ExpressionVisitors;
+using Remotion.Linq.Parsing.ExpressionVisitors.TreeEvaluation;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
 
@@ -30,6 +31,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// </summary>
   public class CompoundExpressionComparisonSplitter : ICompoundExpressionComparisonSplitter
   {
+    private class NullEvaluatableExpressionFilter : EvaluatableExpressionFilterBase
+    {
+    }
+
     public Expression SplitPotentialCompoundComparison (BinaryExpression potentialCompoundComparison)
     {
       ArgumentUtility.CheckNotNull ("potentialCompoundComparison", potentialCompoundComparison);
@@ -130,7 +135,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var combinedComparison = newExpression.Arguments
           .Select ((arg, i) => (Expression) Expression.MakeBinary (expressionType, arg, GetMemberExpression (newExpression.Members[i], otherExpression)))
           .Aggregate ((previous, current) => CombineComparisons (previous, current, expressionType, newExpression, otherExpression));
-      return PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (combinedComparison);
+      return PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (combinedComparison, new NullEvaluatableExpressionFilter());
     }
 
     private Expression GetMemberExpression (MemberInfo memberInfo, Expression instance)
