@@ -141,6 +141,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
+      //TODO RMLNQSQL-91: Handle static members (-> expression.Expression == null) and support methodcalltransformations
+      if (expression.Member == typeof (DateTime).GetProperty ("Now", BindingFlags.Public | BindingFlags.Static))
+        return new SqlFunctionExpression (typeof (DateTime), "GETDATE");
+
       var newInnerExpression = Visit (expression.Expression);
 
       var innerExpressionAsSqlCaseExpression = newInnerExpression as SqlCaseExpression;

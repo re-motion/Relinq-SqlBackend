@@ -19,9 +19,12 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Data.Linq.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTransformers;
 using Remotion.Linq.LinqToSqlAdapter;
 using Remotion.Linq.Parsing.ExpressionVisitors.Transformation;
+using Remotion.Linq.Parsing.ExpressionVisitors.TreeEvaluation;
 using Remotion.Linq.Parsing.Structure;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
@@ -35,6 +38,24 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
   /// </summary>
   public class RelinqNorthwindDataProvider : INorthwindDataProvider
   {
+    // TODO RMLNQSQL-91:
+    private class Filter : EvaluatableExpressionFilterBase
+    {
+      public override bool IsEvaluatableMethodCall (MethodCallExpression node)
+      {
+        if (node.Method == MethodCallTransformerUtility.GetInstanceMethod (typeof (Guid), "NewGuid"))
+          return false;
+        return base.IsEvaluatableMethodCall (node);
+      }
+
+      public override bool IsEvaluatableMember (MemberExpression node)
+      {
+        if (node.Member == typeof (DateTime).GetProperty ("Now", BindingFlags.Public | BindingFlags.Static))
+          return false;
+        return base.IsEvaluatableMember (node);
+      }
+    }
+
     private readonly NorthwindConnectionManager _manager;
     private readonly NorthwindDataContext _context;
     private readonly MappingResolver _resolver;
@@ -74,7 +95,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       nodeTypeProvider.InnerProviders.Add (customNodeTypeRegistry);
       
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
-      var processor = ExpressionTreeParser.CreateDefaultProcessor (transformerRegistry);
+      var processor = ExpressionTreeParser.CreateDefaultProcessor (transformerRegistry, new Filter());
       var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processor);
       _queryParser = new QueryParser (expressionTreeParser);
 
