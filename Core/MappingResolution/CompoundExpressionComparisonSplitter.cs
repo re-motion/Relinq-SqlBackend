@@ -135,6 +135,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var combinedComparison = newExpression.Arguments
           .Select ((arg, i) => (Expression) Expression.MakeBinary (expressionType, arg, GetMemberExpression (newExpression.Members[i], otherExpression)))
           .Aggregate ((previous, current) => CombineComparisons (previous, current, expressionType, newExpression, otherExpression));
+      //TODO RMLNQSQL-91: check if the filter needs to actually filter like it does during building the querymodel
       return PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (combinedComparison, new NullEvaluatableExpressionFilter());
     }
 

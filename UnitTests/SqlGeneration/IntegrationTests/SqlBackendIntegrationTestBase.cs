@@ -201,6 +201,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
         Expression checkedInMemoryProjection = expectedInMemoryProjection;
         if (simplifyInMemoryProjection)
         {
+          // TODO RMLNQSQL-91: This point requires the actual method filter
           checkedInMemoryProjection = PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (
               checkedInMemoryProjection,
               new TestEvaluatableExpressionFilter());
