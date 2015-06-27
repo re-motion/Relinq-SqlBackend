@@ -80,16 +80,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [Test]
     public void ApplyContext_SemanticsPropagatedToChildExpressionsByDefault ()
     {
-      var expressionOfCorrectType = new TestExtensionExpression (new TestExtensionExpressionWithoutChildren (typeof (bool)));
+      var expressionOfCorrectType = new ReducibleExtensionExpression (new TestExtensionExpressionWithoutChildren (typeof (bool)));
       var expressionOfIncorrectType =
-          new TestExtensionExpression (new SqlConvertedBooleanExpression (new TestExtensionExpressionWithoutChildren (typeof (int))));
+          new ReducibleExtensionExpression (new SqlConvertedBooleanExpression (new TestExtensionExpressionWithoutChildren (typeof (int))));
 
       var result1 = _predicateRequiredVisitor.Visit (expressionOfCorrectType);
       var result2 = _predicateRequiredVisitor.Visit (expressionOfIncorrectType);
 
       Assert.That (result1, Is.SameAs (expressionOfCorrectType));
 
-      var expectedResult2 = new TestExtensionExpression (
+      var expectedResult2 = new ReducibleExtensionExpression (
           Expression.Equal (((SqlConvertedBooleanExpression) expressionOfIncorrectType.Expression).Expression, new SqlLiteralExpression (1)));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult2, result2);
     }
