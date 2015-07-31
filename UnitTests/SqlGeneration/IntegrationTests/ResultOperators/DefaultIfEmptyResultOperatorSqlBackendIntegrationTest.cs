@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void DefaultIfEmpty_AsLeftJoin_InFromClause ()
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithWhereClause ()
     {
       CheckQuery (
           from c in Cooks
@@ -95,6 +95,88 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           select new { CookID = c.ID, KitchenID = k.ID },
           "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
           + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID])");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithMultipleFromClauses ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from kitchen in Kitchens.Where (k => k == c.Kitchen).DefaultIfEmpty()
+          from knife in Knives.Where (k => k == c.Knife).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = kitchen.ID, KnifeID = knife.ID },
+          "SELECT [t2].[ID] AS [CookID],[t3].[ID] AS [KitchenID],[t4].[ID] AS [KnifeID_Value],[t4].[ClassID] AS [KnifeID_ClassID] "
+          + "FROM [CookTable] AS [t2] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([t3].[ID] = [t2].[KitchenID]) "
+          + "LEFT OUTER JOIN [KnifeTable] AS [t4] ON (([t4].[ID] = [t2].[KnifeID]) AND ([t4].[ClassID] = [t2].[KnifeClassID]))");
+    }
+
+    /*
+
+--from c in Cooks
+--from restaurant in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
+
+-- Generated
+SELECT c.*, r.*
+FROM CookTable c
+  LEFT JOIN RestaurantTable r ON (x.RestaurantID = r.ID)
+  LEFT JOIN KitchenTable x ON (c.KitchenID = x.ID)
+
+-- Correct
+SELECT c.*, r.*
+FROM CookTable c
+  LEFT JOIN KitchenTable x ON (c.KitchenID = x.ID)
+  LEFT JOIN RestaurantTable r ON (x.RestaurantID = r.ID)
+
+--from c in Cooks
+--from knife in c.Kitchen.Knives
+--from restaurant in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
+
+-- Generated
+-- ?
+
+-- Correct
+SELECT c.*, r.*
+FROM CookTable c
+  LEFT JOIN KitchenTable x ON (c.KitchenID = x.ID)
+  LEFT JOIN RestaurantTable r ON (x.RestaurantID = r.ID)
+  CROSS APPLY KnifeTable knife
+WHERE knife.KitchenID = x.ID
+     */
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithImplicitLeftJoin_AddedByLeftJoinCondition ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from restaurant in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
+          select new { CookID = c.ID, RestaurantID = restaurant.ID },
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID],[t3].[ID] AS [KnifeID] "
+          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID]) LEFT OUTER JOIN [KnifeTable] AS [t3] ON ([t3].[ID] = [t1].[KnifeID])");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithWhereClause_AndOuterWhereClause ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens.Where (k => k == c.Kitchen).DefaultIfEmpty()
+          where k.Name != null
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID]) "
+          + "WHERE [t2].[Name] IS NOT NULL");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithoutWhereClause ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens.DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] OUTER APPLY [KitchenTable] AS [t2]");
     }
 
     [Test]
@@ -121,7 +203,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void DefaultIfEmpty_OnMemberExpression ()
+    public void DefaultIfEmpty_OnMemberExpression_WithoutWhereClause ()
     {
       CheckQuery (
           from r in Restaurants
@@ -129,6 +211,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           select new { RestaurantID = r.ID, CookID = c.ID, CookName = c.Name },
           "SELECT [t1].[ID] AS [RestaurantID],[t2].[ID] AS [CookID],[t2].[Name] AS [CookName] "
           + "FROM [RestaurantTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID])");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_OnMemberExpression_WithWhereClause ()
+    {
+      CheckQuery (
+          from r in Restaurants
+          from c in r.Cooks.Where (c => c.IsFullTimeCook).DefaultIfEmpty()
+          select new { RestaurantID = r.ID, CookID = c.ID, CookName = c.Name },
+          "SELECT [t1].[ID] AS [RestaurantID],[t2].[ID] AS [CookID],[t2].[Name] AS [CookName] "
+          + "FROM [RestaurantTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON (([t1].[ID] = [t2].[RestaurantID]) AND ([t3].[IsFullTimeCook] = 1))");
     }
 
     [Test]
