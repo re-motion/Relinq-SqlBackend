@@ -58,8 +58,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       }
     }
 
-    private readonly List<SqlJoin> _orderedJoins = new List<SqlJoin>();
-    private readonly Dictionary<MemberInfo, SqlJoin> _joinsByMemberInfo = new Dictionary<MemberInfo, SqlJoin>();
+    private readonly List<SqlJoin> _orderedMemberBasedJoins = new List<SqlJoin>();
+    private readonly List<SqlJoin> _orderedJoinsForExplicitQuerySources = new List<SqlJoin>();
+    private readonly Dictionary<MemberInfo, SqlJoin> _memberBasedJoinsByMemberInfo = new Dictionary<MemberInfo, SqlJoin>();
 
     private ITableInfo _tableInfo;
 
@@ -71,9 +72,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     }
 
     // TODO RMLNQSQL-77: Rename to just "Joins".
+    // TODO RMLNQSQL-77: Unit tests for two kinds of joins.
     public IEnumerable<SqlJoin> OrderedJoins
     {
-      get { return _orderedJoins; }
+      get { return _orderedMemberBasedJoins.Concat(_orderedJoinsForExplicitQuerySources); }
     }
 
 
@@ -112,6 +114,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return TableInfo.GetResolvedTableInfo();
     }
 
+    // TODO RMLNQSQL-77: Rename to GetOrAddMemberBasedLeftJoin
     /// <summary>
     /// Adds a join representing a member access to this <see cref="SqlTable"/> or returns it if such a join has already been added for this member.
     /// Note that SQL requires that the right side of a join must not reference the left side of a join 
@@ -125,17 +128,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       ArgumentUtility.CheckNotNull ("joinDataFactory", joinDataFactory);
 
       SqlJoin sqlJoin;
-      if (!_joinsByMemberInfo.TryGetValue (memberInfo, out sqlJoin))
+      if (!_memberBasedJoinsByMemberInfo.TryGetValue (memberInfo, out sqlJoin))
       {
         var joinData = joinDataFactory();
         sqlJoin = new SqlJoin (joinData.JoinedTable, JoinSemantics.Left, joinData.JoinCondition);
-        _joinsByMemberInfo.Add (memberInfo, sqlJoin);
-        AddJoin (sqlJoin);
+        _memberBasedJoinsByMemberInfo.Add (memberInfo, sqlJoin);
+        _orderedMemberBasedJoins.Add (sqlJoin);
       }
 
       return sqlJoin;
     }
 
+    // TODO RMLNQSQL-77: Rename to AddJoinForExplicitQuerySource
     /// <summary>
     /// Adds a join to this <see cref="SqlTable"/>. Note that SQL requires that the right side of a join must not reference the left side of a join 
     /// in SQL (apart from in the join condition). For cases where this doesn't hold, add the joined table via <see cref="SqlStatement.SqlTables"/>
@@ -145,34 +149,42 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public void AddJoin (SqlJoin sqlJoin)
     {
       ArgumentUtility.CheckNotNull ("sqlJoin", sqlJoin);
-      _orderedJoins.Add (sqlJoin);
+      _orderedJoinsForExplicitQuerySources.Add (sqlJoin);
     }
 
     public SqlJoin GetJoinByMember (MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      return _joinsByMemberInfo[relationMember];
+      return _memberBasedJoinsByMemberInfo[relationMember];
     }
 
+    // TODO RMLNQSQL-77: Unit test.
     // TODO RMLNQSQL-7: This method is only required because we want to keep SqlJoin immutable. Maybe refactor it toward SqlJoinBuilder (mutable) and 
     // SqlJoin (immutable) later on. This would fit well with a SqlTableBuilder (mutable) and a SqlTable (immutable).
     public void SubstituteJoins (IDictionary<SqlJoin, SqlJoin> substitutions)
     {
       ArgumentUtility.CheckNotNull ("substitutions", substitutions);
 
-      for (int i = 0; i < _orderedJoins.Count; ++i)
+      for (int i = 0; i < _orderedJoinsForExplicitQuerySources.Count; ++i)
       {
         SqlJoin substitution;
-        if (substitutions.TryGetValue (_orderedJoins[i], out substitution))
-          _orderedJoins[i] = substitution;
+        if (substitutions.TryGetValue (_orderedJoinsForExplicitQuerySources[i], out substitution))
+          _orderedJoinsForExplicitQuerySources[i] = substitution;
       }
 
-      foreach (var kvp in _joinsByMemberInfo.ToArray())
+      for (int i = 0; i < _orderedMemberBasedJoins.Count; ++i)
+      {
+        SqlJoin substitution;
+        if (substitutions.TryGetValue (_orderedMemberBasedJoins[i], out substitution))
+          _orderedMemberBasedJoins[i] = substitution;
+      }
+
+      foreach (var kvp in _memberBasedJoinsByMemberInfo.ToArray())
       {
         SqlJoin substitution;
         if (substitutions.TryGetValue (kvp.Value, out substitution))
-          _joinsByMemberInfo[kvp.Key] = substitution;
+          _memberBasedJoinsByMemberInfo[kvp.Key] = substitution;
       }
     }
 

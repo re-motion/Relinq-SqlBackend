@@ -111,39 +111,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + "LEFT OUTER JOIN [KnifeTable] AS [t4] ON (([t4].[ID] = [t2].[KnifeID]) AND ([t4].[ClassID] = [t2].[KnifeClassID]))");
     }
 
-    /*
-
---from c in Cooks
---from restaurant in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
-
--- Generated
-SELECT c.*, r.*
-FROM CookTable c
-  LEFT JOIN RestaurantTable r ON (x.RestaurantID = r.ID)
-  LEFT JOIN KitchenTable x ON (c.KitchenID = x.ID)
-
--- Correct
-SELECT c.*, r.*
-FROM CookTable c
-  LEFT JOIN KitchenTable x ON (c.KitchenID = x.ID)
-  LEFT JOIN RestaurantTable r ON (x.RestaurantID = r.ID)
-
---from c in Cooks
---from knife in c.Kitchen.Knives
---from restaurant in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
-
--- Generated
--- ?
-
--- Correct
-SELECT c.*, r.*
-FROM CookTable c
-  LEFT JOIN KitchenTable x ON (c.KitchenID = x.ID)
-  LEFT JOIN RestaurantTable r ON (x.RestaurantID = r.ID)
-  CROSS APPLY KnifeTable knife
-WHERE knife.KitchenID = x.ID
-     */
-
     [Test]
     public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithImplicitLeftJoin_AddedByLeftJoinCondition ()
     {
@@ -151,8 +118,9 @@ WHERE knife.KitchenID = x.ID
           from c in Cooks
           from restaurant in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
           select new { CookID = c.ID, RestaurantID = restaurant.ID },
-          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID],[t3].[ID] AS [KnifeID] "
-          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID]) LEFT OUTER JOIN [KnifeTable] AS [t3] ON ([t3].[ID] = [t1].[KnifeID])");
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [RestaurantID] "
+          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([t1].[KitchenID] = [t3].[ID]) "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t2] ON ([t2].[ID] = [t3].[RestaurantID])");
     }
 
     [Test]
