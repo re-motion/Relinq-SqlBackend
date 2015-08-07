@@ -32,7 +32,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return GetApplySemanticsString() + SqlTable.TableInfo;
+      // TODO RMLNQSQL-77: Unit test: ToString with SqlTable with joins.
+      return GetApplySemanticsString() + SqlTable;
     }
 
     private string GetApplySemanticsString ()
