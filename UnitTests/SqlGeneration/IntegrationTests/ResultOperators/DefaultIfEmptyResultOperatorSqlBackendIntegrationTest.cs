@@ -133,7 +133,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           select new { CookID = c.ID, KitchenID = k.ID },
           "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
           + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID]) "
-          + "WHERE [t2].[Name] IS NOT NULL");
+          + "WHERE ([t2].[Name] IS NOT NULL)");
     }
 
     [Test]
@@ -189,7 +189,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           from c in r.Cooks.Where (c => c.IsFullTimeCook).DefaultIfEmpty()
           select new { RestaurantID = r.ID, CookID = c.ID, CookName = c.Name },
           "SELECT [t1].[ID] AS [RestaurantID],[t2].[ID] AS [CookID],[t2].[Name] AS [CookName] "
-          + "FROM [RestaurantTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON (([t1].[ID] = [t2].[RestaurantID]) AND ([t3].[IsFullTimeCook] = 1))");
+          + "FROM [RestaurantTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON (([t1].[ID] = [t2].[RestaurantID]) AND ([t2].[IsFullTimeCook] = 1))");
     }
 
     [Test]
@@ -212,6 +212,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
     // TODO RMLNQSQL-77: This test would generate invalid SQL if optimization is implemented incorrectly.
     [Test]
+    [Ignore("TODO RMLNQSQL-77")]
     public void DefaultIfEmpty_WithEscapingReferenceInSubstatement ()
     {
       CheckQuery (
@@ -237,6 +238,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + "WHERE ([t3].[ID] = [t2].[KitchenID])"
           + ") AS [q0] ON ([q0].[ID] = [t2].[KitchenID])"
           + ") AS [q1]");
+
+      // Optimum solution:
+      //SELECT [q1].[ID],[q1].[Name],[q1].[RestaurantID],[q1].[LastCleaningDay],[q1].[PassedLastInspection],[q1].[LastInspectionScore] 
+      //FROM [CookTable] AS [t2] 
+      //  OUTER APPLY (
+      //    SELECT DISTINCT [t3].[ID],[t3].[Name],[t3].[RestaurantID],[t3].[LastCleaningDay],[t3].[PassedLastInspection],[t3].[LastInspectionScore] 
+      //    FROM [KitchenTable] AS [t3] 
+      //    WHERE ([t3].[ID] = [t2].[KitchenID]) AND ([t3].[ID] = [t2].[KitchenID])
+      //  ) AS [q1]
+
+      // However, this is probably a very uncommon situation (having a substatement within the inner from clause of a DefaultIfEmpty from clause that 
+      // references a query variable at the same level as the DefaultIfEmpty from clause).
     }
   }
 }
