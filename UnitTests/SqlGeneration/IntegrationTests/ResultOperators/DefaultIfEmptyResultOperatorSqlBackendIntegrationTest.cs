@@ -149,6 +149,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithImplicitLeftJoin_AddedByLeftJoinCondition_AndSubQuery_AccessingSameMembers ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens.Where (k => k.Cook.Knife == c.Knife || k.Cook.Assistants.Any(a => a.Knife == c.Knife)).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] "
+          + "LEFT OUTER JOIN [KnifeTable] AS [t3] ON (([t3].[ID] = [t1].[KnifeID]) AND ([t3].[ClassID] = [t1].[KnifeID_ClassID]))"
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[KitchenID] = [t3].[ID]) "
+);
+    }
+
+    [Test]
     public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithWhereClause_AndOuterWhereClause ()
     {
       CheckQuery (
