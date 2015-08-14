@@ -95,6 +95,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           select new { CookID = c.ID, KitchenID = k.ID },
           "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
           + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t2].[ID] = [t1].[KitchenID])");
+
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens.Where (k => k.Cook == c).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t3].[ID] = [t1].[ID]) LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID])");
     }
 
     [Test]
@@ -121,6 +128,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [RestaurantID] "
           + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([t1].[KitchenID] = [t3].[ID]) "
           + "LEFT OUTER JOIN [RestaurantTable] AS [t2] ON ([t2].[ID] = [t3].[RestaurantID])");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_MultipleTimes_WithImplicitLeftJoins_AddedByLeftJoinCondition ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from r1 in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
+          from k in Kitchens.Where (k => k == c.Kitchen).DefaultIfEmpty()
+          from r2 in Restaurants.Where (r => r == k.Restaurant).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t3].[ID] AS [CookID],[t6].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t3] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t5] ON ([t3].[KitchenID] = [t5].[ID]) "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON ([t4].[ID] = [t5].[RestaurantID]) "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t6] ON ([t6].[ID] = [t3].[KitchenID]) "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t7] ON ([t7].[ID] = [t6].[RestaurantID])");
+
     }
 
     [Test]
