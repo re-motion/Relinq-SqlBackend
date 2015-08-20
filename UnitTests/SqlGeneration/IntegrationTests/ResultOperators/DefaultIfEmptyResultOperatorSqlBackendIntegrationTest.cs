@@ -100,7 +100,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           from c in Cooks
           from k in Kitchens.Where (k => k.Cook == c).DefaultIfEmpty()
           select new { CookID = c.ID, KitchenID = k.ID },
-          "WRONG! Must not be optimized");
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] " +
+          "FROM [CookTable] AS [t1] " +
+          "LEFT OUTER JOIN [KitchenTable] AS [t2] " +
+          "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) " +
+          "ON ([t3].[ID] = [t1].[ID])");
     }
 
     [Test]
@@ -154,7 +158,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           from c in Cooks
           from k in Kitchens.Where (k => k.Cook.Knife == c.Knife || k.Cook.Assistants.Any(a => a.Knife == c.Knife)).DefaultIfEmpty()
           select new { CookID = c.ID, KitchenID = k.ID },
-          "WRONG! Must not be optimized");
+          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) "
+          + "ON ((([t3].[KnifeID] = [t1].[KnifeID]) AND ([t3].[KnifeClassID] = [t1].[KnifeClassID])) OR EXISTS((SELECT [t4].[ID] FROM [CookTable] AS [t4] WHERE (([t3].[ID] = [t4].[AssistedID]) AND (([t4].[KnifeID] = [t1].[KnifeID]) AND ([t4].[KnifeClassID] = [t1].[KnifeClassID]))))))");
     }
 
     [Test]

@@ -39,18 +39,15 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       GenerateSqlForJoins (table.SqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage), stage);
     }
 
-    private static void GenerateSqlForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, SqlTableAndJoinTextGenerator visitor, ISqlGenerationStage stage)
+    private static void GenerateSqlForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ITableInfoVisitor visitor, ISqlGenerationStage stage)
     {
       foreach (var join in sqlTable.OrderedJoins)
-      {
         GenerateTextForJoin (visitor, @join, commandBuilder, stage);
-        GenerateSqlForJoins (@join.JoinedTable, commandBuilder, visitor, stage);
-      }
     }
 
     private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlAppendedTable table, ISqlCommandBuilder commandBuilder, bool isFirstTable)
     {
-        // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
+      // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
       if (table.JoinSemantics == JoinSemantics.Left)
       {
         if (isFirstTable)
@@ -91,7 +88,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       join.JoinedTable.TableInfo.Accept (visitor);
 
-
+      // TODO RMLNQSQL-77: Test.
+      GenerateSqlForJoins (@join.JoinedTable, commandBuilder, visitor, stage);
+      
       if (!isOptimizableJoinCondition)
       {
         commandBuilder.Append (" ON ");

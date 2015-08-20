@@ -128,6 +128,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock.Verify();
       Assert.That (
           _commandBuilder.GetCommandText(),
+          // TODO RMLNQSQL-77: Update expectation
           Is.EqualTo (
               "[KitchenTable] AS [t1] LEFT OUTER JOIN "
               + "[CookTable] AS [t2] ON X LEFT OUTER JOIN "
