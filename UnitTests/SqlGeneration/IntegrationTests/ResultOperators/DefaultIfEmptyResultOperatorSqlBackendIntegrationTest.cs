@@ -246,7 +246,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
 
     // TODO RMLNQSQL-77: This test would generate invalid SQL if optimization is implemented incorrectly.
     [Test]
-    [Ignore("TODO RMLNQSQL-77")]
+    [Ignore("TODO RMLNQSQL-77: Dependent subquery (outside of join condition).")]
     public void DefaultIfEmpty_WithEscapingReferenceInSubstatement ()
     {
       CheckQuery (

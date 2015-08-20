@@ -66,6 +66,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     }
 
     [Test]
+    [Ignore("TODO RMLNQSQL-77: Dependent subquery (outside of join condition).")]
     public void DefaultIfEmpty_ForLeftJoin_WithDependentSubQuery ()
     {
       var query = from employee in DB.Employees
