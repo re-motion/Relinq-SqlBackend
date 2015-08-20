@@ -100,8 +100,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           from c in Cooks
           from k in Kitchens.Where (k => k.Cook == c).DefaultIfEmpty()
           select new { CookID = c.ID, KitchenID = k.ID },
-          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
-          + "FROM [CookTable] AS [t1] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t3].[ID] = [t1].[ID]) LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID])");
+          "WRONG! Must not be optimized");
     }
 
     [Test]
@@ -155,11 +154,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           from c in Cooks
           from k in Kitchens.Where (k => k.Cook.Knife == c.Knife || k.Cook.Assistants.Any(a => a.Knife == c.Knife)).DefaultIfEmpty()
           select new { CookID = c.ID, KitchenID = k.ID },
-          "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
-          + "FROM [CookTable] AS [t1] "
-          + "LEFT OUTER JOIN [KnifeTable] AS [t3] ON (([t3].[ID] = [t1].[KnifeID]) AND ([t3].[ClassID] = [t1].[KnifeID_ClassID]))"
-          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[KitchenID] = [t3].[ID]) "
-);
+          "WRONG! Must not be optimized");
     }
 
     [Test]
