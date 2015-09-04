@@ -338,17 +338,28 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       // Problem statement: If leftJoinedTable (or one of its joins) has a substatement that depends on one of the tables in 
       // SqlStatementBuilder.SqlTables, we must not perform this optimization because SQL does not allow the right side of a LEFT JOIN to depend on 
       // the left side of a LEFT JOIN.
-      // Options:
+      //
+      // Solution:
       // - Build a blacklist of SqlTables potentially reachable from the leftJoinedTable's substatement (iterate SqlTables, recurse over their joins; 
       //   expression and substatement analysis not necessary because the leftJoin couldn't have accessed any tables in there due to LINQ rules).
-      //   Then iterate leftJoinedTable and its recursively joined tables (join conditions are irrelevant as they may depend on outer variables in 
-      //   SQL). Deeply visit any ResolvedSubStatementTableInfos found there and search for references to the black-listed tables.
-      // - Same as above, but instead of building a blacklist first, build up a whitelist of allowed table references while visiting the 
-      //   ResolvedSubStatementTableInfos. Use an immutable set for perfect local correctness or an ever-growing mutable set for global correctness 
-      //   only.
-      // - Use LEFT JOIN only if leftJoinedTable and its recursively joined tables only contain SimpleTableInfos. Otherwise, convert the join 
-      //   condition into a WHERE condition (TBD: where to put it?) and generate an OUTER APPLY instead of the LEFT JOIN. OUTER APPLY allows 
-      //   dependent subqueries.
+      // - Then iterate leftJoinedTable and its recursively joined tables (join conditions are irrelevant as they may depend on outer variables in 
+      //   SQL). Deeply visit any ResolvedSubStatementTableInfos, UnresolvedCollectionJoinTableInfos, UnresolvedGroupReferenceTableInfos, 
+      //   ResolvedJoinedGroupingTableInfo found there and search for references to the black-listed tables (SqlTableReferenceExpression or direct 
+      //   usages of SqlTable). "Deeply visiting" means:
+      // -- Check every expression in the corresponding SqlStatements. If a SqlSubStatementExpression is found, recursively visit the nested 
+      //    SqlStatement.
+      // -- Check every SqlTable and the joined tables for the same ITableInfo kinds listed above.
+      // -- Probably build some visitor stuff into ITableInfo so that every ITableInfo can be asked to help in identifying its table references.
+      //
+      // class TableDependencyFindingTableInfoVisitor : ITableInfoVisitor
+      // {
+      //   ctor (IReadOnlySet<SqlTable> sqlTables, ITableDependencyInNestedItemsFIndingVisitor nestedItemsVisitor) {... }
+      //
+      //   void VisitSimpleTableInfo(...) { /* nothing to do */ }
+      //   void VisitResolvedSubStatementTableInfo(... ti) { nestedItemsVisitor.Visit (ti.SubStatement); }
+      //   void VisitUnresolvedCollectionJoinTableInfo(... ti) { nestedItemsVisitor.Visit (ti.SourceExpression); }
+      // }
+
 
       var projectionBeforeOptimization = appendedSubStatement.SelectProjection;
       var leftJoinCondition = leftJoin.JoinCondition;
