@@ -110,6 +110,7 @@
     <Compile Include="SystemTests\ResultOperatorTests.cs" />
     <Compile Include="SystemTests\SelectTests.cs" />
     <Compile Include="SystemTests\SetOperationsTests.cs" />
+    <Compile Include="SystemTests\SubQueryTests.cs" />
     <Compile Include="SystemTests\UnionConcatTests.cs" />
     <Compile Include="SystemTests\WhereTests.cs" />
     <Compile Include="TestBase.cs" />
