@@ -1,4 +1,4 @@
-// Microsoft Public License (Ms-PL)
+﻿// Microsoft Public License (Ms-PL)
 // 
 // This license governs use of the accompanying software. If you use the software, you
 // accept this license. If you do not accept the license, do not use the software.
@@ -32,51 +32,75 @@
 // the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
 using System;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common;
 
-namespace Remotion.Linq.IntegrationTests.CSharp
+namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
-  public class TestBase : AbstractTestBase
+  [TestFixture]
+  public class OrderByTests : TestBase
   {
-    protected bool IsLinqToSqlActive 
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InFromClause_WithoutTopExpression ()
     {
-      get { return Mode == TestMode.SaveReferenceResults; }
+      var query =
+          from o in DB.Orders
+          from i in
+              (from c in DB.Customers
+                where c == o.Customer
+                orderby c.City
+                select c)
+          select i;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected bool IsRelinqSqlBackendActive
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InFromClause_WithTopExpression ()
     {
-      get { return Mode == TestMode.CheckActualResults; }
+      var query =
+          from o in DB.Orders
+          from i in
+              (from c in DB.Customers
+                where c == o.Customer
+                orderby c.City
+                select c).Take (10)
+          select i;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected override Func<MethodBase, string> SavedResultFileNameGenerator
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithTopExpression ()
     {
-      // C# will automatically add the folder structure to the resource file name when embedding a resource
-      // The desired resource name is: Remotion.Linq.IntegrationTests.CSharp.LinqSamples101.Resources.TestClass.TestMethod.result
-      // This is achieved by putting a file called "TestClass.TestMethod.result" into the LinqSamples101\Resources folder
-      get { return method => method.DeclaringType.Name + "." + method.Name + ".result"; }
+      var query =
+          from o in DB.Orders
+          where
+              (from so in DB.Orders
+                orderby so.EmployeeID
+                where so.OrderID == 10248
+                select so.EmployeeID)
+                  .Single() != null && o.EmployeeID < 6
+          select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected override Func<MethodBase, string> LoadedResultFileNameGenerator
+    [Test]
+    public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
     {
-      // When loading the resource, we must specify the full name as described above
-      get
-      {
-        return method =>
-        {
-          var commonNamespacePrefix = typeof (TestBase).Namespace + ".";
-          var namespaceName = method.DeclaringType.Namespace;
-          Assert.That (namespaceName != null);
-          var partialResourceNamespace = namespaceName.Remove (0, commonNamespacePrefix.Length) + ".Resources";
-          var resourceFolderPath = partialResourceNamespace.Replace (".", "/");
+      var query =
+          from o in DB.Orders
+          where
+              (from so in DB.Orders
+                orderby so.EmployeeID
+                where so.OrderID == 10248
+                select so.EmployeeID)
+                  .Count() > 0 && o.EmployeeID < 6
+          select o;
 
-          var testFileName = method.DeclaringType.Name + "." + method.Name + ".result";
-          
-          return Path.Combine (resourceFolderPath, testFileName);
-        };
-      }
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
   }
 }

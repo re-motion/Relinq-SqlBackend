@@ -108,6 +108,7 @@
     </None>
     <Compile Include="TestDomain\Northwind\CustomTransformers\DateDiffDayMethodCallTransformer.cs" />
     <Compile Include="TestDomain\Northwind\CustomTransformers\UserDefinedFunctionTransformer.cs" />
+    <Compile Include="TestDomain\Northwind\SystemTestDataContextExtension.cs" />
     <Compile Include="TestMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AbstractTestBase.cs" />

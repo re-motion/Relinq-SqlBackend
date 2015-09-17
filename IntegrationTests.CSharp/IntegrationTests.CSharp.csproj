@@ -99,8 +99,19 @@
     <Content Include="SystemTests\Resources\SelectTests.WithMemberInitExpression_InOuterMostLevel.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="SystemTests\SetOperationsTests.cs" />
+    <Compile Include="SystemTests\CustomProjectionTests.cs" />
+    <Compile Include="SystemTests\ExplicitJoinsTests.cs" />
+    <Compile Include="SystemTests\GroupByTests.cs" />
+    <Compile Include="SystemTests\ImplicitJoinTests.cs" />
+    <Compile Include="SystemTests\LetTests.cs" />
+    <Compile Include="SystemTests\MethodCallsTests.cs" />
+    <Compile Include="SystemTests\MultiFromTests.cs" />
+    <Compile Include="SystemTests\OrderByTests.cs" />
+    <Compile Include="SystemTests\ResultOperatorTests.cs" />
     <Compile Include="SystemTests\SelectTests.cs" />
+    <Compile Include="SystemTests\SetOperationsTests.cs" />
+    <Compile Include="SystemTests\UnionConcatTests.cs" />
+    <Compile Include="SystemTests\WhereTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="LinqSamples101\TopBottomTests.cs" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.cs" />
@@ -242,6 +253,468 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SystemTests\Resources\SetOperationsTests.Union_WithSelectedDiscriminator.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.ComplexProjection_ContainingEntity.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.ComplexProjection_WithBooleans.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.ComplexProjection_WithNullableBooleans.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.ComplexProjection_WithNullableValueTypes.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.ComplexProjection_WithValueTypes.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SequenceOfEntityProperties.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SequenceOfForeignKeyIDs.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SequenceOfPrimaryKeys.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SingleBoolean.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SingleNullableBoolean.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SingleProperty.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SingleValueType.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\CustomProjectionTests.SingleValueType_Nullable.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoin.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoinWithInto_InSameStatementAndInSubStatement.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoinWithInto_InSubstatement_Once.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoinWithInto_InSubstatement_Twice.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoinWithInto_InTwoSubStatements.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoinWithInto_Once.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoinWithInto_Twice.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ExplicitJoinsTests.ExplicitJoinWithInto_WithOrderBy.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupByUseGroupInFromExpression2.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupByUseGroupInFromExpression3.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_AccessKey_Nesting.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_AtTopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_EntityKey.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_EntityKey2.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_EntityKey3.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_EntityKey_CustomProjection.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_EntityKey_NotNull.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_EntityKey_WithEmptySet.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_GroupingWithSeveralAggregateFunction.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_NonEntityKey.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_ResultSelector.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_TopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_UseGroupInFromExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_UseGroupInFromExpression_WithObject.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_UseGroupInFromExpression_WithSubQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_WithAggregateFunction.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_WithConstantKey.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_WithinSubqueryInFromClause.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\GroupByTests.GroupBy_WithSubqueryKey.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ImplicitJoinTests.QueryWithMemberFromClause_WithJoin.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\LetTests.QueryWithLet_AndMultipleFromClauses.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\LetTests.QueryWithLet_LetWithColumn.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\LetTests.QueryWithLet_LetWithColumn2.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\LetTests.QueryWithLet_LetWithTable.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\LetTests.QueryWithMemberFromClause_WithLet.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\LetTests.QueryWithSeveralJoinsAndLet.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\LetTests.QueryWithSeveralLets.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\MethodCallsTests.Insert.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\MethodCallsTests.Trim.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\MultiFromTests.QueryWithInto.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\MultiFromTests.QueryWithMemberFromClause.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\MultiFromTests.Query_WithSeveralFroms.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\OrderByTests.AutomaticOrderByHandlingInSubStatements_InFromClause_WithoutTopExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\OrderByTests.AutomaticOrderByHandlingInSubStatements_InFromClause_WithTopExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\OrderByTests.AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\OrderByTests.AutomaticOrderByHandlingInSubStatements_InWhereClause_WithTopExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Average_InSubquery_WithIntProperty.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.DefaultIsEmpty_WithJoin.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.DefaultIsEmpty_WithoutJoin.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Max_InSubquery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Max_OnTopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Max_WithDateTimes.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Max_WithNullableInt.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Max_WithStrings.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Min_InSubquery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Min_OnTopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryDistinctTest.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithAll.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithAll_AfterIncompatibleResultOperator.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithAll_InSubquery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithAll_InSubquery_CountInAll.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithAny_InSubquery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithAny_WithoutPredicate.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithAny_WithPredicate.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithArithmeticOperations.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithCastToInterface_ThrowsNoException.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithContainsInWhere_OnCollection.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithContainsInWhere_OnCollection_WithObjectIDs.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithContainsInWhere_OnEmptyCollection.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithConvertToString.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithCount.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithCount_InSubquery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithFirst.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithFirstOrDefault.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithFirstOrDefault_ReturnsNull_WhenNoItems.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithFirst_AndInterface.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithOrderBy_BeforeCount.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithOrderBy_BeforeCount_DueToIncompatibleResultOperators.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithOrderBy_BeforeDistinct.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithSingle.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithSingleOrDefault_ReturnsNull_WhenNoItem.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithSingleOrDefault_ReturnsSingleItem.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithSubstring.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithTake.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.QueryWithTake_SubQueryAsArgument.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithAll_WithConditionStringNotEmpty.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithCastInSubQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithCastOnResultSet.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithDistinct.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithDistinct_NonObjectColumn.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithEntitySetContains.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithOfType_SameType.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithOfType_SelectingBaseType.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithOfType_UnrelatedType.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Query_WithSupportForObjectList.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Skip_WithEntity.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Skip_WithEntity_WithoutExplicitOrdering.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Sum_InSubquery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Sum_OnTopLevel.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.Sum_WithEmptyResultSet_AndAggregatedValueIsNotNullablePropertyButCastToNullable_ReturnsNull.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\ResultOperatorTests.TakeAfterSkip.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SelectTests.LogicalMemberAccessOnCoalesceExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SelectTests.LogicalMemberAccessOnConditionalExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SelectTests.MethodCallOnCoalesceExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SelectTests.MethodCallOnConditionalExpression.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SelectTests.Query_WithConstant.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SelectTests.Query_WithObjectID.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SelectTests.SimpleQuery_WithRelatedEntity.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\UnionConcatTests.ConcatQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\UnionConcatTests.ConcatQueryWithDuplicates.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\UnionConcatTests.ThrowingQueryConcat.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\UnionConcatTests.ThrowingQueryUnion.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\UnionConcatTests.UnionQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithConditionFalseInWherePart.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithConditionTrueInWherePart.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithContains_Like.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithContains_Like_NonConstantValue.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithEqualConditionInWherePart.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithIDInCondition.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithStringIsNullOrEmpty.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithStringLengthProperty.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithVirtualKeySide_EqualsNull.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithVirtualKeySide_EqualsOuterObject.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithVirtualKeySide_NotEqualsNull.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithVirtualKeySide_NotEqualsOuterObject.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhereAndEndsWith_NonConstantValue.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhereConditionAndEndsWith.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhereConditionAndStartsWith.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhereConditionAndStartsWith_NonConstantValue.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhereConditions.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhereConditionsAndNull.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhereOnForeignKey_RealSide.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_BooleanPropertyAndAnother.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_BooleanPropertyAndAnother_ExplicitComparison_False.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_BooleanPropertyAndAnother_ExplicitComparison_True.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_BooleanPropertyAndAnother_Negate.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_BooleanPropertyOnly.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_BooleanPropertyOnly_Negate.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_BooleanProperty_ExplicitComparison.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.QueryWithWhere_OuterObject.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\WhereTests.Query_Is.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -628,7 +1101,9 @@
       <Name>IntegrationTests.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,0 +1,197 @@
+Enumerable {
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 5
+    Freight: 890.7800
+    OrderDate: 12/04/1996 00:00:00
+    OrderID: 10372
+    RequiredDate: 01/01/1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 12/09/1996 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 2
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 7
+    Freight: 108.0400
+    OrderDate: 01/07/1997 00:00:00
+    OrderID: 10406
+    RequiredDate: 02/18/1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 01/13/1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 2
+    Freight: 71.0700
+    OrderDate: 03/26/1997 00:00:00
+    OrderID: 10487
+    RequiredDate: 04/23/1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 03/28/1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 2
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 6
+    Freight: 201.2900
+    OrderDate: 08/19/1997 00:00:00
+    OrderID: 10637
+    RequiredDate: 09/16/1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 08/26/1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 7
+    Freight: 105.8100
+    OrderDate: 09/05/1997 00:00:00
+    OrderID: 10659
+    RequiredDate: 10/03/1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 09/10/1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 2
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 6
+    Freight: 4.7800
+    OrderDate: 10/14/1997 00:00:00
+    OrderID: 10704
+    RequiredDate: 11/11/1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 11/07/1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 4
+    Freight: 58.3300
+    OrderDate: 11/04/1997 00:00:00
+    OrderID: 10728
+    RequiredDate: 12/02/1997 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 11/11/1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 2
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 8
+    Freight: 110.8700
+    OrderDate: 12/19/1997 00:00:00
+    OrderID: 10786
+    RequiredDate: 01/16/1998 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 12/23/1997 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 7
+    Freight: 191.2700
+    OrderDate: 02/04/1998 00:00:00
+    OrderID: 10868
+    RequiredDate: 03/04/1998 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 02/23/1998 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 2
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 4
+    Freight: 33.0500
+    OrderDate: 02/26/1998 00:00:00
+    OrderID: 10913
+    RequiredDate: 03/26/1998 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 03/04/1998 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 6
+    Freight: 21.1900
+    OrderDate: 02/27/1998 00:00:00
+    OrderID: 10914
+    RequiredDate: 03/27/1998 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 03/02/1998 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 8
+    Freight: 104.4700
+    OrderDate: 03/19/1998 00:00:00
+    OrderID: 10961
+    RequiredDate: 04/16/1998 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: 03/30/1998 00:00:00
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 1
+  Order
+    CustomerID: 'QUEEN'
+    EmployeeID: 8
+    Freight: 81.7500
+    OrderDate: 05/04/1998 00:00:00
+    OrderID: 11068
+    RequiredDate: 06/01/1998 00:00:00
+    ShipAddress: 'Alameda dos Canàrios, 891'
+    ShipCity: 'Sao Paulo'
+    ShipCountry: 'Brazil'
+    ShipName: 'Queen Cozinha'
+    ShippedDate: null
+    ShipPostalCode: '05487-020'
+    ShipRegion: 'SP'
+    ShipVia: 2
+}

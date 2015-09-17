@@ -1,4 +1,4 @@
-// Microsoft Public License (Ms-PL)
+﻿// Microsoft Public License (Ms-PL)
 // 
 // This license governs use of the accompanying software. If you use the software, you
 // accept this license. If you do not accept the license, do not use the software.
@@ -32,51 +32,25 @@
 // the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
 using System;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common;
 
-namespace Remotion.Linq.IntegrationTests.CSharp
+namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
-  public class TestBase : AbstractTestBase
+  [TestFixture]
+  public class ImplicitJoinTests : TestBase
   {
-    protected bool IsLinqToSqlActive 
+    [Test]
+    public void QueryWithMemberFromClause_WithJoin ()
     {
-      get { return Mode == TestMode.SaveReferenceResults; }
-    }
+      var query =
+          from o in DB.Orders
+          from c in o.Customer.Orders
+          where o.Customer.CustomerID == "SUPRD"
+          select o;
 
-    protected bool IsRelinqSqlBackendActive
-    {
-      get { return Mode == TestMode.CheckActualResults; }
-    }
-
-    protected override Func<MethodBase, string> SavedResultFileNameGenerator
-    {
-      // C# will automatically add the folder structure to the resource file name when embedding a resource
-      // The desired resource name is: Remotion.Linq.IntegrationTests.CSharp.LinqSamples101.Resources.TestClass.TestMethod.result
-      // This is achieved by putting a file called "TestClass.TestMethod.result" into the LinqSamples101\Resources folder
-      get { return method => method.DeclaringType.Name + "." + method.Name + ".result"; }
-    }
-
-    protected override Func<MethodBase, string> LoadedResultFileNameGenerator
-    {
-      // When loading the resource, we must specify the full name as described above
-      get
-      {
-        return method =>
-        {
-          var commonNamespacePrefix = typeof (TestBase).Namespace + ".";
-          var namespaceName = method.DeclaringType.Namespace;
-          Assert.That (namespaceName != null);
-          var partialResourceNamespace = namespaceName.Remove (0, commonNamespacePrefix.Length) + ".Resources";
-          var resourceFolderPath = partialResourceNamespace.Replace (".", "/");
-
-          var testFileName = method.DeclaringType.Name + "." + method.Name + ".result";
-          
-          return Path.Combine (resourceFolderPath, testFileName);
-        };
-      }
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
   }
 }

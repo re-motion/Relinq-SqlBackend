@@ -1,4 +1,4 @@
-// Microsoft Public License (Ms-PL)
+﻿// Microsoft Public License (Ms-PL)
 // 
 // This license governs use of the accompanying software. If you use the software, you
 // accept this license. If you do not accept the license, do not use the software.
@@ -32,51 +32,99 @@
 // the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
 using System;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common;
 
-namespace Remotion.Linq.IntegrationTests.CSharp
+namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
-  public class TestBase : AbstractTestBase
+  [TestFixture]
+  public class LetTests : TestBase
   {
-    protected bool IsLinqToSqlActive 
+    [Test]
+    public void QueryWithLet_LetWithTable ()
     {
-      get { return Mode == TestMode.SaveReferenceResults; }
+      var query =
+          from o in DB.Orders
+          let x = o
+          select x;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected bool IsRelinqSqlBackendActive
+    [Test]
+    public void QueryWithLet_LetWithColumn ()
     {
-      get { return Mode == TestMode.CheckActualResults; }
+      var query =
+          from o in DB.Orders
+          let y = o.OrderID
+          where y > 10248 && y < 10255
+          select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected override Func<MethodBase, string> SavedResultFileNameGenerator
+    [Test]
+    public void QueryWithLet_LetWithColumn2 ()
     {
-      // C# will automatically add the folder structure to the resource file name when embedding a resource
-      // The desired resource name is: Remotion.Linq.IntegrationTests.CSharp.LinqSamples101.Resources.TestClass.TestMethod.result
-      // This is achieved by putting a file called "TestClass.TestMethod.result" into the LinqSamples101\Resources folder
-      get { return method => method.DeclaringType.Name + "." + method.Name + ".result"; }
+      var query =
+          from o in DB.Orders
+          let x = o.Customer.ContactName
+          where x == "Liz Nixon"
+          select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected override Func<MethodBase, string> LoadedResultFileNameGenerator
+    [Test]
+    public void QueryWithSeveralJoinsAndLet ()
     {
-      // When loading the resource, we must specify the full name as described above
-      get
-      {
-        return method =>
-        {
-          var commonNamespacePrefix = typeof (TestBase).Namespace + ".";
-          var namespaceName = method.DeclaringType.Namespace;
-          Assert.That (namespaceName != null);
-          var partialResourceNamespace = namespaceName.Remove (0, commonNamespacePrefix.Length) + ".Resources";
-          var resourceFolderPath = partialResourceNamespace.Replace (".", "/");
+      var query =
+          from od in DB.OrderDetails
+          let x = od.Order.Customer
+          where x.ContactName == "Liz Nixon"
+          select x;
 
-          var testFileName = method.DeclaringType.Name + "." + method.Name + ".result";
-          
-          return Path.Combine (resourceFolderPath, testFileName);
-        };
-      }
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void QueryWithSeveralLets ()
+    {
+      var query =
+          from o in DB.Orders
+          let x = o
+          let y = o.Customer
+          select x;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void QueryWithLet_AndMultipleFromClauses ()
+    {
+      var query =
+          from od in DB.OrderDetails
+          from o in DB.Orders
+          let x = od.Order
+          where od.Order.OrderID == 10248
+          where o == od.Order
+          select x;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void QueryWithMemberFromClause_WithLet ()
+    {
+      var query =
+          from c in DB.OrderDetails
+          let x = c.Order
+          from od in x.OrderDetails
+          where c.Order.OrderID == 10248
+          select od;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
   }
 }

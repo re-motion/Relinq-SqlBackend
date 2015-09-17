@@ -39,118 +39,124 @@ using NUnit.Framework;
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
   [TestFixture]
-  public class SelectTests : TestBase
+  public class ExplicitJoinsTests : TestBase
   {
-    private class ProductData
-    {
-      public int ProductID { get; private set; }
-
-      public string Name { get; set; }
-
-      public bool Discontinued { get; set; }
-
-      public bool HasUnitsInStock { get; set; }
-
-      public ProductData (int productID)
-      {
-        ProductID = productID;
-      }
-    }
-
     [Test]
-    [Ignore ("RM-3306: Support for MemberInitExpressions")]
-    public void WithMemberInitExpression_InOuterMostLevel ()
-    {
-      var query = DB.Products.Select (
-          p => new ProductData (p.ProductID) { Name = p.ProductName, Discontinued = p.Discontinued, HasUnitsInStock = p.UnitsInStock > 0 });
-      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
-    }
-
-    [Test]
-    public void SimpleQuery_WithRelatedEntity ()
-    {
-      var query =
-          from od in DB.OrderDetails
-          select od.Order;
-
-      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
-    }
-
-    [Test]
-    public void MethodCallOnCoalesceExpression ()
+    public void ExplicitJoin ()
     {
       var query =
           from o in DB.Orders
-          where (o.ShipRegion ?? o.Customer.Region).ToUpper() == "ISLE OF WIGHT"
+          join c in DB.Customers on o.Customer equals c
+          where o.CustomerID == "QUEEN"
           select o;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void MethodCallOnConditionalExpression ()
+    public void ExplicitJoinWithInto_Once ()
     {
       var query =
           from o in DB.Orders
-          where (o.ShipRegion == "Isle of Wight" ? o.ShipRegion : o.Customer.Region).ToUpper() == "ISLE OF WIGHT"
+          join od in DB.OrderDetails on o equals od.Order into odo
+          from ode in odo
+          select ode;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void ExplicitJoinWithInto_Twice ()
+    {
+      var query =
+          from o in DB.Orders
+          join od in DB.OrderDetails on o equals od.Order into god
+          join c in DB.Customers on o.Customer equals c into goc
+          from odo in god
+          from oc in goc
+          select odo;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void ExplicitJoinWithInto_InSubstatement_Once ()
+    {
+      var query =
+          from o in DB.Orders
+          where o.OrderID ==
+                (from so in DB.Orders
+                  join si in DB.OrderDetails on so equals si.Order into goi
+                  from oi in goi
+                  select oi.Order.OrderID
+                    ).First()
           select o;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void LogicalMemberAccessOnCoalesceExpression ()
+    public void ExplicitJoinWithInto_InSubstatement_Twice ()
     {
       var query =
           from o in DB.Orders
-          where (o.ShipRegion ?? o.Customer.Region).Length == 2
+          where o.OrderID ==
+                (from so in DB.Orders
+                  join si in DB.OrderDetails on so equals si.Order into goi
+                  join si in DB.Customers on so.Customer equals si into goc
+                  from oi in goi
+                  from oc in goc
+                  select oi.Order.OrderID).OrderBy (x => x).First()
           select o;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void LogicalMemberAccessOnConditionalExpression ()
+    public void ExplicitJoinWithInto_InTwoSubStatements ()
     {
       var query =
           from o in DB.Orders
-          where (o.ShipRegion == "Isle of Wight" ? o.ShipRegion : o.Customer.Region).Length == 13
+          where o.OrderID ==
+                (from so in DB.Orders
+                  join si in DB.OrderDetails on so equals si.Order into goi
+                  from oi in goi
+                  select oi.Order.OrderID).First()
+                && o.Customer.ContactName ==
+                (from so in DB.Orders
+                  join sc in DB.Customers on so.Customer equals sc into goc
+                  from oc in goc
+                  select oc.ContactName).First()
           select o;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    [Ignore ("RMLNQSQL-93: When the Coalesce operator is used with relations"
-             + "(.i.e. their ID and ForeignKey-columns), nullable<valueType> gets compared with valueType, resulting in an ArgumentException")]
-    public void CoalesceExpression_ColumnMember ()
+    public void ExplicitJoinWithInto_InSameStatementAndInSubStatement ()
     {
       var query =
-          from e in DB.Employees
-          where (e.ReportsToEmployee ?? e).EmployeeID == 1
-          select e;
+          from o in DB.Orders
+          join d in DB.OrderDetails on o equals d.Order into god
+          from od in god
+          where o.ShipCity ==
+                (from so in DB.Orders
+                  join sd in DB.OrderDetails on so equals sd.Order into gda
+                  from da in gda
+                  select so.ShipCity).First()
+          select od;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Query_WithConstant ()
+    public void ExplicitJoinWithInto_WithOrderBy ()
     {
       var query =
-          (from o in DB.Orders
-            where o.OrderID == 10248
-            select 1).Single();
-
-      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
-    }
-
-    [Test]
-    public void Query_WithObjectID ()
-    {
-      var query =
-          (from o in DB.Orders
-            where o.OrderID == 10248
-            select o.OrderID).Single();
+          from o in DB.Orders
+          join d in DB.OrderDetails.OrderBy (od => od.Quantity) on o equals d.Order into god
+          from od in god
+          select od;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
