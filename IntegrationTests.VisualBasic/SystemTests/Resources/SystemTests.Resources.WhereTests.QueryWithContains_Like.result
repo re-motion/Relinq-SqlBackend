@@ -1,0 +1,14 @@
+Enumerable {
+  Customer
+    Address: '54, rue Royale'
+    City: 'Nantes'
+    CompanyName: 'France restauration'
+    ContactName: 'Carine Schmitt'
+    ContactTitle: 'Marketing Manager'
+    Country: 'France'
+    CustomerID: 'FRANR'
+    Fax: '40.32.21.20'
+    Phone: '40.32.21.21'
+    PostalCode: '44000'
+    Region: null
+}

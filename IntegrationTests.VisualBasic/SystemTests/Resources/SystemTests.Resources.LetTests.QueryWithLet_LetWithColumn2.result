@@ -1,0 +1,62 @@
+Enumerable {
+  Order
+    CustomerID: 'THEBI'
+    EmployeeID: 8
+    Freight: 17.5200
+    OrderDate: 09/20/1996 00:00:00
+    OrderID: 10310
+    RequiredDate: 10/18/1996 00:00:00
+    ShipAddress: '89 Jefferson Way Suite 2'
+    ShipCity: 'Portland'
+    ShipCountry: 'USA'
+    ShipName: 'The Big Cheese'
+    ShippedDate: 09/27/1996 00:00:00
+    ShipPostalCode: '97201'
+    ShipRegion: 'OR'
+    ShipVia: 2
+  Order
+    CustomerID: 'THEBI'
+    EmployeeID: 6
+    Freight: 2.9600
+    OrderDate: 10/17/1997 00:00:00
+    OrderID: 10708
+    RequiredDate: 11/28/1997 00:00:00
+    ShipAddress: '89 Jefferson Way Suite 2'
+    ShipCity: 'Portland'
+    ShipCountry: 'USA'
+    ShipName: 'The Big Cheese'
+    ShippedDate: 11/05/1997 00:00:00
+    ShipPostalCode: '97201'
+    ShipRegion: 'OR'
+    ShipVia: 2
+  Order
+    CustomerID: 'THEBI'
+    EmployeeID: 2
+    Freight: 237.3400
+    OrderDate: 12/30/1997 00:00:00
+    OrderID: 10805
+    RequiredDate: 01/27/1998 00:00:00
+    ShipAddress: '89 Jefferson Way Suite 2'
+    ShipCity: 'Portland'
+    ShipCountry: 'USA'
+    ShipName: 'The Big Cheese'
+    ShippedDate: 01/09/1998 00:00:00
+    ShipPostalCode: '97201'
+    ShipRegion: 'OR'
+    ShipVia: 3
+  Order
+    CustomerID: 'THEBI'
+    EmployeeID: 1
+    Freight: 4.2700
+    OrderDate: 04/01/1998 00:00:00
+    OrderID: 10992
+    RequiredDate: 04/29/1998 00:00:00
+    ShipAddress: '89 Jefferson Way Suite 2'
+    ShipCity: 'Portland'
+    ShipCountry: 'USA'
+    ShipName: 'The Big Cheese'
+    ShippedDate: 04/03/1998 00:00:00
+    ShipPostalCode: '97201'
+    ShipRegion: 'OR'
+    ShipVia: 3
+}

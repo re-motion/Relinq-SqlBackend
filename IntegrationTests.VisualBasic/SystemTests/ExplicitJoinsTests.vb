@@ -35,134 +35,99 @@ Imports System.Reflection
 Imports NUnit.Framework
 
 Namespace SystemTests
-  <TestFixture> _
-  Public Class SelectTests
+  <TestFixture>
+  Public Class ExplicitJoinsTests
     Inherits TestBase
-    Private Class ProductData
-      Public Property ProductID() As Integer
-        Get
-          Return m_ProductID
-        End Get
-        Private Set(value As Integer)
-          m_ProductID = value
-        End Set
-      End Property
-      Private m_ProductID As Integer
-
-      Public Property Name() As String
-        Get
-          Return m_Name
-        End Get
-        Set(value As String)
-          m_Name = value
-        End Set
-      End Property
-      Private m_Name As String
-
-      Public Property Discontinued() As Boolean
-        Get
-          Return m_Discontinued
-        End Get
-        Set(value As Boolean)
-          m_Discontinued = value
-        End Set
-      End Property
-      Private m_Discontinued As Boolean
-
-      Public Property HasUnitsInStock() As Boolean
-        Get
-          Return m_HasUnitsInStock
-        End Get
-        Set(value As Boolean)
-          m_HasUnitsInStock = value
-        End Set
-      End Property
-      Private m_HasUnitsInStock As Boolean
-
-      Public Sub New(productId1 As Integer)
-        ProductID = productId1
-      End Sub
-    End Class
 
     <Test> _
-    <Ignore("RM-3306: Support for MemberInitExpressions")> _
-    Public Sub WithMemberInitExpression_InOuterMostLevel()
-      Dim query = DB.Products.Select(Function(p) New ProductData(p.ProductID) With { _
-        .Name = p.ProductName, _
-        .Discontinued = p.Discontinued, _
-        .HasUnitsInStock = p.UnitsInStock > 0 _
-      })
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
-    End Sub
-
-    <Test> _
-    Public Sub SimpleQuery_WithRelatedEntity()
-      Dim query = From od In DB.OrderDetails _
-                  Select od.Order
-
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
-    End Sub
-
-    <Test> _
-    Public Sub MethodCallOnCoalesceExpression()
+    Public Sub ExplicitJoin()
       Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion, o.Customer.Region)).ToUpper() = "ISLE OF WIGHT" _
-                  Select o
+            Join c In DB.Customers On o.Customer Equals c _
+            Where o.CustomerID = "QUEEN" _
+            Select o
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub MethodCallOnConditionalExpression()
+    Public Sub ExplicitJoinWithInto_Once()
       Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion = "Isle of Wight", o.ShipRegion, o.Customer.Region)).ToUpper() = "ISLE OF WIGHT" _
-                  Select o
+            Group Join od In DB.OrderDetails On o Equals od.Order Into odo = Group _
+            From ode In odo _
+            Select ode
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub LogicalMemberAccessOnCoalesceExpression()
+    Public Sub ExplicitJoinWithInto_Twice()
       Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion, o.Customer.Region)).Length = 2 _
-                  Select o
+            Group Join od In DB.OrderDetails On o Equals od.Order Into god = Group _
+            Group Join c In DB.Customers On o.Customer Equals c Into goc = Group _
+            From odo In god From oc In goc _
+            Select odo
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub LogicalMemberAccessOnConditionalExpression()
+    Public Sub ExplicitJoinWithInto_InSubstatement_Once()
       Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion = "Isle of Wight", o.ShipRegion, o.Customer.Region)).Length = 13 _
-                  Select o
+            Where _
+            o.OrderID = (From so In DB.Orders Group Join si In DB.OrderDetails On so Equals si.Order Into goi = Group _
+              From oi In goi Select oi.Order.OrderID).First() _
+            Select o
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    <Ignore("RMLNQSQL-93: When the Coalesce operator is used with relations" + "(.i.e. their ID and ForeignKey-columns), nullable<valueType> gets compared with valueType, resulting in an ArgumentException")> _
-    Public Sub CoalesceExpression_ColumnMember()
-      Dim query = From e In DB.Employees _
-                  Where (If(e.ReportsToEmployee, e)).EmployeeID = 1 _
-                  Select e
+    <Ignore("RMLNQSQL-104: Support conversion operator for Query Source")> _
+    Public Sub ExplicitJoinWithInto_InSubstatement_Twice()
+      Dim query = From o In DB.Orders _
+            Where o.OrderID = (From so In DB.Orders _
+                    Group Join si In DB.OrderDetails On so Equals si.Order Into goi = Group _
+                    Group Join si In DB.Customers On so.Customer Equals si Into goc = Group _
+                    From oi In goi _
+                    From oc In goc Select oi.Order.OrderID).OrderBy(Function(x) x).First() _
+            Select o
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub Query_WithConstant()
-      Dim query = (From o In DB.Orders _
-                   Where o.OrderID = 10248 _
-                   Select 1).Single()
+    Public Sub ExplicitJoinWithInto_InTwoSubStatements()
+      Dim query = From o In DB.Orders _
+            Where o.OrderID = (From so In DB.Orders _
+                    Group Join si In DB.OrderDetails On so Equals si.Order Into goi = Group _
+                    From oi In goi Select oi.Order.OrderID).First() _
+                  AndAlso o.Customer.ContactName =
+                          (From so In DB.Orders _
+                            Group Join sc In DB.Customers On so.Customer Equals sc Into goc = Group _
+                            From oc In goc Select oc.ContactName).First() _
+            Select o
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub Query_WithObjectID()
-      Dim query = (From o In DB.Orders _
-                   Where o.OrderID = 10248 _
-                   Select o.OrderID).Single()
+    Public Sub ExplicitJoinWithInto_InSameStatementAndInSubStatement()
+      Dim query = From o In DB.Orders _
+            Group Join d In DB.OrderDetails On o Equals d.Order Into god = Group _
+            From od In god Where o.ShipCity = (From so In DB.Orders _
+                                   Group Join sd In DB.OrderDetails On so Equals sd.Order Into gda = Group _
+                                   From da In gda Select so.ShipCity).First() _
+            Select od
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub ExplicitJoinWithInto_WithOrderBy()
+      Dim query = From o In DB.Orders _
+            Group Join d In DB.OrderDetails.OrderBy(Function(od) od.Quantity) On o Equals d.Order Into god = Group _
+            From od In god _
+            Select od
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub

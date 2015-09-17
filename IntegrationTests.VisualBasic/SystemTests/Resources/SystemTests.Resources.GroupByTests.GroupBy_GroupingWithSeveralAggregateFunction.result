@@ -1,0 +1,4152 @@
+Enumerable {
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10248
+    Sum: 27
+  AnonymousType
+    Count: 2
+    Min: 9
+    OrderID: 10249
+    Sum: 49
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10250
+    Sum: 60
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10251
+    Sum: 41
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 10252
+    Sum: 105
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10253
+    Sum: 102
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10254
+    Sum: 57
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 10255
+    Sum: 110
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10256
+    Sum: 27
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10257
+    Sum: 46
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10258
+    Sum: 121
+  AnonymousType
+    Count: 2
+    Min: 1
+    OrderID: 10259
+    Sum: 11
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10260
+    Sum: 102
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10261
+    Sum: 40
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10262
+    Sum: 29
+  AnonymousType
+    Count: 4
+    Min: 28
+    OrderID: 10263
+    Sum: 184
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10264
+    Sum: 60
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10265
+    Sum: 50
+  AnonymousType
+    Count: 1
+    Min: 12
+    OrderID: 10266
+    Sum: 12
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10267
+    Sum: 135
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10268
+    Sum: 14
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10269
+    Sum: 80
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10270
+    Sum: 55
+  AnonymousType
+    Count: 1
+    Min: 24
+    OrderID: 10271
+    Sum: 24
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10272
+    Sum: 70
+  AnonymousType
+    Count: 5
+    Min: 15
+    OrderID: 10273
+    Sum: 152
+  AnonymousType
+    Count: 2
+    Min: 7
+    OrderID: 10274
+    Sum: 27
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10275
+    Sum: 18
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10276
+    Sum: 25
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10277
+    Sum: 32
+  AnonymousType
+    Count: 4
+    Min: 8
+    OrderID: 10278
+    Sum: 64
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10279
+    Sum: 15
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10280
+    Sum: 62
+  AnonymousType
+    Count: 3
+    Min: 1
+    OrderID: 10281
+    Sum: 11
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10282
+    Sum: 8
+  AnonymousType
+    Count: 4
+    Min: 3
+    OrderID: 10283
+    Sum: 76
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10284
+    Sum: 61
+  AnonymousType
+    Count: 3
+    Min: 36
+    OrderID: 10285
+    Sum: 121
+  AnonymousType
+    Count: 2
+    Min: 40
+    OrderID: 10286
+    Sum: 140
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10287
+    Sum: 75
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10288
+    Sum: 13
+  AnonymousType
+    Count: 2
+    Min: 9
+    OrderID: 10289
+    Sum: 39
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10290
+    Sum: 60
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10291
+    Sum: 46
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10292
+    Sum: 20
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10293
+    Sum: 33
+  AnonymousType
+    Count: 5
+    Min: 6
+    OrderID: 10294
+    Sum: 75
+  AnonymousType
+    Count: 1
+    Min: 4
+    OrderID: 10295
+    Sum: 4
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10296
+    Sum: 57
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10297
+    Sum: 80
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10298
+    Sum: 125
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10299
+    Sum: 35
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10300
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10301
+    Sum: 30
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10302
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10303
+    Sum: 85
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10304
+    Sum: 42
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 10305
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10306
+    Sum: 25
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10307
+    Sum: 13
+  AnonymousType
+    Count: 2
+    Min: 1
+    OrderID: 10308
+    Sum: 6
+  AnonymousType
+    Count: 5
+    Min: 2
+    OrderID: 10309
+    Sum: 75
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10310
+    Sum: 15
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10311
+    Sum: 13
+  AnonymousType
+    Count: 4
+    Min: 4
+    OrderID: 10312
+    Sum: 58
+  AnonymousType
+    Count: 1
+    Min: 12
+    OrderID: 10313
+    Sum: 12
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 10314
+    Sum: 95
+  AnonymousType
+    Count: 2
+    Min: 14
+    OrderID: 10315
+    Sum: 44
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10316
+    Sum: 80
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10317
+    Sum: 20
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10318
+    Sum: 26
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10319
+    Sum: 52
+  AnonymousType
+    Count: 1
+    Min: 30
+    OrderID: 10320
+    Sum: 30
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10321
+    Sum: 10
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10322
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10323
+    Sum: 13
+  AnonymousType
+    Count: 5
+    Min: 21
+    OrderID: 10324
+    Sum: 241
+  AnonymousType
+    Count: 5
+    Min: 4
+    OrderID: 10325
+    Sum: 71
+  AnonymousType
+    Count: 3
+    Min: 16
+    OrderID: 10326
+    Sum: 90
+  AnonymousType
+    Count: 4
+    Min: 25
+    OrderID: 10327
+    Sum: 140
+  AnonymousType
+    Count: 3
+    Min: 9
+    OrderID: 10328
+    Sum: 59
+  AnonymousType
+    Count: 4
+    Min: 8
+    OrderID: 10329
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10330
+    Sum: 75
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10331
+    Sum: 15
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10332
+    Sum: 66
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10333
+    Sum: 60
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10334
+    Sum: 18
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10335
+    Sum: 86
+  AnonymousType
+    Count: 1
+    Min: 18
+    OrderID: 10336
+    Sum: 18
+  AnonymousType
+    Count: 5
+    Min: 20
+    OrderID: 10337
+    Sum: 137
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10338
+    Sum: 35
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10339
+    Sum: 108
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10340
+    Sum: 72
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10341
+    Sum: 17
+  AnonymousType
+    Count: 4
+    Min: 24
+    OrderID: 10342
+    Sum: 160
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10343
+    Sum: 69
+  AnonymousType
+    Count: 2
+    Min: 35
+    OrderID: 10344
+    Sum: 105
+  AnonymousType
+    Count: 3
+    Min: 9
+    OrderID: 10345
+    Sum: 159
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10346
+    Sum: 56
+  AnonymousType
+    Count: 4
+    Min: 4
+    OrderID: 10347
+    Sum: 70
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10348
+    Sum: 40
+  AnonymousType
+    Count: 1
+    Min: 24
+    OrderID: 10349
+    Sum: 24
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10350
+    Sum: 33
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10351
+    Sum: 120
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10352
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10353
+    Sum: 62
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10354
+    Sum: 16
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10355
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10356
+    Sum: 62
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10357
+    Sum: 54
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10358
+    Sum: 40
+  AnonymousType
+    Count: 3
+    Min: 56
+    OrderID: 10359
+    Sum: 206
+  AnonymousType
+    Count: 5
+    Min: 10
+    OrderID: 10360
+    Sum: 138
+  AnonymousType
+    Count: 2
+    Min: 54
+    OrderID: 10361
+    Sum: 109
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10362
+    Sum: 94
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10363
+    Sum: 44
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10364
+    Sum: 35
+  AnonymousType
+    Count: 1
+    Min: 24
+    OrderID: 10365
+    Sum: 24
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10366
+    Sum: 10
+  AnonymousType
+    Count: 4
+    Min: 7
+    OrderID: 10367
+    Sum: 76
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10368
+    Sum: 78
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10369
+    Sum: 38
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10370
+    Sum: 65
+  AnonymousType
+    Count: 1
+    Min: 6
+    OrderID: 10371
+    Sum: 6
+  AnonymousType
+    Count: 4
+    Min: 12
+    OrderID: 10372
+    Sum: 164
+  AnonymousType
+    Count: 2
+    Min: 50
+    OrderID: 10373
+    Sum: 130
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10374
+    Sum: 45
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10375
+    Sum: 25
+  AnonymousType
+    Count: 1
+    Min: 42
+    OrderID: 10376
+    Sum: 42
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10377
+    Sum: 40
+  AnonymousType
+    Count: 1
+    Min: 6
+    OrderID: 10378
+    Sum: 6
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10379
+    Sum: 44
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10380
+    Sum: 74
+  AnonymousType
+    Count: 1
+    Min: 14
+    OrderID: 10381
+    Sum: 14
+  AnonymousType
+    Count: 5
+    Min: 9
+    OrderID: 10382
+    Sum: 165
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10383
+    Sum: 55
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10384
+    Sum: 43
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10385
+    Sum: 38
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10386
+    Sum: 25
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10387
+    Sum: 48
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10388
+    Sum: 75
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10389
+    Sum: 81
+  AnonymousType
+    Count: 4
+    Min: 24
+    OrderID: 10390
+    Sum: 169
+  AnonymousType
+    Count: 1
+    Min: 18
+    OrderID: 10391
+    Sum: 18
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 10392
+    Sum: 50
+  AnonymousType
+    Count: 5
+    Min: 7
+    OrderID: 10393
+    Sum: 176
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10394
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10395
+    Sum: 106
+  AnonymousType
+    Count: 3
+    Min: 21
+    OrderID: 10396
+    Sum: 121
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10397
+    Sum: 28
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10398
+    Sum: 150
+  AnonymousType
+    Count: 4
+    Min: 14
+    OrderID: 10399
+    Sum: 139
+  AnonymousType
+    Count: 3
+    Min: 21
+    OrderID: 10400
+    Sum: 86
+  AnonymousType
+    Count: 4
+    Min: 18
+    OrderID: 10401
+    Sum: 168
+  AnonymousType
+    Count: 2
+    Min: 60
+    OrderID: 10402
+    Sum: 125
+  AnonymousType
+    Count: 2
+    Min: 21
+    OrderID: 10403
+    Sum: 91
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10404
+    Sum: 100
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 10405
+    Sum: 50
+  AnonymousType
+    Count: 5
+    Min: 2
+    OrderID: 10406
+    Sum: 89
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10407
+    Sum: 60
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10408
+    Sum: 51
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10409
+    Sum: 24
+  AnonymousType
+    Count: 2
+    Min: 16
+    OrderID: 10410
+    Sum: 65
+  AnonymousType
+    Count: 3
+    Min: 9
+    OrderID: 10411
+    Sum: 74
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10412
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 14
+    OrderID: 10413
+    Sum: 78
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10414
+    Sum: 68
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10415
+    Sum: 22
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10416
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 10417
+    Sum: 123
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10418
+    Sum: 146
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10419
+    Sum: 80
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 10420
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 4
+    OrderID: 10421
+    Sum: 59
+  AnonymousType
+    Count: 1
+    Min: 2
+    OrderID: 10422
+    Sum: 2
+  AnonymousType
+    Count: 2
+    Min: 14
+    OrderID: 10423
+    Sum: 34
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10424
+    Sum: 139
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10425
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10426
+    Sum: 12
+  AnonymousType
+    Count: 1
+    Min: 35
+    OrderID: 10427
+    Sum: 35
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10428
+    Sum: 20
+  AnonymousType
+    Count: 2
+    Min: 35
+    OrderID: 10429
+    Sum: 75
+  AnonymousType
+    Count: 4
+    Min: 30
+    OrderID: 10430
+    Sum: 195
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10431
+    Sum: 130
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10432
+    Sum: 50
+  AnonymousType
+    Count: 1
+    Min: 28
+    OrderID: 10433
+    Sum: 28
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10434
+    Sum: 24
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10435
+    Sum: 32
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10436
+    Sum: 99
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10437
+    Sum: 15
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10438
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10439
+    Sum: 67
+  AnonymousType
+    Count: 4
+    Min: 24
+    OrderID: 10440
+    Sum: 208
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 10441
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10442
+    Sum: 170
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10443
+    Sum: 18
+  AnonymousType
+    Count: 4
+    Min: 8
+    OrderID: 10444
+    Sum: 63
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10445
+    Sum: 21
+  AnonymousType
+    Count: 4
+    Min: 3
+    OrderID: 10446
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10447
+    Sum: 77
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10448
+    Sum: 26
+  AnonymousType
+    Count: 3
+    Min: 14
+    OrderID: 10449
+    Sum: 69
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10450
+    Sum: 26
+  AnonymousType
+    Count: 4
+    Min: 28
+    OrderID: 10451
+    Sum: 238
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10452
+    Sum: 115
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10453
+    Sum: 40
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10454
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 10455
+    Sum: 125
+  AnonymousType
+    Count: 2
+    Min: 21
+    OrderID: 10456
+    Sum: 61
+  AnonymousType
+    Count: 1
+    Min: 36
+    OrderID: 10457
+    Sum: 36
+  AnonymousType
+    Count: 5
+    Min: 15
+    OrderID: 10458
+    Sum: 145
+  AnonymousType
+    Count: 3
+    Min: 16
+    OrderID: 10459
+    Sum: 76
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10460
+    Sum: 25
+  AnonymousType
+    Count: 3
+    Min: 28
+    OrderID: 10461
+    Sum: 128
+  AnonymousType
+    Count: 2
+    Min: 1
+    OrderID: 10462
+    Sum: 22
+  AnonymousType
+    Count: 2
+    Min: 21
+    OrderID: 10463
+    Sum: 71
+  AnonymousType
+    Count: 4
+    Min: 3
+    OrderID: 10464
+    Sum: 69
+  AnonymousType
+    Count: 5
+    Min: 18
+    OrderID: 10465
+    Sum: 118
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10466
+    Sum: 15
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10467
+    Sum: 40
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10468
+    Sum: 23
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10469
+    Sum: 77
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10470
+    Sum: 53
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10471
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10472
+    Sum: 98
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10473
+    Sum: 24
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10474
+    Sum: 61
+  AnonymousType
+    Count: 3
+    Min: 35
+    OrderID: 10475
+    Sum: 137
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10476
+    Sum: 14
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10477
+    Sum: 56
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10478
+    Sum: 20
+  AnonymousType
+    Count: 4
+    Min: 28
+    OrderID: 10479
+    Sum: 148
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10480
+    Sum: 42
+  AnonymousType
+    Count: 2
+    Min: 24
+    OrderID: 10481
+    Sum: 64
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10482
+    Sum: 10
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10483
+    Sum: 65
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10484
+    Sum: 27
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 10485
+    Sum: 130
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10486
+    Sum: 46
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10487
+    Sum: 59
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10488
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10489
+    Sum: 33
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10490
+    Sum: 126
+  AnonymousType
+    Count: 2
+    Min: 7
+    OrderID: 10491
+    Sum: 22
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10492
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10493
+    Sum: 35
+  AnonymousType
+    Count: 1
+    Min: 30
+    OrderID: 10494
+    Sum: 30
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10495
+    Sum: 35
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10496
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 14
+    OrderID: 10497
+    Sum: 64
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10498
+    Sum: 49
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10499
+    Sum: 45
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10500
+    Sum: 20
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10501
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10502
+    Sum: 57
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10503
+    Sum: 90
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10504
+    Sum: 59
+  AnonymousType
+    Count: 1
+    Min: 3
+    OrderID: 10505
+    Sum: 3
+  AnonymousType
+    Count: 2
+    Min: 14
+    OrderID: 10506
+    Sum: 32
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10507
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10508
+    Sum: 20
+  AnonymousType
+    Count: 1
+    Min: 3
+    OrderID: 10509
+    Sum: 3
+  AnonymousType
+    Count: 2
+    Min: 36
+    OrderID: 10510
+    Sum: 72
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10511
+    Sum: 110
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10512
+    Sum: 37
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10513
+    Sum: 105
+  AnonymousType
+    Count: 5
+    Min: 35
+    OrderID: 10514
+    Sum: 233
+  AnonymousType
+    Count: 5
+    Min: 16
+    OrderID: 10515
+    Sum: 286
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10516
+    Sum: 125
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10517
+    Sum: 16
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10518
+    Sum: 29
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10519
+    Sum: 66
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10520
+    Sum: 13
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10521
+    Sum: 19
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 10522
+    Sum: 109
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10523
+    Sum: 64
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 10524
+    Sum: 87
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10525
+    Sum: 45
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10526
+    Sum: 48
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10527
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10528
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10529
+    Sum: 44
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 10530
+    Sum: 135
+  AnonymousType
+    Count: 1
+    Min: 2
+    OrderID: 10531
+    Sum: 2
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10532
+    Sum: 39
+  AnonymousType
+    Count: 3
+    Min: 24
+    OrderID: 10533
+    Sum: 98
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10534
+    Sum: 30
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10535
+    Sum: 80
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10536
+    Sum: 100
+  AnonymousType
+    Count: 5
+    Min: 6
+    OrderID: 10537
+    Sum: 86
+  AnonymousType
+    Count: 2
+    Min: 1
+    OrderID: 10538
+    Sum: 8
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10539
+    Sum: 44
+  AnonymousType
+    Count: 4
+    Min: 30
+    OrderID: 10540
+    Sum: 165
+  AnonymousType
+    Count: 4
+    Min: 4
+    OrderID: 10541
+    Sum: 84
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10542
+    Sum: 39
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10543
+    Sum: 100
+  AnonymousType
+    Count: 2
+    Min: 7
+    OrderID: 10544
+    Sum: 14
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10545
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10546
+    Sum: 80
+  AnonymousType
+    Count: 2
+    Min: 24
+    OrderID: 10547
+    Sum: 84
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10548
+    Sum: 24
+  AnonymousType
+    Count: 3
+    Min: 48
+    OrderID: 10549
+    Sum: 203
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10550
+    Sum: 34
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10551
+    Sum: 100
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10552
+    Sum: 48
+  AnonymousType
+    Count: 5
+    Min: 6
+    OrderID: 10553
+    Sum: 89
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10554
+    Sum: 80
+  AnonymousType
+    Count: 5
+    Min: 18
+    OrderID: 10555
+    Sum: 143
+  AnonymousType
+    Count: 1
+    Min: 24
+    OrderID: 10556
+    Sum: 24
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10557
+    Sum: 50
+  AnonymousType
+    Count: 5
+    Min: 3
+    OrderID: 10558
+    Sum: 96
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10559
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10560
+    Sum: 35
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10561
+    Sum: 60
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10562
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10563
+    Sum: 95
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10564
+    Sum: 47
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10565
+    Sum: 43
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10566
+    Sum: 63
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10567
+    Sum: 103
+  AnonymousType
+    Count: 1
+    Min: 5
+    OrderID: 10568
+    Sum: 5
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10569
+    Sum: 65
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10570
+    Sum: 75
+  AnonymousType
+    Count: 2
+    Min: 11
+    OrderID: 10571
+    Sum: 39
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10572
+    Sum: 87
+  AnonymousType
+    Count: 3
+    Min: 18
+    OrderID: 10573
+    Sum: 83
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 10574
+    Sum: 32
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10575
+    Sum: 58
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10576
+    Sum: 51
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10577
+    Sum: 48
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10578
+    Sum: 26
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10579
+    Sum: 31
+  AnonymousType
+    Count: 3
+    Min: 9
+    OrderID: 10580
+    Sum: 54
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 10581
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10582
+    Sum: 18
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10583
+    Sum: 44
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 10584
+    Sum: 50
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10585
+    Sum: 15
+  AnonymousType
+    Count: 1
+    Min: 4
+    OrderID: 10586
+    Sum: 4
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10587
+    Sum: 46
+  AnonymousType
+    Count: 2
+    Min: 40
+    OrderID: 10588
+    Sum: 140
+  AnonymousType
+    Count: 1
+    Min: 4
+    OrderID: 10589
+    Sum: 4
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10590
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10591
+    Sum: 74
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10592
+    Sum: 30
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10593
+    Sum: 45
+  AnonymousType
+    Count: 2
+    Min: 24
+    OrderID: 10594
+    Sum: 54
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10595
+    Sum: 215
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10596
+    Sum: 59
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10597
+    Sum: 67
+  AnonymousType
+    Count: 2
+    Min: 9
+    OrderID: 10598
+    Sum: 59
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10599
+    Sum: 10
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10600
+    Sum: 34
+  AnonymousType
+    Count: 2
+    Min: 35
+    OrderID: 10601
+    Sum: 95
+  AnonymousType
+    Count: 1
+    Min: 5
+    OrderID: 10602
+    Sum: 5
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10603
+    Sum: 73
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10604
+    Sum: 16
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10605
+    Sum: 135
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10606
+    Sum: 50
+  AnonymousType
+    Count: 5
+    Min: 12
+    OrderID: 10607
+    Sum: 213
+  AnonymousType
+    Count: 1
+    Min: 28
+    OrderID: 10608
+    Sum: 28
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10609
+    Sum: 19
+  AnonymousType
+    Count: 1
+    Min: 21
+    OrderID: 10610
+    Sum: 21
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10611
+    Sum: 31
+  AnonymousType
+    Count: 5
+    Min: 18
+    OrderID: 10612
+    Sum: 263
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10613
+    Sum: 48
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10614
+    Sum: 27
+  AnonymousType
+    Count: 1
+    Min: 5
+    OrderID: 10615
+    Sum: 5
+  AnonymousType
+    Count: 4
+    Min: 14
+    OrderID: 10616
+    Sum: 59
+  AnonymousType
+    Count: 1
+    Min: 30
+    OrderID: 10617
+    Sum: 30
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10618
+    Sum: 105
+  AnonymousType
+    Count: 2
+    Min: 40
+    OrderID: 10619
+    Sum: 82
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10620
+    Sum: 10
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10621
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10622
+    Sum: 38
+  AnonymousType
+    Count: 5
+    Min: 3
+    OrderID: 10623
+    Sum: 94
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10624
+    Sum: 26
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10625
+    Sum: 18
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10626
+    Sum: 52
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10627
+    Sum: 50
+  AnonymousType
+    Count: 1
+    Min: 25
+    OrderID: 10628
+    Sum: 25
+  AnonymousType
+    Count: 2
+    Min: 9
+    OrderID: 10629
+    Sum: 29
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10630
+    Sum: 47
+  AnonymousType
+    Count: 1
+    Min: 8
+    OrderID: 10631
+    Sum: 8
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10632
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 13
+    OrderID: 10633
+    Sum: 164
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 10634
+    Sum: 102
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10635
+    Sum: 65
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10636
+    Sum: 31
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10637
+    Sum: 95
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10638
+    Sum: 101
+  AnonymousType
+    Count: 1
+    Min: 8
+    OrderID: 10639
+    Sum: 8
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10640
+    Sum: 35
+  AnonymousType
+    Count: 2
+    Min: 50
+    OrderID: 10641
+    Sum: 110
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10642
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10643
+    Sum: 38
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10644
+    Sum: 45
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10645
+    Sum: 35
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10646
+    Sum: 98
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10647
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10648
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10649
+    Sum: 35
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 10650
+    Sum: 85
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10651
+    Sum: 32
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10652
+    Sum: 22
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10653
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10654
+    Sum: 38
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10655
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10656
+    Sum: 37
+  AnonymousType
+    Count: 6
+    Min: 10
+    OrderID: 10657
+    Sum: 204
+  AnonymousType
+    Count: 4
+    Min: 55
+    OrderID: 10658
+    Sum: 255
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10659
+    Sum: 84
+  AnonymousType
+    Count: 1
+    Min: 21
+    OrderID: 10660
+    Sum: 21
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10661
+    Sum: 52
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10662
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10663
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10664
+    Sum: 51
+  AnonymousType
+    Count: 3
+    Min: 1
+    OrderID: 10665
+    Sum: 31
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10666
+    Sum: 46
+  AnonymousType
+    Count: 2
+    Min: 14
+    OrderID: 10667
+    Sum: 59
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10668
+    Sum: 27
+  AnonymousType
+    Count: 1
+    Min: 30
+    OrderID: 10669
+    Sum: 30
+  AnonymousType
+    Count: 5
+    Min: 25
+    OrderID: 10670
+    Sum: 192
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10671
+    Sum: 32
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10672
+    Sum: 27
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10673
+    Sum: 15
+  AnonymousType
+    Count: 1
+    Min: 5
+    OrderID: 10674
+    Sum: 5
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10675
+    Sum: 70
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10676
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10677
+    Sum: 38
+  AnonymousType
+    Count: 4
+    Min: 30
+    OrderID: 10678
+    Sum: 280
+  AnonymousType
+    Count: 1
+    Min: 12
+    OrderID: 10679
+    Sum: 12
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10680
+    Sum: 110
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10681
+    Sum: 70
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10682
+    Sum: 64
+  AnonymousType
+    Count: 1
+    Min: 9
+    OrderID: 10683
+    Sum: 9
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10684
+    Sum: 90
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10685
+    Sum: 39
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10686
+    Sum: 45
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10687
+    Sum: 66
+  AnonymousType
+    Count: 3
+    Min: 14
+    OrderID: 10688
+    Sum: 92
+  AnonymousType
+    Count: 1
+    Min: 35
+    OrderID: 10689
+    Sum: 35
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10690
+    Sum: 50
+  AnonymousType
+    Count: 5
+    Min: 24
+    OrderID: 10691
+    Sum: 182
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10692
+    Sum: 20
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10693
+    Sum: 111
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 10694
+    Sum: 165
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10695
+    Sum: 34
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10696
+    Sum: 38
+  AnonymousType
+    Count: 4
+    Min: 7
+    OrderID: 10697
+    Sum: 76
+  AnonymousType
+    Count: 5
+    Min: 8
+    OrderID: 10698
+    Sum: 108
+  AnonymousType
+    Count: 1
+    Min: 12
+    OrderID: 10699
+    Sum: 12
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10700
+    Sum: 117
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10701
+    Sum: 97
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10702
+    Sum: 21
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10703
+    Sum: 75
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10704
+    Sum: 65
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10705
+    Sum: 24
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10706
+    Sum: 52
+  AnonymousType
+    Count: 3
+    Min: 21
+    OrderID: 10707
+    Sum: 89
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10708
+    Sum: 9
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10709
+    Sum: 78
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10710
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10711
+    Sum: 174
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10712
+    Sum: 33
+  AnonymousType
+    Count: 4
+    Min: 18
+    OrderID: 10713
+    Sum: 182
+  AnonymousType
+    Count: 5
+    Min: 12
+    OrderID: 10714
+    Sum: 137
+  AnonymousType
+    Count: 2
+    Min: 21
+    OrderID: 10715
+    Sum: 51
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10716
+    Sum: 22
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10717
+    Sum: 72
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 10718
+    Sum: 116
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10719
+    Sum: 55
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10720
+    Sum: 29
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 10721
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 3
+    OrderID: 10722
+    Sum: 140
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10723
+    Sum: 15
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10724
+    Sum: 21
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10725
+    Sum: 22
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10726
+    Sum: 30
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10727
+    Sum: 40
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10728
+    Sum: 48
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10729
+    Sum: 120
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10730
+    Sum: 28
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10731
+    Sum: 70
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10732
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 16
+    OrderID: 10733
+    Sum: 61
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10734
+    Sum: 65
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10735
+    Sum: 22
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10736
+    Sum: 60
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10737
+    Sum: 16
+  AnonymousType
+    Count: 1
+    Min: 3
+    OrderID: 10738
+    Sum: 3
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10739
+    Sum: 24
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10740
+    Sum: 94
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10741
+    Sum: 15
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10742
+    Sum: 105
+  AnonymousType
+    Count: 1
+    Min: 28
+    OrderID: 10743
+    Sum: 28
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 10744
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 7
+    OrderID: 10745
+    Sum: 92
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10746
+    Sum: 83
+  AnonymousType
+    Count: 4
+    Min: 8
+    OrderID: 10747
+    Sum: 82
+  AnonymousType
+    Count: 3
+    Min: 28
+    OrderID: 10748
+    Sum: 112
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10749
+    Sum: 31
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10750
+    Sum: 70
+  AnonymousType
+    Count: 4
+    Min: 12
+    OrderID: 10751
+    Sum: 77
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10752
+    Sum: 11
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10753
+    Sum: 9
+  AnonymousType
+    Count: 1
+    Min: 3
+    OrderID: 10754
+    Sum: 3
+  AnonymousType
+    Count: 4
+    Min: 14
+    OrderID: 10755
+    Sum: 99
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10756
+    Sum: 67
+  AnonymousType
+    Count: 4
+    Min: 7
+    OrderID: 10757
+    Sum: 91
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10758
+    Sum: 120
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10759
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10760
+    Sum: 82
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10761
+    Sum: 53
+  AnonymousType
+    Count: 4
+    Min: 16
+    OrderID: 10762
+    Sum: 134
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10763
+    Sum: 66
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10764
+    Sum: 150
+  AnonymousType
+    Count: 1
+    Min: 80
+    OrderID: 10765
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 35
+    OrderID: 10766
+    Sum: 115
+  AnonymousType
+    Count: 1
+    Min: 2
+    OrderID: 10767
+    Sum: 2
+  AnonymousType
+    Count: 4
+    Min: 4
+    OrderID: 10768
+    Sum: 81
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10769
+    Sum: 80
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10770
+    Sum: 15
+  AnonymousType
+    Count: 1
+    Min: 16
+    OrderID: 10771
+    Sum: 16
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10772
+    Sum: 43
+  AnonymousType
+    Count: 3
+    Min: 7
+    OrderID: 10773
+    Sum: 110
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10774
+    Sum: 52
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10775
+    Sum: 9
+  AnonymousType
+    Count: 4
+    Min: 12
+    OrderID: 10776
+    Sum: 175
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10777
+    Sum: 20
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10778
+    Sum: 10
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10779
+    Sum: 40
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10780
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10781
+    Sum: 58
+  AnonymousType
+    Count: 1
+    Min: 1
+    OrderID: 10782
+    Sum: 1
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10783
+    Sum: 15
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10784
+    Sum: 62
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10785
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10786
+    Sum: 87
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10787
+    Sum: 35
+  AnonymousType
+    Count: 2
+    Min: 40
+    OrderID: 10788
+    Sum: 90
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10789
+    Sum: 93
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10790
+    Sum: 23
+  AnonymousType
+    Count: 2
+    Min: 14
+    OrderID: 10791
+    Sum: 34
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 10792
+    Sum: 28
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10793
+    Sum: 22
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10794
+    Sum: 21
+  AnonymousType
+    Count: 2
+    Min: 35
+    OrderID: 10795
+    Sum: 100
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10796
+    Sum: 90
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10797
+    Sum: 20
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10798
+    Sum: 12
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10799
+    Sum: 65
+  AnonymousType
+    Count: 3
+    Min: 7
+    OrderID: 10800
+    Sum: 67
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10801
+    Sum: 60
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10802
+    Sum: 120
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10803
+    Sum: 54
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10804
+    Sum: 64
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10805
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 10806
+    Sum: 37
+  AnonymousType
+    Count: 1
+    Min: 1
+    OrderID: 10807
+    Sum: 1
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10808
+    Sum: 70
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10809
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10810
+    Sum: 17
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10811
+    Sum: 63
+  AnonymousType
+    Count: 3
+    Min: 16
+    OrderID: 10812
+    Sum: 76
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10813
+    Sum: 47
+  AnonymousType
+    Count: 4
+    Min: 8
+    OrderID: 10814
+    Sum: 78
+  AnonymousType
+    Count: 1
+    Min: 16
+    OrderID: 10815
+    Sum: 16
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10816
+    Sum: 50
+  AnonymousType
+    Count: 4
+    Min: 25
+    OrderID: 10817
+    Sum: 155
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10818
+    Sum: 40
+  AnonymousType
+    Count: 2
+    Min: 7
+    OrderID: 10819
+    Sum: 27
+  AnonymousType
+    Count: 1
+    Min: 30
+    OrderID: 10820
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10821
+    Sum: 26
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10822
+    Sum: 9
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10823
+    Sum: 90
+  AnonymousType
+    Count: 2
+    Min: 9
+    OrderID: 10824
+    Sum: 21
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10825
+    Sum: 32
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10826
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10827
+    Sum: 36
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10828
+    Sum: 7
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10829
+    Sum: 61
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10830
+    Sum: 88
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 10831
+    Sum: 27
+  AnonymousType
+    Count: 4
+    Min: 3
+    OrderID: 10832
+    Sum: 32
+  AnonymousType
+    Count: 3
+    Min: 9
+    OrderID: 10833
+    Sum: 38
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10834
+    Sum: 28
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10835
+    Sum: 17
+  AnonymousType
+    Count: 5
+    Min: 6
+    OrderID: 10836
+    Sum: 172
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10837
+    Sum: 92
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10838
+    Sum: 79
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10839
+    Sum: 45
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10840
+    Sum: 16
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 10841
+    Sum: 111
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10842
+    Sum: 52
+  AnonymousType
+    Count: 1
+    Min: 4
+    OrderID: 10843
+    Sum: 4
+  AnonymousType
+    Count: 1
+    Min: 35
+    OrderID: 10844
+    Sum: 35
+  AnonymousType
+    Count: 5
+    Min: 25
+    OrderID: 10845
+    Sum: 245
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10846
+    Sum: 71
+  AnonymousType
+    Count: 6
+    Min: 12
+    OrderID: 10847
+    Sum: 288
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10848
+    Sum: 33
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10849
+    Sum: 67
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10850
+    Sum: 54
+  AnonymousType
+    Count: 4
+    Min: 5
+    OrderID: 10851
+    Sum: 67
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10852
+    Sum: 71
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10853
+    Sum: 10
+  AnonymousType
+    Count: 2
+    Min: 65
+    OrderID: 10854
+    Sum: 165
+  AnonymousType
+    Count: 4
+    Min: 14
+    OrderID: 10855
+    Sum: 103
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10856
+    Sum: 40
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10857
+    Sum: 75
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10858
+    Sum: 19
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10859
+    Sum: 105
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10860
+    Sum: 23
+  AnonymousType
+    Count: 5
+    Min: 3
+    OrderID: 10861
+    Sum: 140
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10862
+    Sum: 33
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10863
+    Sum: 32
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10864
+    Sum: 19
+  AnonymousType
+    Count: 2
+    Min: 60
+    OrderID: 10865
+    Sum: 140
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10866
+    Sum: 67
+  AnonymousType
+    Count: 1
+    Min: 3
+    OrderID: 10867
+    Sum: 3
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10868
+    Sum: 92
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10869
+    Sum: 120
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10870
+    Sum: 5
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10871
+    Sum: 78
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10872
+    Sum: 66
+  AnonymousType
+    Count: 2
+    Min: 3
+    OrderID: 10873
+    Sum: 23
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10874
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10875
+    Sum: 61
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 10876
+    Sum: 41
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10877
+    Sum: 55
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10878
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10879
+    Sum: 32
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 10880
+    Sum: 110
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10881
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10882
+    Sum: 77
+  AnonymousType
+    Count: 1
+    Min: 8
+    OrderID: 10883
+    Sum: 8
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 10884
+    Sum: 73
+  AnonymousType
+    Count: 4
+    Min: 12
+    OrderID: 10885
+    Sum: 87
+  AnonymousType
+    Count: 3
+    Min: 35
+    OrderID: 10886
+    Sum: 145
+  AnonymousType
+    Count: 1
+    Min: 5
+    OrderID: 10887
+    Sum: 5
+  AnonymousType
+    Count: 2
+    Min: 18
+    OrderID: 10888
+    Sum: 38
+  AnonymousType
+    Count: 2
+    Min: 40
+    OrderID: 10889
+    Sum: 80
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10890
+    Sum: 39
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10891
+    Sum: 15
+  AnonymousType
+    Count: 1
+    Min: 40
+    OrderID: 10892
+    Sum: 40
+  AnonymousType
+    Count: 5
+    Min: 10
+    OrderID: 10893
+    Sum: 119
+  AnonymousType
+    Count: 3
+    Min: 28
+    OrderID: 10894
+    Sum: 198
+  AnonymousType
+    Count: 4
+    Min: 45
+    OrderID: 10895
+    Sum: 346
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10896
+    Sum: 31
+  AnonymousType
+    Count: 2
+    Min: 36
+    OrderID: 10897
+    Sum: 116
+  AnonymousType
+    Count: 1
+    Min: 5
+    OrderID: 10898
+    Sum: 5
+  AnonymousType
+    Count: 1
+    Min: 8
+    OrderID: 10899
+    Sum: 8
+  AnonymousType
+    Count: 1
+    Min: 3
+    OrderID: 10900
+    Sum: 3
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10901
+    Sum: 60
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10902
+    Sum: 36
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10903
+    Sum: 81
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10904
+    Sum: 50
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10905
+    Sum: 20
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 10906
+    Sum: 15
+  AnonymousType
+    Count: 1
+    Min: 14
+    OrderID: 10907
+    Sum: 14
+  AnonymousType
+    Count: 2
+    Min: 14
+    OrderID: 10908
+    Sum: 34
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10909
+    Sum: 32
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10910
+    Sum: 27
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10911
+    Sum: 37
+  AnonymousType
+    Count: 2
+    Min: 40
+    OrderID: 10912
+    Sum: 100
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10913
+    Sum: 85
+  AnonymousType
+    Count: 1
+    Min: 25
+    OrderID: 10914
+    Sum: 25
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10915
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10916
+    Sum: 32
+  AnonymousType
+    Count: 2
+    Min: 1
+    OrderID: 10917
+    Sum: 11
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 10918
+    Sum: 85
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10919
+    Sum: 68
+  AnonymousType
+    Count: 1
+    Min: 24
+    OrderID: 10920
+    Sum: 24
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10921
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10922
+    Sum: 50
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 10923
+    Sum: 44
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10924
+    Sum: 56
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10925
+    Sum: 37
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 10926
+    Sum: 29
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10927
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 5
+    OrderID: 10928
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10929
+    Sum: 124
+  AnonymousType
+    Count: 4
+    Min: 25
+    OrderID: 10930
+    Sum: 116
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 10931
+    Sum: 72
+  AnonymousType
+    Count: 4
+    Min: 14
+    OrderID: 10932
+    Sum: 80
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10933
+    Sum: 32
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10934
+    Sum: 20
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10935
+    Sum: 33
+  AnonymousType
+    Count: 1
+    Min: 30
+    OrderID: 10936
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10937
+    Sum: 28
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 10938
+    Sum: 128
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10939
+    Sum: 50
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 10940
+    Sum: 28
+  AnonymousType
+    Count: 4
+    Min: 30
+    OrderID: 10941
+    Sum: 204
+  AnonymousType
+    Count: 1
+    Min: 28
+    OrderID: 10942
+    Sum: 28
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10943
+    Sum: 51
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10944
+    Sum: 41
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10945
+    Sum: 30
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 10946
+    Sum: 90
+  AnonymousType
+    Count: 1
+    Min: 4
+    OrderID: 10947
+    Sum: 4
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10948
+    Sum: 53
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10949
+    Sum: 108
+  AnonymousType
+    Count: 1
+    Min: 5
+    OrderID: 10950
+    Sum: 5
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10951
+    Sum: 71
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 10952
+    Sum: 18
+  AnonymousType
+    Count: 2
+    Min: 50
+    OrderID: 10953
+    Sum: 100
+  AnonymousType
+    Count: 4
+    Min: 24
+    OrderID: 10954
+    Sum: 107
+  AnonymousType
+    Count: 1
+    Min: 12
+    OrderID: 10955
+    Sum: 12
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10956
+    Sum: 34
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10957
+    Sum: 78
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10958
+    Sum: 31
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10959
+    Sum: 20
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10960
+    Sum: 34
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10961
+    Sum: 66
+  AnonymousType
+    Count: 5
+    Min: 9
+    OrderID: 10962
+    Sum: 195
+  AnonymousType
+    Count: 1
+    Min: 2
+    OrderID: 10963
+    Sum: 2
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10964
+    Sum: 21
+  AnonymousType
+    Count: 1
+    Min: 16
+    OrderID: 10965
+    Sum: 16
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10966
+    Sum: 32
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 10967
+    Sum: 52
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10968
+    Sum: 64
+  AnonymousType
+    Count: 1
+    Min: 9
+    OrderID: 10969
+    Sum: 9
+  AnonymousType
+    Count: 1
+    Min: 40
+    OrderID: 10970
+    Sum: 40
+  AnonymousType
+    Count: 1
+    Min: 14
+    OrderID: 10971
+    Sum: 14
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 10972
+    Sum: 13
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 10973
+    Sum: 21
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 10974
+    Sum: 10
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 10975
+    Sum: 26
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 10976
+    Sum: 20
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10977
+    Sum: 90
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 10978
+    Sum: 76
+  AnonymousType
+    Count: 6
+    Min: 18
+    OrderID: 10979
+    Sum: 207
+  AnonymousType
+    Count: 1
+    Min: 40
+    OrderID: 10980
+    Sum: 40
+  AnonymousType
+    Count: 1
+    Min: 60
+    OrderID: 10981
+    Sum: 60
+  AnonymousType
+    Count: 2
+    Min: 9
+    OrderID: 10982
+    Sum: 29
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 10983
+    Sum: 99
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10984
+    Sum: 115
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 10985
+    Sum: 79
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 10986
+    Sum: 70
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 10987
+    Sum: 86
+  AnonymousType
+    Count: 2
+    Min: 40
+    OrderID: 10988
+    Sum: 100
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 10989
+    Sum: 59
+  AnonymousType
+    Count: 4
+    Min: 60
+    OrderID: 10990
+    Sum: 256
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10991
+    Sum: 160
+  AnonymousType
+    Count: 1
+    Min: 2
+    OrderID: 10992
+    Sum: 2
+  AnonymousType
+    Count: 2
+    Min: 35
+    OrderID: 10993
+    Sum: 85
+  AnonymousType
+    Count: 1
+    Min: 18
+    OrderID: 10994
+    Sum: 18
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 10995
+    Sum: 24
+  AnonymousType
+    Count: 1
+    Min: 40
+    OrderID: 10996
+    Sum: 40
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 10997
+    Sum: 90
+  AnonymousType
+    Count: 4
+    Min: 7
+    OrderID: 10998
+    Sum: 69
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 10999
+    Sum: 56
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 11000
+    Sum: 85
+  AnonymousType
+    Count: 4
+    Min: 6
+    OrderID: 11001
+    Sum: 116
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 11002
+    Sum: 135
+  AnonymousType
+    Count: 3
+    Min: 4
+    OrderID: 11003
+    Sum: 24
+  AnonymousType
+    Count: 2
+    Min: 6
+    OrderID: 11004
+    Sum: 12
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 11005
+    Sum: 12
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 11006
+    Sum: 10
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 11007
+    Sum: 54
+  AnonymousType
+    Count: 3
+    Min: 21
+    OrderID: 11008
+    Sum: 181
+  AnonymousType
+    Count: 3
+    Min: 9
+    OrderID: 11009
+    Sum: 39
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 11010
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 20
+    OrderID: 11011
+    Sum: 60
+  AnonymousType
+    Count: 3
+    Min: 36
+    OrderID: 11012
+    Sum: 146
+  AnonymousType
+    Count: 4
+    Min: 2
+    OrderID: 11013
+    Sum: 36
+  AnonymousType
+    Count: 1
+    Min: 28
+    OrderID: 11014
+    Sum: 28
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 11015
+    Sum: 33
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 11016
+    Sum: 31
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 11017
+    Sum: 165
+  AnonymousType
+    Count: 3
+    Min: 5
+    OrderID: 11018
+    Sum: 35
+  AnonymousType
+    Count: 2
+    Min: 2
+    OrderID: 11019
+    Sum: 5
+  AnonymousType
+    Count: 1
+    Min: 24
+    OrderID: 11020
+    Sum: 24
+  AnonymousType
+    Count: 5
+    Min: 11
+    OrderID: 11021
+    Sum: 168
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 11022
+    Sum: 65
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 11023
+    Sum: 34
+  AnonymousType
+    Count: 4
+    Min: 12
+    OrderID: 11024
+    Sum: 113
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 11025
+    Sum: 30
+  AnonymousType
+    Count: 2
+    Min: 8
+    OrderID: 11026
+    Sum: 18
+  AnonymousType
+    Count: 2
+    Min: 21
+    OrderID: 11027
+    Sum: 51
+  AnonymousType
+    Count: 2
+    Min: 24
+    OrderID: 11028
+    Sum: 59
+  AnonymousType
+    Count: 2
+    Min: 12
+    OrderID: 11029
+    Sum: 32
+  AnonymousType
+    Count: 4
+    Min: 60
+    OrderID: 11030
+    Sum: 330
+  AnonymousType
+    Count: 5
+    Min: 16
+    OrderID: 11031
+    Sum: 182
+  AnonymousType
+    Count: 3
+    Min: 25
+    OrderID: 11032
+    Sum: 90
+  AnonymousType
+    Count: 2
+    Min: 36
+    OrderID: 11033
+    Sum: 106
+  AnonymousType
+    Count: 3
+    Min: 6
+    OrderID: 11034
+    Sum: 33
+  AnonymousType
+    Count: 4
+    Min: 10
+    OrderID: 11035
+    Sum: 110
+  AnonymousType
+    Count: 2
+    Min: 7
+    OrderID: 11036
+    Sum: 37
+  AnonymousType
+    Count: 1
+    Min: 4
+    OrderID: 11037
+    Sum: 4
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 11038
+    Sum: 37
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 11039
+    Sum: 132
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 11040
+    Sum: 20
+  AnonymousType
+    Count: 2
+    Min: 30
+    OrderID: 11041
+    Sum: 60
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 11042
+    Sum: 19
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 11043
+    Sum: 10
+  AnonymousType
+    Count: 1
+    Min: 12
+    OrderID: 11044
+    Sum: 12
+  AnonymousType
+    Count: 2
+    Min: 15
+    OrderID: 11045
+    Sum: 39
+  AnonymousType
+    Count: 3
+    Min: 15
+    OrderID: 11046
+    Sum: 53
+  AnonymousType
+    Count: 2
+    Min: 25
+    OrderID: 11047
+    Sum: 55
+  AnonymousType
+    Count: 1
+    Min: 42
+    OrderID: 11048
+    Sum: 42
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 11049
+    Sum: 14
+  AnonymousType
+    Count: 1
+    Min: 50
+    OrderID: 11050
+    Sum: 50
+  AnonymousType
+    Count: 1
+    Min: 10
+    OrderID: 11051
+    Sum: 10
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 11052
+    Sum: 40
+  AnonymousType
+    Count: 3
+    Min: 20
+    OrderID: 11053
+    Sum: 80
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 11054
+    Sum: 30
+  AnonymousType
+    Count: 4
+    Min: 15
+    OrderID: 11055
+    Sum: 70
+  AnonymousType
+    Count: 3
+    Min: 35
+    OrderID: 11056
+    Sum: 125
+  AnonymousType
+    Count: 1
+    Min: 3
+    OrderID: 11057
+    Sum: 3
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 11058
+    Sum: 28
+  AnonymousType
+    Count: 3
+    Min: 12
+    OrderID: 11059
+    Sum: 77
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 11060
+    Sum: 14
+  AnonymousType
+    Count: 1
+    Min: 15
+    OrderID: 11061
+    Sum: 15
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 11062
+    Sum: 22
+  AnonymousType
+    Count: 3
+    Min: 30
+    OrderID: 11063
+    Sum: 100
+  AnonymousType
+    Count: 5
+    Min: 4
+    OrderID: 11064
+    Sum: 173
+  AnonymousType
+    Count: 2
+    Min: 4
+    OrderID: 11065
+    Sum: 24
+  AnonymousType
+    Count: 3
+    Min: 3
+    OrderID: 11066
+    Sum: 80
+  AnonymousType
+    Count: 1
+    Min: 9
+    OrderID: 11067
+    Sum: 9
+  AnonymousType
+    Count: 3
+    Min: 8
+    OrderID: 11068
+    Sum: 72
+  AnonymousType
+    Count: 1
+    Min: 20
+    OrderID: 11069
+    Sum: 20
+  AnonymousType
+    Count: 4
+    Min: 20
+    OrderID: 11070
+    Sum: 110
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 11071
+    Sum: 25
+  AnonymousType
+    Count: 4
+    Min: 8
+    OrderID: 11072
+    Sum: 200
+  AnonymousType
+    Count: 2
+    Min: 10
+    OrderID: 11073
+    Sum: 30
+  AnonymousType
+    Count: 1
+    Min: 14
+    OrderID: 11074
+    Sum: 14
+  AnonymousType
+    Count: 3
+    Min: 2
+    OrderID: 11075
+    Sum: 42
+  AnonymousType
+    Count: 3
+    Min: 10
+    OrderID: 11076
+    Sum: 50
+  AnonymousType
+    Count: 25
+    Min: 1
+    OrderID: 11077
+    Sum: 72
+}

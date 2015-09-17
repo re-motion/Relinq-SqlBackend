@@ -35,134 +35,161 @@ Imports System.Reflection
 Imports NUnit.Framework
 
 Namespace SystemTests
-  <TestFixture> _
-  Public Class SelectTests
+  <TestFixture>
+  Public Class CustomProjectionTests
     Inherits TestBase
-    Private Class ProductData
-      Public Property ProductID() As Integer
-        Get
-          Return m_ProductID
-        End Get
-        Private Set(value As Integer)
-          m_ProductID = value
-        End Set
-      End Property
-      Private m_ProductID As Integer
-
-      Public Property Name() As String
-        Get
-          Return m_Name
-        End Get
-        Set(value As String)
-          m_Name = value
-        End Set
-      End Property
-      Private m_Name As String
-
-      Public Property Discontinued() As Boolean
-        Get
-          Return m_Discontinued
-        End Get
-        Set(value As Boolean)
-          m_Discontinued = value
-        End Set
-      End Property
-      Private m_Discontinued As Boolean
-
-      Public Property HasUnitsInStock() As Boolean
-        Get
-          Return m_HasUnitsInStock
-        End Get
-        Set(value As Boolean)
-          m_HasUnitsInStock = value
-        End Set
-      End Property
-      Private m_HasUnitsInStock As Boolean
-
-      Public Sub New(productId1 As Integer)
-        ProductID = productId1
-      End Sub
-    End Class
 
     <Test> _
-    <Ignore("RM-3306: Support for MemberInitExpressions")> _
-    Public Sub WithMemberInitExpression_InOuterMostLevel()
-      Dim query = DB.Products.Select(Function(p) New ProductData(p.ProductID) With { _
-        .Name = p.ProductName, _
-        .Discontinued = p.Discontinued, _
-        .HasUnitsInStock = p.UnitsInStock > 0 _
-      })
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
-    End Sub
-
-    <Test> _
-    Public Sub SimpleQuery_WithRelatedEntity()
+    Public Sub SequenceOfEntityProperties()
       Dim query = From od In DB.OrderDetails _
-                  Select od.Order
+            Where od.Quantity <= 55 _
+            Select od.Quantity
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub MethodCallOnCoalesceExpression()
-      Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion, o.Customer.Region)).ToUpper() = "ISLE OF WIGHT" _
-                  Select o
+    Public Sub SequenceOfPrimaryKeys()
+      Dim query = (From od In DB.OrderDetails Where od.Quantity <= 55 Select od.OrderID)
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub MethodCallOnConditionalExpression()
-      Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion = "Isle of Wight", o.ShipRegion, o.Customer.Region)).ToUpper() = "ISLE OF WIGHT" _
-                  Select o
+    Public Sub SequenceOfForeignKeyIDs()
+      Dim query = (From od In DB.OrderDetails Where od.Quantity = 10 Select od.Order.OrderID)
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub LogicalMemberAccessOnCoalesceExpression()
-      Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion, o.Customer.Region)).Length = 2 _
-                  Select o
+    <Ignore("RMLNQSQL-99: Support .Count on Collections")>
+    Public Sub ComplexProjection()
+      Dim query = (From o In DB.Orders Where o.OrderID = 10248 _
+            Select New With { _
+            o.OrderID, _
+            o.OrderDate, _
+            Key .[Property] = { _
+                                o.Customer.ContactName,
+                                o.OrderDetails.Count
+                              } _
+            })
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub LogicalMemberAccessOnConditionalExpression()
-      Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion = "Isle of Wight", o.ShipRegion, o.Customer.Region)).Length = 13 _
-                  Select o
+    <Ignore("RMLNQSQL-99: Support .Count on Collections")>
+    Public Sub ComplexProjection_WithSingleQuery()
+      Dim query = (From o In DB.Orders Where o.OrderID = 10248 _
+            Select New With { _
+            o.OrderID, _
+            o.OrderDate, _
+            Key .[Property] = { _
+                                o.Customer.ContactName,
+                                o.OrderDetails.Count
+                              } _
+            }).[Single]()
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    <Ignore("RMLNQSQL-93: When the Coalesce operator is used with relations" + "(.i.e. their ID and ForeignKey-columns), nullable<valueType> gets compared with valueType, resulting in an ArgumentException")> _
-    Public Sub CoalesceExpression_ColumnMember()
+    Public Sub ComplexProjection_ContainingEntity()
+      Dim query = (From o In DB.Orders _
+            Select New With { _
+            o.OrderID, _
+            o _
+            })
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub SingleBoolean()
+      Dim query = (From p In DB.Products _
+            Where p.ProductID = 2 _
+            Select p.Discontinued)
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub SingleNullableBoolean()
+      Dim query = (From e In DB.Employees _
+            Where e.EmployeeID = 2 _
+            Select e.HasCar)
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub ComplexProjection_WithBooleans()
+      Dim query = (From p In DB.Products _
+            Where p.ProductID = 2 _
+            Select New With { _
+            p.Discontinued _
+            })
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub ComplexProjection_WithNullableBooleans()
+      Dim query = (From p In DB.Employees _
+            Where p.EmployeeID = 2 _
+            Select New With { _
+            p.HasCar _
+            })
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub SingleProperty()
+      Dim query = (From p In DB.Products _
+            Where p.ProductID = 2 _
+            Select p.ProductName)
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub SingleValueType()
       Dim query = From e In DB.Employees _
-                  Where (If(e.ReportsToEmployee, e)).EmployeeID = 1 _
-                  Select e
+            Where e.EmployeeID = 1 _
+            Select e.EmployeeID
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub Query_WithConstant()
-      Dim query = (From o In DB.Orders _
-                   Where o.OrderID = 10248 _
-                   Select 1).Single()
+    Public Sub SingleValueType_Nullable()
+      Dim query = From e In DB.Employees _
+            Where e.ReportsTo IsNot Nothing _
+            Select e.ReportsTo
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub Query_WithObjectID()
-      Dim query = (From o In DB.Orders _
-                   Where o.OrderID = 10248 _
-                   Select o.OrderID).Single()
+    Public Sub ComplexProjection_WithNullableValueTypes()
+      Dim query = (From e In DB.Employees _
+            Where e.ReportsTo IsNot Nothing _
+            Select New With { _
+              e.ReportsTo _
+            })
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub ComplexProjection_WithValueTypes()
+      Dim query = (From p In DB.Products _
+            Where p.ProductID = 2 _
+            Select New With { _
+            p.ProductID _
+            })
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub

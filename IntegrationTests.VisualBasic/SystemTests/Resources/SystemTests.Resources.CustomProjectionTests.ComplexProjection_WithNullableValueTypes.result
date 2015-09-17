@@ -1,0 +1,18 @@
+Enumerable {
+  AnonymousType
+    ReportsTo: 2
+  AnonymousType
+    ReportsTo: 2
+  AnonymousType
+    ReportsTo: 2
+  AnonymousType
+    ReportsTo: 2
+  AnonymousType
+    ReportsTo: 5
+  AnonymousType
+    ReportsTo: 5
+  AnonymousType
+    ReportsTo: 2
+  AnonymousType
+    ReportsTo: 5
+}
