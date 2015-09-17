@@ -65,5 +65,94 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
           p => new ProductData (p.ProductID) { Name = p.ProductName, Discontinued = p.Discontinued, HasUnitsInStock = p.UnitsInStock > 0 });
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
+
+    [Test]
+    public void SimpleQuery_WithRelatedEntity ()
+    {
+      var query =
+          from od in DB.OrderDetails
+          select od.Order;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void MethodCallOnCoalesceExpression ()
+    {
+      var query =
+          from o in DB.Orders
+          where (o.ShipRegion ?? o.Customer.Region).ToUpper() == "ISLE OF WIGHT"
+          select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void MethodCallOnConditionalExpression ()
+    {
+      var query =
+          from o in DB.Orders
+          where (o.ShipRegion == "Isle of Wight" ? o.ShipRegion : o.Customer.Region).ToUpper() == "ISLE OF WIGHT"
+          select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void LogicalMemberAccessOnCoalesceExpression ()
+    {
+      var query =
+          from o in DB.Orders
+          where (o.ShipRegion ?? o.Customer.Region).Length == 2
+          select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void LogicalMemberAccessOnConditionalExpression ()
+    {
+      var query =
+          from o in DB.Orders
+          where (o.ShipRegion == "Isle of Wight" ? o.ShipRegion : o.Customer.Region).Length == 13
+          select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    [Ignore ("RMLNQSQL-93: When the Coalesce operator is used with relations"
+             + "(.i.e. their ID and ForeignKey-columns), nullable<valueType> gets compared with valueType, resulting in an ArgumentException")]
+    public void CoalesceExpression_ColumnMember ()
+    {
+      var query =
+          from e in DB.Employees
+          where (e.ReportsToEmployee ?? e).EmployeeID == 1
+          select e;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void Query_WithConstant ()
+    {
+      var query =
+          (from o in DB.Orders
+            where o.OrderID == 10248
+            select 1).Single();
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void Query_WithObjectID ()
+    {
+      var query =
+          (from o in DB.Orders
+            where o.OrderID == 10248
+            select o.OrderID).Single();
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
   }
 }

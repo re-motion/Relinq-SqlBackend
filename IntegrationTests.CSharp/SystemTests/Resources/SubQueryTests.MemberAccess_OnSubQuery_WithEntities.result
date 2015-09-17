@@ -1,0 +1,11 @@
+Product
+  CategoryID: 4
+  Discontinued: False
+  ProductID: 11
+  ProductName: 'Queso Cabrales'
+  QuantityPerUnit: '1 kg pkg.'
+  ReorderLevel: 30
+  SupplierID: 5
+  UnitPrice: 21.0000
+  UnitsInStock: 22
+  UnitsOnOrder: 30

@@ -1,0 +1,14 @@
+Enumerable {
+  Customer
+    Address: '43 rue St. Laurent'
+    City: 'Montréal'
+    CompanyName: 'Mère Paillarde'
+    ContactName: 'Jean Fresnière'
+    ContactTitle: 'Marketing Assistant'
+    Country: 'Canada'
+    CustomerID: 'MEREP'
+    Fax: '(514) 555-8055'
+    Phone: '(514) 555-8054'
+    PostalCode: 'H1J 1C3'
+    Region: 'Québec'
+}

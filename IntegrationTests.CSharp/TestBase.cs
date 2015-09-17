@@ -41,6 +41,16 @@ namespace Remotion.Linq.IntegrationTests.CSharp
 {
   public class TestBase : AbstractTestBase
   {
+    protected bool IsLinqToSqlActive 
+    {
+      get { return Mode == TestMode.SaveReferenceResults; }
+    }
+
+    protected bool IsRelinqSqlBackendActive
+    {
+      get { return Mode == TestMode.CheckActualResults; }
+    }
+
     protected override Func<MethodBase, string> SavedResultFileNameGenerator
     {
       // C# will automatically add the folder structure to the resource file name when embedding a resource

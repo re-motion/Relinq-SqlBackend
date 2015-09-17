@@ -1,0 +1,230 @@
+Enumerable {
+  OrderDetail
+    Discount: 0.2
+    OrderID: 10285
+    ProductID: 1
+    Quantity: 45
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0
+    OrderID: 10294
+    ProductID: 1
+    Quantity: 18
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0
+    OrderID: 10317
+    ProductID: 1
+    Quantity: 20
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0.15
+    OrderID: 10348
+    ProductID: 1
+    Quantity: 15
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0
+    OrderID: 10354
+    ProductID: 1
+    Quantity: 12
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0.15
+    OrderID: 10370
+    ProductID: 1
+    Quantity: 15
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0
+    OrderID: 10406
+    ProductID: 1
+    Quantity: 10
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0
+    OrderID: 10413
+    ProductID: 1
+    Quantity: 24
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0
+    OrderID: 10477
+    ProductID: 1
+    Quantity: 15
+    UnitPrice: 14.4000
+  OrderDetail
+    Discount: 0.2
+    OrderID: 10522
+    ProductID: 1
+    Quantity: 40
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.15
+    OrderID: 10526
+    ProductID: 1
+    Quantity: 8
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10576
+    ProductID: 1
+    Quantity: 10
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10590
+    ProductID: 1
+    Quantity: 20
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10609
+    ProductID: 1
+    Quantity: 3
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10611
+    ProductID: 1
+    Quantity: 6
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10628
+    ProductID: 1
+    Quantity: 25
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.25
+    OrderID: 10646
+    ProductID: 1
+    Quantity: 15
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.25
+    OrderID: 10689
+    ProductID: 1
+    Quantity: 35
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10691
+    ProductID: 1
+    Quantity: 30
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.2
+    OrderID: 10700
+    ProductID: 1
+    Quantity: 5
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10729
+    ProductID: 1
+    Quantity: 50
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10752
+    ProductID: 1
+    Quantity: 8
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.25
+    OrderID: 10838
+    ProductID: 1
+    Quantity: 4
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.2
+    OrderID: 10847
+    ProductID: 1
+    Quantity: 80
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.15
+    OrderID: 10863
+    ProductID: 1
+    Quantity: 20
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10869
+    ProductID: 1
+    Quantity: 40
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.05
+    OrderID: 10905
+    ProductID: 1
+    Quantity: 20
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10911
+    ProductID: 1
+    Quantity: 10
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.25
+    OrderID: 10918
+    ProductID: 1
+    Quantity: 60
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10935
+    ProductID: 1
+    Quantity: 21
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 11003
+    ProductID: 1
+    Quantity: 4
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 11005
+    ProductID: 1
+    Quantity: 2
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 11006
+    ProductID: 1
+    Quantity: 8
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.1
+    OrderID: 11025
+    ProductID: 1
+    Quantity: 10
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 11031
+    ProductID: 1
+    Quantity: 45
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 11035
+    ProductID: 1
+    Quantity: 10
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.25
+    OrderID: 11047
+    ProductID: 1
+    Quantity: 25
+    UnitPrice: 18.0000
+  OrderDetail
+    Discount: 0.15
+    OrderID: 11070
+    ProductID: 1
+    Quantity: 40
+    UnitPrice: 18.0000
+}

@@ -35,7 +35,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common;
 using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
@@ -46,9 +45,11 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     [Test]
     public void Union_TopLevel ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-          .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-          .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID));
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
+              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
+              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID));
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
@@ -61,48 +62,59 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
               .Union (DB.Suppliers.Where (s => s.Country == "USA").Select (s => s.SupplierID))).Contains ((int) p.SupplierID)
           orderby p.ProductID
           select p;
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Union_WithDiscardedOrderBy ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending(c => c)
-          .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending(c => c));
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c)
+              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c));
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Union_WithNonDiscardedOrderBy ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-          .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-          .OrderByDescending (c => c);
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
+              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
+              .OrderByDescending (c => c);
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Union_WithNonDiscardedOrderByWithTake ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c).Take (3)
-          .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c)).Take (3);
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c).Take (3)
+              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c)).Take (3);
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Union_WithSelectedDiscriminator ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
-          .Union (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
+              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Concat_TopLevel ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-          .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-          .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID));
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
+              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
+              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID));
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
@@ -115,39 +127,48 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
               .Concat (DB.Suppliers.Where (s => s.Country == "USA").Select (s => s.SupplierID))).Contains ((int) p.SupplierID)
           orderby p.ProductID
           select p;
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Concat_WithDiscardedOrderBy ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending(c => c)
-          .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending(c => c));
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c)
+              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c));
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Concat_WithNonDiscardedOrderBy ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-          .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-          .OrderByDescending (c => c);
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
+              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
+              .OrderByDescending (c => c);
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Concat_WithNonDiscardedOrderByWithTake ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c).Take (3)
-          .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c)).Take (3);
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c).Take (3)
+              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c)).Take (3);
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
     public void Concat_WithSelectedDiscriminator ()
     {
-      var query = DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
-          .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
+      var query =
+          DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
+              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
+
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
   }

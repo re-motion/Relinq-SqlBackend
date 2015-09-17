@@ -47,10 +47,21 @@ Namespace MiscTests
 
     <Test()> _
     Public Sub IsNothingMethod()
-      Dim empQuery = From emp In DB.Employees _
+      Dim query = From emp In DB.Employees _
             Where IsNothing(emp.ReportsTo)
 
-      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
+      Dim currentMethod As MethodBase = MethodBase.GetCurrentMethod()
+
+      If (IsLinqToSqlActive) Then
+        Assert.That(Sub()
+                      TestExecutor.Execute(query, currentMethod)
+                    End Sub, Throws.[TypeOf](Of NotSupportedException)().[With].Message.EqualTo _
+                     ("Method 'Boolean IsNothing(System.Object)' has no supported translation to SQL."))
+      ElseIf (IsRelinqSqlBackendActive) Then
+        TestExecutor.Execute(query, currentMethod)
+      End If
+
+
     End Sub
 
     <Test()> _
