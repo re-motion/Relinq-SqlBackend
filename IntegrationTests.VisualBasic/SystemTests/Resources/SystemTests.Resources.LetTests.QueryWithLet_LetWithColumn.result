@@ -1,0 +1,92 @@
+Enumerable {
+  Order
+    CustomerID: 'TOMSP'
+    EmployeeID: 6
+    Freight: 11.6100
+    OrderDate: 07/05/1996 00:00:00
+    OrderID: 10249
+    RequiredDate: 08/16/1996 00:00:00
+    ShipAddress: 'Luisenstr. 48'
+    ShipCity: 'Münster'
+    ShipCountry: 'Germany'
+    ShipName: 'Toms Spezialitäten'
+    ShippedDate: 07/10/1996 00:00:00
+    ShipPostalCode: '44087'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'HANAR'
+    EmployeeID: 4
+    Freight: 65.8300
+    OrderDate: 07/08/1996 00:00:00
+    OrderID: 10250
+    RequiredDate: 08/05/1996 00:00:00
+    ShipAddress: 'Rua do Paço, 67'
+    ShipCity: 'Rio de Janeiro'
+    ShipCountry: 'Brazil'
+    ShipName: 'Hanari Carnes'
+    ShippedDate: 07/12/1996 00:00:00
+    ShipPostalCode: '05454-876'
+    ShipRegion: 'RJ'
+    ShipVia: 2
+  Order
+    CustomerID: 'VICTE'
+    EmployeeID: 3
+    Freight: 41.3400
+    OrderDate: 07/08/1996 00:00:00
+    OrderID: 10251
+    RequiredDate: 08/05/1996 00:00:00
+    ShipAddress: '2, rue du Commerce'
+    ShipCity: 'Lyon'
+    ShipCountry: 'France'
+    ShipName: 'Victuailles en stock'
+    ShippedDate: 07/15/1996 00:00:00
+    ShipPostalCode: '69004'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'SUPRD'
+    EmployeeID: 4
+    Freight: 51.3000
+    OrderDate: 07/09/1996 00:00:00
+    OrderID: 10252
+    RequiredDate: 08/06/1996 00:00:00
+    ShipAddress: 'Boulevard Tirou, 255'
+    ShipCity: 'Charleroi'
+    ShipCountry: 'Belgium'
+    ShipName: 'Suprêmes délices'
+    ShippedDate: 07/11/1996 00:00:00
+    ShipPostalCode: 'B-6000'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'HANAR'
+    EmployeeID: 3
+    Freight: 58.1700
+    OrderDate: 07/10/1996 00:00:00
+    OrderID: 10253
+    RequiredDate: 07/24/1996 00:00:00
+    ShipAddress: 'Rua do Paço, 67'
+    ShipCity: 'Rio de Janeiro'
+    ShipCountry: 'Brazil'
+    ShipName: 'Hanari Carnes'
+    ShippedDate: 07/16/1996 00:00:00
+    ShipPostalCode: '05454-876'
+    ShipRegion: 'RJ'
+    ShipVia: 2
+  Order
+    CustomerID: 'CHOPS'
+    EmployeeID: 5
+    Freight: 22.9800
+    OrderDate: 07/11/1996 00:00:00
+    OrderID: 10254
+    RequiredDate: 08/08/1996 00:00:00
+    ShipAddress: 'Hauptstr. 31'
+    ShipCity: 'Bern'
+    ShipCountry: 'Switzerland'
+    ShipName: 'Chop-suey Chinese'
+    ShippedDate: 07/23/1996 00:00:00
+    ShipPostalCode: '3012'
+    ShipRegion: null
+    ShipVia: 2
+}

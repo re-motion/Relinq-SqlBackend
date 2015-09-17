@@ -1,0 +1,62 @@
+Enumerable {
+  OrderDetail
+    Discount: 0
+    OrderID: 10248
+    ProductID: 11
+    Quantity: 12
+    UnitPrice: 14.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10248
+    ProductID: 42
+    Quantity: 10
+    UnitPrice: 9.8000
+  OrderDetail
+    Discount: 0
+    OrderID: 10248
+    ProductID: 72
+    Quantity: 5
+    UnitPrice: 34.8000
+  OrderDetail
+    Discount: 0
+    OrderID: 10274
+    ProductID: 71
+    Quantity: 20
+    UnitPrice: 17.2000
+  OrderDetail
+    Discount: 0
+    OrderID: 10274
+    ProductID: 72
+    Quantity: 7
+    UnitPrice: 27.8000
+  OrderDetail
+    Discount: 0
+    OrderID: 10295
+    ProductID: 56
+    Quantity: 4
+    UnitPrice: 30.4000
+  OrderDetail
+    Discount: 0
+    OrderID: 10737
+    ProductID: 13
+    Quantity: 4
+    UnitPrice: 6.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10737
+    ProductID: 41
+    Quantity: 12
+    UnitPrice: 9.6500
+  OrderDetail
+    Discount: 0
+    OrderID: 10739
+    ProductID: 36
+    Quantity: 6
+    UnitPrice: 19.0000
+  OrderDetail
+    Discount: 0
+    OrderID: 10739
+    ProductID: 52
+    Quantity: 18
+    UnitPrice: 7.0000
+}

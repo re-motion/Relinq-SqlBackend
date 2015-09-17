@@ -127,6 +127,20 @@
     <Compile Include="LinqSamples101\StringDateFunctionsTests.vb" />
     <Compile Include="MiscTests\BinaryExpressionTests.vb" />
     <Compile Include="MiscTests\InheritanceTests.vb" />
+    <Compile Include="SystemTests\CustomProjectionTests.vb" />
+    <Compile Include="SystemTests\ExplicitJoinsTests.vb" />
+    <Compile Include="SystemTests\GroupByTests.vb" />
+    <Compile Include="SystemTests\ImplicitJoinTests.vb" />
+    <Compile Include="SystemTests\LetTests.vb" />
+    <Compile Include="SystemTests\MethodCallsTests.vb" />
+    <Compile Include="SystemTests\MultiFromTests.vb" />
+    <Compile Include="SystemTests\OrderByTests.vb" />
+    <Compile Include="SystemTests\ResultOperatorTests.vb" />
+    <Compile Include="SystemTests\SelectTests.vb" />
+    <Compile Include="SystemTests\SetOperationsTests.vb" />
+    <Compile Include="SystemTests\SubQueryTests.vb" />
+    <Compile Include="SystemTests\UnionConcatTests.vb" />
+    <Compile Include="SystemTests\WhereTests.vb" />
     <Compile Include="TestBase.vb" />
     <Compile Include="LinqSamples101\TopBottomTests.vb" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.vb" />
@@ -140,7 +154,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
-    <Compile Include="SystemTests\SelectTests.vb" />
     <None Include="..\MSPL.licenseheader">
       <Link>MSPL.licenseheader</Link>
     </None>

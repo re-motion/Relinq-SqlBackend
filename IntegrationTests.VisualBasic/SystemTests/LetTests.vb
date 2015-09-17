@@ -30,139 +30,83 @@
 ' (E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. 
 ' You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws,
 ' the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
-Imports System.Linq
+
 Imports System.Reflection
 Imports NUnit.Framework
 
 Namespace SystemTests
-  <TestFixture> _
-  Public Class SelectTests
+  <TestFixture>
+  Public Class LetTests
     Inherits TestBase
-    Private Class ProductData
-      Public Property ProductID() As Integer
-        Get
-          Return m_ProductID
-        End Get
-        Private Set(value As Integer)
-          m_ProductID = value
-        End Set
-      End Property
-      Private m_ProductID As Integer
-
-      Public Property Name() As String
-        Get
-          Return m_Name
-        End Get
-        Set(value As String)
-          m_Name = value
-        End Set
-      End Property
-      Private m_Name As String
-
-      Public Property Discontinued() As Boolean
-        Get
-          Return m_Discontinued
-        End Get
-        Set(value As Boolean)
-          m_Discontinued = value
-        End Set
-      End Property
-      Private m_Discontinued As Boolean
-
-      Public Property HasUnitsInStock() As Boolean
-        Get
-          Return m_HasUnitsInStock
-        End Get
-        Set(value As Boolean)
-          m_HasUnitsInStock = value
-        End Set
-      End Property
-      Private m_HasUnitsInStock As Boolean
-
-      Public Sub New(productId1 As Integer)
-        ProductID = productId1
-      End Sub
-    End Class
 
     <Test> _
-    <Ignore("RM-3306: Support for MemberInitExpressions")> _
-    Public Sub WithMemberInitExpression_InOuterMostLevel()
-      Dim query = DB.Products.Select(Function(p) New ProductData(p.ProductID) With { _
-        .Name = p.ProductName, _
-        .Discontinued = p.Discontinued, _
-        .HasUnitsInStock = p.UnitsInStock > 0 _
-      })
+    Public Sub QueryWithLet_LetWithTable()
+      Dim query = From o In DB.Orders _
+            Let x = o _
+            Select x
+
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub SimpleQuery_WithRelatedEntity()
+    Public Sub QueryWithLet_LetWithColumn()
+      Dim query = From o In DB.Orders _
+            Let y = o.OrderID _
+            Where y > 10248 AndAlso y < 10255 _
+            Select o
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub QueryWithLet_LetWithColumn2()
+      Dim query = From o In DB.Orders _
+            Let x = o.Customer.ContactName _
+            Where x = "Liz Nixon" _
+            Select o
+
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+    End Sub
+
+    <Test> _
+    Public Sub QueryWithSeveralJoinsAndLet()
       Dim query = From od In DB.OrderDetails _
-                  Select od.Order
+            Let x = od.Order.Customer _
+            Where x.ContactName = "Liz Nixon" _
+            Select x
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub MethodCallOnCoalesceExpression()
+    Public Sub QueryWithSeveralLets()
       Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion, o.Customer.Region)).ToUpper() = "ISLE OF WIGHT" _
-                  Select o
+            Let x = o _
+            Let y = o.Customer _
+            Select x
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub MethodCallOnConditionalExpression()
-      Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion = "Isle of Wight", o.ShipRegion, o.Customer.Region)).ToUpper() = "ISLE OF WIGHT" _
-                  Select o
+    Public Sub QueryWithLet_AndMultipleFromClauses()
+      Dim query = From od In DB.OrderDetails _
+            From o In DB.Orders _
+            Let x = od.Order _
+            Where od.Order.OrderID = 10248 _
+            Where o Is od.Order _
+            Select x
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
-    Public Sub LogicalMemberAccessOnCoalesceExpression()
-      Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion, o.Customer.Region)).Length = 2 _
-                  Select o
-
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
-    End Sub
-
-    <Test> _
-    Public Sub LogicalMemberAccessOnConditionalExpression()
-      Dim query = From o In DB.Orders _
-                  Where (If(o.ShipRegion = "Isle of Wight", o.ShipRegion, o.Customer.Region)).Length = 13 _
-                  Select o
-
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
-    End Sub
-
-    <Test> _
-    <Ignore("RMLNQSQL-93: When the Coalesce operator is used with relations" + "(.i.e. their ID and ForeignKey-columns), nullable<valueType> gets compared with valueType, resulting in an ArgumentException")> _
-    Public Sub CoalesceExpression_ColumnMember()
-      Dim query = From e In DB.Employees _
-                  Where (If(e.ReportsToEmployee, e)).EmployeeID = 1 _
-                  Select e
-
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
-    End Sub
-
-    <Test> _
-    Public Sub Query_WithConstant()
-      Dim query = (From o In DB.Orders _
-                   Where o.OrderID = 10248 _
-                   Select 1).Single()
-
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
-    End Sub
-
-    <Test> _
-    Public Sub Query_WithObjectID()
-      Dim query = (From o In DB.Orders _
-                   Where o.OrderID = 10248 _
-                   Select o.OrderID).Single()
+    Public Sub QueryWithMemberFromClause_WithLet()
+      Dim query = From c In DB.OrderDetails _
+            Let x = c.Order _
+            From od In x.OrderDetails _
+            Where c.Order.OrderID = 10248 _
+            Select od
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
