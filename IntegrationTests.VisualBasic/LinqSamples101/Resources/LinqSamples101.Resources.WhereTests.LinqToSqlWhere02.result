@@ -8,6 +8,7 @@ Winchester Way'
     EmployeeID: 7
     Extension: '465'
     FirstName: 'Robert'
+    HasCar: True
     HireDate: 01/02/1994 00:00:00
     HomePhone: '(71) 555-5598'
     LastName: 'King'
@@ -28,6 +29,7 @@ Winchester Way'
     EmployeeID: 8
     Extension: '2344'
     FirstName: 'Laura'
+    HasCar: null
     HireDate: 03/05/1994 00:00:00
     HomePhone: '(206) 555-1189'
     LastName: 'Callahan'
@@ -48,6 +50,7 @@ Winchester Way'
     EmployeeID: 9
     Extension: '452'
     FirstName: 'Anne'
+    HasCar: True
     HireDate: 11/15/1994 00:00:00
     HomePhone: '(71) 555-4444'
     LastName: 'Dodsworth'
