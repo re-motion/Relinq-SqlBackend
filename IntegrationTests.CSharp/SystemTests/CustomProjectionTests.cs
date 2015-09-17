@@ -35,141 +35,176 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
   [TestFixture]
-  public class SetOperationsTests : TestBase
+  public class CustomProjectionTests : TestBase
   {
     [Test]
-    public void Union_TopLevel ()
+    public void SequenceOfEntityProperties ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID));
+          from od in DB.OrderDetails
+          where od.Quantity <= 55
+          select od.Quantity;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Union_SubQuery ()
+    public void SequenceOfPrimaryKeys ()
     {
       var query =
-          from p in DB.Products
-          where p.SupplierID != null && (DB.Suppliers.Where (s => s.Country == "UK").Select (s => s.SupplierID)
-              .Union (DB.Suppliers.Where (s => s.Country == "USA").Select (s => s.SupplierID))).Contains ((int) p.SupplierID)
-          orderby p.ProductID
-          select p;
+          (from od in DB.OrderDetails
+            where od.Quantity <= 55
+            select od.OrderID);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Union_WithDiscardedOrderBy ()
+    public void SequenceOfForeignKeyIDs ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c)
-              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c));
+          (from od in DB.OrderDetails
+            where od.Quantity == 10
+            select od.Order.OrderID);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Union_WithNonDiscardedOrderBy ()
+    [Ignore ("RMLNQSQL-99: Support .Count on Collections")]
+    public void ComplexProjection ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-              .OrderByDescending (c => c);
+          (from o in DB.Orders
+            where o.OrderID == 10248
+            select new { o.OrderID, o.OrderDate, Property = new { o.Customer.ContactName, o.OrderDetails.Count } });
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Union_WithNonDiscardedOrderByWithTake ()
+    [Ignore ("RMLNQSQL-99: Support .Count on Collections")]
+    public void ComplexProjection_WithSingleQuery ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c).Take (3)
-              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c)).Take (3);
+          (from o in DB.Orders
+            where o.OrderID == 10248
+            select new { o.OrderID, o.OrderDate, Property = new { o.Customer.ContactName, o.OrderDetails.Count } }).Single();
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Union_WithSelectedDiscriminator ()
+    public void ComplexProjection_ContainingEntity ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
-              .Union (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
+          (from o in DB.Orders
+            select new { o.OrderID, o });
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Concat_TopLevel ()
+    public void SingleBoolean ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID));
+          (from p in DB.Products
+            where p.ProductID == 2
+            select p.Discontinued);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Concat_SubQuery ()
+    public void SingleNullableBoolean ()
     {
       var query =
-          from p in DB.Products
-          where p.SupplierID != null && (DB.Suppliers.Where (s => s.Country == "UK").Select (s => s.SupplierID)
-              .Concat (DB.Suppliers.Where (s => s.Country == "USA").Select (s => s.SupplierID))).Contains ((int) p.SupplierID)
-          orderby p.ProductID
-          select p;
+          (from e in DB.Employees
+            where e.EmployeeID == 2
+            select e.HasCar);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Concat_WithDiscardedOrderBy ()
+    public void ComplexProjection_WithBooleans ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c)
-              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c));
+          (from p in DB.Products
+            where p.ProductID == 2
+            select new { p.Discontinued });
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Concat_WithNonDiscardedOrderBy ()
+    public void ComplexProjection_WithNullableBooleans ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID)
-              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID))
-              .OrderByDescending (c => c);
+          (from p in DB.Employees
+           where p.EmployeeID == 2
+           select new { p.HasCar });
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod ());
+    }
+
+    [Test]
+    public void SingleProperty ()
+    {
+      var query =
+          (from p in DB.Products
+            where p.ProductID == 2
+            select p.ProductName);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Concat_WithNonDiscardedOrderByWithTake ()
+    public void SingleValueType ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => c.ContactID).OrderByDescending (c => c).Take (3)
-              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => c.ContactID).OrderByDescending (c => c)).Take (3);
+          from e in DB.Employees
+          where e.EmployeeID == 1
+          select e.EmployeeID;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
     [Test]
-    public void Concat_WithSelectedDiscriminator ()
+    public void SingleValueType_Nullable ()
     {
       var query =
-          DB.Contacts.OfType<CustomerContact>().Select (c => new { c.ContactID, Key = "Customer" })
-              .Concat (DB.Contacts.OfType<ShipperContact>().Select (c => new { c.ContactID, Key = "Shipper" }));
+          from e in DB.Employees
+          where e.ReportsTo != null
+          select e.ReportsTo;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void ComplexProjection_WithValueTypes ()
+    {
+      var query =
+          (from p in DB.Products
+            where p.ProductID == 2
+            select new { p.ProductID });
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void ComplexProjection_WithNullableValueTypes ()
+    {
+      var query =
+          (from e in DB.Employees
+           where e.ReportsTo != null
+           select new { e.ReportsTo });
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod ());
     }
   }
 }

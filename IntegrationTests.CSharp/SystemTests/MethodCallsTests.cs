@@ -1,4 +1,4 @@
-// Microsoft Public License (Ms-PL)
+﻿// Microsoft Public License (Ms-PL)
 // 
 // This license governs use of the accompanying software. If you use the software, you
 // accept this license. If you do not accept the license, do not use the software.
@@ -32,51 +32,47 @@
 // the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 
 using System;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common;
 
-namespace Remotion.Linq.IntegrationTests.CSharp
+namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
-  public class TestBase : AbstractTestBase
+  [TestFixture]
+  public class MethodCallsTests : TestBase
   {
-    protected bool IsLinqToSqlActive 
+    [Test]
+    public void Trim ()
     {
-      get { return Mode == TestMode.SaveReferenceResults; }
+      var query =
+          from c in DB.Customers
+          where c.ContactName.Trim() == "Maria Anders"
+          select c;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected bool IsRelinqSqlBackendActive
+    [Test]
+    public void Insert ()
     {
-      get { return Mode == TestMode.CheckActualResults; }
+      var query =
+          from c in DB.Customers
+          where c.City.Insert (1, "Test") == "BTesterlin"
+          select c;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
 
-    protected override Func<MethodBase, string> SavedResultFileNameGenerator
+    [Test]
+    [Ignore ("RMLNQSQL-95: When using String.Insert(), the start-index is mis-calculated for values that are placed at the end of the string")]
+    public void Insert_AtEndOfString ()
     {
-      // C# will automatically add the folder structure to the resource file name when embedding a resource
-      // The desired resource name is: Remotion.Linq.IntegrationTests.CSharp.LinqSamples101.Resources.TestClass.TestMethod.result
-      // This is achieved by putting a file called "TestClass.TestMethod.result" into the LinqSamples101\Resources folder
-      get { return method => method.DeclaringType.Name + "." + method.Name + ".result"; }
-    }
+      var query =
+          from c in DB.Customers
+          where c.City.Insert (4, "Test") == "BernTest"
+          select c;
 
-    protected override Func<MethodBase, string> LoadedResultFileNameGenerator
-    {
-      // When loading the resource, we must specify the full name as described above
-      get
-      {
-        return method =>
-        {
-          var commonNamespacePrefix = typeof (TestBase).Namespace + ".";
-          var namespaceName = method.DeclaringType.Namespace;
-          Assert.That (namespaceName != null);
-          var partialResourceNamespace = namespaceName.Remove (0, commonNamespacePrefix.Length) + ".Resources";
-          var resourceFolderPath = partialResourceNamespace.Replace (".", "/");
-
-          var testFileName = method.DeclaringType.Name + "." + method.Name + ".result";
-          
-          return Path.Combine (resourceFolderPath, testFileName);
-        };
-      }
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
   }
 }

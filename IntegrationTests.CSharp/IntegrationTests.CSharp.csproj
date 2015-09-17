@@ -99,8 +99,19 @@
     <Content Include="SystemTests\Resources\SelectTests.WithMemberInitExpression_InOuterMostLevel.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="SystemTests\SetOperationsTests.cs" />
+    <Compile Include="SystemTests\CustomProjectionTests.cs" />
+    <Compile Include="SystemTests\ExplicitJoinsTests.cs" />
+    <Compile Include="SystemTests\GroupByTests.cs" />
+    <Compile Include="SystemTests\ImplicitJoinTests.cs" />
+    <Compile Include="SystemTests\LetTests.cs" />
+    <Compile Include="SystemTests\MethodCallsTests.cs" />
+    <Compile Include="SystemTests\MultiFromTests.cs" />
+    <Compile Include="SystemTests\OrderByTests.cs" />
+    <Compile Include="SystemTests\ResultOperatorTests.cs" />
     <Compile Include="SystemTests\SelectTests.cs" />
+    <Compile Include="SystemTests\SetOperationsTests.cs" />
+    <Compile Include="SystemTests\UnionConcatTests.cs" />
+    <Compile Include="SystemTests\WhereTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="LinqSamples101\TopBottomTests.cs" />
     <Compile Include="LinqSamples101\UnionAllIntersectTests.cs" />
@@ -628,7 +639,9 @@
       <Name>IntegrationTests.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
