@@ -110,6 +110,7 @@
     <Compile Include="SystemTests\ResultOperatorTests.cs" />
     <Compile Include="SystemTests\SelectTests.cs" />
     <Compile Include="SystemTests\SetOperationsTests.cs" />
+    <Compile Include="SystemTests\SubQueryTests.cs" />
     <Compile Include="SystemTests\UnionConcatTests.cs" />
     <Compile Include="SystemTests\WhereTests.cs" />
     <Compile Include="TestBase.cs" />
@@ -715,6 +716,57 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SystemTests\Resources\WhereTests.Query_Is.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.FirstOrDefault_WithEntity_InSelectAndWhere.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.MemberAccess_OnSubQuery_WithColumns.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.MemberAccess_OnSubQuery_WithEntities.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.OrderingsInSubQuery_WithDistinct.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.OrderingsInSubQuery_WithoutTakeOrDistinct.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.OrderingsInSubQuery_WithoutTakeOrDistinct_WithAccessToMemberOfSubQuery.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.OrderingsInSubQuery_WithTake.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQueryAndJoinInWhere.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQueryAndJoinInWhere_WithOuterVariable.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQueryInWhere_AccessingOuterVariable_InMainFromClause.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQuery_InAdditionalFrom.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQuery_InMainFrom.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQuery_InSelectClause.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQuery_InThirdFrom.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQuery_InWhere.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.QueryWithSubQuery_WithResultOperator_InMainFrom.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SystemTests\Resources\SubQueryTests.SubQueryWithNonConstantFromExpression.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
