@@ -135,6 +135,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       else if (expression.Value is string)
         _commandBuilder.AppendStringLiteral ((string) expression.Value);
       // TODO RMLNQSQL-77: Test.
+      // TODO RMLNQSQL-77: This might actually be obsolete because we now generate OuterApply instead of LeftJoin, which means there is no need for the condition. 
+      //                   If so, drop the AppendBooleanLiteral and SqlLiteralExpression-ctor with boolean-support from the feature branch.
       else if (expression.Value is bool)
         _commandBuilder.AppendBooleanLiteral ((bool) expression.Value);
       else
