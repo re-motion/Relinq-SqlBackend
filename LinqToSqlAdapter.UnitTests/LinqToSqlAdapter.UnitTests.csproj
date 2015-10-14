@@ -105,11 +105,11 @@
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0-beta-002\lib\net45\Remotion.Linq.dll</HintPath>
+      <HintPath>..\packages\Remotion.Linq.2.0.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq.Development, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.Development.2.0.0-beta-002\lib\net45\Remotion.Linq.Development.dll</HintPath>
+      <HintPath>..\packages\Remotion.Linq.Development.2.0.0\lib\net45\Remotion.Linq.Development.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
