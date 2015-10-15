@@ -148,7 +148,9 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
           from o in ords.DefaultIfEmpty ()
           select new { e.FirstName, e.LastName, Order = o };
 
-      TestExecutor.Execute (q, MethodBase.GetCurrentMethod());
+      // Added to make query result stable.
+      var stableResult = q.AsEnumerable().OrderBy (t => t.FirstName).ThenBy (t => t.LastName).ThenBy (t => t.Order.OrderID);
+      TestExecutor.Execute (stableResult, MethodBase.GetCurrentMethod());
     }
 
     /// <summary>

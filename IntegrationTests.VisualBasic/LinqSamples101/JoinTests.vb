@@ -127,7 +127,9 @@ Namespace LinqSamples101
             From ord2 In ords.DefaultIfEmpty _
             Select emp.FirstName, emp.LastName, Order = ord2
 
-      TestExecutor.Execute(empQuery, MethodBase.GetCurrentMethod())
+      'Added to make query result stable.
+      Dim stableResult = empQuery.AsEnumerable().OrderBy((Function(t) t.FirstName)).ThenBy((Function(t) t.LastName)).ThenBy((Function(t) t.Order.OrderID))
+      TestExecutor.Execute(stableResult, MethodBase.GetCurrentMethod())
     End Sub
 
     'This sample projects a 'Let' expression resulting from a join.
