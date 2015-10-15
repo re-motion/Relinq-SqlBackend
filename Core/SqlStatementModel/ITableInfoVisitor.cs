@@ -29,7 +29,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo);
     ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo);
     ITableInfo VisitUnresolvedJoinTableInfo (UnresolvedJoinTableInfo tableInfo);
-    ITableInfo VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo);
+    ITableInfo VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo);
+    ITableInfo VisitUnresolvedDummyRowTableInfo (UnresolvedDummyRowTableInfo tableInfo);
 
     ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo);
     ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo);

@@ -15,7 +15,9 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -92,11 +94,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return result.Accept (this);
     }
 
-    public ITableInfo VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo)
+    public ITableInfo VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("unresolvedCollectionJoinTableInfo", unresolvedCollectionJoinTableInfo);
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       
-      var resolvedExpression = _stage.ResolveCollectionSourceExpression (unresolvedCollectionJoinTableInfo.SourceExpression, _context);
+      var resolvedExpression = _stage.ResolveCollectionSourceExpression (tableInfo.SourceExpression, _context);
       while (resolvedExpression is UnaryExpression)
       resolvedExpression = _stage.ResolveCollectionSourceExpression (((UnaryExpression)resolvedExpression).Operand, _context);
 
@@ -105,9 +107,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         var unresolvedJoinTableInfo = new UnresolvedJoinTableInfo (
             resolvedExpressionAsEntity,
-            unresolvedCollectionJoinTableInfo.MemberInfo,
+            tableInfo.MemberInfo,
             JoinCardinality.Many);
-        _context.AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (unresolvedCollectionJoinTableInfo, resolvedExpressionAsEntity);
+        _context.AddOriginatingEntityMappingForUnresolvedCollectionJoinTableInfo (tableInfo, resolvedExpressionAsEntity);
 
         return unresolvedJoinTableInfo.Accept (this);
       }
@@ -115,8 +117,22 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var message = string.Format (
           "Only entities can be used as the collection source in from expressions, '{0}' cannot. Member: '{1}'",
           resolvedExpression,
-          unresolvedCollectionJoinTableInfo.MemberInfo);
+          tableInfo.MemberInfo);
       throw new NotSupportedException (message);
+    }
+
+    public ITableInfo VisitUnresolvedDummyRowTableInfo (UnresolvedDummyRowTableInfo tableInfo)
+    {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+
+      var nullAsEmptyStatementBuilder = new SqlStatementBuilder();
+      var selectProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (tableInfo.ItemType));
+      nullAsEmptyStatementBuilder.SelectProjection = selectProjection;
+      nullAsEmptyStatementBuilder.DataInfo = new StreamedSequenceInfo (
+          typeof (IEnumerable<>).MakeGenericType (selectProjection.Type),
+          selectProjection);
+
+      return new ResolvedSubStatementTableInfo ("Empty", nullAsEmptyStatementBuilder.GetSqlStatement());
     }
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)

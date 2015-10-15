@@ -106,11 +106,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       get { return _stage; }
     }
 
-    ITableInfo ITableInfoVisitor.VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
-    }
-
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
@@ -140,6 +135,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
     {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+
       return VisitSubStatementTableInfo (tableInfo);
     }
 
@@ -156,6 +153,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     ITableInfo ITableInfoVisitor.VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedCollectionJoinTableInfo is not valid at this point.");
+    }
+
+    ITableInfo ITableInfoVisitor.VisitUnresolvedDummyRowTableInfo (UnresolvedDummyRowTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedDummyRowTableInfo is not valid at this point.");
+    }
+
+    ITableInfo ITableInfoVisitor.VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
     }
   }
 }

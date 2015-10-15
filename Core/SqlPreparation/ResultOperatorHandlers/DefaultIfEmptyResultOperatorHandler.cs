@@ -24,6 +24,7 @@ using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
@@ -66,22 +67,22 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // It's important to convert the WHERE condition into a JOIN condition, otherwise it would be applied _after_ the left join rather than 
       // _during_ the left join.
 
-      // Create a new dummy table: (SELECT NULL AS [Empty]) AS [Empty]
-      var nullIfEmptySqlTable = CreateNullAsEmptySqlTable();
+      // Create a new dummy table that guarantees delivering a single row. This is important to get a "default" row if the joined table doesn't return anything.
+      var dummyRowTable = new SqlTable (UnresolvedDummyRowTableInfo.Instance);
 
       // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
       var originalSqlTable = sqlStatementBuilder.SqlTables[0];
       var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1));
       var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
       // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
-      // here because the left side is just the nullIfEmptySqlTable (and there is nothing else in this statement).
+      // here because the left side is just the dummyRowTable (and there is nothing else in this statement).
       // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
       // care that this restriction is _not_ broken.
-      nullIfEmptySqlTable.AddJoin (@join);
+      dummyRowTable.AddJoin (@join);
 
       // Replace original table with dummy table:
       sqlStatementBuilder.SqlTables.Clear();
-      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable(nullIfEmptySqlTable, JoinSemantics.Inner));
+      sqlStatementBuilder.SqlTables.Add (new SqlAppendedTable (dummyRowTable, JoinSemantics.Inner));
 
       // WHERE condition was moved to JOIN condition => no longer needed.
       sqlStatementBuilder.WhereCondition = null;
@@ -89,18 +90,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // Further TODOs:
       // TODO RMLNQSQL-81: In SqlContextTableInfoVisitor, replace "!=" with !Equals checks for SqlStatements. Change SqlStatement.Equals to perform a ref check first for performance.
       // TODO RMLNQSQL-81: Rename ITableInfo.GetResolvedTableInfo and IJoinInfo.GetResolvedJoinInfo to ConvertTo...
-    }
-
-    private SqlTable CreateNullAsEmptySqlTable ()
-    {
-      var nullAsEmptyStatementBuilder = new SqlStatementBuilder();
-      var selectProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (typeof (object)));
-      nullAsEmptyStatementBuilder.SelectProjection = selectProjection;
-      nullAsEmptyStatementBuilder.DataInfo = new StreamedSequenceInfo (
-          typeof (IEnumerable<>).MakeGenericType (selectProjection.Type),
-          selectProjection);
-
-      return new SqlTable (new ResolvedSubStatementTableInfo ("Empty", nullAsEmptyStatementBuilder.GetSqlStatement()));
     }
   }
 }

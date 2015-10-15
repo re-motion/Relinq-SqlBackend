@@ -210,6 +210,34 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
+    public void VisitUnresolvedDummyRowTableInfo_ResolvesTableToStandardPattern ()
+    {
+      var unresolvedDummyRowTableInfo = SqlStatementModelObjectMother.CreateUnresolvedDummyRowTableInfo();
+      var result = ResolvingTableInfoVisitor.ResolveTableInfo (unresolvedDummyRowTableInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
+
+      Assert.That (result, Is.InstanceOf<ResolvedSubStatementTableInfo>());
+      var resolvedTableInfo = (ResolvedSubStatementTableInfo) result;
+      Assert.That (resolvedTableInfo.ItemType, Is.EqualTo (unresolvedDummyRowTableInfo.ItemType));
+      Assert.That (resolvedTableInfo.TableAlias, Is.EqualTo ("Empty"));
+
+      var resultSqlStatement = resolvedTableInfo.SqlStatement;
+      Assert.That (resultSqlStatement.ToString(), Is.EqualTo ("SELECT NULL AS Empty"));
+
+      Assert.That (resultSqlStatement.Orderings, Is.Empty);
+      Assert.That (resultSqlStatement.GroupByExpression, Is.Null);
+      Assert.That (resultSqlStatement.WhereCondition, Is.Null);
+      Assert.That (resultSqlStatement.SqlTables, Is.Empty);
+
+      Assert.That (resultSqlStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
+      Assert.That (resultSqlStatement.DataInfo.DataType, Is.SameAs (typeof (IEnumerable<object>)));
+
+      var expectedResultSelectProjection = new NamedExpression ("Empty", SqlLiteralExpression.Null (unresolvedDummyRowTableInfo.ItemType));
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResultSelectProjection, resultSqlStatement.SelectProjection);
+
+      _resolverMock.Verify();
+    }
+
+    [Test]
     public void ResolveTableInfo_SubStatementTableInfo_SubStatementUnmodified ()
     {
       var sqlSubStatementTableInfo = new ResolvedSubStatementTableInfo ("c", _sqlStatement);

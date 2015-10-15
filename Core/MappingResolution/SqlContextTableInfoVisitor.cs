@@ -67,6 +67,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
     {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+
       var newStatement = _stage.ApplySelectionContext (tableInfo.SqlStatement, _expressionContext, _mappingResolutionContext);
       if (newStatement != tableInfo.SqlStatement)
         return new ResolvedJoinedGroupingTableInfo (
@@ -77,24 +79,27 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return tableInfo;
     }
 
-    public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
+    ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-
       throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
     }
 
-    public ITableInfo VisitUnresolvedJoinTableInfo (UnresolvedJoinTableInfo tableInfo)
+    ITableInfo ITableInfoVisitor.VisitUnresolvedJoinTableInfo (UnresolvedJoinTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedJoinTableInfo is not valid at this point.");
     }
 
-    public ITableInfo VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo unresolvedCollectionJoinTableInfo)
+    ITableInfo ITableInfoVisitor.VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedCollectionJoinTableInfo is not valid at this point.");
     }
 
-    public ITableInfo VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
+    ITableInfo ITableInfoVisitor.VisitUnresolvedDummyRowTableInfo (UnresolvedDummyRowTableInfo tableInfo)
+    {
+      throw new InvalidOperationException ("UnresolvedDummyRowTableInfo is not valid at this point.");
+    }
+
+    ITableInfo ITableInfoVisitor.VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
     {
       throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
     }

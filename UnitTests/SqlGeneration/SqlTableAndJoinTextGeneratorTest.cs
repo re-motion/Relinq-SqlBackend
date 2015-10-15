@@ -283,6 +283,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
+    public void ApplyContext_VisitUnresolvedDummyRowTableInfo ()
+    {
+      var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
+          SqlStatementModelObjectMother.CreateUnresolvedDummyRowTableInfo());
+
+      Assert.That (
+          () => SqlTableAndJoinTextGenerator.GenerateSql (appendedTable, _commandBuilder, _stageMock.Object, false),
+          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo ("UnresolvedDummyRowTableInfo is not valid at this point."));
+    }
+
+    [Test]
     public void GenerateSql_WithUnresolvedGroupReferenceTableInfo ()
     {
       var appendedTable = SqlStatementModelObjectMother.CreateSqlAppendedTable (
