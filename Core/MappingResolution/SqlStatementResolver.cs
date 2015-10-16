@@ -152,7 +152,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var resolvedJoinCondition = _stage.ResolveJoinCondition (join.JoinCondition, _context);
         if (resolvedJoinCondition != join.JoinCondition)
         {
-          modifiedJoins = new Dictionary<SqlJoin, SqlJoin>();
+          if (modifiedJoins == null)
+            modifiedJoins = new Dictionary<SqlJoin, SqlJoin>();
           modifiedJoins.Add (join, new SqlJoin (join.JoinedTable, join.JoinSemantics, resolvedJoinCondition));
         }
       }
