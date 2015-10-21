@@ -39,16 +39,17 @@ Namespace SystemTests
   Public Class MultiFromTests
     Inherits TestBase
     <Test> _
-    Public Sub QueryWithInto()
-      'Dim query = From c In DB.Customers _
-      '            Where c.CustomerID = "ALFKI" _
-      '            Select c.Orders _
-      '            Into x _
-      '            From o In x _
-      '            From od In o.OrderDetails _
-      '            Select od
+    Public Sub QueryWithIntoEquivalent()
+      Dim query = 
+                From o In (
+                        From c In DB.Customers
+                        Where c.CustomerID = "ALFKI"
+                        Select c.Orders)
+                From oi In o
+                From s In oi.OrderDetails
+                Select s
 
-      'TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _

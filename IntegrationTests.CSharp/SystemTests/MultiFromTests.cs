@@ -57,6 +57,20 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     }
 
     [Test]
+    public void QueryWithIntoEquivalent ()
+    {
+        var query =
+                from o in (
+                        from c in DB.Customers
+                        where c.CustomerID == "ALFKI"
+                        select c.Orders)
+                from oi in o
+                from s in oi.OrderDetails
+                select s;
+        TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+      [Test]
     public void Query_WithSeveralFroms ()
     {
       var query =
