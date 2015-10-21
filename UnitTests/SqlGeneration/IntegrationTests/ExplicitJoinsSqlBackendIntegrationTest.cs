@@ -46,6 +46,81 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     }
 
     [Test]
+    public void ExplicitJoin_WithMultipleIndependentJoinsClauses ()
+    {
+      CheckQuery (
+          from c in Cooks
+          join kitchen in Kitchens on c.Kitchen equals kitchen
+          join knife in Knives on c.Knife equals knife
+          select new { CookID = c.ID, KitchenID = kitchen.ID, KnifeID = knife.ID },
+          "SELECT [t0].[ID] AS [CookID],[t1].[ID] AS [KitchenID],[t2].[ID] AS [KnifeID_Value],[t2].[ClassID] AS [KnifeID_ClassID] "
+          + "FROM [CookTable] AS [t0] "
+          + "CROSS JOIN [KitchenTable] AS [t1] "
+          + "CROSS JOIN [KnifeTable] AS [t2] "
+          + "WHERE (([t0].[KitchenID] = [t1].[ID]) AND (([t0].[KnifeID] = [t2].[ID]) AND ([t0].[KnifeClassID] = [t2].[ClassID])))");
+    }
+
+    [Test]
+    public void ExplicitJoin_WithImplicitJoinAddedByJoinCondition ()
+    {
+      CheckQuery (
+          from c in Cooks
+          join restaurant in Restaurants on c.Kitchen.Restaurant equals restaurant
+          select new { CookID = c.ID, RestaurantID = restaurant.ID },
+          "SELECT [t0].[ID] AS [CookID],[t1].[ID] AS [RestaurantID] "
+          + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t0].[KitchenID] = [t2].[ID]) "
+          + "CROSS JOIN [RestaurantTable] AS [t1] "
+          + "WHERE ([t2].[RestaurantID] = [t1].[ID])");
+    }
+
+    [Test]
+    public void ExplicitJoin_WithOuterWhereClause ()
+    {
+      CheckQuery (
+          from c in Cooks
+          join kitchen in Kitchens on c.Kitchen equals kitchen
+          where kitchen.Name != null
+          select new { CookID = c.ID, KitchenID = kitchen.ID },
+          "SELECT [t0].[ID] AS [CookID],[t1].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t0] "
+          + "CROSS JOIN [KitchenTable] AS [t1] "
+          + "WHERE (([t0].[KitchenID] = [t1].[ID]) AND ([t1].[Name] IS NOT NULL))");
+    }
+
+    [Test]
+    public void ExplicitJoin_WithDependentJoins ()
+    {
+      CheckQuery (
+          from c in Cooks
+          join kitchen in Kitchens on c.Kitchen equals kitchen
+          join restaurant in Restaurants on kitchen.Restaurant equals restaurant
+          select new { CookID = c.ID, RestaurantID = restaurant.ID, KitchenID = kitchen.ID },
+          "SELECT [t0].[ID] AS [CookID],[t2].[ID] AS [RestaurantID],[t1].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t0] "
+          + "CROSS JOIN [KitchenTable] AS [t1] "
+          + "CROSS JOIN [RestaurantTable] AS [t2] "
+          + "WHERE (([t0].[KitchenID] = [t1].[ID]) AND ([t1].[RestaurantID] = [t2].[ID]))");
+    }
+
+    [Test]
+    public void ExplicitJoin_WithMultipleJoinClauses_WithImplicitJoinAddedByJoinCondition_WithOuterWhereClause ()
+    {
+      CheckQuery (
+          from c in Cooks
+          join restaurant in Restaurants on c.Kitchen.Restaurant equals restaurant
+          join kitchen in Kitchens on c.Kitchen equals kitchen
+          join company in Companies on restaurant.CompanyIfAny equals company
+          where kitchen.Name != null
+          select new { CookID = c.ID, RestaurantID = restaurant.ID, KitchenID = kitchen.ID, CompanyID = company.ID },
+          "SELECT [t0].[ID] AS [CookID],[t1].[ID] AS [RestaurantID],[t2].[ID] AS [KitchenID],[t3].[ID] AS [CompanyID] "
+          + "FROM [CookTable] AS [t0] LEFT OUTER JOIN [KitchenTable] AS [t4] ON ([t0].[KitchenID] = [t4].[ID]) "
+          + "CROSS JOIN [RestaurantTable] AS [t1] "
+          + "CROSS JOIN [KitchenTable] AS [t2] "
+          + "CROSS JOIN [CompanyTable] AS [t3] "
+          + "WHERE (((([t4].[RestaurantID] = [t1].[ID]) AND ([t0].[KitchenID] = [t2].[ID])) AND ([t1].[CompanyID] = [t3].[ID])) AND ([t2].[Name] IS NOT NULL))");
+    }
+
+    [Test]
     [Ignore ("TODO 5120")]
     public void ExplicitJoin_IncludingOptimizableImplicitJoins ()
     {
@@ -223,15 +298,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     [Test]
     public void ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable ()
     {
+      // This test duplicates a scenario from DefaultIfEmptyResultOperatorSqlBackendIntegrationTest 
+      // in order to provide a more complete set of explicit join options.
+
       CheckQuery (
           from k in Kitchens
           join c in Cooks on k.Cook equals c into gkc
           from kc in gkc.DefaultIfEmpty()
           select kc.Name,
-          "SELECT [q0].[Name] AS [value] FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t3] ON ([t1].[ID] = [t3].[KitchenID]) "
-          + "CROSS APPLY (SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],"
-          + "[t2].[KitchenID],[t2].[KnifeID],[t2].[KnifeClassID],[t2].[CookRating] "
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t3].[ID] = [t2].[ID])) AS [q0]");
+          "SELECT [q0].[Name] AS [value] "
+          + "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t3] ON ([t1].[ID] = [t3].[KitchenID]) "
+          + "CROSS APPLY ("
+          + "SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],[t2].[KnifeID],[t2].[KnifeClassID],[t2].[CookRating] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t3].[ID] = [t2].[ID])"
+          + ") AS [q0]");
     }
 
     [Test]
