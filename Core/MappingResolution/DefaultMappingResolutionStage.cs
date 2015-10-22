@@ -155,6 +155,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           expression.MemberInfo,
           () =>
           {
+            // Note that it's important to not return a join with unresolved components here 
+            // because the new join might not go through SqlStatementResolver any more. 
+            // Reason: The originatingSqlTable might have already been resolved.
             var unresolvedJoinTableInfo = new UnresolvedJoinTableInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
             var resolvedTableInfo = ResolveTableInfo (unresolvedJoinTableInfo, context);
 

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -145,7 +146,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     private void ResolveJoins (SqlTable sqlTable)
     {
       Dictionary<SqlJoin, SqlJoin> modifiedJoins = null;
-      foreach (var join in sqlTable.OrderedJoins)
+      // Make a copy of the OrderedJoins sequence because it's possible that resolving a join condition adds another join.
+      // The resolution stage takes care to only add joins that are already resolved.
+      var joinsToBeResolved = sqlTable.OrderedJoins.ToArray();
+      foreach (var join in joinsToBeResolved)
       {
         ResolveSqlTable (join.JoinedTable);
 
