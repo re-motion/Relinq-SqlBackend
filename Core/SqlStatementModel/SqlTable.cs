@@ -58,8 +58,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       }
     }
 
-    private readonly List<SqlJoin> _orderedJoins = new List<SqlJoin>();
-    private readonly Dictionary<MemberInfo, SqlJoin> _joinsByMemberInfo = new Dictionary<MemberInfo, SqlJoin>();
+    private struct SortableSqlJoin
+    {
+      public readonly int Index;
+      public readonly SqlJoin Value;
+
+      public SortableSqlJoin (int index, SqlJoin value)
+      {
+        Index = index;
+        Value = value;
+      }
+    }
+
+    private readonly List<SqlJoin> _orderedJoinsForExplicitQuerySources = new List<SqlJoin>();
+    private readonly Dictionary<MemberInfo, SortableSqlJoin> _memberBasedJoinsByMemberInfo = new Dictionary<MemberInfo, SortableSqlJoin>();
 
     private ITableInfo _tableInfo;
 
@@ -70,9 +82,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       _tableInfo = tableInfo;
     }
 
-    public IEnumerable<SqlJoin> OrderedJoins
+    /// <summary>
+    /// Gets a list of all joins added via <see cref="GetOrAddMemberBasedLeftJoin"/> and <see cref="AddJoinForExplicitQuerySource"/>. 
+    /// Both sets of joins are orderd by their order of insertion and then the sets are concatenated.
+    /// </summary>
+    public IEnumerable<SqlJoin> Joins
     {
-      get { return _orderedJoins; }
+      get { return _memberBasedJoinsByMemberInfo.Values.OrderBy (j => j.Index).Select (j => j.Value).Concat (_orderedJoinsForExplicitQuerySources); }
     }
 
 
@@ -113,26 +129,26 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     /// <summary>
     /// Adds a join representing a member access to this <see cref="SqlTable"/> or returns it if such a join has already been added for this member.
-    /// Note that SQL requires that the right side of a join must not reference the left side of a join 
-    /// in SQL (apart from in the join condition). For cases where this doesn't hold, add the joined table via <see cref="SqlStatement.SqlTables"/>
-    /// instead and put the join condition into a WHERE condition. (Note that for LEFT joins, the join condition must be embedded within the applied
-    /// table; i.e., a sub-statement must be used.)
+    /// Note that SQL requires that the right side of a join must not reference the left side of a join in SQL (apart from in the join condition). 
+    /// For cases where this doesn't hold, add the joined table via <see cref="SqlStatement.SqlTables"/> instead and put the join condition into a WHERE condition. 
+    /// (Note that for LEFT joins, the join condition must be embedded within the applied table; i.e., a sub-statement must be used.)
     /// </summary>
-    public SqlJoin GetOrAddLeftJoinByMember (MemberInfo memberInfo, Func<LeftJoinData> joinDataFactory)
+    public SqlJoin GetOrAddMemberBasedLeftJoin (MemberInfo memberInfo, Func<LeftJoinData> joinDataFactory)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("joinDataFactory", joinDataFactory);
 
-      SqlJoin sqlJoin;
-      if (!_joinsByMemberInfo.TryGetValue (memberInfo, out sqlJoin))
+      SortableSqlJoin sqlJoin;
+      if (!_memberBasedJoinsByMemberInfo.TryGetValue (memberInfo, out sqlJoin))
       {
         var joinData = joinDataFactory();
-        sqlJoin = new SqlJoin (joinData.JoinedTable, JoinSemantics.Left, joinData.JoinCondition);
-        _joinsByMemberInfo.Add (memberInfo, sqlJoin);
-        AddJoin (sqlJoin);
+        sqlJoin = new SortableSqlJoin (
+            _memberBasedJoinsByMemberInfo.Count,
+            new SqlJoin (joinData.JoinedTable, JoinSemantics.Left, joinData.JoinCondition));
+        _memberBasedJoinsByMemberInfo.Add (memberInfo, sqlJoin);
       }
 
-      return sqlJoin;
+      return sqlJoin.Value;
     }
 
     /// <summary>
@@ -141,17 +157,17 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     /// instead and put the join condition into a WHERE condition. (Note that for LEFT joins, the join condition must be embedded within the applied
     /// table; i.e., a sub-statement must be used.)
     /// </summary>
-    public void AddJoin (SqlJoin sqlJoin)
+    public void AddJoinForExplicitQuerySource (SqlJoin sqlJoin)
     {
       ArgumentUtility.CheckNotNull ("sqlJoin", sqlJoin);
-      _orderedJoins.Add (sqlJoin);
+      _orderedJoinsForExplicitQuerySources.Add (sqlJoin);
     }
 
     public SqlJoin GetJoinByMember (MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      return _joinsByMemberInfo[relationMember];
+      return _memberBasedJoinsByMemberInfo[relationMember].Value;
     }
 
     // TODO RMLNQSQL-7: This method is only required because we want to keep SqlJoin immutable. Maybe refactor it toward SqlJoinBuilder (mutable) and 
@@ -160,18 +176,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("substitutions", substitutions);
 
-      for (int i = 0; i < _orderedJoins.Count; ++i)
+      for (int i = 0; i < _orderedJoinsForExplicitQuerySources.Count; ++i)
       {
         SqlJoin substitution;
-        if (substitutions.TryGetValue (_orderedJoins[i], out substitution))
-          _orderedJoins[i] = substitution;
+        if (substitutions.TryGetValue (_orderedJoinsForExplicitQuerySources[i], out substitution))
+          _orderedJoinsForExplicitQuerySources[i] = substitution;
       }
 
-      foreach (var kvp in _joinsByMemberInfo.ToArray())
+      foreach (var kvp in _memberBasedJoinsByMemberInfo.ToArray())
       {
+        MemberInfo memberInfo = kvp.Key;
+        SqlJoin original = kvp.Value.Value;
         SqlJoin substitution;
-        if (substitutions.TryGetValue (kvp.Value, out substitution))
-          _joinsByMemberInfo[kvp.Key] = substitution;
+        if (substitutions.TryGetValue (original, out substitution))
+          _memberBasedJoinsByMemberInfo[memberInfo] = new SortableSqlJoin (kvp.Value.Index, substitution);
       }
     }
 
@@ -179,7 +197,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     {
       var sb = new StringBuilder();
       sb.Append (TableInfo);
-      AppendJoinString (sb, OrderedJoins);
+      AppendJoinString (sb, Joins);
 
       return sb.ToString();
     }
@@ -195,7 +213,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
             .Append (sqlJoin.JoinedTable.TableInfo)
             .Append (" ON ")
             .Append (sqlJoin.JoinCondition);
-        AppendJoinString (sb, sqlJoin.JoinedTable.OrderedJoins);
+        AppendJoinString (sb, sqlJoin.JoinedTable.Joins);
       }
     }
   }

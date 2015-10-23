@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
 
       var join = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
-       originalTable.SqlTable.AddJoin (join);
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join);
 
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition))
@@ -91,7 +91,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
        var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
        var join = CreateResolvedJoin (typeof (Cook), "t1", JoinSemantics.Inner, "ID", "CookTable", "t2", "FK");
-       originalTable.SqlTable.AddJoin (join);
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join);
 
        _stageMock
            .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition))
@@ -110,9 +110,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
       var join1 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
-      originalTable.SqlTable.AddJoin (join1);
+      originalTable.SqlTable.AddJoinForExplicitQuerySource (join1);
       var join2 = CreateResolvedJoin(typeof (Cook), "t2", JoinSemantics.Left, "ID2", "CookTable2", "t3", "FK2");
-      join1.JoinedTable.AddJoin (join2);
+      join1.JoinedTable.AddJoinForExplicitQuerySource (join2);
 
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join1.JoinCondition))

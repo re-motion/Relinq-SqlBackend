@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private static void GenerateSqlForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, SqlTableAndJoinTextGenerator visitor, ISqlGenerationStage stage)
     {
-      foreach (var join in sqlTable.OrderedJoins)
+      foreach (var join in sqlTable.Joins)
       {
         GenerateTextForJoin (visitor, @join, commandBuilder, stage);
         GenerateSqlForJoins (@join.JoinedTable, commandBuilder, visitor, stage);

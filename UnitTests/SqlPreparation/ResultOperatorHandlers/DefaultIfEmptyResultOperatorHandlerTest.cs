@@ -92,8 +92,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo, Is.TypeOf<UnresolvedDummyRowTableInfo>());
       
       // ... as well as a join for the original table ...
-      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
+      var orderedJoins = sqlStatementBuilder.SqlTables[0].SqlTable.Joins.ToArray();
+      Assert.That (orderedJoins, Has.Length.EqualTo (1));
+      var join = orderedJoins.Single();
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
       // ... with a dummy join condition.
@@ -126,8 +127,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo, Is.TypeOf<UnresolvedDummyRowTableInfo>());
 
       // This is the join where the original table was moved...
-      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
+      var orderedJoins = sqlStatementBuilder.SqlTables[0].SqlTable.Joins.ToArray();
+      Assert.That (orderedJoins, Has.Length.EqualTo (1));
+      var join = orderedJoins.Single();
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
       // ... with the where condition as a join condition. The outer where condition has been cleared.
@@ -159,8 +161,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo, Is.TypeOf<UnresolvedDummyRowTableInfo>());
 
       // ... and joined to it is a substatement that used to be the original statement:
-      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
+      var orderedJoins = sqlStatementBuilder.SqlTables[0].SqlTable.Joins.ToArray();
+      Assert.That (orderedJoins, Has.Length.EqualTo (1));
+      var join = orderedJoins.Single();
       Assert.That (join.JoinedTable.TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
       var joinedSubStatement = ((ResolvedSubStatementTableInfo) join.JoinedTable.TableInfo).SqlStatement;
       Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { appendedTable1, appendedTable2 }));
@@ -191,8 +194,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.TableInfo, Is.TypeOf<UnresolvedDummyRowTableInfo>());
 
       // ... and joined to it is a substatement that used to be the original statement:
-      Assert.That (sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Count(), Is.EqualTo (1));
-      var join = sqlStatementBuilder.SqlTables[0].SqlTable.OrderedJoins.Single();
+      var orderedJoins = sqlStatementBuilder.SqlTables[0].SqlTable.Joins.ToArray();
+      Assert.That (orderedJoins, Has.Length.EqualTo (1));
+      var join = orderedJoins.Single();
       Assert.That (join.JoinedTable.TableInfo, Is.TypeOf<ResolvedSubStatementTableInfo>());
       var joinedSubStatement = ((ResolvedSubStatementTableInfo) join.JoinedTable.TableInfo).SqlStatement;
       Assert.That (joinedSubStatement.SqlTables, Is.EqualTo (new[] { appendedTable }));

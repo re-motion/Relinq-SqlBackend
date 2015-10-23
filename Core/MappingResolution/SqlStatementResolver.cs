@@ -148,7 +148,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       Dictionary<SqlJoin, SqlJoin> modifiedJoins = null;
       // Make a copy of the OrderedJoins sequence because it's possible that resolving a join condition adds another join.
       // The resolution stage takes care to only add joins that are already resolved.
-      var joinsToBeResolved = sqlTable.OrderedJoins.ToArray();
+      var joinsToBeResolved = sqlTable.Joins.ToArray();
       foreach (var join in joinsToBeResolved)
       {
         ResolveSqlTable (join.JoinedTable);

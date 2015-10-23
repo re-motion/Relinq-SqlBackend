@@ -78,7 +78,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       // here because the left side is just the dummyRowTable (and there is nothing else in this statement).
       // TODO RMLNQSQL-77: When optimizing "away" the containing subquery (i.e., the statement represented by sqlStatementBuilder), take extra...
       // care that this restriction is _not_ broken.
-      dummyRowTable.AddJoin (@join);
+      dummyRowTable.AddJoinForExplicitQuerySource (@join);
 
       // Replace original table with dummy table:
       sqlStatementBuilder.SqlTables.Clear();

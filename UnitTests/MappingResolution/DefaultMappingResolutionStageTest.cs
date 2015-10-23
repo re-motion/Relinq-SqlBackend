@@ -374,9 +374,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       Assert.That (result, Is.SameAs (fakeEntityExpression));
       var sqlTable = _mappingResolutionContext.GetSqlTableForEntityExpression (entityRefMemberExpression.OriginatingEntity);
-      Assert.That (sqlTable.GetJoinByMember (kitchenCookMember), Is.Not.Null);
-      Assert.That (sqlTable.GetJoinByMember (kitchenCookMember).JoinedTable.TableInfo, Is.SameAs (fakeJoinedTableInfo));
-      Assert.That (sqlTable.GetJoinByMember (kitchenCookMember).JoinCondition, Is.SameAs (fakeJoinConditionExpression));
+      var joinByMember = sqlTable.GetJoinByMember (kitchenCookMember);
+      Assert.That (joinByMember.JoinedTable.TableInfo, Is.SameAs (fakeJoinedTableInfo));
+      Assert.That (joinByMember.JoinCondition, Is.SameAs (fakeJoinConditionExpression));
     }
 
     [Test]

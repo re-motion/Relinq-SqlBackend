@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
@@ -57,46 +56,46 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     }
 
     [Test]
-    public void GetOrAddLeftJoinByMember_NewEntry_IsAddedToOrderedListOfJoins()
+    public void GetOrAddMemberBasedLeftJoin_NewEntry_IsAddedToOrderedListOfJoins()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
       var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
       var leftJoinData = SqlStatementModelObjectMother.CreateLeftJoinData();
 
-      var result = sqlTable.GetOrAddLeftJoinByMember (memberInfo, () => leftJoinData);
+      var result = sqlTable.GetOrAddMemberBasedLeftJoin (memberInfo, () => leftJoinData);
 
       Assert.That (result.JoinedTable, Is.SameAs (leftJoinData.JoinedTable));
       Assert.That (result.JoinCondition, Is.SameAs (leftJoinData.JoinCondition));
       Assert.That (result.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
-      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { result }));
+      Assert.That (sqlTable.Joins, Is.EqualTo (new[] { result }));
     }
 
     [Test]
-    public void GetOrAddLeftJoinByMember_MultipleNewEntries_AreAddedInOrder()
+    public void GetOrAddMemberBasedLeftJoin_MultipleNewEntries_AreAddedInOrder()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
 
-      var result1 = sqlTable.GetOrAddLeftJoinByMember (
+      var result1 = sqlTable.GetOrAddMemberBasedLeftJoin (
           SqlStatementModelObjectMother.GetKitchenCookMemberInfo(),
           SqlStatementModelObjectMother.CreateLeftJoinData);
-      var result2 = sqlTable.GetOrAddLeftJoinByMember (
+      var result2 = sqlTable.GetOrAddMemberBasedLeftJoin (
           SqlStatementModelObjectMother.GetKitchenRestaurantMemberInfo(),
           SqlStatementModelObjectMother.CreateLeftJoinData);
 
-      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { result1, result2 }));
+      Assert.That (sqlTable.Joins, Is.EqualTo (new[] { result1, result2 }));
     }
 
     [Test]
-    public void GetOrAddLeftJoinByMember_ExistingEntry_RetrievesExistingEntry()
+    public void GetOrAddMemberBasedLeftJoin_ExistingEntry_RetrievesExistingEntry()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
       var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
-      var existingEntry = sqlTable.GetOrAddLeftJoinByMember (memberInfo, SqlStatementModelObjectMother.CreateLeftJoinData);
+      var existingEntry = sqlTable.GetOrAddMemberBasedLeftJoin (memberInfo, SqlStatementModelObjectMother.CreateLeftJoinData);
 
-      var result = sqlTable.GetOrAddLeftJoinByMember (memberInfo, () => { throw new InvalidOperationException ("Must not be called."); });
+      var result = sqlTable.GetOrAddMemberBasedLeftJoin (memberInfo, () => { throw new InvalidOperationException ("Must not be called."); });
 
       Assert.That (result, Is.SameAs (existingEntry));
-      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { result }));
+      Assert.That (sqlTable.Joins, Is.EqualTo (new[] { result }));
     }
 
     [Test]
@@ -104,7 +103,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
       var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
-      var existingEntry = sqlTable.GetOrAddLeftJoinByMember (memberInfo, SqlStatementModelObjectMother.CreateLeftJoinData);
+      var existingEntry = sqlTable.GetOrAddMemberBasedLeftJoin (memberInfo, SqlStatementModelObjectMother.CreateLeftJoinData);
 
       var result = sqlTable.GetJoinByMember (memberInfo);
 
@@ -121,53 +120,74 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     }
 
     [Test]
-    public void AddJoin_AddsJoinInOrder ()
+    public void AddJoinForExplicitQuerySource_AddsJoinInOrder ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
-      var memberInfo = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
-      var existingEntry = sqlTable.GetOrAddLeftJoinByMember (memberInfo, SqlStatementModelObjectMother.CreateLeftJoinData);
+
+      var existingEntry = SqlStatementModelObjectMother.CreateSqlJoin();
+      sqlTable.AddJoinForExplicitQuerySource (existingEntry);
 
       var newEntry = SqlStatementModelObjectMother.CreateSqlJoin();
-      sqlTable.AddJoin (newEntry);
+      sqlTable.AddJoinForExplicitQuerySource (newEntry);
 
-      Assert.That (sqlTable.OrderedJoins, Is.EqualTo (new[] { existingEntry, newEntry }));
+      Assert.That (sqlTable.Joins, Is.EqualTo (new[] { existingEntry, newEntry }));
     }
 
     [Test]
-    public void SubstituteJoins_ReplacesJoinInOrderedJoinsCollection ()
+    public void GetJoins_ReturnsMemberBasedJoinsInOrder_TheReturnsJoinsForExplictQuerySourceInOrder ()
+    {
+      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable(typeof (Kitchen));
+
+      var entry1 = SqlStatementModelObjectMother.CreateSqlJoin();
+      sqlTable.AddJoinForExplicitQuerySource (entry1);
+
+      var entry2 = sqlTable.GetOrAddMemberBasedLeftJoin (
+          SqlStatementModelObjectMother.GetKitchenCookMemberInfo(),
+          SqlStatementModelObjectMother.CreateLeftJoinData);
+
+      var entry3 = SqlStatementModelObjectMother.CreateSqlJoin();
+      sqlTable.AddJoinForExplicitQuerySource (entry3);
+
+      var entry4 = sqlTable.GetOrAddMemberBasedLeftJoin (
+          SqlStatementModelObjectMother.GetCookSubstitutionMemberInfo(),
+          SqlStatementModelObjectMother.CreateLeftJoinData);
+
+      Assert.That (sqlTable.Joins, Is.EqualTo (new[] { entry2, entry4, entry1, entry3 }));
+    }
+
+    [Test]
+    public void SubstituteJoins_ReplacesJoin_OrderRemains ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Kitchen));
       
       var originalJoin1 = SqlStatementModelObjectMother.CreateSqlJoin();
-      sqlTable.AddJoin (originalJoin1);
+      sqlTable.AddJoinForExplicitQuerySource (originalJoin1);
       
       var originalJoin2 = SqlStatementModelObjectMother.CreateSqlJoin();
-      sqlTable.AddJoin (originalJoin2);
+      sqlTable.AddJoinForExplicitQuerySource (originalJoin2);
       
       var originalJoin3 = SqlStatementModelObjectMother.CreateSqlJoin();
-      sqlTable.AddJoin (originalJoin3);
+      sqlTable.AddJoinForExplicitQuerySource (originalJoin3);
 
       var replacementJoin1 = SqlStatementModelObjectMother.CreateSqlJoin();
-      var replacementJoin2 = SqlStatementModelObjectMother.CreateSqlJoin();
-      var substitutions = new Dictionary<SqlJoin, SqlJoin> { { originalJoin1, replacementJoin1 }, { originalJoin2, replacementJoin2 } };
+      var replacementJoin3 = SqlStatementModelObjectMother.CreateSqlJoin();
+      var substitutions = new Dictionary<SqlJoin, SqlJoin> { { originalJoin1, replacementJoin1 }, { originalJoin3, replacementJoin3 } };
 
       sqlTable.SubstituteJoins (substitutions);
 
-      Assert.That (sqlTable.OrderedJoins.ElementAt (0), Is.SameAs (replacementJoin1));
-      Assert.That (sqlTable.OrderedJoins.ElementAt (1), Is.SameAs (replacementJoin2));
-      Assert.That (sqlTable.OrderedJoins.ElementAt (2), Is.SameAs (originalJoin3));
+      Assert.That (sqlTable.Joins, Is.EqualTo (new[] { replacementJoin1, originalJoin2, replacementJoin3 }));
     }
 
     [Test]
-    public void SubstituteJoins_ReplacesJoinInMemberDictionary ()
+    public void SubstituteJoins_ReplacesJoin_MemberLookupRemains ()
     {
       var sqlTable = SqlStatementModelObjectMother.CreateSqlTable (typeof (Kitchen));
       
       var memberInfo1 = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
-      var originalJoin1 = sqlTable.GetOrAddLeftJoinByMember (memberInfo1, SqlStatementModelObjectMother.CreateLeftJoinData);
+      var originalJoin1 = sqlTable.GetOrAddMemberBasedLeftJoin (memberInfo1, SqlStatementModelObjectMother.CreateLeftJoinData);
 
       var memberInfo2 = SqlStatementModelObjectMother.GetKitchenRestaurantMemberInfo();
-      var originalJoin2 = sqlTable.GetOrAddLeftJoinByMember (memberInfo2, SqlStatementModelObjectMother.CreateLeftJoinData);
+      var originalJoin2 = sqlTable.GetOrAddMemberBasedLeftJoin (memberInfo2, SqlStatementModelObjectMother.CreateLeftJoinData);
 
       var replacementJoin = SqlStatementModelObjectMother.CreateSqlJoin();
       var substitutions = new Dictionary<SqlJoin, SqlJoin> { { originalJoin1, replacementJoin } };
@@ -196,7 +216,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       var tableInfo = new ResolvedSimpleTableInfo (typeof (int), "table1", "t");
       var sqlTable = new SqlTable (tableInfo);
-      sqlTable.AddJoin (new SqlJoin(joinedTable, JoinSemantics.Inner, joinCondition));
+      sqlTable.AddJoinForExplicitQuerySource (new SqlJoin(joinedTable, JoinSemantics.Inner, joinCondition));
 
       var result = sqlTable.ToString ();
 
@@ -211,11 +231,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       var joinedTable1 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Cook", "c"));
       var joinCondition1 = Expression.Equal (new SqlLiteralExpression ("left"), new SqlLiteralExpression ("right"));
-      sqlTable.AddJoin (new SqlJoin(joinedTable1, JoinSemantics.Left, joinCondition1));
+      var memberInfo1 = SqlStatementModelObjectMother.GetKitchenCookMemberInfo();
+      sqlTable.GetOrAddMemberBasedLeftJoin (memberInfo1, ()=> new SqlTable.LeftJoinData(joinedTable1, joinCondition1));
 
       var joinedTable2 = new SqlTable (new ResolvedSimpleTableInfo (typeof (int), "Restaurant", "r"));
       var joinCondition2 = Expression.Equal (new SqlLiteralExpression ("left2"), new SqlLiteralExpression ("right2"));
-      sqlTable.AddJoin (new SqlJoin(joinedTable2, JoinSemantics.Inner, joinCondition2));
+      sqlTable.AddJoinForExplicitQuerySource (new SqlJoin(joinedTable2, JoinSemantics.Inner, joinCondition2));
 
       var result = sqlTable.ToString ();
 
