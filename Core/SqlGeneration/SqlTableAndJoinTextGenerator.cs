@@ -70,18 +70,33 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
-      if (join.JoinSemantics == JoinSemantics.Inner)
-        commandBuilder.Append (" INNER JOIN ");
+      var hasJoinCondition = !(join.JoinCondition is NullJoinConditionExpression);
+      if (hasJoinCondition)
+      {
+        if (join.JoinSemantics == JoinSemantics.Left)
+          commandBuilder.Append (" LEFT OUTER JOIN ");
+        else
+          commandBuilder.Append (" INNER JOIN ");
+      }
       else
-        commandBuilder.Append (" LEFT OUTER JOIN ");
+      {
+        if (join.JoinSemantics == JoinSemantics.Left)
+          commandBuilder.Append (" OUTER APPLY ");
+        else if (join.JoinedTable.TableInfo is ResolvedSimpleTableInfo)
+          commandBuilder.Append (" CROSS JOIN "); // Note that inner joins without join condition cannot be introduced using standard query syntax.
+        else
+          commandBuilder.Append (" CROSS APPLY "); // Note that inner joins without join condition cannot be introduced using standard query syntax.
+      }
 
       join.JoinedTable.TableInfo.Accept (visitor);
 
-      GenerateTextForJoins (@join.JoinedTable, commandBuilder, visitor, stage);
+      GenerateTextForJoins (join.JoinedTable, commandBuilder, visitor, stage);
 
-      commandBuilder.Append (" ON ");
-      
-      stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
+      if (hasJoinCondition)
+      {
+        commandBuilder.Append (" ON ");
+        stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
+      }
     }
 
     private readonly ISqlCommandBuilder _commandBuilder;

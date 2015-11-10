@@ -32,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           Cooks.DefaultIfEmpty(),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t0] ON (1 = 1)",
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [CookTable] AS [t0]",
           row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
               new ColumnID ("FirstName", 1),
@@ -84,7 +84,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           "SELECT [t0].[Name] AS [value] "
           + "FROM [CookTable] AS [t0] "
           + "WHERE ("
-          + "(SELECT MAX([t1].[ID]) AS [value] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t1] ON (1 = 1)) > @1"
+          + "(SELECT MAX([t1].[ID]) AS [value] FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [CookTable] AS [t1]) > @1"
           + ")",
           new CommandParameter ("@1", 5));
     }
@@ -175,7 +175,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + "FROM [CookTable] AS [t1] "
           + "CROSS APPLY ("
           + "SELECT [t2].[ID],[t2].[Name],[t2].[RestaurantID],[t2].[LastCleaningDay],[t2].[PassedLastInspection],[t2].[LastInspectionScore] "
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [KitchenTable] AS [t2] ON (1 = 1)"
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [KitchenTable] AS [t2]"
           + ") AS [q0]");
     }
 
@@ -302,12 +302,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
             select new { CookID = c.ID, KitchenID = k.ID }).DefaultIfEmpty(),
           "SELECT [q0].[CookID] AS [CookID],[q0].[KitchenID] AS [KitchenID] "
           + "FROM (SELECT NULL AS [Empty]) AS [Empty] "
-          + "LEFT OUTER JOIN ("
+          + "OUTER APPLY ("
           + "SELECT [t1].[ID] AS [CookID],[t2].[ID] AS [KitchenID] "
           + "FROM [CookTable] AS [t1] "
           + "CROSS JOIN [KitchenTable] AS [t2] "
           + "WHERE ([t2].[ID] = [t1].[KitchenID])"
-          + ") AS [q0] ON (1 = 1)");
+          + ") AS [q0]");
     }
 
     // TODO RMLNQSQL-77: This test would generate invalid SQL if optimization is implemented incorrectly.

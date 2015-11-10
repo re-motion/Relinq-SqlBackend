@@ -21,9 +21,11 @@ using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
+using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
@@ -86,7 +88,58 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           _commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t1].[ID] = [t2].[FK])"));
     }
 
-     [Test]
+    [Test]
+    public void GenerateSql_ForLeftJoinWithoutJoinCondition_OptimizedToOuterApply ()
+    {
+      var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+
+      var join = CreateResolvedJoinWithoutJoinCondition (typeof (Cook), JoinSemantics.Left, "CookTable", "t2");
+      originalTable.SqlTable.AddJoinForExplicitQuerySource (join);
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition), Times.Never());
+      _stageMock.Verify();
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] OUTER APPLY [CookTable] AS [t2]"));
+    }
+
+    [Test]
+    public void GenerateSql_ForLeftJoin_Multiple_WithJoinConditionAndWithoutJoinCondition()
+    {
+      var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+
+      var join1 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "Table2", "t2", "FK");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join1);
+
+      var join2 = CreateResolvedJoinWithoutJoinCondition (typeof (Cook), JoinSemantics.Left, "Table3", "t3");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join2);
+
+      var join3 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "Table4", "t4", "FK");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join3);
+
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join1.JoinCondition))
+          .Callback((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("([t1].[ID] = [t2].[FK])"))
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join3.JoinCondition))
+          .Callback((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("([t1].[ID] = [t4].[FK])"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join2.JoinCondition), Times.Never());
+      _stageMock.Verify();
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo (
+              "[KitchenTable] AS [t1] "
+              + "LEFT OUTER JOIN [Table2] AS [t2] ON ([t1].[ID] = [t2].[FK]) "
+              + "OUTER APPLY [Table3] AS [t3] "
+              + "LEFT OUTER JOIN [Table4] AS [t4] ON ([t1].[ID] = [t4].[FK])"));
+    }
+
+    [Test]
     public void GenerateSql_ForInnerJoin ()
     {
        var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
@@ -106,7 +159,96 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_ForJoin_Recursive ()
+    public void GenerateSql_ForInnerJoinWithoutJoinCondition_WithResolvedSimpleTable_OptimizedToCrossJoin ()
+    {
+       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+       var join = CreateResolvedJoinWithoutJoinCondition (typeof (Cook), JoinSemantics.Inner, "CookTable", "t2");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join);
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition), Times.Never());
+      _stageMock.Verify();
+      Assert.That (
+          _commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] CROSS JOIN [CookTable] AS [t2]"));
+    }
+
+    [Test]
+    public void GenerateSql_ForInnerJoinWithoutJoinCondition_WithSubStatementOptimizedToCrossApply ()
+    {
+       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+       var join = CreateResolvedJoinForSubStatementTableInfoWithoutJoinCondition (typeof (Cook), JoinSemantics.Inner, "t2");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join);
+
+      _stageMock
+          .Setup (_ => _.GenerateTextForSqlStatement (_commandBuilder, ((ResolvedSubStatementTableInfo) join.JoinedTable.TableInfo).SqlStatement))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement) => commandBuilder.Append ("SubStatement"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition), Times.Never());
+      _stageMock.Verify();
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] CROSS APPLY (SubStatement) AS [t2]"));
+    }
+
+    [Test]
+    public void GenerateSql_ForInnerJoinWithoutJoinCondition_WithGroupingOptimizedToCrossApply ()
+    {
+       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+       var join = CreateResolvedJoinForJoinedGroupingTableInfoWithoutJoinCondition (typeof (Cook), JoinSemantics.Inner, "t2");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join);
+
+      _stageMock
+          .Setup (_ => _.GenerateTextForSqlStatement (_commandBuilder, ((ResolvedJoinedGroupingTableInfo) join.JoinedTable.TableInfo).SqlStatement))
+          .Callback ((ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement) => commandBuilder.Append ("SubStatement"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join.JoinCondition), Times.Never());
+      _stageMock.Verify();
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[KitchenTable] AS [t1] CROSS APPLY (SubStatement) AS [t2]"));
+    }
+
+    [Test]
+    public void GenerateSql_ForInnerJoin_Multiple_WithJoinConditionAndWithoutJoinCondition()
+    {
+      var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+
+      var join1 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Inner, "ID", "Table2", "t2", "FK");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join1);
+
+      var join2 = CreateResolvedJoinWithoutJoinCondition (typeof (Cook), JoinSemantics.Inner, "Table3", "t3");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join2);
+
+      var join3 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Inner, "ID", "Table4", "t4", "FK");
+       originalTable.SqlTable.AddJoinForExplicitQuerySource (join3);
+
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join1.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("([t1].[ID] = [t2].[FK])"))
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join3.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("([t1].[ID] = [t4].[FK])"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join2.JoinCondition), Times.Never());
+      _stageMock.Verify();
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo (
+              "[KitchenTable] AS [t1] "
+              + "INNER JOIN [Table2] AS [t2] ON ([t1].[ID] = [t2].[FK]) "
+              + "CROSS JOIN [Table3] AS [t3] "
+              + "INNER JOIN [Table4] AS [t4] ON ([t1].[ID] = [t4].[FK])"));
+    }
+
+    [Test]
+    public void GenerateSql_ForLeftJoin_WithJoinCondition_Recursive ()
     {
       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
       var join1 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
@@ -137,7 +279,34 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateSql_ForJoin_Multiple ()
+    public void GenerateSql_ForLeftJoin_WithoutJoinCondition_Recursive ()
+    {
+      var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+      var join1 = CreateResolvedJoinWithoutJoinCondition (typeof (Cook), JoinSemantics.Left, "CookTable", "t2");
+      originalTable.SqlTable.AddJoinForExplicitQuerySource (join1);
+      var join2 = CreateResolvedJoin (typeof (Cook), "t2", JoinSemantics.Left, "ID2", "CookTable2", "t3", "FK2");
+      join1.JoinedTable.AddJoinForExplicitQuerySource (join2);
+
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join2.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("Y"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
+
+      _stageMock.Verify (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join1.JoinCondition), Times.Never());
+      _stageMock.Verify();
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo (
+              "[KitchenTable] AS [t1] "
+              + "OUTER APPLY [CookTable] AS [t2] "
+              + "LEFT OUTER JOIN [CookTable2] AS [t3] "
+              + "ON Y"));
+    }
+
+    [Test]
+    public void GenerateSql_ForLeftJoin_Multiple ()
     {
       var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
       var join1 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
@@ -350,6 +519,36 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var foreignColumn = new SqlColumnDefinitionExpression (typeof (int), joinedTableAlias, rightSideKeyName, false);
 
       return new SqlJoin (joinedTable, joinSemantics, Expression.Equal (primaryColumn, foreignColumn));
+    }
+
+    private SqlJoin CreateResolvedJoinWithoutJoinCondition (Type type, JoinSemantics joinSemantics, string joinedTableName, string joinedTableAlias)
+    {
+      var joinedTableInfo = new ResolvedSimpleTableInfo (type, joinedTableName, joinedTableAlias);
+      var joinedTable = new SqlTable (joinedTableInfo);
+
+      return new SqlJoin (joinedTable, joinSemantics, new NullJoinConditionExpression());
+    }
+
+    private SqlJoin CreateResolvedJoinForSubStatementTableInfoWithoutJoinCondition (Type type, JoinSemantics joinSemantics, string joinedTableAlias)
+    {
+      var joinedTableInfo = new ResolvedSubStatementTableInfo (
+          joinedTableAlias,
+          SqlStatementModelObjectMother.CreateSqlStatement_Resolved (type));
+      var joinedTable = new SqlTable (joinedTableInfo);
+
+      return new SqlJoin (joinedTable, joinSemantics, new NullJoinConditionExpression());
+    }
+
+    private SqlJoin CreateResolvedJoinForJoinedGroupingTableInfoWithoutJoinCondition (Type type, JoinSemantics joinSemantics, string joinedTableAlias)
+    {
+      var joinedTableInfo = new ResolvedJoinedGroupingTableInfo (
+          joinedTableAlias,
+          SqlStatementModelObjectMother.CreateSqlStatement_Resolved (type),
+          SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression(),
+          "gs");
+      var joinedTable = new SqlTable (joinedTableInfo);
+
+      return new SqlJoin (joinedTable, joinSemantics, new NullJoinConditionExpression());
     }
 
     private SqlAppendedTable CreateResolvedAppendedTable (string tableName, string tableAlias, JoinSemantics joinSemantics)

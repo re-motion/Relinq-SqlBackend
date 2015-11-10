@@ -190,7 +190,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           () => (from s in Cooks select s).DefaultIfEmpty().All (s => s.IsStarredCook),
           "SELECT CONVERT(BIT, CASE WHEN NOT EXISTS(("
-          + "SELECT [t0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t0] ON (1 = 1) "
+          + "SELECT [t0].[ID] FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY [CookTable] AS [t0] "
           + "WHERE NOT ([t0].[IsStarredCook] = 1))) THEN 1 ELSE 0 END) AS [value]");
     }
 
@@ -354,10 +354,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).DefaultIfEmpty(),
           "SELECT [q0].[value] AS [value] FROM ("
           + "SELECT NULL AS [Empty]) AS [Empty] "
-          + "LEFT OUTER JOIN ("
+          + "OUTER APPLY ("
           + "SELECT [t1].[ID] AS [value] FROM [CookTable] AS [t1] "
           + "UNION (SELECT [t2].[ID] AS [value] FROM [KitchenTable] AS [t2])"
-          + ") AS [q0] ON (1 = 1)");
+          + ") AS [q0]");
 
       CheckQuery (
           () => Cooks.Select (c => c.ID).Union (Kitchens.Select (k => k.ID)).Distinct(),

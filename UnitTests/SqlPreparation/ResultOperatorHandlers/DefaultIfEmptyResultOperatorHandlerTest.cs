@@ -98,7 +98,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       Assert.That (join.JoinedTable, Is.SameAs (sqlTable));
       
       // ... with a dummy join condition.
-      SqlExpressionTreeComparer.CheckAreEqualTrees (Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)), join.JoinCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (new NullJoinConditionExpression(), join.JoinCondition);
     }
 
     [Test]

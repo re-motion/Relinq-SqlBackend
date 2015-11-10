@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 
       // Add the original table to the dummy table as a LEFT JOIN, use the WHERE condition as the JOIN condition (if any; otherwise use (1 = 1)):
       var originalSqlTable = sqlStatementBuilder.SqlTables[0];
-      var joinCondition = sqlStatementBuilder.WhereCondition ?? Expression.Equal (new SqlLiteralExpression (1), new SqlLiteralExpression (1)); // TODO: use NullJoinConditionExpression to represent always true condition
+      var joinCondition = sqlStatementBuilder.WhereCondition ?? new NullJoinConditionExpression();
       var join = new SqlJoin (originalSqlTable.SqlTable, JoinSemantics.Left, joinCondition);
       // The right side of a join must not reference the left side of a join in SQL (apart from in the join condition). This restriction is fulfilled
       // here because the left side is just the dummyRowTable (and there is nothing else in this statement).
