@@ -34,8 +34,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      GenerateTextForSqlTable (new SqlTableAndJoinTextGenerator (commandBuilder, stage), table, commandBuilder, isFirstTable);
-      GenerateTextForJoins (table.SqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage), stage);
+      var sqlTableAndJoinTextGenerator = new SqlTableAndJoinTextGenerator (commandBuilder, stage);
+      GenerateTextForSqlTable (sqlTableAndJoinTextGenerator, table, commandBuilder, isFirstTable);
+      GenerateTextForJoins (table.SqlTable, commandBuilder, sqlTableAndJoinTextGenerator, stage);
     }
 
     private static void GenerateTextForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ITableInfoVisitor visitor, ISqlGenerationStage stage)
@@ -60,11 +61,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       {
         if (!isFirstTable)
         {
-          commandBuilder.Append (" CROSS ");
           if (table.SqlTable.TableInfo is ResolvedSimpleTableInfo)
-            commandBuilder.Append ("JOIN ");
+            commandBuilder.Append (" CROSS JOIN ");
           else
-            commandBuilder.Append ("APPLY ");
+            commandBuilder.Append (" CROSS APPLY ");
         }
       }
 
