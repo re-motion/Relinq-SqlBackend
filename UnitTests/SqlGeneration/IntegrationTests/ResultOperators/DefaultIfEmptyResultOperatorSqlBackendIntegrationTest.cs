@@ -152,8 +152,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           "SELECT [t1].[ID] AS [CookID],[q0].[ID] AS [RestaurantID] "
           + "FROM [KitchenTable] AS [t1] "
           + "LEFT OUTER JOIN [RestaurantTable] AS [t2] ON ([t1].[RestaurantID] = [t2].[ID]) "
-          + "LEFT OUTER JOIN [CookTable] AS [t5] ON ([t1].[ID] = [t5].[KitchenID]) "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t6] ON ([t5].[KitchenID] = [t6].[ID]) "
+          + "LEFT OUTER JOIN [CookTable] AS [t5] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t6] "
+          + "ON ([t5].[KitchenID] = [t6].[ID]) "
+          + "ON ([t1].[ID] = [t5].[KitchenID]) "
           + "CROSS JOIN [CookTable] AS [t3] "
           + "CROSS APPLY ("
           + "SELECT [t4].[ID],[t4].[CompanyID] "
@@ -205,8 +207,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           + "CROSS APPLY ("
           + "SELECT [t2].[ID],[t2].[Name],[t2].[RestaurantID],[t2].[LastCleaningDay],[t2].[PassedLastInspection],[t2].[LastInspectionScore] "
           + "FROM (SELECT NULL AS [Empty]) AS [Empty] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t3].[ID] = [t1].[ID]) "
-          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID])"
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] "
+          + "ON ([t2].[ID] = [t3].[KitchenID]) "
+          + "ON ([t3].[ID] = [t1].[ID])"
           + ") AS [q0]");
     }
 

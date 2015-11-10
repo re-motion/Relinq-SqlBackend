@@ -129,9 +129,40 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (
           _commandBuilder.GetCommandText(),
           Is.EqualTo (
-              "[KitchenTable] AS [t1] LEFT OUTER JOIN "
-              + "[CookTable] AS [t2] ON X LEFT OUTER JOIN "
-              + "[CookTable2] AS [t3] ON Y"));
+              "[KitchenTable] AS [t1] "
+              + "LEFT OUTER JOIN [CookTable] AS [t2] "
+              + "LEFT OUTER JOIN [CookTable2] AS [t3] "
+              + "ON Y "
+              + "ON X"));
+    }
+
+    [Test]
+    public void GenerateSql_ForJoin_Multiple ()
+    {
+      var originalTable = CreateResolvedAppendedTable ("KitchenTable", "t1", JoinSemantics.Inner);
+      var join1 = CreateResolvedJoin(typeof (Cook), "t1", JoinSemantics.Left, "ID", "CookTable", "t2", "FK");
+      originalTable.SqlTable.AddJoinForExplicitQuerySource (join1);
+      var join2 = CreateResolvedJoin(typeof (Cook), "t2", JoinSemantics.Left, "ID2", "CookTable2", "t3", "FK2");
+      originalTable.SqlTable.AddJoinForExplicitQuerySource (join2);
+
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join1.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("X"))
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, join2.JoinCondition))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => commandBuilder.Append ("Y"))
+          .Verifiable();
+
+      SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock, true);
+
+      _stageMock.Verify();
+      Assert.That (
+          _commandBuilder.GetCommandText(),
+          Is.EqualTo (
+              "[KitchenTable] AS [t1] "
+              + "LEFT OUTER JOIN [CookTable] AS [t2] ON X "
+              + "LEFT OUTER JOIN [CookTable2] AS [t3] ON Y"));
     }
 
     [Test]

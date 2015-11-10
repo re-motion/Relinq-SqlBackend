@@ -409,12 +409,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens where k.Cook == k.Restaurant.SubKitchen.Cook select k.Name,
-          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] "+
-          "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "+
-          "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "+
-          "LEFT OUTER JOIN [CookTable] AS [t4] ON ([t2].[ID] = [t4].[KitchenID]) "+
-          "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t0].[ID] = [t3].[KitchenID]) "+
-          "WHERE ([t3].[ID] = [t4].[ID])");
+          "SELECT [t0].[Name] AS [value] "
+          + "FROM [KitchenTable] AS [t0] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t4] "
+          + "ON ([t2].[ID] = [t4].[KitchenID]) "
+          + "ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "ON ([t0].[RestaurantID] = [t1].[ID]) "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] "
+          + "ON ([t0].[ID] = [t3].[KitchenID]) "
+          + "WHERE ([t3].[ID] = [t4].[ID])");
     }
 
     [Test]
@@ -422,12 +427,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens where ((Chef) k.Cook) == k.Restaurant.SubKitchen.Cook select k.Name,
-          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] " +
-          "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) " +
-          "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) " +
-          "LEFT OUTER JOIN [CookTable] AS [t4] ON ([t2].[ID] = [t4].[KitchenID]) " +
-          "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t0].[ID] = [t3].[KitchenID]) " +
-          "WHERE ([t3].[ID] = [t4].[ID])");
+          "SELECT [t0].[Name] AS [value] "
+          + "FROM [KitchenTable] AS [t0] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t4] "
+          + "ON ([t2].[ID] = [t4].[KitchenID]) "
+          + "ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "ON ([t0].[RestaurantID] = [t1].[ID]) "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] "
+          + "ON ([t0].[ID] = [t3].[KitchenID]) "
+          + "WHERE ([t3].[ID] = [t4].[ID])");
 
       // Note: ConvertChecked doesn't work with entities, so we can't test it here:
       var kitchenParameter = Expression.Parameter (typeof (Kitchen), "k");

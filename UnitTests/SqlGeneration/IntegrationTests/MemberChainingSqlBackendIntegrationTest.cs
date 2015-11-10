@@ -84,9 +84,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
           + "[t3].[KnifeID],[t3].[KnifeClassID],[t3].[CookRating] "
           + "FROM [KitchenTable] AS [t0] "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "
-          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID])");
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] "
+          + "ON ([t2].[ID] = [t3].[KitchenID]) "
+          + "ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "ON ([t0].[RestaurantID] = [t1].[ID])");
     }
 
     [Test]
@@ -96,9 +99,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           from k in Kitchens where k.Restaurant.SubKitchen.Cook != null select k.Restaurant.SubKitchen.Cook.ID,
           "SELECT [t3].[ID] AS [value] "
           + "FROM [KitchenTable] AS [t0] "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "
-          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] "
+          + "ON ([t2].[ID] = [t3].[KitchenID]) "
+          + "ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "ON ([t0].[RestaurantID] = [t1].[ID]) "
           + "WHERE ([t3].[ID] IS NOT NULL)");
     }
 
@@ -107,10 +113,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     {
       CheckQuery (
           from k in Kitchens where k.Restaurant.SubKitchen.Restaurant.CompanyIfAny == null select k.Restaurant.SubKitchen.Cook.ID,
-          "SELECT [t3].[ID] AS [value] " 
-          + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) LEFT OUTER JOIN " 
-          + "[KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) " 
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON ([t2].[RestaurantID] = [t4].[ID]) WHERE ([t4].[CompanyID] IS NULL)");
+          "SELECT [t3].[ID] AS [value] "
+          + "FROM [KitchenTable] AS [t0] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] "
+          + "ON ([t2].[ID] = [t3].[KitchenID]) "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] "
+          + "ON ([t2].[RestaurantID] = [t4].[ID]) "
+          + "ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "ON ([t0].[RestaurantID] = [t1].[ID]) "
+          + "WHERE ([t4].[CompanyID] IS NULL)");
     }
 
     [Test]

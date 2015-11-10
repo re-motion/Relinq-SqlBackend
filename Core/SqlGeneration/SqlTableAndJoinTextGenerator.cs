@@ -39,15 +39,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       GenerateTextForJoins (table.SqlTable, commandBuilder, sqlTableAndJoinTextGenerator, stage);
     }
 
-    private static void GenerateTextForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ITableInfoVisitor visitor, ISqlGenerationStage stage)
-    {
-      foreach (var join in sqlTable.Joins)
-      {
-        GenerateTextForJoin (visitor, @join, commandBuilder, stage);
-        GenerateTextForJoins (@join.JoinedTable, commandBuilder, visitor, stage);
-      }
-    }
-
     private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlAppendedTable table, ISqlCommandBuilder commandBuilder, bool isFirstTable)
     {
       // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
@@ -71,6 +62,12 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       table.SqlTable.TableInfo.Accept (visitor);
     }
 
+    private static void GenerateTextForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ITableInfoVisitor visitor, ISqlGenerationStage stage)
+    {
+      foreach (var join in sqlTable.Joins)
+        GenerateTextForJoin (visitor, @join, commandBuilder, stage);
+    }
+
     private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
       if (join.JoinSemantics == JoinSemantics.Inner)
@@ -79,6 +76,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         commandBuilder.Append (" LEFT OUTER JOIN ");
 
       join.JoinedTable.TableInfo.Accept (visitor);
+
+      GenerateTextForJoins (@join.JoinedTable, commandBuilder, visitor, stage);
+
       commandBuilder.Append (" ON ");
       
       stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);

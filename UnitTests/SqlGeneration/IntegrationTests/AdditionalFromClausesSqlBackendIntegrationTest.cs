@@ -80,12 +80,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           select new { KitchenID = k.ID, CookID = c.ID },
           "SELECT [t0].[ID] AS [KitchenID],[t1].[ID] AS [CookID] "
           + "FROM [KitchenTable] AS [t0] "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t2] ON ([t0].[RestaurantID] = [t2].[ID]) "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t3] ON ([t2].[ID] = [t3].[RestaurantID]) "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] ON ([t3].[RestaurantID] = [t4].[ID]) "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t2] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t3] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t4] "
+          + "ON ([t3].[RestaurantID] = [t4].[ID]) "
+          + "ON ([t2].[ID] = [t3].[RestaurantID]) "
+          + "ON ([t0].[RestaurantID] = [t2].[ID]) "
           + "CROSS JOIN [CookTable] AS [t1] "
-          + "LEFT OUTER JOIN [KitchenTable] AS [t5] ON ([t1].[KitchenID] = [t5].[ID]) "
-          + "LEFT OUTER JOIN [RestaurantTable] AS [t6] ON ([t5].[RestaurantID] = [t6].[ID]) "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t5] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t6] "
+          + "ON ([t5].[RestaurantID] = [t6].[ID]) "
+          + "ON ([t1].[KitchenID] = [t5].[ID]) "
           + "WHERE (([t4].[CompanyID] IS NULL) AND ([t6].[CompanyID] IS NOT NULL))");
     }
 

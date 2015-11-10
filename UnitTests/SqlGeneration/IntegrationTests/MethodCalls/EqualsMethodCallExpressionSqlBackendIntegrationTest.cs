@@ -33,9 +33,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Meth
         new CommandParameter("@1", "abc"));
 
       CheckQuery (from k in Kitchens where k.Equals (k.Restaurant.SubKitchen) select k.Name,
-        "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "
-        + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "
-        + "WHERE ([t0].[ID] = [t2].[ID])");
+          "SELECT [t0].[Name] AS [value] "
+          + "FROM [KitchenTable] AS [t0] "
+          + "LEFT OUTER JOIN [RestaurantTable] AS [t1] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "ON ([t1].[ID] = [t2].[RestaurantID]) "
+          + "ON ([t0].[RestaurantID] = [t1].[ID]) "
+          + "WHERE ([t0].[ID] = [t2].[ID])");
 
       CheckQuery (from c in Cooks where Equals(c.Name, "abc") select c.Name,
         "SELECT [t0].[Name] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[Name] = @1)",
