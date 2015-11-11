@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -27,26 +26,35 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// <summary>
   /// <see cref="SqlTableAndJoinTextGenerator"/> generates SQL text for <see cref="SqlTable"/> objects and its joined tables.
   /// </summary>
-  public static class SqlTableAndJoinTextGenerator
+  public class SqlTableAndJoinTextGenerator
   {
-    public static void GenerateSql (SqlAppendedTable table, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
+    private readonly ISqlGenerationStage _stage;
+
+    public SqlTableAndJoinTextGenerator (ISqlGenerationStage stage)
+    {
+      ArgumentUtility.CheckNotNull ("stage", stage);
+
+      _stage = stage;
+    }
+
+    public ISqlGenerationStage Stage
+    {
+      get { return _stage; }
+    }
+
+    public void Build (SqlAppendedTable table, ISqlCommandBuilder commandBuilder, bool isFirstTable)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var tableInfoVisitor = new TableInfoVisitor (commandBuilder, stage);
+      var tableInfoVisitor = new TableInfoVisitor (commandBuilder, _stage);
       if (isFirstTable)
-        GenerateTextForFirstTable (tableInfoVisitor, commandBuilder, stage, table);
+        GenerateTextForFirstTable (tableInfoVisitor, commandBuilder, table);
       else
-        GenerateTextForAppendedTable (tableInfoVisitor, commandBuilder, stage, table);
+        GenerateTextForAppendedTable (tableInfoVisitor, commandBuilder, table);
     }
 
-    private static void GenerateTextForFirstTable (
-        ITableInfoVisitor visitor,
-        ISqlCommandBuilder commandBuilder,
-        ISqlGenerationStage stage,
-        SqlAppendedTable table)
+    private void GenerateTextForFirstTable (ITableInfoVisitor visitor, ISqlCommandBuilder commandBuilder, SqlAppendedTable table)
     {
       if (table.JoinSemantics == JoinSemantics.Left)
       {
@@ -55,14 +63,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
 
       table.SqlTable.TableInfo.Accept (visitor);
-      GenerateTextForJoins (visitor, commandBuilder, stage, table.SqlTable.Joins);
+      GenerateTextForJoins (visitor, commandBuilder, table.SqlTable.Joins);
     }
 
-    private static void GenerateTextForAppendedTable (
-        ITableInfoVisitor visitor,
-        ISqlCommandBuilder commandBuilder,
-        ISqlGenerationStage stage,
-        SqlAppendedTable table)
+    private void GenerateTextForAppendedTable (ITableInfoVisitor visitor, ISqlCommandBuilder commandBuilder, SqlAppendedTable table)
     {
       // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
       if (table.JoinSemantics == JoinSemantics.Left)
@@ -73,14 +77,10 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         commandBuilder.Append (" CROSS APPLY ");
 
       table.SqlTable.TableInfo.Accept (visitor);
-      GenerateTextForJoins (visitor, commandBuilder, stage, table.SqlTable.Joins);
+      GenerateTextForJoins (visitor, commandBuilder, table.SqlTable.Joins);
     }
 
-    private static void GenerateTextForJoinedTable (
-        ITableInfoVisitor visitor,
-        ISqlCommandBuilder commandBuilder,
-        ISqlGenerationStage stage,
-        SqlJoin join)
+    private void GenerateTextForJoinedTable (ITableInfoVisitor visitor, ISqlCommandBuilder commandBuilder, SqlJoin join)
     {
       if (join.JoinSemantics == JoinSemantics.Left)
         commandBuilder.Append (" LEFT OUTER JOIN ");
@@ -88,24 +88,20 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         commandBuilder.Append (" INNER JOIN ");
 
       join.JoinedTable.TableInfo.Accept (visitor);
-      GenerateTextForJoins (visitor, commandBuilder, stage, join.JoinedTable.Joins);
+      GenerateTextForJoins (visitor, commandBuilder, join.JoinedTable.Joins);
 
       commandBuilder.Append (" ON ");
-      stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
+      _stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
     }
 
-    private static void GenerateTextForJoins (
-        ITableInfoVisitor visitor,
-        ISqlCommandBuilder commandBuilder,
-        ISqlGenerationStage stage,
-        IEnumerable<SqlJoin> joins)
+    private void GenerateTextForJoins (ITableInfoVisitor visitor, ISqlCommandBuilder commandBuilder, IEnumerable<SqlJoin> joins)
     {
       foreach (var join in joins)
       {
         if (join.JoinCondition is NullJoinConditionExpression)
-          GenerateTextForAppendedTable (visitor, commandBuilder, stage, new SqlAppendedTable (join.JoinedTable, join.JoinSemantics));
+          GenerateTextForAppendedTable (visitor, commandBuilder, new SqlAppendedTable (join.JoinedTable, join.JoinSemantics));
         else
-          GenerateTextForJoinedTable (visitor, commandBuilder, stage, join);
+          GenerateTextForJoinedTable (visitor, commandBuilder, join);
       }
     }
 

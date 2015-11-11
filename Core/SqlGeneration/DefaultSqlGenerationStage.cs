@@ -34,7 +34,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("table", table);
 
-      SqlTableAndJoinTextGenerator.GenerateSql (table, commandBuilder, this, isFirstTable);
+      var sqlTableAndJoinTextGenerator = new SqlTableAndJoinTextGenerator (this);
+      sqlTableAndJoinTextGenerator.Build (table, commandBuilder, isFirstTable);
     }
 
     public virtual void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
