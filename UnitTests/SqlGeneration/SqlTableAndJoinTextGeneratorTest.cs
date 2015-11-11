@@ -239,14 +239,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       {
         DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
       }.GetSqlStatement ();
-      var resolvedSubTableInfo = SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (sqlStatement);
+      var resolvedJoinedGroupingTableInfo = SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (sqlStatement);
 
       _stageMock
           .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
           .Callback ((ISqlCommandBuilder commandBuilder, SqlStatement _) => commandBuilder.Append ("XXX"))
           .Verifiable();
 
-      _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
+      _generator.VisitJoinedGroupingTableInfo (resolvedJoinedGroupingTableInfo);
 
       _stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));
