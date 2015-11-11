@@ -21,7 +21,6 @@ using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -36,14 +35,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
   {
     private SqlCommandBuilder _commandBuilder;
     private Mock<ISqlGenerationStage> _stageMock;
-    private TestableSqlTableAndJoinTextGenerator _generator;
 
     [SetUp]
     public void SetUp ()
     {
       _stageMock = new Mock<ISqlGenerationStage> (MockBehavior.Strict);
       _commandBuilder = new SqlCommandBuilder();
-      _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock.Object);
     }
 
     [Test]
@@ -393,27 +390,35 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void VisitSimpleTableInfo ()
+    public void GenerateSql_WithResolvedSimpleTableInfo ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 
-      _generator.VisitSimpleTableInfo (simpleTableInfo);
+      SqlTableAndJoinTextGenerator.GenerateSql (
+          new SqlAppendedTable (new SqlTable (simpleTableInfo), JoinSemantics.Inner),
+          _commandBuilder,
+          _stageMock.Object,
+          isFirstTable: true);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[CookTable] AS [c]"));
     }
 
     [Test]
-    public void VisitSimpleTableInfo_FullQualifiedTableNameGetsSplit ()
+    public void GenerateSql_WithResolvedSimpleTableInfo_FullQualifiedTableNameGetsSplit ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (typeof (Cook), "TestDomain.dbo.CookTable", "c");
 
-      _generator.VisitSimpleTableInfo (simpleTableInfo);
+      SqlTableAndJoinTextGenerator.GenerateSql (
+          new SqlAppendedTable (new SqlTable (simpleTableInfo), JoinSemantics.Inner),
+          _commandBuilder,
+          _stageMock.Object,
+          isFirstTable: true);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[TestDomain].[dbo].[CookTable] AS [c]"));
     }
 
     [Test]
-    public void VisitSubStatementTableInfo ()
+    public void GenerateSql_WithResolvedSubStatementTableInfo ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
       {
@@ -426,14 +431,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Callback ((ISqlCommandBuilder commandBuilder, SqlStatement _) => commandBuilder.Append ("XXX"))
           .Verifiable();
 
-      _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
+      SqlTableAndJoinTextGenerator.GenerateSql (
+          new SqlAppendedTable (new SqlTable (resolvedSubTableInfo), JoinSemantics.Inner),
+          _commandBuilder,
+          _stageMock.Object,
+          isFirstTable: true);
 
       _stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));
     }
 
     [Test]
-    public void VisitResolvedJoinedGroupingTableInfo ()
+    public void GenerateSql_WithResolvedJoinedGroupingTableInfo ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
       {
@@ -446,7 +455,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Callback ((ISqlCommandBuilder commandBuilder, SqlStatement _) => commandBuilder.Append ("XXX"))
           .Verifiable();
 
-      _generator.VisitJoinedGroupingTableInfo (resolvedJoinedGroupingTableInfo);
+      SqlTableAndJoinTextGenerator.GenerateSql (
+          new SqlAppendedTable (new SqlTable (resolvedJoinedGroupingTableInfo), JoinSemantics.Inner),
+          _commandBuilder,
+          _stageMock.Object,
+          isFirstTable: true);
 
       _stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));

@@ -27,7 +27,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   /// <summary>
   /// <see cref="SqlTableAndJoinTextGenerator"/> generates SQL text for <see cref="SqlTable"/> objects and its joined tables.
   /// </summary>
-  public class SqlTableAndJoinTextGenerator : ITableInfoVisitor
+  public static class SqlTableAndJoinTextGenerator
   {
     public static void GenerateSql (SqlAppendedTable table, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
     {
@@ -35,11 +35,11 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("stage", stage);
 
-      var sqlTableAndJoinTextGenerator = new SqlTableAndJoinTextGenerator (commandBuilder, stage);
+      var tableInfoVisitor = new TableInfoVisitor (commandBuilder, stage);
       if (isFirstTable)
-        GenerateTextForFirstTable (sqlTableAndJoinTextGenerator, commandBuilder, stage, table);
+        GenerateTextForFirstTable (tableInfoVisitor, commandBuilder, stage, table);
       else
-        GenerateTextForAppendedTable (sqlTableAndJoinTextGenerator, commandBuilder, stage, table);
+        GenerateTextForAppendedTable (tableInfoVisitor, commandBuilder, stage, table);
     }
 
     private static void GenerateTextForFirstTable (
@@ -109,84 +109,77 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
     }
 
-    private readonly ISqlCommandBuilder _commandBuilder;
-    private readonly ISqlGenerationStage _stage;
-
-    protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    private class TableInfoVisitor : ITableInfoVisitor
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      private readonly ISqlCommandBuilder _commandBuilder;
+      private readonly ISqlGenerationStage _stage;
 
-      _commandBuilder = commandBuilder;
-      _stage = stage;
-    }
+      public TableInfoVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+      {
+        ArgumentUtility.DebugCheckNotNull ("commandBuilder", commandBuilder);
+        ArgumentUtility.DebugCheckNotNull ("stage", stage);
 
-    public ISqlCommandBuilder CommandBuilder
-    {
-      get { return _commandBuilder; }
-    }
+        _commandBuilder = commandBuilder;
+        _stage = stage;
+      }
 
-    public ISqlGenerationStage Stage
-    {
-      get { return _stage; }
-    }
+      public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
+      {
+        ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-    public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
-    {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+        var identifiers = tableInfo.TableName.Split ('.');
 
-      var identifiers = tableInfo.TableName.Split ('.');
+        _commandBuilder.AppendSeparated (".", identifiers, (commandBuilder, identifier) => commandBuilder.AppendIdentifier (identifier));
+        _commandBuilder.Append (" AS ");
+        _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
 
-      _commandBuilder.AppendSeparated (".", identifiers, (commandBuilder, identifier) => commandBuilder.AppendIdentifier (identifier));
-      _commandBuilder.Append (" AS ");
-      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
+        return tableInfo;
+      }
 
-      return tableInfo;
-    }
+      public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
+      {
+        ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-    public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
-    {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+        _commandBuilder.Append ("(");
+        _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
+        _commandBuilder.Append (")");
+        _commandBuilder.Append (" AS ");
+        _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
 
-      _commandBuilder.Append ("(");
-      _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
-      _commandBuilder.Append (")");
-      _commandBuilder.Append (" AS ");
-      _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
+        return tableInfo;
+      }
 
-      return tableInfo;
-    }
+      public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
+      {
+        ArgumentUtility.DebugCheckNotNull ("tableInfo", tableInfo);
 
-    public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
-    {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+        return VisitSubStatementTableInfo (tableInfo);
+      }
 
-      return VisitSubStatementTableInfo (tableInfo);
-    }
+      ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
+      {
+        throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
+      }
 
-    ITableInfo ITableInfoVisitor.VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedTableInfo is not valid at this point.");
-    }
+      ITableInfo ITableInfoVisitor.VisitUnresolvedJoinTableInfo (UnresolvedJoinTableInfo tableInfo)
+      {
+        throw new InvalidOperationException ("UnresolvedJoinTableInfo is not valid at this point.");
+      }
 
-    ITableInfo ITableInfoVisitor.VisitUnresolvedJoinTableInfo (UnresolvedJoinTableInfo tableInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedJoinTableInfo is not valid at this point.");
-    }
+      ITableInfo ITableInfoVisitor.VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo)
+      {
+        throw new InvalidOperationException ("UnresolvedCollectionJoinTableInfo is not valid at this point.");
+      }
 
-    ITableInfo ITableInfoVisitor.VisitUnresolvedCollectionJoinTableInfo (UnresolvedCollectionJoinTableInfo tableInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedCollectionJoinTableInfo is not valid at this point.");
-    }
+      ITableInfo ITableInfoVisitor.VisitUnresolvedDummyRowTableInfo (UnresolvedDummyRowTableInfo tableInfo)
+      {
+        throw new InvalidOperationException ("UnresolvedDummyRowTableInfo is not valid at this point.");
+      }
 
-    ITableInfo ITableInfoVisitor.VisitUnresolvedDummyRowTableInfo (UnresolvedDummyRowTableInfo tableInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedDummyRowTableInfo is not valid at this point.");
-    }
-
-    ITableInfo ITableInfoVisitor.VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
-    {
-      throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
+      ITableInfo ITableInfoVisitor.VisitUnresolvedGroupReferenceTableInfo (UnresolvedGroupReferenceTableInfo tableInfo)
+      {
+        throw new InvalidOperationException ("UnresolvedGroupReferenceTableInfo is not valid at this point.");
+      }
     }
   }
 }
