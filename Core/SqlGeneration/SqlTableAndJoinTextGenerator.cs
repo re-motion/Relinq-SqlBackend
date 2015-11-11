@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -35,67 +36,76 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("stage", stage);
 
       var sqlTableAndJoinTextGenerator = new SqlTableAndJoinTextGenerator (commandBuilder, stage);
-      GenerateTextForSqlTable (sqlTableAndJoinTextGenerator, table, commandBuilder, isFirstTable);
-      GenerateTextForJoins (table.SqlTable, commandBuilder, sqlTableAndJoinTextGenerator, stage);
+      if (isFirstTable)
+        GenerateTextForFirstTable (sqlTableAndJoinTextGenerator, commandBuilder, stage, table);
+      else
+        GenerateTextForAppendedTable (sqlTableAndJoinTextGenerator, commandBuilder, stage, table);
     }
 
-    private static void GenerateTextForSqlTable (ITableInfoVisitor visitor, SqlAppendedTable table, ISqlCommandBuilder commandBuilder, bool isFirstTable)
+    private static void GenerateTextForFirstTable (
+        ITableInfoVisitor visitor,
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        SqlAppendedTable table)
     {
-      // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
       if (table.JoinSemantics == JoinSemantics.Left)
       {
-        if (isFirstTable)
-          commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
+        commandBuilder.Append ("(SELECT NULL AS [Empty]) AS [Empty]");
         commandBuilder.Append (" OUTER APPLY ");
-      }
-      else
-      {
-        if (!isFirstTable)
-        {
-          if (table.SqlTable.TableInfo is ResolvedSimpleTableInfo)
-            commandBuilder.Append (" CROSS JOIN ");
-          else
-            commandBuilder.Append (" CROSS APPLY ");
-        }
       }
 
       table.SqlTable.TableInfo.Accept (visitor);
+      GenerateTextForJoins (visitor, commandBuilder, stage, table.SqlTable.Joins);
     }
 
-    private static void GenerateTextForJoins (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ITableInfoVisitor visitor, ISqlGenerationStage stage)
+    private static void GenerateTextForAppendedTable (
+        ITableInfoVisitor visitor,
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        SqlAppendedTable table)
     {
-      foreach (var join in sqlTable.Joins)
-        GenerateTextForJoin (visitor, @join, commandBuilder, stage);
-    }
-
-    private static void GenerateTextForJoin (ITableInfoVisitor visitor, SqlJoin join, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
-    {
-      var hasJoinCondition = !(join.JoinCondition is NullJoinConditionExpression);
-      if (hasJoinCondition)
-      {
-        if (join.JoinSemantics == JoinSemantics.Left)
-          commandBuilder.Append (" LEFT OUTER JOIN ");
-        else
-          commandBuilder.Append (" INNER JOIN ");
-      }
+      // TODO RMLNQSQL-78: Move decision about CROSS JOIN, CROSS APPLY, or OUTER APPLY to SqlAppendedTable?
+      if (table.JoinSemantics == JoinSemantics.Left)
+        commandBuilder.Append (" OUTER APPLY ");
+      else if (table.SqlTable.TableInfo is ResolvedSimpleTableInfo)
+        commandBuilder.Append (" CROSS JOIN ");
       else
-      {
-        if (join.JoinSemantics == JoinSemantics.Left)
-          commandBuilder.Append (" OUTER APPLY ");
-        else if (join.JoinedTable.TableInfo is ResolvedSimpleTableInfo)
-          commandBuilder.Append (" CROSS JOIN "); // Note that inner joins without join condition cannot be introduced using standard query syntax.
-        else
-          commandBuilder.Append (" CROSS APPLY "); // Note that inner joins without join condition cannot be introduced using standard query syntax.
-      }
+        commandBuilder.Append (" CROSS APPLY ");
+
+      table.SqlTable.TableInfo.Accept (visitor);
+      GenerateTextForJoins (visitor, commandBuilder, stage, table.SqlTable.Joins);
+    }
+
+    private static void GenerateTextForJoinedTable (
+        ITableInfoVisitor visitor,
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        SqlJoin join)
+    {
+      if (join.JoinSemantics == JoinSemantics.Left)
+        commandBuilder.Append (" LEFT OUTER JOIN ");
+      else
+        commandBuilder.Append (" INNER JOIN ");
 
       join.JoinedTable.TableInfo.Accept (visitor);
+      GenerateTextForJoins (visitor, commandBuilder, stage, join.JoinedTable.Joins);
 
-      GenerateTextForJoins (join.JoinedTable, commandBuilder, visitor, stage);
+      commandBuilder.Append (" ON ");
+      stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
+    }
 
-      if (hasJoinCondition)
+    private static void GenerateTextForJoins (
+        ITableInfoVisitor visitor,
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        IEnumerable<SqlJoin> joins)
+    {
+      foreach (var join in joins)
       {
-        commandBuilder.Append (" ON ");
-        stage.GenerateTextForJoinCondition (commandBuilder, join.JoinCondition);
+        if (join.JoinCondition is NullJoinConditionExpression)
+          GenerateTextForAppendedTable (visitor, commandBuilder, stage, new SqlAppendedTable (join.JoinedTable, join.JoinSemantics));
+        else
+          GenerateTextForJoinedTable (visitor, commandBuilder, stage, join);
       }
     }
 
