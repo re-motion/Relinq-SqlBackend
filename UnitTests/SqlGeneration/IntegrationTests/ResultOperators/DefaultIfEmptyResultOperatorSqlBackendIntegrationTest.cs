@@ -165,6 +165,49 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_MultipleTimes_WithImplicitLeftJoinsAddedByLeftJoinCondition ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from r1 in Restaurants.Where (r => r == c.Kitchen.Restaurant).DefaultIfEmpty()
+          from k in Kitchens.Where (k => k == c.Kitchen).DefaultIfEmpty()
+          from r2 in Restaurants.Where (r => r == k.Restaurant).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t3].[ID] AS [CookID],[q1].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t3] "
+          + "LEFT OUTER JOIN [KitchenTable] AS [t5] ON ([t3].[KitchenID] = [t5].[ID]) "
+          + "CROSS APPLY ("
+          + "SELECT [t4].[ID],[t4].[CompanyID] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [RestaurantTable] AS [t4] ON ([t4].[ID] = [t5].[RestaurantID])"
+          + ") AS [q0] "
+          + "CROSS APPLY ("
+          + "SELECT [t6].[ID],[t6].[Name],[t6].[RestaurantID],[t6].[LastCleaningDay],[t6].[PassedLastInspection],[t6].[LastInspectionScore] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [KitchenTable] AS [t6] ON ([t6].[ID] = [t3].[KitchenID])"
+          + ") AS [q1] "
+          + "CROSS APPLY ("
+          + "SELECT [t7].[ID],[t7].[CompanyID] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [RestaurantTable] AS [t7] ON ([t7].[ID] = [q1].[RestaurantID])"
+          + ") AS [q2]");
+    }
+
+    [Test]
+    public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithImplicitLeftJoinAddedByLeftJoinCondition_AndSubQueryAccessingSameMembers ()
+    {
+      CheckQuery (
+          from c in Cooks
+          from k in Kitchens.Where (k => k.Cook.Knife == c.Knife || k.Cook.Assistants.Any (a => a.Knife == c.Knife)).DefaultIfEmpty()
+          select new { CookID = c.ID, KitchenID = k.ID },
+          "SELECT [t1].[ID] AS [CookID],[q0].[ID] AS [KitchenID] "
+          + "FROM [CookTable] AS [t1] "
+          + "CROSS APPLY ("
+          + "SELECT [t2].[ID],[t2].[Name],[t2].[RestaurantID],[t2].[LastCleaningDay],[t2].[PassedLastInspection],[t2].[LastInspectionScore] "
+          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [KitchenTable] AS [t2] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t2].[ID] = [t3].[KitchenID]) "
+          + "ON ((([t3].[KnifeID] = [t1].[KnifeID]) AND ([t3].[KnifeClassID] = [t1].[KnifeClassID])) OR EXISTS((SELECT [t4].[ID] FROM [CookTable] AS [t4] WHERE (([t3].[ID] = [t4].[AssistedID]) AND (([t4].[KnifeID] = [t1].[KnifeID]) AND ([t4].[KnifeClassID] = [t1].[KnifeClassID]))))))"
+          + ") AS [q0]");
+    }
+
+    [Test]
     public void DefaultIfEmpty_AsLeftJoin_InFromClause_WithoutWhereClause ()
     {
       CheckQuery (
