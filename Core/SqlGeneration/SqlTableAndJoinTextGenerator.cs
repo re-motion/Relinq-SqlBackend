@@ -110,10 +110,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
 
-      string[] identifiers = tableInfo.TableName.Split ('.');
-      var newTableName = string.Join(".", identifiers.Select (idf => "[" + idf + "]").ToArray());
-      
-      _commandBuilder.Append (newTableName);
+      var identifiers = tableInfo.TableName.Split ('.');
+
+      _commandBuilder.AppendSeparated (".", identifiers, (commandBuilder, identifier) => commandBuilder.AppendIdentifier (identifier));
       _commandBuilder.Append (" AS ");
       _commandBuilder.AppendIdentifier (tableInfo.TableAlias);
 
