@@ -1,4 +1,5 @@
-﻿using Remotion.Utilities;
+﻿using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
@@ -32,18 +33,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override string ToString ()
     {
-      return GetApplySemanticsString() + SqlTable.TableInfo;
+      return GetApplySemanticsString() + SqlTable;
     }
 
     private string GetApplySemanticsString ()
     {
-      switch (_joinSemantics)
-      {
-        case JoinSemantics.Left:
-          return "OUTER APPLY ";
-        default:
-          return "CROSS APPLY ";
-      }
+      if (_joinSemantics == JoinSemantics.Left)
+        return "OUTER APPLY ";
+      if (_sqlTable.TableInfo is ResolvedSimpleTableInfo)
+        return "CROSS APPLY ";
+      return "CROSS JOIN ";
     }
   }
 }
