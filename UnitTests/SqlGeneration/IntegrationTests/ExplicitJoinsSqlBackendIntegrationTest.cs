@@ -296,6 +296,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
      }
 
     [Test]
+    [Explicit ("TODO RMLNQSQL-77: Re-enable the tests once the optimizations are implemented.")]
     public void ExplicitJoinWithInto_DefaultIfEmptyOnGroupJoinVariable ()
     {
       // This test duplicates a scenario from DefaultIfEmptyResultOperatorSqlBackendIntegrationTest 
@@ -306,12 +307,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           join c in Cooks on k.Cook equals c into gkc
           from kc in gkc.DefaultIfEmpty()
           select kc.Name,
-          "SELECT [q0].[Name] AS [value] "
-          + "FROM [KitchenTable] AS [t1] LEFT OUTER JOIN [CookTable] AS [t3] ON ([t1].[ID] = [t3].[KitchenID]) "
-          + "CROSS APPLY ("
-          + "SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],[t2].[KnifeID],[t2].[KnifeClassID],[t2].[CookRating] "
-          + "FROM (SELECT NULL AS [Empty]) AS [Empty] LEFT OUTER JOIN [CookTable] AS [t2] ON ([t3].[ID] = [t2].[ID])"
-          + ") AS [q0]");
+          "SELECT [t2].[Name] AS [value] "
+          + "FROM [KitchenTable] AS [t1] "
+          + "LEFT OUTER JOIN [CookTable] AS [t3] ON ([t1].[ID] = [t3].[KitchenID]) "
+          + "LEFT OUTER JOIN [CookTable] AS [t2] ON ([t3].[ID] = [t2].[ID])");
     }
 
     [Test]
