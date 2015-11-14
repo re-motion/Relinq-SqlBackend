@@ -223,23 +223,30 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
           fromExpression,
           _context,
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
-      AddPreparedFromExpression (fromExpressionInfo);  
-      
-      _context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
-      return fromExpressionInfo.AppendedTable.SqlTable;
+
+      // TODO RMLNQSQL-77: Test, make optimizer ctor-injected?
+      var optimizer = new LeftJoinSubQueryOptimizer (_context);
+      return optimizer.OptimizeQuerySource (source, fromExpressionInfo, SqlStatementBuilder);
+      //AddPreparedFromExpression (fromExpressionInfo);  
+
+      //_context.AddExpressionMapping (new QuerySourceReferenceExpression (source), fromExpressionInfo.ItemSelector);
+      //return fromExpressionInfo.AppendedTable.SqlTable;
     }
 
     public void AddPreparedFromExpression (FromExpressionInfo fromExpressionInfo)
     {
       ArgumentUtility.CheckNotNull ("fromExpressionInfo", fromExpressionInfo);
 
-      if (fromExpressionInfo.WhereCondition != null)
-        SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
+      // TODO RMLNQSQL-77: Move tests, remove method
+      var optimizer = new LeftJoinSubQueryOptimizer (_context);
+      optimizer.AddPreparedFromExpression (fromExpressionInfo, SqlStatementBuilder);
+      //if (fromExpressionInfo.WhereCondition != null)
+      //  SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);
 
-      foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
-        SqlStatementBuilder.Orderings.Add (ordering);
+      //foreach (var ordering in fromExpressionInfo.ExtractedOrderings)
+      //  SqlStatementBuilder.Orderings.Add (ordering);
 
-      SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.AppendedTable);
+      //SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.AppendedTable);
     }
 
     private ICollection GetConstantCollectionValue (QueryModel queryModel)
