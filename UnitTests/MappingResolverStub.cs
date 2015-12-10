@@ -440,9 +440,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests
 
     private static Expression CreateMetaIDExpression (Expression valueExpression, Expression classIDColumn)
     {
-      var metaIDCtor = typeof (MetaID).GetConstructor (new[] { typeof (int), typeof (string) });
+      var metaIDCtor = typeof (MetaID).GetConstructor (new[] { typeof (object), typeof (string) });
       Trace.Assert (metaIDCtor != null);
-      var newExpression = Expression.New (metaIDCtor, new[] { valueExpression, classIDColumn }, new[] { typeof (MetaID).GetProperty ("Value"), typeof (MetaID).GetProperty ("ClassID") });
+      var newExpression = Expression.New (metaIDCtor, new[] { Expression.Convert (valueExpression, typeof (object)), classIDColumn }, new[] { typeof (MetaID).GetProperty ("Value"), typeof (MetaID).GetProperty ("ClassID") });
       
       return NamedExpression.CreateNewExpressionWithNamedArguments (newExpression);
     }

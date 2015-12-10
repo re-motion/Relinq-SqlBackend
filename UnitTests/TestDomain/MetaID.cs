@@ -21,13 +21,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.TestDomain
 {
   public class MetaID : IEquatable<MetaID>
   {
-    public MetaID (int value, string classID)
+    public MetaID (object value, string classID)
     {
       Value = value;
       ClassID = classID;
     }
 
-    public int Value { get; set; }
+    public object Value { get; set; }
     public string ClassID { get; set; }
 
     public override bool Equals (object obj)
