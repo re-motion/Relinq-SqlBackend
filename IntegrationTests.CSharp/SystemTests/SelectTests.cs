@@ -35,6 +35,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.IntegrationTests.Common;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 {
@@ -151,6 +152,28 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
           (from o in DB.Orders
             where o.OrderID == 10248
             select o.OrderID).Single();
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    public override TestMode Mode
+    {
+      get { return TestMode.SaveReferenceResults; }
+    }
+
+    [Test]
+    public void Query_WithNullableValueInProjectionForNotNullableColumn ()
+    {
+      var query =
+          from o in DB.Orders
+          select new
+                 {
+                     Order = o,
+                     Employee = (from e in DB.Employees where e.EmployeeID == o.EmployeeID && e.FirstName.StartsWith ("A") select e).FirstOrDefault()
+                 }
+          into _
+          where _.Order.OrderID == 10248
+          select new { _.Order.OrderID, EmployeeID = (int?) _.Employee.EmployeeID };
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
