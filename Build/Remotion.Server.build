@@ -59,7 +59,7 @@
   <Target Name="FullBuild_Configuration">
     <PropertyGroup>
       <Platforms>x86+x64</Platforms>
-      <DatabaseSystems>SqlServer2005+SqlServer2008+SqlServer2008R2+SqlServer2012+SqlServer2014</DatabaseSystems>
+      <DatabaseSystems>SqlServer2005+SqlServer2008+SqlServer2008R2+SqlServer2012+SqlServer2014+SqlServer2016</DatabaseSystems>
       <Browsers>Chrome+InternetExplorer</Browsers>
       <TestCategoriesToExclude></TestCategoriesToExclude>
     </PropertyGroup>
