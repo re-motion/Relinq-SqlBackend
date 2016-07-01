@@ -18,15 +18,9 @@ using System;
 using System.Reflection;
 using System.Security;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-
-[assembly: AssemblyTitle("Remotion Linq SqlBackend Library")]
-[assembly: AssemblyDescription ("Framework for calling linq queries on sql server.")]
+[assembly: AssemblyTitle ("re-linq SQL Backend")]
+[assembly: AssemblyDescription ("re-linq SQL Backend: A framework for generating SQL based on the re-linq Frontend.")]
 [assembly: AssemblyMetadata ("tags", "re-motion LINQ SQL SqlGeneration")]
-[assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]
 [assembly: SecurityTransparent] // required to allow assembly to be linked from assemblies having the AllowPartiallyTrustedCallersAttribute applied
