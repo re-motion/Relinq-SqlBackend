@@ -20,7 +20,7 @@ Imports System.Runtime.InteropServices
 Imports System.Security
 
 <Assembly: AssemblyCompany("rubicon IT GmbH")> 
-<Assembly: AssemblyProduct("re-linq project (relinq.codeplex.com)")> 
+<Assembly: AssemblyProduct("re-motion Framework: re-linq (www.re-motion.org)")> 
 <Assembly: AssemblyCopyright("Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: AssemblyConfiguration("Build type: Debug")> 
