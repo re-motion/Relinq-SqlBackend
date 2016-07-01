@@ -163,6 +163,21 @@
              Properties="ConfigurationID=Debug;$(BuildProperties);"/>
   </Target>
 
+  <Target Name="UpdateAssemblyInfosForDevelopment" DependsOnTargets="CheckVersion;PrepareBuildProperties;UpdateVersionProps">
+    <!-- Re-defines the version to append the local build pre-release tag after UpdateVersionProps has been performed. -->
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="UpdateAssemblyInfos;CleanAssemblyBackup"
+             Properties="ConfigurationID=Debug;$(BuildProperties);Version=$(Version)-x.9"/>
+  </Target>
+
+  <Target Name="UpdateAssemblyInfosForRelease" DependsOnTargets="CheckVersion;PrepareBuildProperties;UpdateVersionProps">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="UpdateAssemblyInfos;CleanAssemblyBackup"
+             Properties="ConfigurationID=Debug;$(BuildProperties);"/>
+  </Target>
+
   <!-- Customization Targets -->
 
   <Import Project="$(CustomizationsDirectory)*.targets" />

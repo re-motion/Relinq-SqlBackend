@@ -33,6 +33,7 @@
   <ItemGroup>
     <None Include="Customizations\Local\Configuration.targets" />
     <None Include="Customizations\Properties.props" />
+    <None Include="Customizations\releaseProcessScript.config" />
     <None Include="Customizations\Server\Configuration.targets" />
     <None Include="NuSpec\TemplateShared.nuspec" />
     <None Include="Customizations\Projects.props" />
@@ -49,6 +50,10 @@
   <ItemGroup>
     <Reference Include="Remotion.BuildScript, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.BuildScript.2.0.0-alpha014\lib\net45\Remotion.BuildScript.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Remotion.ReleaseProcessScript, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.ReleaseProcessScript.2.0.0-alpha014\lib\net45\Remotion.ReleaseProcessScript.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
