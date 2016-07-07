@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="After_PrepareBuildProperties" AfterTargets="PrepareBuildProperties">
+    <PropertyGroup>
+      <BuildProperties>
+        $(BuildProperties);
+        DatabaseNamePrefix=$(DatabaseNamePrefix);
+      </BuildProperties>
+
+      <BuildProperties>
+        $(BuildProperties);
+        DataSourceMsSql2005=$(DataSourceMsSql2005);
+        DataSourceMsSql2008=$(DataSourceMsSql2008);
+        DataSourceMsSql2008R2=$(DataSourceMsSql2008R2);
+        DataSourceMsSql2012=$(DataSourceMsSql2012);
+        DataSourceMsSql2014=$(DataSourceMsSql2014);
+      </BuildProperties>
+
+      <BuildProperties>
+        $(BuildProperties);
+        DatabaseDirectoryMsSql2005=$(DatabaseDirectoryMsSql2005);
+        DatabaseDirectoryMsSql2008=$(DatabaseDirectoryMsSql2008);
+        DatabaseDirectoryMsSql2008R2=$(DatabaseDirectoryMsSql2008R2);
+        DatabaseDirectoryMsSql2012=$(DatabaseDirectoryMsSql2012);
+        DatabaseDirectoryMsSql2014=$(DatabaseDirectoryMsSql2014);
+      </BuildProperties>
+    </PropertyGroup>
+
+    <Message Text="Configured build properties: $(BuildProperties)" />
+  </Target>
+</Project>

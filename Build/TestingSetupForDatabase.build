@@ -37,6 +37,7 @@
     <PropertyGroup>
       <_dataSource>%(_activeDatabaseSystem.DataSource)</_dataSource>
       <_databaseDirectory>%(_activeDatabaseSystem.DatabaseDirectory)</_databaseDirectory>
+      <_databaseNamePrefix>%(_activeDatabaseSystem.DatabaseNamePrefix)</_databaseNamePrefix>
     </PropertyGroup>
 
     <Error Text="The DatabaseSystem '$(DatabaseSystem)' is not supported by the build script. Supported values for DatabaseSystem are: @(AllDatabaseSystems)" 
@@ -45,6 +46,7 @@
     <Message Text="Selected DatabaseSystem: '$(DatabaseSystem)'" />
     <Message Text="Selected DataSource: '$(_dataSource)'" />
     <Message Text="Selected DatabaseDirectory: '$(_databaseDirectory)'" />
+    <Message Text="Selected DatabaseNamePrefix: '$(_databaseNamePrefix)'" />
 
     <ItemGroup>
       <_appConfigAttributes Remove="@(_appConfigAttributes)"/>
@@ -55,6 +57,10 @@
       <_appConfigAttributes Include="/configuration/appSettings/add[@key='DatabaseDirectory']">
         <Key>value</Key>
         <Value>$(_databaseDirectory)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='DatabaseNamePrefix']">
+        <Key>value</Key>
+        <Value>$(_databaseNamePrefix)</Value>
       </_appConfigAttributes>
     </ItemGroup>
 
@@ -68,35 +74,53 @@
   </Target>
 
   <Target Name="CreateAllDatabaseSystems">
+    <Error Text="The property 'DataSourceMsSql2005' is not set." Condition="'$(DataSourceMsSql2005)' == ''" />
+    <Error Text="The property 'DataSourceMsSql2008' is not set." Condition="'$(DataSourceMsSql2008)' == ''" />
+    <Error Text="The property 'DataSourceMsSql2008R2' is not set." Condition="'$(DataSourceMsSql2008R2)' == ''" />
+    <Error Text="The property 'DataSourceMsSql2012' is not set." Condition="'$(DataSourceMsSql2012)' == ''" />
+    <Error Text="The property 'DataSourceMsSql2014' is not set." Condition="'$(DataSourceMsSql2014)' == ''" />
+
+    <Error Text="The property 'DatabaseDirectoryMsSql2005' is not set." Condition="'$(DatabaseDirectoryMsSql2005)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2008' is not set." Condition="'$(DatabaseDirectoryMsSql2008)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2008R2' is not set." Condition="'$(DatabaseDirectoryMsSql2008R2)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2012' is not set." Condition="'$(DatabaseDirectoryMsSql2012)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2014' is not set." Condition="'$(DatabaseDirectoryMsSql2014)' == ''" />
+
     <ItemGroup>
       <AllDatabaseSystems Include="SqlServerDefault">
         <DataSource>localhost</DataSource>
-        <DatabaseDirectory>C:\Databases</DatabaseDirectory>
+        <DatabaseDirectory>C:\Databases\</DatabaseDirectory>
+        <DatabaseNamePrefix></DatabaseNamePrefix>
       </AllDatabaseSystems>
 
       <AllDatabaseSystems Include="SqlServer2005">
-        <DataSource>localhost\MSSQL2005</DataSource>
-        <DatabaseDirectory>C:\Databases\MsSql2005</DatabaseDirectory>
+        <DataSource>$(DataSourceMsSql2005)</DataSource>
+        <DatabaseDirectory>$(DatabaseDirectoryMsSql2005)</DatabaseDirectory>
+        <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
       </AllDatabaseSystems>
 
       <AllDatabaseSystems Include="SqlServer2008">
-        <DataSource>localhost\MSSQL2008</DataSource>
-        <DatabaseDirectory>C:\Databases\MsSql2008</DatabaseDirectory>
+        <DataSource>$(DataSourceMsSql2008)</DataSource>
+        <DatabaseDirectory>$(DatabaseDirectoryMsSql2008)</DatabaseDirectory>
+        <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
       </AllDatabaseSystems>
 
       <AllDatabaseSystems Include="SqlServer2008R2">
-        <DataSource>localhost\MSSQL2008R2</DataSource>
-        <DatabaseDirectory>C:\Databases\MsSql2008R2</DatabaseDirectory>
+        <DataSource>$(DataSourceMsSql2008R2)</DataSource>
+        <DatabaseDirectory>$(DatabaseDirectoryMsSql2008R2)</DatabaseDirectory>
+        <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
       </AllDatabaseSystems>
 
       <AllDatabaseSystems Include="SqlServer2012">
-        <DataSource>localhost\MSSQL2012</DataSource>
-        <DatabaseDirectory>C:\Databases\MsSql2012</DatabaseDirectory>
+        <DataSource>$(DataSourceMsSql2012)</DataSource>
+        <DatabaseDirectory>$(DatabaseDirectoryMsSql2012)</DatabaseDirectory>
+        <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
       </AllDatabaseSystems>
 
       <AllDatabaseSystems Include="SqlServer2014">
-        <DataSource>localhost\MSSQL2014</DataSource>
-        <DatabaseDirectory>C:\Databases\MsSql2014</DatabaseDirectory>
+        <DataSource>$(DataSourceMsSql2014)</DataSource>
+        <DatabaseDirectory>$(DatabaseDirectoryMsSql2014)</DatabaseDirectory>
+        <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
       </AllDatabaseSystems>
     </ItemGroup>
   </Target>

@@ -34,85 +34,85 @@
 USE [master]
 GO
 
-IF EXISTS (SELECT * FROM sysdatabases WHERE name = 'NorthwindRelinq')
+IF EXISTS (SELECT * FROM sysdatabases WHERE name = 'DBPrefix_NorthwindRelinq')
 BEGIN
-  ALTER DATABASE NorthwindRelinq SET SINGLE_USER WITH ROLLBACK IMMEDIATE
-  DROP DATABASE NorthwindRelinq
+  ALTER DATABASE DBPrefix_NorthwindRelinq SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+  DROP DATABASE DBPrefix_NorthwindRelinq
 END
 GO
 
-/****** Object:  Database [NorthwindRelinq]    Script Date: 09/01/2010 11:16:50 ******/
-CREATE DATABASE [NorthwindRelinq] ON  PRIMARY 
-( NAME = N'NorthwindRelinq', FILENAME = N'C:\Databases\NorthwndRelinq.mdf' , SIZE = 4544KB , MAXSIZE = UNLIMITED, FILEGROWTH = 10%)
+/****** Object:  Database [DBPrefix_NorthwindRelinq]    Script Date: 09/01/2010 11:16:50 ******/
+CREATE DATABASE [DBPrefix_NorthwindRelinq] ON  PRIMARY 
+( NAME = N'DBPrefix_NorthwindRelinq', FILENAME = N'C:\Databases\DBPrefix_NorthwindRelinq.mdf' , SIZE = 4544KB , MAXSIZE = UNLIMITED, FILEGROWTH = 10%)
  LOG ON 
-( NAME = N'NorthwindRelinq_log', FILENAME = N'C:\Databases\NorthwindRelinq_log.LDF' , SIZE = 504KB , MAXSIZE = UNLIMITED, FILEGROWTH = 10%)
+( NAME = N'DBPrefix_NorthwindRelinq_log', FILENAME = N'C:\Databases\DBPrefix_NorthwindRelinq_log.LDF' , SIZE = 504KB , MAXSIZE = UNLIMITED, FILEGROWTH = 10%)
 GO
 /* Compatibility level has been set by export script. It is not actually needed. */
-/*EXEC dbo.sp_dbcmptlevel @dbname=N'NorthwindRelinq', @new_cmptlevel=90 */
+/*EXEC dbo.sp_dbcmptlevel @dbname=N'DBPrefix_NorthwindRelinq', @new_cmptlevel=90 */
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
 begin
-EXEC [NorthwindRelinq].[dbo].[sp_fulltext_database] @action = 'disable'
+EXEC [DBPrefix_NorthwindRelinq].[dbo].[sp_fulltext_database] @action = 'disable'
 end
 GO
-ALTER DATABASE [NorthwindRelinq] SET ANSI_NULL_DEFAULT OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET ANSI_NULL_DEFAULT OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET ANSI_NULLS OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET ANSI_NULLS OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET ANSI_PADDING OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET ANSI_PADDING OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET ANSI_WARNINGS OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET ANSI_WARNINGS OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET ARITHABORT OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET ARITHABORT OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET AUTO_CLOSE OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET AUTO_CLOSE OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET AUTO_CREATE_STATISTICS ON
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET AUTO_CREATE_STATISTICS ON
 GO
-ALTER DATABASE [NorthwindRelinq] SET AUTO_SHRINK OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET AUTO_SHRINK OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET AUTO_UPDATE_STATISTICS ON
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET AUTO_UPDATE_STATISTICS ON
 GO
-ALTER DATABASE [NorthwindRelinq] SET CURSOR_CLOSE_ON_COMMIT OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET CURSOR_CLOSE_ON_COMMIT OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET CURSOR_DEFAULT  GLOBAL
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET CURSOR_DEFAULT  GLOBAL
 GO
-ALTER DATABASE [NorthwindRelinq] SET CONCAT_NULL_YIELDS_NULL OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET CONCAT_NULL_YIELDS_NULL OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET NUMERIC_ROUNDABORT OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET NUMERIC_ROUNDABORT OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET QUOTED_IDENTIFIER OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET QUOTED_IDENTIFIER OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET RECURSIVE_TRIGGERS OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET RECURSIVE_TRIGGERS OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET  DISABLE_BROKER
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET  DISABLE_BROKER
 GO
-ALTER DATABASE [NorthwindRelinq] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET DATE_CORRELATION_OPTIMIZATION OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET DATE_CORRELATION_OPTIMIZATION OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET TRUSTWORTHY OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET TRUSTWORTHY OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET ALLOW_SNAPSHOT_ISOLATION OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET ALLOW_SNAPSHOT_ISOLATION OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET PARAMETERIZATION SIMPLE
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET PARAMETERIZATION SIMPLE
 GO
-ALTER DATABASE [NorthwindRelinq] SET READ_COMMITTED_SNAPSHOT OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET READ_COMMITTED_SNAPSHOT OFF
 GO
-ALTER DATABASE [NorthwindRelinq] SET  READ_WRITE
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET  READ_WRITE
 GO
-ALTER DATABASE [NorthwindRelinq] SET RECOVERY SIMPLE
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET RECOVERY SIMPLE
 GO
-ALTER DATABASE [NorthwindRelinq] SET  MULTI_USER
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET  MULTI_USER
 GO
-ALTER DATABASE [NorthwindRelinq] SET PAGE_VERIFY TORN_PAGE_DETECTION
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET PAGE_VERIFY TORN_PAGE_DETECTION
 GO
-ALTER DATABASE [NorthwindRelinq] SET DB_CHAINING OFF
+ALTER DATABASE [DBPrefix_NorthwindRelinq] SET DB_CHAINING OFF
 GO
-EXEC sys.sp_db_vardecimal_storage_format N'NorthwindRelinq', N'ON'
+EXEC sys.sp_db_vardecimal_storage_format N'DBPrefix_NorthwindRelinq', N'ON'
 GO
 
-USE [NorthwindRelinq]
+USE [DBPrefix_NorthwindRelinq]
 GO
 /****** Object:  Table [dbo].[Shippers]    Script Date: 09/01/2010 11:26:23 ******/
 SET ANSI_NULLS ON
