@@ -79,12 +79,14 @@
     <Error Text="The property 'DataSourceMsSql2008R2' is not set." Condition="'$(DataSourceMsSql2008R2)' == ''" />
     <Error Text="The property 'DataSourceMsSql2012' is not set." Condition="'$(DataSourceMsSql2012)' == ''" />
     <Error Text="The property 'DataSourceMsSql2014' is not set." Condition="'$(DataSourceMsSql2014)' == ''" />
+    <Error Text="The property 'DataSourceMsSql2016' is not set." Condition="'$(DataSourceMsSql2016)' == ''" />
 
     <Error Text="The property 'DatabaseDirectoryMsSql2005' is not set." Condition="'$(DatabaseDirectoryMsSql2005)' == ''" />
     <Error Text="The property 'DatabaseDirectoryMsSql2008' is not set." Condition="'$(DatabaseDirectoryMsSql2008)' == ''" />
     <Error Text="The property 'DatabaseDirectoryMsSql2008R2' is not set." Condition="'$(DatabaseDirectoryMsSql2008R2)' == ''" />
     <Error Text="The property 'DatabaseDirectoryMsSql2012' is not set." Condition="'$(DatabaseDirectoryMsSql2012)' == ''" />
     <Error Text="The property 'DatabaseDirectoryMsSql2014' is not set." Condition="'$(DatabaseDirectoryMsSql2014)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2016' is not set." Condition="'$(DatabaseDirectoryMsSql2016)' == ''" />
 
     <ItemGroup>
       <AllDatabaseSystems Include="SqlServerDefault">
@@ -120,6 +122,12 @@
       <AllDatabaseSystems Include="SqlServer2014">
         <DataSource>$(DataSourceMsSql2014)</DataSource>
         <DatabaseDirectory>$(DatabaseDirectoryMsSql2014)</DatabaseDirectory>
+        <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      </AllDatabaseSystems>
+
+      <AllDatabaseSystems Include="SqlServer2016">
+        <DataSource>$(DataSourceMsSql2016)</DataSource>
+        <DatabaseDirectory>$(DatabaseDirectoryMsSql2016)</DatabaseDirectory>
         <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
       </AllDatabaseSystems>
     </ItemGroup>

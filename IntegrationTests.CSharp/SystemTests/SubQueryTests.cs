@@ -37,6 +37,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Linq.IntegrationTests.Common;
 using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
@@ -139,7 +140,10 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
                 (from od in DB.OrderDetails where od.Order == o1 || od.Order == o2 select od)
             select od).Distinct();
 
-      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+      //Make query stable because of ordering
+      var stableResult = query.AsEnumerable().OrderBy (o => o.OrderID).ThenBy (o => o.ProductID);
+
+      TestExecutor.Execute (stableResult, MethodBase.GetCurrentMethod());
     }
 
     [Test]

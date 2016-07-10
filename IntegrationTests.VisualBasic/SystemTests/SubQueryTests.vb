@@ -112,7 +112,10 @@ Namespace SystemTests
                                Select od) _
                              Select od).Distinct()
 
-      TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
+      'Make query stable because of ordering
+      Dim stableResult = query.AsEnumerable().OrderBy(Function(o) o.OrderID).ThenBy(Function(o) o.ProductID)
+
+      TestExecutor.Execute(stableResult, MethodBase.GetCurrentMethod())
     End Sub
 
     <Test> _
