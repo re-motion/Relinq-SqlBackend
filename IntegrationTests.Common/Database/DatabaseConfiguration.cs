@@ -21,8 +21,12 @@ using System.Data.SqlClient;
 
 namespace Remotion.Linq.IntegrationTests.Common.Database
 {
-  public class DatabaseConfiguration
+  public static class DatabaseConfiguration
   {
+    public const string DefaultDatabaseDirectory = @"C:\Databases\";
+
+    public const string DefaultDatabaseNamePrefix = "DBPrefix_";
+
     public static string DataSource
     {
       get { return ConfigurationManager.AppSettings["DataSource"]; }
@@ -30,13 +34,19 @@ namespace Remotion.Linq.IntegrationTests.Common.Database
 
     public static string DatabaseDirectory
     {
-      get { return ConfigurationManager.AppSettings["DatabaseDirectory"]; }
+      get { return ConfigurationManager.AppSettings["DatabaseDirectory"].TrimEnd('\\') + "\\"; }
     }
 
-    public static string ReplaceDatasource (string connectionString)
+    public static string DatabaseNamePrefix
+    {
+      get { return ConfigurationManager.AppSettings["DatabaseNamePrefix"]; }
+    }
+
+    public static string ReplaceDataSource (string connectionString)
     {
       var sqlConnectionStringBuilder = new SqlConnectionStringBuilder (connectionString);
       sqlConnectionStringBuilder.DataSource = DataSource;
+      sqlConnectionStringBuilder.InitialCatalog = sqlConnectionStringBuilder.InitialCatalog.Replace (DefaultDatabaseNamePrefix, DatabaseNamePrefix);
       return sqlConnectionStringBuilder.ConnectionString;
     }
   }
