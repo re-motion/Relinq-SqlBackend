@@ -28,4 +28,17 @@
 
     <Message Text="Configured build properties: $(BuildProperties)" />
   </Target>
+
+  <Target Name="After_CreateTestConfigurations" AfterTargets="CreateTestConfigurations">
+    <ItemGroup>
+      <AllDatabaseSystems Remove="@(AllDatabaseSystems)" />
+
+      <AllDatabaseSystems Include="SqlServerDefault" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServerDefault'"/>
+      <AllDatabaseSystems Include="SqlServer2005" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2005'"/>
+      <AllDatabaseSystems Include="SqlServer2008" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2008'"/>
+      <AllDatabaseSystems Include="SqlServer2008R2" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2008R2'"/>
+      <AllDatabaseSystems Include="SqlServer2012" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2012'"/>
+      <AllDatabaseSystems Include="SqlServer2014" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2014'"/>
+    </ItemGroup>
+  </Target>
 </Project>
