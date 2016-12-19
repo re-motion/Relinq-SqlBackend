@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\.BuildProject">
+      <Link>.BuildProject</Link>
+    </None>
     <None Include="Customizations\Local\Configuration.targets" />
     <None Include="Customizations\Local\Defaults.props" />
     <None Include="Customizations\Properties.props" />
@@ -56,7 +59,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Remotion.ReleaseProcessScript, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Remotion.ReleaseProcessScript.2.0.0-alpha014\lib\net45\Remotion.ReleaseProcessScript.dll</HintPath>
+      <HintPath>..\packages\Remotion.ReleaseProcessScript.2.0.0-alpha016\lib\net45\Remotion.ReleaseProcessScript.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
