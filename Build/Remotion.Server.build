@@ -50,7 +50,7 @@
   <Target Name="TestBuild_Configuration">
     <PropertyGroup>
       <Platforms>x86</Platforms>
-      <DatabaseSystems>SqlServer2008R2</DatabaseSystems>
+      <DatabaseSystems>SqlServer2012</DatabaseSystems>
       <Browsers>Chrome</Browsers>
       <TestCategoriesToExclude></TestCategoriesToExclude>
     </PropertyGroup>
