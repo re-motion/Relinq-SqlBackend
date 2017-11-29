@@ -15,6 +15,7 @@
         DataSourceMsSql2012=$(DataSourceMsSql2012);
         DataSourceMsSql2014=$(DataSourceMsSql2014);
         DataSourceMsSql2016=$(DataSourceMsSql2016);
+        DataSourceMsSql2017=$(DataSourceMsSql2017);
       </BuildProperties>
 
       <BuildProperties>
@@ -25,6 +26,7 @@
         DatabaseDirectoryMsSql2012=$(DatabaseDirectoryMsSql2012);
         DatabaseDirectoryMsSql2014=$(DatabaseDirectoryMsSql2014);
         DatabaseDirectoryMsSql2016=$(DatabaseDirectoryMsSql2016);
+        DatabaseDirectoryMsSql2017=$(DatabaseDirectoryMsSql2017);
       </BuildProperties>
     </PropertyGroup>
 
@@ -42,6 +44,7 @@
       <AllDatabaseSystems Include="SqlServer2012" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2012'"/>
       <AllDatabaseSystems Include="SqlServer2014" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2014'"/>
       <AllDatabaseSystems Include="SqlServer2016" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2016'"/>
+      <AllDatabaseSystems Include="SqlServer2017" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2017'"/>
     </ItemGroup>
   </Target>
 </Project>
