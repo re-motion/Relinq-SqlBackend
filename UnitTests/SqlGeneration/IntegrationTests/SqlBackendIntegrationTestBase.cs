@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Parsing;
 using Remotion.Linq.Parsing;
@@ -27,6 +28,7 @@ using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.ResultOperators;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
@@ -86,6 +88,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       var generator = new UniqueIdentifierGenerator();
 
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
+
+      resultOperatorHandlerRegistry.Register (typeof (ContainsResultOperator), new MyContainsResultOperatorHandler());
       var defaultSqlPreparationStage = new DefaultSqlPreparationStage (CompoundMethodCallTransformerProvider.CreateDefault(), resultOperatorHandlerRegistry, generator);
       var sqlStatement = defaultSqlPreparationStage.PrepareSqlStatement (queryModel, null);
 
