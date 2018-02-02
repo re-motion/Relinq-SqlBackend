@@ -19,10 +19,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Linq.SqlBackend.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
@@ -39,7 +38,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         UniqueIdentifierGenerator generator,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator,
+        OrderingExtractionPolicy orderingExtractionPolicy)
     {
       ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
       ArgumentUtility.CheckNotNull ("stage", stage);
@@ -47,32 +47,39 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator);
-      visitor.VisitExpression (fromExpression);
+      var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator, orderingExtractionPolicy);
+      visitor.Visit (fromExpression);
       if (visitor.FromExpressionInfo != null)
         return visitor.FromExpressionInfo.Value;
 
       var message = string.Format (
           "Error parsing expression '{0}'. Expressions of type '{1}' cannot be used as the SqlTables of a from clause.",
-          FormattingExpressionTreeVisitor.Format (fromExpression),
+          fromExpression,
           fromExpression.Type.Name);
       throw new NotSupportedException (message);
     }
 
     private readonly UniqueIdentifierGenerator _generator;
     private readonly Func<ITableInfo, SqlTable> _tableGenerator;
+    private readonly OrderingExtractionPolicy _orderingExtractionPolicy;
 
     protected SqlPreparationFromExpressionVisitor (
         UniqueIdentifierGenerator generator,
         ISqlPreparationStage stage,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator, 
+        OrderingExtractionPolicy orderingExtractionPolicy)
         : base (context, stage, provider)
     {
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull ("tableGenerator", tableGenerator);
+
       _generator = generator;
-      FromExpressionInfo = null;
       _tableGenerator = tableGenerator;
+      _orderingExtractionPolicy = orderingExtractionPolicy;
+
+      FromExpressionInfo = null;
     }
 
     protected FromExpressionInfo? FromExpressionInfo { get; set; }
@@ -87,7 +94,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       get { return _tableGenerator; }
     }
 
-    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    protected override Expression VisitConstant (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -99,7 +106,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return sqlTableReferenceExpression;
     }
 
-    protected override Expression VisitMemberExpression (MemberExpression expression)
+    protected override Expression VisitMember (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -115,20 +122,20 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return sqlTableReferenceExpression;
     }
 
-    public override Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public override Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var sqlStatement = expression.SqlStatement;
 
       var factory = new SqlPreparationSubStatementTableFactory (Stage, Context, _generator);
-      FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator);
+      FromExpressionInfo = factory.CreateSqlTableForStatement (sqlStatement, _tableGenerator, _orderingExtractionPolicy);
       Assertion.DebugAssert (FromExpressionInfo.Value.WhereCondition == null);
 
       return new SqlTableReferenceExpression (FromExpressionInfo.Value.SqlTable);
     }
 
-    public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -139,7 +146,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       return expression;
     }
 
-    protected override Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
+    protected override Expression VisitQuerySourceReference (QuerySourceReferenceExpression expression)
     {
       var groupJoinClause = expression.ReferencedQuerySource as GroupJoinClause;
       if (groupJoinClause != null)
@@ -150,7 +157,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
             _generator,
             MethodCallTransformerProvider,
             Context,
-            _tableGenerator);
+            _tableGenerator,
+            _orderingExtractionPolicy);
 
         Context.AddExpressionMapping (new QuerySourceReferenceExpression (groupJoinClause.JoinClause), fromExpressionInfo.ItemSelector);
 
@@ -170,12 +178,12 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         return new SqlTableReferenceExpression (fromExpressionInfo.SqlTable);
       }
 
-      return base.VisitQuerySourceReferenceExpression (expression);
+      return base.VisitQuerySourceReference (expression);
     }
 
-    Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    Expression ISqlEntityRefMemberExpressionVisitor.VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
-      return VisitExtensionExpression (expression);
+      return VisitExtension (expression);
     }
   }
 }

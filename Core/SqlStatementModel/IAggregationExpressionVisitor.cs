@@ -17,15 +17,14 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Defines an interface for <see cref="ExpressionTreeVisitor"/> subclasses that can handle <see cref="AggregationExpression"/> instances.
+  /// Defines an interface for <see cref="ExpressionVisitor"/> subclasses that can handle <see cref="AggregationExpression"/> instances.
   /// </summary>
   public interface IAggregationExpressionVisitor
   {
-    Expression VisitAggregationExpression (AggregationExpression expression);
+    Expression VisitAggregation (AggregationExpression expression);
   }
 }

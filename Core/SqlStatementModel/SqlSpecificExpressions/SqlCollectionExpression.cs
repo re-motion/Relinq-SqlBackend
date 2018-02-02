@@ -20,9 +20,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -30,14 +27,28 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// Represents a collection of values, each of which is itself represented by an <see cref="Expression"/>.
   /// </summary>
-  public class SqlCollectionExpression : ExtensionExpression
+  public class SqlCollectionExpression : Expression
   {
     private readonly ReadOnlyCollection<Expression> _items;
+    private readonly Type _type;
 
     public SqlCollectionExpression (Type type, IEnumerable<Expression> items)
-        : base (type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("items", items);
+
+      _type = type;
       _items = items.ToList().AsReadOnly();
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public ReadOnlyCollection<Expression> Items
@@ -45,7 +56,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _items; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
@@ -56,20 +67,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var collectionExpressionVisitor = visitor as ISqlCollectionExpressionVisitor;
       if (collectionExpressionVisitor != null)
-        return collectionExpressionVisitor.VisitSqlCollectionExpression (this);
+        return collectionExpressionVisitor.VisitSqlCollection (this);
 
       return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return "(" + string.Join (",", _items.Select (FormattingExpressionTreeVisitor.Format)) + ")";
+      return "(" + string.Join (",", _items.Select (e => e.ToString())) + ")";
     }
   }
 }

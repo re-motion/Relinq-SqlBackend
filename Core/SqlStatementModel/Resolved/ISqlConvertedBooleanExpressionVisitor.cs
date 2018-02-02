@@ -22,10 +22,10 @@ using Remotion.Linq.Parsing;
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// Defines an interface for <see cref="ExpressionTreeVisitor"/> subclasses that can handle <see cref="SqlConvertedBooleanExpression"/> instances.
+  /// Defines an interface for <see cref="ExpressionVisitor"/> subclasses that can handle <see cref="SqlConvertedBooleanExpression"/> instances.
   /// </summary>
   public interface ISqlConvertedBooleanExpressionVisitor
   {
-    Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression);
+    Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression);
   }
 }

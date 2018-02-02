@@ -26,7 +26,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 {
@@ -158,7 +158,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var instance = ExpressionHelper.CreateExpression (typeof (int));
       var argument = ExpressionHelper.CreateExpression (typeof (string));
-      var expression = Expression.Call (instance, ReflectionUtility.GetMethod (() => 5.ToString ("arg")), argument);
+      var expression = Expression.Call (instance, MemberInfoFromExpressionUtility.GetMethod (() => 5.ToString ("arg")), argument);
       var namedExpression = new NamedExpression ("test", expression);
 
       var result = _namedExpressionCombiner.ProcessNames (namedExpression);
@@ -181,7 +181,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var argument = ExpressionHelper.CreateExpression (typeof (string));
       var expression = Expression.Call (
           new NamedExpression ("inner", instance),
-          ReflectionUtility.GetMethod (() => 5.ToString ("arg")),
+          MemberInfoFromExpressionUtility.GetMethod (() => 5.ToString ("arg")),
           new NamedExpression ("inner", argument));
       var namedExpression = new NamedExpression ("outer", expression);
 
@@ -204,7 +204,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var argument = ExpressionHelper.CreateExpression (typeof (string));
       var expression = Expression.Call (
-          ReflectionUtility.GetMethod (() => int.Parse ("arg")),
+          MemberInfoFromExpressionUtility.GetMethod (() => int.Parse ("arg")),
           argument);
       var namedExpression = new NamedExpression ("test", expression);
 

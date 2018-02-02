@@ -32,20 +32,18 @@ using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class DistinctResultOperatorHandlerTest
+  public class DistinctResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
     private ISqlPreparationStage _stage;
-    private UniqueIdentifierGenerator _generator;
     private DistinctResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      _generator = new UniqueIdentifierGenerator ();
-      _stage = new DefaultSqlPreparationStage (
-          CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
+      base.SetUp();
+
+      _stage = CreateDefaultSqlPreparationStage();
       _handler = new DistinctResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -59,7 +57,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       var resultOperator = new DistinctResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.IsDistinctQuery, Is.True);
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
@@ -72,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new DistinctResultOperator();
       _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc));
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
     }
@@ -84,10 +82,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new DistinctResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf(typeof(ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
 
     [Test]
@@ -97,10 +94,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new DistinctResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    [Test]
+    public void HandleResultOperator_DistinctAfterSetOperation ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add (SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var resultOperator = new DistinctResultOperator();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
   }
 }

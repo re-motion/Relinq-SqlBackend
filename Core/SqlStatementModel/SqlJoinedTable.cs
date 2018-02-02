@@ -30,7 +30,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   /// <remarks>
   /// <see cref="SqlJoinedTable"/> implements <see cref="ITableInfo"/> because in 
-  /// <see cref="SqlPreparationFromExpressionVisitor.VisitMemberExpression"/>, a <see cref="SqlTable"/> is created that needs to preserve all 
+  /// <see cref="SqlPreparationFromExpressionVisitor.VisitMember"/>, a <see cref="SqlTable"/> is created that needs to preserve all 
   /// information about a join (causes by a member access in a from expression). The <see cref="SqlJoinedTable"/> is used as an adapter between
   /// <see cref="IJoinInfo"/> and <see cref="ITableInfo"/>. (Refactoring this is definitely possible, e.g., by writing a dedicated adapter class.)
   /// </remarks>

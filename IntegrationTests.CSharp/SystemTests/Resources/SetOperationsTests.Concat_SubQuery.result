@@ -1,0 +1,211 @@
+Enumerable {
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 1
+    ProductName: 'Chai'
+    QuantityPerUnit: '10 boxes x 20 bags'
+    ReorderLevel: 10
+    SupplierID: 1
+    UnitPrice: 18.0000
+    UnitsInStock: 39
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 2
+    ProductName: 'Chang'
+    QuantityPerUnit: '24 - 12 oz bottles'
+    ReorderLevel: 25
+    SupplierID: 1
+    UnitPrice: 19.0000
+    UnitsInStock: 17
+    UnitsOnOrder: 40
+  Product
+    CategoryID: 2
+    Discontinued: False
+    ProductID: 3
+    ProductName: 'Aniseed Syrup'
+    QuantityPerUnit: '12 - 550 ml bottles'
+    ReorderLevel: 25
+    SupplierID: 1
+    UnitPrice: 10.0000
+    UnitsInStock: 13
+    UnitsOnOrder: 70
+  Product
+    CategoryID: 2
+    Discontinued: False
+    ProductID: 4
+    ProductName: 'Chef Anton''s Cajun Seasoning'
+    QuantityPerUnit: '48 - 6 oz jars'
+    ReorderLevel: 0
+    SupplierID: 2
+    UnitPrice: 22.0000
+    UnitsInStock: 53
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 2
+    Discontinued: True
+    ProductID: 5
+    ProductName: 'Chef Anton''s Gumbo Mix'
+    QuantityPerUnit: '36 boxes'
+    ReorderLevel: 0
+    SupplierID: 2
+    UnitPrice: 21.3500
+    UnitsInStock: 0
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 2
+    Discontinued: False
+    ProductID: 6
+    ProductName: 'Grandma''s Boysenberry Spread'
+    QuantityPerUnit: '12 - 8 oz jars'
+    ReorderLevel: 25
+    SupplierID: 3
+    UnitPrice: 25.0000
+    UnitsInStock: 120
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 7
+    Discontinued: False
+    ProductID: 7
+    ProductName: 'Uncle Bob''s Organic Dried Pears'
+    QuantityPerUnit: '12 - 1 lb pkgs.'
+    ReorderLevel: 10
+    SupplierID: 3
+    UnitPrice: 30.0000
+    UnitsInStock: 15
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 2
+    Discontinued: False
+    ProductID: 8
+    ProductName: 'Northwoods Cranberry Sauce'
+    QuantityPerUnit: '12 - 12 oz jars'
+    ReorderLevel: 0
+    SupplierID: 3
+    UnitPrice: 40.0000
+    UnitsInStock: 6
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 19
+    ProductName: 'Teatime Chocolate Biscuits'
+    QuantityPerUnit: '10 boxes x 12 pieces'
+    ReorderLevel: 5
+    SupplierID: 8
+    UnitPrice: 9.2000
+    UnitsInStock: 25
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 20
+    ProductName: 'Sir Rodney''s Marmalade'
+    QuantityPerUnit: '30 gift boxes'
+    ReorderLevel: 0
+    SupplierID: 8
+    UnitPrice: 81.0000
+    UnitsInStock: 40
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 21
+    ProductName: 'Sir Rodney''s Scones'
+    QuantityPerUnit: '24 pkgs. x 4 pieces'
+    ReorderLevel: 5
+    SupplierID: 8
+    UnitPrice: 10.0000
+    UnitsInStock: 3
+    UnitsOnOrder: 40
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 34
+    ProductName: 'Sasquatch Ale'
+    QuantityPerUnit: '24 - 12 oz bottles'
+    ReorderLevel: 15
+    SupplierID: 16
+    UnitPrice: 14.0000
+    UnitsInStock: 111
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 35
+    ProductName: 'Steeleye Stout'
+    QuantityPerUnit: '24 - 12 oz bottles'
+    ReorderLevel: 15
+    SupplierID: 16
+    UnitPrice: 18.0000
+    UnitsInStock: 20
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 8
+    Discontinued: False
+    ProductID: 40
+    ProductName: 'Boston Crab Meat'
+    QuantityPerUnit: '24 - 4 oz tins'
+    ReorderLevel: 30
+    SupplierID: 19
+    UnitPrice: 18.4000
+    UnitsInStock: 123
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 8
+    Discontinued: False
+    ProductID: 41
+    ProductName: 'Jack''s New England Clam Chowder'
+    QuantityPerUnit: '12 - 12 oz cans'
+    ReorderLevel: 10
+    SupplierID: 19
+    UnitPrice: 9.6500
+    UnitsInStock: 85
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 2
+    Discontinued: False
+    ProductID: 65
+    ProductName: 'Louisiana Fiery Hot Pepper Sauce'
+    QuantityPerUnit: '32 - 8 oz bottles'
+    ReorderLevel: 0
+    SupplierID: 2
+    UnitPrice: 21.0500
+    UnitsInStock: 76
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 2
+    Discontinued: False
+    ProductID: 66
+    ProductName: 'Louisiana Hot Spiced Okra'
+    QuantityPerUnit: '24 - 8 oz jars'
+    ReorderLevel: 20
+    SupplierID: 2
+    UnitPrice: 17.0000
+    UnitsInStock: 4
+    UnitsOnOrder: 100
+  Product
+    CategoryID: 1
+    Discontinued: False
+    ProductID: 67
+    ProductName: 'Laughing Lumberjack Lager'
+    QuantityPerUnit: '24 - 12 oz bottles'
+    ReorderLevel: 10
+    SupplierID: 16
+    UnitPrice: 14.0000
+    UnitsInStock: 52
+    UnitsOnOrder: 0
+  Product
+    CategoryID: 3
+    Discontinued: False
+    ProductID: 68
+    ProductName: 'Scottish Longbreads'
+    QuantityPerUnit: '10 boxes x 8 pieces'
+    ReorderLevel: 15
+    SupplierID: 8
+    UnitPrice: 12.5000
+    UnitsInStock: 6
+    UnitsOnOrder: 10
+}

@@ -23,8 +23,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
   public class TestableSqlGeneratingOuterSelectExpressionVisitor : SqlGeneratingOuterSelectExpressionVisitor
   {
-    public TestableSqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
-        : base(commandBuilder, stage)
+    public TestableSqlGeneratingOuterSelectExpressionVisitor (
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        SetOperationsMode setOperationsMode)
+        : base(commandBuilder, stage, setOperationsMode)
     {
 
     }
@@ -34,19 +37,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       get { return base.ColumnPosition; }
     }
 
-    public new Expression VisitNewExpression (NewExpression expression)
+    public new Expression VisitNew (NewExpression expression)
     {
-      return base.VisitNewExpression (expression);
+      return base.VisitNew (expression);
     }
 
-    public new Expression VisitMethodCallExpression (MethodCallExpression expression)
+    public new Expression VisitMethodCall (MethodCallExpression expression)
     {
-      return base.VisitMethodCallExpression (expression);
+      return base.VisitMethodCall (expression);
     }
 
-    public new Expression VisitUnaryExpression (UnaryExpression expression)
+    public new Expression VisitUnary (UnaryExpression expression)
     {
-      return base.VisitUnaryExpression (expression);
+      return base.VisitUnary (expression);
     }
   }
 }

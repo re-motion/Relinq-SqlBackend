@@ -38,7 +38,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnDefinitionExpression, ISqlColumnExpressionVisitor> (
           _columnExpression,
-          mock => mock.VisitSqlColumnDefinitionExpression (_columnExpression));
+          mock => mock.VisitSqlColumnDefinition (_columnExpression));
     }
 
     [Test]
@@ -46,7 +46,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnExpression, IResolvedSqlExpressionVisitor> (
           _columnExpression,
-          mock => mock.VisitSqlColumnExpression (_columnExpression));
+          mock => mock.VisitSqlColumn (_columnExpression));
     }
 
     [Test]

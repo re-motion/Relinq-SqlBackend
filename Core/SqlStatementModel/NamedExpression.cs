@@ -21,9 +21,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
@@ -37,12 +34,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// generation. Therefore, <see cref="NamedExpression"/> must only be used in parts of a <see cref="SqlStatement"/> where "AS ..." clauses are 
   /// allowed.
   /// </summary>
-  public class NamedExpression : ExtensionExpression
+  public class NamedExpression : Expression
   {
     public const string DefaultName = "value";
-
-    private readonly string _name;
-    private readonly Expression _expression;
 
     public static NamedExpression CreateFromMemberName (string memberName, Expression innerExpression)
     {
@@ -100,13 +94,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       return memberName;
     }
 
+    private readonly string _name;
+    private readonly Expression _expression;
+
     public NamedExpression (string name, Expression expression)
-        : base(expression.Type)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       _name = name;
       _expression = expression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _expression.Type; }
     }
 
     public string Name
@@ -119,31 +125,31 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _expression; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var newExpression = visitor.VisitExpression (_expression);
+      var newExpression = visitor.Visit (_expression);
       if (newExpression != _expression)
         return new NamedExpression(_name, newExpression);
       else
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as INamedExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitNamedExpression (this);
+        return specificVisitor.VisitNamed (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return String.Format ("{0} AS {1}", FormattingExpressionTreeVisitor.Format (_expression), _name ?? DefaultName);
+      return String.Format ("{0} AS {1}", _expression, _name ?? DefaultName);
     }
   }
 

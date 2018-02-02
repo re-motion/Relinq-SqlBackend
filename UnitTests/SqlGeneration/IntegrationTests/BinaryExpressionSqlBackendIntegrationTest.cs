@@ -150,8 +150,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       CheckQuery (
         // ReSharper disable ConditionIsAlwaysTrueOrFalse
         // ReSharper disable RedundantLogicalConditionalExpressionOperand
+#pragma warning disable 162 // unreachable code in (false && ...)
           from c in Cooks where ((c.Name == "Huber") && true) || (false && (c.Name == "Huber")) select c.FirstName,
-      // ReSharper restore RedundantLogicalConditionalExpressionOperand
+#pragma warning restore 162
+        // ReSharper restore RedundantLogicalConditionalExpressionOperand
         // ReSharper restore ConditionIsAlwaysTrueOrFalse
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ((([t0].[Name] = @1) AND (@2 = 1)) OR ((@3 = 1) AND ([t0].[Name] = @4)))",
           new CommandParameter ("@1", "Huber"),

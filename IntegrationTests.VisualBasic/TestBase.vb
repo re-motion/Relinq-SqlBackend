@@ -36,6 +36,17 @@ Imports System.Reflection
 
 Public Class TestBase
   Inherits AbstractTestBase
+  Protected ReadOnly Property IsLinqToSqlActive() As Boolean
+    Get
+      Return Mode = TestMode.SaveReferenceResults
+    End Get
+  End Property
+
+  Protected ReadOnly Property IsRelinqSqlBackendActive() As Boolean
+    Get
+      Return Mode = TestMode.CheckActualResults
+    End Get
+  End Property
 
   ' VB will not add the folder structure to the resource file name when embedding a resource
   ' The desired resource name is: Remotion.Linq.IntegrationTests.VisualBasic.LinqSamples101.Resources.TestClass.TestMethod.result

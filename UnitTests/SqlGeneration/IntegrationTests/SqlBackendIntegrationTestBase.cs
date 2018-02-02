@@ -20,13 +20,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.Development.UnitTesting.Parsing;
 using Remotion.Linq.Parsing;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
@@ -38,7 +38,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     private IQueryable<Kitchen> _kitchens;
     private IQueryable<Restaurant> _restaurants;
     private IQueryable<Company> _companies;
-    private UniqueIdentifierGenerator _generator;
     private IQueryable<Chef> _chefs;
 
     public IQueryable<Cook> Cooks
@@ -80,24 +79,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       _restaurants = ExpressionHelper.CreateQueryable<Restaurant>();
       _chefs = ExpressionHelper.CreateQueryable<Chef>();
       _companies = ExpressionHelper.CreateQueryable<Company>();
-
-      _generator = new UniqueIdentifierGenerator();
     }
 
     protected SqlCommandData GenerateSql (QueryModel queryModel)
     {
-      var preparationContext = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
-      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
+      var generator = new UniqueIdentifierGenerator();
+
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
-      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
-          queryModel,
-          preparationContext,
-          new DefaultSqlPreparationStage (CompoundMethodCallTransformerProvider.CreateDefault(), resultOperatorHandlerRegistry, uniqueIdentifierGenerator),
-          _generator,
-          resultOperatorHandlerRegistry);
+      var defaultSqlPreparationStage = new DefaultSqlPreparationStage (CompoundMethodCallTransformerProvider.CreateDefault(), resultOperatorHandlerRegistry, generator);
+      var sqlStatement = defaultSqlPreparationStage.PrepareSqlStatement (queryModel, null);
 
       var resolver = new MappingResolverStub();
-      var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
+      var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       var mappingResolutionContext = new MappingResolutionContext();
       var newSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement, mappingResolutionContext);
 
@@ -208,7 +201,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
         Expression checkedInMemoryProjection = expectedInMemoryProjection;
         if (simplifyInMemoryProjection)
         {
-          checkedInMemoryProjection = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (checkedInMemoryProjection);
+          // TODO RMLNQSQL-91: This point requires the actual method filter
+          checkedInMemoryProjection = PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (
+              checkedInMemoryProjection,
+              new TestEvaluatableExpressionFilter());
           checkedInMemoryProjection = ReplaceConvertExpressionMarker (checkedInMemoryProjection);
         }
         SqlExpressionTreeComparer.CheckAreEqualTrees (checkedInMemoryProjection, result.GetInMemoryProjection<object> ());
@@ -226,7 +222,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
 
     private Expression ReplaceConvertExpressionMarker (Expression simplifiedExpectedInMemoryProjection)
     {
-      return AdHocExpressionTreeVisitor.Transform(simplifiedExpectedInMemoryProjection, expr =>
+      return AdHocExpressionVisitor.Transform(simplifiedExpectedInMemoryProjection, expr =>
       {
         var methodCallExpression = expr as MethodCallExpression;
         if (methodCallExpression != null && methodCallExpression.Method.Name == "ConvertExpressionMarker")
@@ -244,29 +240,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       });
     }
 
-    protected class AdHocExpressionTreeVisitor : ExpressionTreeVisitor
+    protected class AdHocExpressionVisitor : RelinqExpressionVisitor
     {
       public static Expression Transform (Expression expression, Func<Expression, Expression> transformation)
       {
-        return new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+        return new AdHocExpressionVisitor (transformation).Visit (expression);
       }
 
       public static T TransformAndRetainType<T> (T expression, Func<Expression, Expression> transformation)
         where T : Expression
       {
-        return (T) new AdHocExpressionTreeVisitor (transformation).VisitExpression (expression);
+        return (T) new AdHocExpressionVisitor (transformation).Visit (expression);
       }
 
       private readonly Func<Expression, Expression> _transformation;
 
-      public AdHocExpressionTreeVisitor (Func<Expression, Expression> transformation)
+      public AdHocExpressionVisitor (Func<Expression, Expression> transformation)
       {
         _transformation = transformation;
       }
 
-      public override Expression VisitExpression (Expression expression)
+      public override Expression Visit (Expression expression)
       {
-        return _transformation (base.VisitExpression (expression));
+        return _transformation (base.Visit (expression));
       }
     }
   }

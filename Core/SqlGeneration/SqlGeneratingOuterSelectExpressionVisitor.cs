@@ -36,7 +36,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     private static readonly MethodInfo s_getValueMethod = typeof (IDatabaseResultRow).GetMethod ("GetValue");
     private static readonly MethodInfo s_getEntityMethod = typeof (IDatabaseResultRow).GetMethod ("GetEntity");
 
-    public new static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    private readonly SetOperationsMode _setOperationsMode;
+
+    public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SetOperationsMode setOperationsMode)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -44,28 +46,29 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       EnsureNoCollectionExpression (expression);
 
-      var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage);
-      visitor.VisitExpression (expression);
+      var visitor = new SqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage, setOperationsMode);
+      visitor.Visit (expression);
     }
 
-    protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    protected SqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SetOperationsMode setOperationsMode)
         : base (commandBuilder, stage)
     {
+      _setOperationsMode = setOperationsMode;
     }
 
     protected int ColumnPosition { get; set; }
 
-    public override Expression VisitNamedExpression (NamedExpression expression)
+    public override Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var result = base.VisitNamedExpression (expression);
+      var result = base.VisitNamed (expression);
       SetInMemoryProjectionForNamedExpression (expression.Type, Expression.Constant (GetNextColumnID (expression.Name ?? NamedExpression.DefaultName)));
 
       return result;
     }
 
-    public virtual Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
+    public virtual Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -78,16 +81,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
             sourceType: namedExpression.Type, targetType: expression.Type, convertedExpression: namedExpression.Expression);
 
         var newNamedExpression = new NamedExpression (namedExpression.Name, conversionToBool);
-        return VisitExpression (newNamedExpression);
+        return Visit (newNamedExpression);
       }
       else
       {
-        VisitExpression (expression.Expression);
+        Visit (expression.Expression);
         return expression;
       }
     }
 
-    public override Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public override Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -95,7 +98,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
           .Select (e => GetNextColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName))
           .ToArray();
 
-      var result = base.VisitSqlEntityExpression (expression);
+      var result = base.VisitSqlEntity (expression);
 
       var newInMemoryProjectionBody = Expression.Call (
           CommandBuilder.InMemoryProjectionRowParameter,
@@ -106,7 +109,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return result;
     }
 
-    protected override Expression VisitNewExpression (NewExpression expression)
+    protected override Expression VisitNew (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -125,9 +128,24 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    protected override Expression VisitMethodCall (MethodCallExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      if (_setOperationsMode == SetOperationsMode.StatementIsSetCombined)
+      {
+        var message = "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "
+                      + "Rewrite the query to perform the in-memory operation after the set operation has been performed."
+                      + Environment.NewLine
+                      + "For example, instead of the following query:"
+                      + Environment.NewLine
+                      + "    SomeOrders.Select (o => SomeMethod (o.ID)).Concat (OtherOrders.Select (o => SomeMethod (o.ID)))"
+                      + Environment.NewLine
+                      + "Try the following query:"
+                      + Environment.NewLine
+                      + "    SomeOrders.Select (o => o.ID).Concat (OtherOrders.Select (o => o.ID)).Select (i => SomeMethod (i))";
+        throw new NotSupportedException (message);
+      }
 
       var allItems = expression.Object != null ? new[] { expression.Object }.Concat (expression.Arguments) : expression.Arguments;
       var projectionItems = new List<Expression>();
@@ -142,7 +160,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       // If there are no projection items, we need to emit a NULL constant for the MethodCallExpression to avoid producing an empty SELECT list
       if (projectionItems.Count == 0)
       {
-        VisitExpression (Expression.Constant (null));
+        Visit (Expression.Constant (null));
         // Don't forget to increment the column position!
         GetNextColumnID ("");
       }
@@ -150,9 +168,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    protected override Expression VisitUnaryExpression (UnaryExpression expression)
+    protected override Expression VisitUnary (UnaryExpression expression)
     {
-      var result = base.VisitUnaryExpression (expression);
+      var result = base.VisitUnary (expression);
 
       var oldInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
       if (oldInMemoryProjectionBody != null
@@ -165,7 +183,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return result;
     }
 
-    public override Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public override Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       throw new NotSupportedException (
           "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
@@ -194,16 +212,22 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       try
       {
         var namedExpression = argumentExpression as NamedExpression;
-        if (namedExpression != null && namedExpression.Expression is ConstantExpression)
+        if (_setOperationsMode == SetOperationsMode.StatementIsNotSetCombined 
+            && namedExpression != null
+            && namedExpression.Expression is ConstantExpression)
         {
-          // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory projection.
+          // Do not emit constants within a local evaluation; instead, emit "NULL", and directly use the constant expression as the in-memory
+          // projection.
           // This enables us to use complex, local-only constants within a local expression.
-          VisitExpression (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
+          // However, we can only perform such tricks if there are no set operations. With set operations, constants are often used as discriminators,
+          // e.g., Cooks.Select(c => new { Type = "Cook", ID = c.ID }).Union(Kitchens.Select(k => new { Type = "Kitchen", ID = k.ID })).
+          // Since there is only _one_ in-memory projection here, we cannot do as much in memory as we wanted.
+          Visit (new NamedExpression (namedExpression.Name, Expression.Constant (null)));
           return namedExpression.Expression;
         }
         else
         {
-          VisitExpression (argumentExpression);
+          Visit (argumentExpression);
           var argumentInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
           Assertion.DebugAssert (argumentInMemoryProjectionBody != null);
 

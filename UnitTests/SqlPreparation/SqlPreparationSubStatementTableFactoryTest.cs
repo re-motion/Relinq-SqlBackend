@@ -17,8 +17,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.StreamedData;
@@ -65,11 +67,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var statementWithoutOrderings = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
-      var result = _factory.CreateSqlTableForStatement (statementWithoutOrderings, info => new SqlTable (info, JoinSemantics.Inner));
+      var result = _factory.CreateSqlTableForStatement (
+          statementWithoutOrderings,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       _stageMock.VerifyAllExpectations ();
 
-      var tableInfo = ((SqlTable) result.SqlTable).TableInfo;
+      var tableInfo = result.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
@@ -83,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    public void CreateSqlTableForSubStatement_WithOrderings_ReturnsTableWithoutOrderings_WithNewProjection ()
+    public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_ReturnsTableWithoutOrderings_WithNewProjection ()
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
@@ -91,11 +96,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
+      var result = _factory.CreateSqlTableForStatement (
+          _statementWithOrderings,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       _stageMock.VerifyAllExpectations ();
 
-      var tableInfo = ((SqlTable) result.SqlTable).TableInfo;
+      var tableInfo = result.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
 
       var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
@@ -116,7 +124,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    public void CreateSqlTableForSubStatement_WithOrderings_ItemSelector ()
+    public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_ItemSelector ()
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
@@ -124,7 +132,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
+      var result = _factory.CreateSqlTableForStatement (
+          _statementWithOrderings,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       _stageMock.VerifyAllExpectations ();
 
@@ -135,7 +146,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    public void CreateSqlTableForSubStatement_WithOrderings_ExtractedOrderings ()
+    public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_ExtractedOrderings ()
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
@@ -143,7 +154,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
+      var result = _factory.CreateSqlTableForStatement (
+          _statementWithOrderings,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       _stageMock.VerifyAllExpectations ();
 
@@ -162,22 +176,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    public void CreateSqlTableForSubStatement_WithOrderings_NewProjection_ContainsOrderings ()
+    public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_NewProjection_ContainsOrderings ()
     {
-      var _outerTupleCtor = typeof (KeyValuePair<Cook, KeyValuePair<string, string>>).GetConstructor (new[] { typeof (Cook), typeof (KeyValuePair<string, string>) });
-      var _middleTupleCtor = typeof (KeyValuePair<string, string>).GetConstructor (new[] { typeof (string), typeof (string) });
+      var outerTupleCtor = typeof (KeyValuePair<Cook, KeyValuePair<string, string>>).GetConstructor (new[] { typeof (Cook), typeof (KeyValuePair<string, string>) });
+      Debug.Assert (outerTupleCtor != null);
+      var middleTupleCtor = typeof (KeyValuePair<string, string>).GetConstructor (new[] { typeof (string), typeof (string) });
+      Debug.Assert (middleTupleCtor != null);
 
-      var _middleTupleKeyGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Key");
-      var _middleTupleValueGetter = _middleTupleCtor.DeclaringType.GetMethod ("get_Value");
-      var _outerTupleKeyGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Key");
-      var _outerTupleValueGetter = _outerTupleCtor.DeclaringType.GetMethod ("get_Value");
+      var _middleTupleKeyGetter = GetTupleMethod (middleTupleCtor, "get_Key");
+      var _middleTupleValueGetter = GetTupleMethod (middleTupleCtor, "get_Value");
+      var _outerTupleKeyGetter = GetTupleMethod (outerTupleCtor, "get_Key");
+      var _outerTupleValueGetter = GetTupleMethod (outerTupleCtor, "get_Value");
 
       var expectedSelectProjection = Expression.New (
-          _outerTupleCtor,
+          outerTupleCtor,
           new[] {
               _statementWithOrderings.SelectProjection,
               Expression.New (
-                  _middleTupleCtor,
+                  middleTupleCtor,
                   new[] { 
                       _statementWithOrderings.Orderings[0].Expression,
                       _statementWithOrderings.Orderings[1].Expression},
@@ -195,13 +211,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
+      _factory.CreateSqlTableForStatement (
+          _statementWithOrderings,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       _stageMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void CreateSqlTableForSubStatement_WithOrderings_WithTopExpression ()
+    public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_WithTopExpression ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
       {
@@ -216,11 +235,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      var result = _factory.CreateSqlTableForStatement (statement, info => new SqlTable (info, JoinSemantics.Inner));
+      var result = _factory.CreateSqlTableForStatement (
+          statement,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       _stageMock.VerifyAllExpectations ();
 
-      var sqlTable = (SqlTable) result.SqlTable;
+      var sqlTable = result.SqlTable;
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
       Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
       Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (1));
@@ -229,7 +251,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "The SQL Preparation stage must not change the type of the select projection.")]
-    public void CreateSqlTableForSubStatement_WithOrderings_InvalidPreparedExpression ()
+    public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_InvalidPreparedExpression ()
     {
       var fakeSelectProjection = Expression.Constant (0);
       _stageMock
@@ -237,7 +259,63 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
 
-      _factory.CreateSqlTableForStatement (_statementWithOrderings, info => new SqlTable (info, JoinSemantics.Inner));
+      _factory.CreateSqlTableForStatement (
+          _statementWithOrderings,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
+    }
+
+    [Test]
+    public void CreateSqlTableForSubStatement_WithOrderings_AndDoNotExtractOrderingsPolicy_ReturnsTableWithoutOrderings_WithOriginalProjection ()
+    {
+      var result = _factory.CreateSqlTableForStatement (
+          _statementWithOrderings,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.DoNotExtractOrderings);
+
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (result.ExtractedOrderings, Is.Empty);
+      
+      var tableInfo = result.SqlTable.TableInfo;
+      Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+
+      var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
+      Assert.That (subStatement.Orderings, Is.Empty);
+      Assert.That (subStatement.SelectProjection, Is.SameAs (_statementWithOrderings.SelectProjection));
+    }
+
+    [Test]
+    public void CreateSqlTableForSubStatement_WithOrderingsAndTopExpression_AndDoNotExtractOrderingsPolicy_ReturnsTableWithOrderings_WithOriginalProjection ()
+    {
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
+      {
+        TopExpression = Expression.Constant ("top"),
+        Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) }
+      };
+      var statementWithOrderingsAndTopExpression = builder.GetSqlStatement ();
+
+      var result = _factory.CreateSqlTableForStatement (
+          statementWithOrderingsAndTopExpression,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.DoNotExtractOrderings);
+
+      _stageMock.VerifyAllExpectations ();
+
+      Assert.That (result.ExtractedOrderings, Is.Empty);
+      
+      var tableInfo = result.SqlTable.TableInfo;
+      Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+
+      var subStatement = ((ResolvedSubStatementTableInfo) tableInfo).SqlStatement;
+      Assert.That (subStatement.Orderings, Is.Not.Empty);
+      Assert.That (subStatement.SelectProjection, Is.SameAs (statementWithOrderingsAndTopExpression.SelectProjection));
+    }
+
+    private static MethodInfo GetTupleMethod (ConstructorInfo _middleTupleCtor, string methodName)
+    {
+      Debug.Assert (_middleTupleCtor.DeclaringType != null, "_middleTupleCtor.DeclaringType != null");
+      return _middleTupleCtor.DeclaringType.GetMethod (methodName);
     }
   }
 }

@@ -1,0 +1,26 @@
+Enumerable {
+  Customer
+    Address: 'Walserweg 21'
+    City: 'Aachen'
+    CompanyName: 'Drachenblut Delikatessen'
+    ContactName: 'Sven Ottlieb'
+    ContactTitle: 'Order Administrator'
+    Country: 'Germany'
+    CustomerID: 'DRACD'
+    Fax: '0241-059428'
+    Phone: '0241-039123'
+    PostalCode: '52066'
+    Region: null
+  Customer
+    Address: '5ª Ave. Los Palos Grandes'
+    City: 'Caracas'
+    CompanyName: 'GROSELLA-Restaurante'
+    ContactName: 'Manuel Pereira'
+    ContactTitle: 'Owner'
+    Country: 'Venezuela'
+    CustomerID: 'GROSR'
+    Fax: '(2) 283-3397'
+    Phone: '(2) 283-2951'
+    PostalCode: '1081'
+    Region: 'DF'
+}

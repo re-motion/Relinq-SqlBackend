@@ -3058,6 +3058,8 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     private string _PhotoPath;
 
+    private bool? _HasCar;
+
     private EntitySet<Employee> _Employees;
 
     private EntitySet<EmployeeTerritory> _EmployeeTerritories;
@@ -3106,6 +3108,8 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
     partial void OnReportsToChanged ();
     partial void OnPhotoPathChanging (string value);
     partial void OnPhotoPathChanged ();
+    partial void OnHasCarChanging (bool? value);
+    partial void OnHasCarChanged ();
     #endregion
 
     public Employee ()
@@ -3477,6 +3481,26 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
           this._PhotoPath = value;
           this.SendPropertyChanged ("PhotoPath");
           this.OnPhotoPathChanged ();
+        }
+      }
+    }
+
+    [Column (Storage = "_HasCar", DbType = "bit")]
+    public bool? HasCar
+    {
+      get
+      {
+        return this._HasCar;
+      }
+      set
+      {
+        if ((this._HasCar != value))
+        {
+          this.OnHasCarChanging (value);
+          this.SendPropertyChanging ();
+          this._HasCar = value;
+          this.SendPropertyChanged ("HasCar");
+          this.OnHasCarChanged ();
         }
       }
     }

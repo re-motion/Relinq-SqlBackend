@@ -16,9 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -26,19 +23,31 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   /// <summary>
   /// <see cref="SqlEntityConstantExpression"/> holds the primary key for a constant entity.
   /// </summary>
-  public class SqlEntityConstantExpression : ExtensionExpression
+  public class SqlEntityConstantExpression : Expression
   {
+    private readonly Type _type;
     private readonly object _value;
     private readonly Expression _identityExpression;
 
     public SqlEntityConstantExpression (Type type, object value, Expression identityExpression)
-        : base(type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("identityExpression", identityExpression);
 
+      _type = type;
       _value = value;
       _identityExpression = identityExpression;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public object Value
@@ -51,27 +60,27 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       get { return _identityExpression; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newPrimaryKeyExpression = visitor.VisitExpression (_identityExpression);
+      var newPrimaryKeyExpression = visitor.Visit (_identityExpression);
       if (newPrimaryKeyExpression != _identityExpression)
         return new SqlEntityConstantExpression (Type, _value, newPrimaryKeyExpression);
       else
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlEntityConstantExpression(this);
+        return specificVisitor.VisitSqlEntityConstant(this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format ("ENTITY({0})", FormattingExpressionTreeVisitor.Format (_identityExpression));
+      return string.Format ("ENTITY({0})", _identityExpression);
     }
   }
 }

@@ -17,8 +17,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -39,7 +37,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// values (<see cref="NewExpression"/>) or entities are encountered.
   /// </remarks>
   public class SqlContextExpressionVisitor
-      : ExpressionTreeVisitor,
+      : RelinqExpressionVisitor,
         ISqlSpecificExpressionVisitor,
         IResolvedSqlExpressionVisitor,
         ISqlSubStatementVisitor,
@@ -56,7 +54,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("context", context);
 
       var visitor = new SqlContextExpressionVisitor (initialSemantics, stage, context);
-      return visitor.VisitExpression (expression);
+      return visitor.Visit (expression);
     }
 
     private readonly SqlExpressionContext _currentContext;
@@ -73,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _context = context;
     }
 
-    public override Expression VisitExpression (Expression expression)
+    public override Expression Visit (Expression expression)
     {
       if (expression == null)
         return null;
@@ -90,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
     }
 
-    public Expression VisitSqlConvertedBooleanExpression (SqlConvertedBooleanExpression expression)
+    public Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -106,7 +104,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    protected override Expression VisitConstant (ConstantExpression expression)
     {
       // Always convert boolean constants to int constants because in the database, there are no boolean constants
       
@@ -121,10 +119,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return new SqlConvertedBooleanExpression (convertedExpression);
       }
       
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
-    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
+    public Expression VisitSqlColumn (SqlColumnExpression expression)
     {
       // We always need to convert boolean columns to int columns because in the database, the column is represented as a bit (integer) value
       if (BooleanUtility.IsBooleanType (expression.Type))
@@ -134,24 +132,24 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         return new SqlConvertedBooleanExpression (convertedExpression);
       }
       
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
-    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
         string message = string.Format (
             "Cannot use an entity expression ('{0}' of type '{1}') in a place where SQL requires a single value.",
-            FormattingExpressionTreeVisitor.Format (expression),
+            expression,
             expression.Type.Name);
         throw new NotSupportedException (message);
       }
 
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
-    protected override Expression VisitBinaryExpression (BinaryExpression expression)
+    protected override Expression VisitBinary (BinaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -169,7 +167,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             && expression.Right is ConstantExpression
             && Equals (((ConstantExpression) expression.Right).Value, false))
         {
-          return VisitExpression (Expression.Convert (expression.Left, expression.Type));
+          return Visit (Expression.Convert (expression.Left, expression.Type));
         }
 
         // We'll pull out the bool conversion marker from the operands of the Coalesce expression and instead put it around the whole expression.
@@ -190,7 +188,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitUnaryExpression (UnaryExpression expression)
+    protected override Expression VisitUnary (UnaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -218,7 +216,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
+    public Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -228,7 +226,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    public Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -238,7 +236,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    public Expression VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -246,14 +244,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         string message = string.Format (
             "Cannot use an entity constant ('{0}' of type '{1}') in a place where SQL requires a single value.",
-            FormattingExpressionTreeVisitor.Format (expression),
+            expression,
             expression.Type.Name);
         throw new NotSupportedException (message);
       }
-      return expression; // rely on VisitExpression to apply correct semantics
+      return expression; // rely on Visit to apply correct semantics
     }
 
-    public Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -263,15 +261,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitNewExpression (NewExpression expression)
+    protected override Expression VisitNew (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
-        string message = string.Format (
-            "Cannot use a complex expression ('{0}') in a place where SQL requires a single value.",
-            FormattingExpressionTreeVisitor.Format (expression));
+        string message = string.Format ("Cannot use a complex expression ('{0}') in a place where SQL requires a single value.", expression);
         throw new NotSupportedException (message);
       }
 
@@ -289,7 +285,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitMethodCallExpression (MethodCallExpression expression)
+    protected override Expression VisitMethodCall (MethodCallExpression expression)
     {
       // Method arguments and target instance are always values
 
@@ -301,14 +297,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
-      var newInnerExpression = VisitExpression (expression.Expression);
+      var newInnerExpression = Visit (expression.Expression);
       if (newInnerExpression is SqlConvertedBooleanExpression)
       {
         var convertedBooleanExpression = (SqlConvertedBooleanExpression) newInnerExpression;
         var innerNamedExpression = new NamedExpression (expression.Name, convertedBooleanExpression.Expression);
-        return VisitExpression (new SqlConvertedBooleanExpression (innerNamedExpression));
+        return Visit (new SqlConvertedBooleanExpression (innerNamedExpression));
       }
 
       if (newInnerExpression != expression.Expression)
@@ -317,7 +313,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       var newKeyExpression = ApplyValueContext (expression.KeyExpression);
       var newElementExpression = ApplyValueContext (expression.ElementExpression);
@@ -333,41 +329,41 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    public Expression VisitSqlFunctionExpression (SqlFunctionExpression expression)
+    public Expression VisitSqlFunction (SqlFunctionExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlConvertExpression (SqlConvertExpression expression)
+    public Expression VisitSqlConvert (SqlConvertExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
+    public Expression VisitSqlExists (SqlExistsExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.ValueRequired);
     }
 
-    public Expression VisitSqlRowNumberExpression (SqlRowNumberExpression expression)
+    public Expression VisitSqlRowNumber (SqlRowNumberExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlLikeExpression (SqlLikeExpression expression)
+    public Expression VisitSqlLike (SqlLikeExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlLengthExpression (SqlLengthExpression expression)
+    public Expression VisitSqlLength (SqlLengthExpression expression)
     {
       return VisitChildrenWithGivenSemantics (expression, SqlExpressionContext.SingleValueRequired);
     }
 
-    public Expression VisitSqlCaseExpression (SqlCaseExpression expression)
+    public Expression VisitSqlCase (SqlCaseExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newCases = VisitList (
+      var newCases = Visit (
           expression.Cases,
           caseWhenPair =>
           {
@@ -379,13 +375,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression.Update (newCases, newElseCase);
     }
 
-    public Expression VisitSqlLiteralExpression (SqlLiteralExpression expression)
+    public Expression VisitSqlLiteral (SqlLiteralExpression expression)
     {
       // No children.
       return expression;
     }
 
-    public Expression VisitSqlInExpression (SqlInExpression expression)
+    public Expression VisitSqlIn (SqlInExpression expression)
     {
       try
       {
@@ -396,12 +392,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var message = string.Format (
             "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot "
             + "be translated to SQL: '{0}'.",
-            FormattingExpressionTreeVisitor.Format (expression));
+            expression);
         throw new NotSupportedException (message, ex);
       }
     }
 
-    public Expression VisitAggregationExpression (AggregationExpression expression)
+    public Expression VisitAggregation (AggregationExpression expression)
     {
       Expression newInnerExpression;
       if (expression.AggregationModifier == AggregationModifier.Count)
@@ -415,24 +411,22 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return expression;
     }
 
-    protected override Expression VisitInvocationExpression (InvocationExpression expression)
+    protected override Expression VisitInvocation (InvocationExpression expression)
     {
-      var message = string.Format (
-          "InvocationExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+      var message = string.Format ("InvocationExpressions are not supported in the SQL backend. Expression: '{0}'.", expression);
       throw new NotSupportedException (message);
     }
 
-    protected override Expression VisitLambdaExpression (LambdaExpression expression)
+    protected override Expression VisitLambda<T> (Expression<T> expression)
     {
-      var message = string.Format (
-          "LambdaExpressions are not supported in the SQL backend. Expression: '{0}'.", FormattingExpressionTreeVisitor.Format (expression));
+      var message = string.Format ("LambdaExpressions are not supported in the SQL backend. Expression: '{0}'.", expression);
       throw new NotSupportedException (message);
     }
 
-    private Expression VisitChildrenWithGivenSemantics (ExtensionExpression expression, SqlExpressionContext childContext)
+    private Expression VisitChildrenWithGivenSemantics (Expression expression, SqlExpressionContext childContext)
     {
       var visitor = new SqlContextExpressionVisitor (childContext, _stage, _context);
-      return visitor.VisitExtensionExpression (expression);
+      return visitor.VisitExtension (expression);
     }
 
     private SqlExpressionContext GetChildSemanticsForUnaryExpression (Expression expression)
@@ -472,7 +466,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private Expression HandleValueSemantics (Expression expression)
     {
-      var newExpression = base.VisitExpression (expression);
+      var newExpression = base.Visit (expression);
       if (newExpression is SqlConvertedBooleanExpression)
         return newExpression;
 
@@ -493,7 +487,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private Expression HandlePredicateSemantics (Expression expression)
     {
-      var newExpression = base.VisitExpression (expression);
+      var newExpression = base.Visit (expression);
 
       var convertedBooleanExpression = newExpression as SqlConvertedBooleanExpression;
       if (convertedBooleanExpression != null)
@@ -507,7 +501,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var message = string.Format (
             "Cannot convert an expression of type '{0}' to a boolean expression. Expression: '{1}'", 
             newExpression.Type, 
-            FormattingExpressionTreeVisitor.Format(expression));
+            expression);
         throw new NotSupportedException (message);
       }
 

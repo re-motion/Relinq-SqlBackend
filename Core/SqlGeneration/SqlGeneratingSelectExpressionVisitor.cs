@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       EnsureNoCollectionExpression (expression);
 
       var visitor = new SqlGeneratingSelectExpressionVisitor (commandBuilder, stage);
-      visitor.VisitExpression (expression);
+      visitor.Visit (expression);
     }
 
     protected static void EnsureNoCollectionExpression (Expression expression)
@@ -71,31 +71,31 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
     }
 
-    public override Expression VisitNamedExpression (NamedExpression expression)
+    public override Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      VisitExpression (expression.Expression);
+      Visit (expression.Expression);
       CommandBuilder.Append (" AS ");
       CommandBuilder.AppendIdentifier (expression.Name ?? NamedExpression.DefaultName);
       
       return expression;
     }
 
-    public virtual Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public virtual Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var groupExpressions = new[] { expression.KeyExpression }.Concat (expression.AggregationExpressions);
 
-      CommandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => VisitExpression (exp));
+      CommandBuilder.AppendSeparated (", ", groupExpressions, (cb, exp) => Visit (exp));
 
       return expression;
     }
 
     protected override void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
-      column.Accept (this);
+      Visit (column);
       
       string alias = GetAliasForColumnOfEntity(column, entity);
       if (alias != null)

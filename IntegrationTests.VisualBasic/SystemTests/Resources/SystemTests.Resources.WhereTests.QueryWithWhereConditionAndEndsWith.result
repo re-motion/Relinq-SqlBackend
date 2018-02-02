@@ -1,0 +1,14 @@
+Enumerable {
+  Customer
+    Address: 'Rua do Paço, 67'
+    City: 'Rio de Janeiro'
+    CompanyName: 'Hanari Carnes'
+    ContactName: 'Mario Pontes'
+    ContactTitle: 'Accounting Manager'
+    Country: 'Brazil'
+    CustomerID: 'HANAR'
+    Fax: '(21) 555-8765'
+    Phone: '(21) 555-0091'
+    PostalCode: '05454-876'
+    Region: 'RJ'
+}

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
@@ -62,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (_entityMapping.TryGetValue (entityExpression, out result))
         return result;
 
-      var message = string.Format ("No associated table found for entity '{0}'.", FormattingExpressionTreeVisitor.Format (entityExpression));
+      var message = string.Format ("No associated table found for entity '{0}'.", entityExpression);
       throw new InvalidOperationException (message);
     }
 
@@ -73,9 +72,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (_groupReferenceMapping.TryGetValue (groupingSelectExpression, out result))
         return result;
 
-      var message = string.Format (
-          "No associated table found for grouping select expression '{0}'.", 
-          FormattingExpressionTreeVisitor.Format (groupingSelectExpression));
+      var message = string.Format ("No associated table found for grouping select expression '{0}'.", groupingSelectExpression);
       throw new InvalidOperationException (message);
     }
 

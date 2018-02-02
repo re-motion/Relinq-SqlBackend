@@ -30,19 +30,18 @@ using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class AggregationResultOperatorHandlerTest
+  public class AggregationResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
     private ISqlPreparationStage _stage;
-    private UniqueIdentifierGenerator _generator;
     private TestableAggregationResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      _generator = new UniqueIdentifierGenerator ();
-      _stage = new DefaultSqlPreparationStage(CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), _generator);
+      base.SetUp();
+
+      _stage = CreateDefaultSqlPreparationStage();
       _handler = new TestableAggregationResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -57,7 +56,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       var averageResultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
       Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Max));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
@@ -70,7 +69,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _sqlStatementBuilder.Orderings.Add (new Ordering (Expression.Constant ("order"), OrderingDirection.Asc));
       var averageResultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
     }
@@ -83,13 +82,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _sqlStatementBuilder.Orderings.Add (ordering);
       var averageResultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
       Assert.That (_sqlStatementBuilder.Orderings.Count, Is.EqualTo (0));
       Assert.That (
-          ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
+          ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement.Orderings.Count, Is.EqualTo (1));
       Assert.That (
-          ((ResolvedSubStatementTableInfo) ((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo).SqlStatement.Orderings[0], Is.SameAs(ordering));
+          ((ResolvedSubStatementTableInfo) _sqlStatementBuilder.SqlTables[0].TableInfo).SqlStatement.Orderings[0], Is.SameAs(ordering));
     }
 
     [Test]
@@ -99,10 +98,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
 
     [Test]
@@ -112,10 +110,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
 
     [Test]
@@ -125,13 +122,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var resultOperator = new MaxResultOperator ();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stage, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
 
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
-      Assert.That (
-          ((SqlTable) ((SqlTableReferenceExpression) ((AggregationExpression) _sqlStatementBuilder.SelectProjection).Expression).SqlTable).TableInfo,
-          Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
+    }
+
+    [Test]
+    public void HandleResultOperator_AfterSetOperation_CreatesSubStatement ()
+    {
+      _sqlStatementBuilder.SetOperationCombinedStatements.Add (SqlStatementModelObjectMother.CreateSetOperationCombinedStatement());
+
+      var resultOperator = new MaxResultOperator ();
+
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stage, _context);
+
+      AssertStatementWasMovedToSubStatement (_sqlStatementBuilder);
     }
   }
 }

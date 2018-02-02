@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <DatabaseNamePrefix></DatabaseNamePrefix>
+
+    <DataSourceMsSql2005>localhost\MsSql2005</DataSourceMsSql2005>
+    <DataSourceMsSql2008>localhost\MsSql2008</DataSourceMsSql2008>
+    <DataSourceMsSql2008R2>localhost\MsSql2008R2</DataSourceMsSql2008R2>
+    <DataSourceMsSql2012>localhost\MsSql2012</DataSourceMsSql2012>
+    <DataSourceMsSql2014>localhost\MsSql2014</DataSourceMsSql2014>
+    <DataSourceMsSql2016>localhost\MsSql2016</DataSourceMsSql2016>
+
+    <DatabaseDirectoryMsSql2005>C:\Databases\MsSql2005</DatabaseDirectoryMsSql2005>
+    <DatabaseDirectoryMsSql2008>C:\Databases\MsSql2008</DatabaseDirectoryMsSql2008>
+    <DatabaseDirectoryMsSql2008R2>C:\Databases\MsSql2008R2</DatabaseDirectoryMsSql2008R2>
+    <DatabaseDirectoryMsSql2012>C:\Databases\MsSql2012</DatabaseDirectoryMsSql2012>
+    <DatabaseDirectoryMsSql2014>C:\Databases\MsSql2014</DatabaseDirectoryMsSql2014>
+    <DatabaseDirectoryMsSql2016>C:\Databases\MsSql2016</DatabaseDirectoryMsSql2016>
+  </PropertyGroup>
+</Project>

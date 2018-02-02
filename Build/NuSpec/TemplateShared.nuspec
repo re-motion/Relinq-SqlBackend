@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$id$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://opensource.org/licenses/LGPL-2.1</licenseUrl>
+    <projectUrl>http://relinq.codeplex.com</projectUrl>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
+    <tags>$tags$ $extraTags$</tags>
+  </metadata>
+  <files>
+    <!-- The wildcard is required to support using a referenced nuspec-file for building the nuget package 
+         and a local nuspec-file for supplying the dependency information in downstream projects. 
+         In addition, the wildcard also enables the referenced file to be located at an arbitrary location.
+         It is very likely there is a bug somewhere in the nuget commandline tool that causes these issues and inconsistencies. -->
+    <file src="bin*\$configuration$\$id$.pdb" target="lib\net45" />
+
+    <!-- By using a wildcard, the file-inclusion does not fail if no documentation file was found. -->
+    <file src="$documentationFile$" target="doc" />
+  </files>
+</package>

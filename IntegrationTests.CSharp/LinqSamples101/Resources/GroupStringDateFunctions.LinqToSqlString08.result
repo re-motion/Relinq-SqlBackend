@@ -8,6 +8,7 @@ Apt. 2A'
     EmployeeID: 1
     Extension: '5467'
     FirstName: 'Nancy'
+    HasCar: False
     HireDate: 05/01/1992 00:00:00
     HomePhone: '(206) 555-9857'
     LastName: 'Davolio'
@@ -28,6 +29,7 @@ Apt. 2A'
     EmployeeID: 2
     Extension: '3457'
     FirstName: 'Andrew'
+    HasCar: True
     HireDate: 08/14/1992 00:00:00
     HomePhone: '(206) 555-9482'
     LastName: 'Fuller'
@@ -48,6 +50,7 @@ Apt. 2A'
     EmployeeID: 3
     Extension: '3355'
     FirstName: 'Janet'
+    HasCar: null
     HireDate: 04/01/1992 00:00:00
     HomePhone: '(206) 555-3412'
     LastName: 'Leverling'
@@ -68,6 +71,7 @@ Apt. 2A'
     EmployeeID: 4
     Extension: '5176'
     FirstName: 'Margaret'
+    HasCar: False
     HireDate: 05/03/1993 00:00:00
     HomePhone: '(206) 555-8122'
     LastName: 'Peacock'
@@ -88,6 +92,7 @@ Apt. 2A'
     EmployeeID: 8
     Extension: '2344'
     FirstName: 'Laura'
+    HasCar: null
     HireDate: 03/05/1994 00:00:00
     HomePhone: '(206) 555-1189'
     LastName: 'Callahan'

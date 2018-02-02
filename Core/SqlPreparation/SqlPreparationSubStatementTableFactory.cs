@@ -49,17 +49,33 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       _context = context;
     }
 
-    public FromExpressionInfo CreateSqlTableForStatement (SqlStatement sqlStatement, Func<ITableInfo, SqlTable> tableCreator)
+    public FromExpressionInfo CreateSqlTableForStatement (
+        SqlStatement sqlStatement,
+        Func<ITableInfo, SqlTable> tableCreator,
+        OrderingExtractionPolicy orderingExtractionPolicy)
     {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull ("tableCreator", tableCreator);
+
       if (sqlStatement.Orderings.Count == 0)
       {
         var tableInfo = new ResolvedSubStatementTableInfo (_uniqueIdentifierGenerator.GetUniqueIdentifier ("q"), sqlStatement);
         var sqlTable = tableCreator (tableInfo);
         return new FromExpressionInfo (sqlTable, new Ordering[0], new SqlTableReferenceExpression (sqlTable), null);
       }
+      
+      // If we have orderings, we need to:
+      // - Build a nested projection that includes the original orderings if OrderingExtractionPolicy.ExtractOrderingsIntoProjection is specified.
+      // - Create a substatement clearing orderings, unless a TOP expression is present.
+      // - Put it into a SqlTable.
+      // - Put a reference to everything in the select projection (i.e., the original projection and the extracted orderings) into a 
+      //   FromExpressionInfo and return that.
 
-      var selectExpressionWithOrderings = GetNewSelectExpressionWithOrderings (sqlStatement);
-      var tableWithSubStatement = CreateSqlCompatibleSubStatementTable (sqlStatement, selectExpressionWithOrderings, tableCreator);
+      var newSelectProjection = sqlStatement.SelectProjection;
+      if (orderingExtractionPolicy == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)
+        newSelectProjection = GetNewSelectExpressionWithOrderings (sqlStatement);
+
+      var tableWithSubStatement = CreateSqlCompatibleSubStatementTable (sqlStatement, newSelectProjection, tableCreator);
       return GetFromExpressionInfoForSubStatement (sqlStatement, tableWithSubStatement);
     }
 

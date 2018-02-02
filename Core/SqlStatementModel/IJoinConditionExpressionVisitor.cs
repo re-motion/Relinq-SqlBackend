@@ -26,6 +26,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// </summary>
   public interface IJoinConditionExpressionVisitor
   {
-    Expression VisitJoinConditionExpression (JoinConditionExpression expression);
+    Expression VisitJoinCondition (JoinConditionExpression expression);
   }
 }

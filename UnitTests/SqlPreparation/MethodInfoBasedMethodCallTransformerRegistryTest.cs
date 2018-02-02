@@ -24,7 +24,7 @@ using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Remotion.Linq.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
@@ -174,11 +174,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void GetTransformer_ForBaseDefinition ()
     {
-      var methodInfo = ReflectionUtility.GetMethod (() => new object ().ToString ());
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => new object ().ToString ());
       _methodCallTransformerRegistry.Register (methodInfo, _transformerStub);
 
       int i = 5;
-      var methodCallExpression = Expression.Call (Expression.Constant (i), ReflectionUtility.GetMethod (() => i.ToString ()));
+      var methodCallExpression = Expression.Call (Expression.Constant (i), MemberInfoFromExpressionUtility.GetMethod (() => i.ToString ()));
       var result = _methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 
       Assert.That (result, Is.EqualTo (_transformerStub));
@@ -187,12 +187,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void GetItem_ForBaseDefintion ()
     {
-      var methodInfo = ReflectionUtility.GetMethod (() => new object ().ToString ());
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (() => new object ().ToString ());
 
       _methodCallTransformerRegistry.Register (methodInfo, _transformerStub);
 
       int i = 5;
-      var intMethodInfo = ReflectionUtility.GetMethod (() => i.ToString ());
+      var intMethodInfo = MemberInfoFromExpressionUtility.GetMethod (() => i.ToString ());
       var result = _methodCallTransformerRegistry.GetItem (intMethodInfo);
 
       Assert.That (result, Is.EqualTo (_transformerStub));

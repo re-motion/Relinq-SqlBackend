@@ -19,8 +19,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -28,12 +26,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlRowNumberExpression"/> represents the Sql ROW_NUMBER() function.
   /// </summary>
-  public class SqlRowNumberExpression : ExtensionExpression
+  public class SqlRowNumberExpression : Expression
   {
     private readonly ReadOnlyCollection<Ordering> _orderings;
 
     public SqlRowNumberExpression (Ordering[] orderings)
-        : base (typeof (int))
     {
       ArgumentUtility.CheckNotNull ("orderings", orderings);
       ArgumentUtility.CheckNotEmpty ("orderings", orderings);
@@ -41,19 +38,29 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       _orderings = Array.AsReadOnly (orderings);
     }
 
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(int); }
+    }
+
     public ReadOnlyCollection<Ordering> Orderings
     {
       get { return _orderings; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var newOrderings = Orderings.Select (
           o =>
           {
-            var newExpression = visitor.VisitExpression (o.Expression);
+            var newExpression = visitor.Visit (o.Expression);
             return newExpression != o.Expression ? new Ordering (newExpression, o.OrderingDirection) : o;
           }).ToArray();
 
@@ -63,13 +70,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlRowNumberExpression (this);
+        return specificVisitor.VisitSqlRowNumber (this);
       else
         return base.Accept (visitor);
     }

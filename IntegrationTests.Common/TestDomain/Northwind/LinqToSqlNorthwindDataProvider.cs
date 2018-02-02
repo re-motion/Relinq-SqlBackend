@@ -32,7 +32,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     public LinqToSqlNorthwindDataProvider ()
     {
-      var connectionString = DatabaseConfiguration.ReplaceDatasource (ConfigurationManager.ConnectionStrings["Northwind"].ConnectionString);
+      var connectionString = DatabaseConfiguration.ReplaceDataSource (ConfigurationManager.ConnectionStrings["Northwind"].ConnectionString);
       _dataContext = new NorthwindDataContext (connectionString);
     }
 

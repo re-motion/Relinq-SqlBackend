@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("stage", stage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, info => new SqlTable (info, JoinSemantics.Left), stage);
+      MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Left), stage);
     }
   }
 }

@@ -43,7 +43,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       if (connectionSettings == null)
         throw new ArgumentNullException ("Connection configuration not found");
 
-      return DatabaseConfiguration.ReplaceDatasource(connectionSettings.ConnectionString);
+      return DatabaseConfiguration.ReplaceDataSource(connectionSettings.ConnectionString);
     }
   }
 }

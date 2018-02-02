@@ -1,0 +1,86 @@
+Enumerable {
+  Customer
+    Address: '89 Jefferson Way Suite 2'
+    City: 'Portland'
+    CompanyName: 'The Big Cheese'
+    ContactName: 'Liz Nixon'
+    ContactTitle: 'Marketing Manager'
+    Country: 'USA'
+    CustomerID: 'THEBI'
+    Fax: null
+    Phone: '(503) 555-3612'
+    PostalCode: '97201'
+    Region: 'OR'
+  Customer
+    Address: '89 Jefferson Way Suite 2'
+    City: 'Portland'
+    CompanyName: 'The Big Cheese'
+    ContactName: 'Liz Nixon'
+    ContactTitle: 'Marketing Manager'
+    Country: 'USA'
+    CustomerID: 'THEBI'
+    Fax: null
+    Phone: '(503) 555-3612'
+    PostalCode: '97201'
+    Region: 'OR'
+  Customer
+    Address: '89 Jefferson Way Suite 2'
+    City: 'Portland'
+    CompanyName: 'The Big Cheese'
+    ContactName: 'Liz Nixon'
+    ContactTitle: 'Marketing Manager'
+    Country: 'USA'
+    CustomerID: 'THEBI'
+    Fax: null
+    Phone: '(503) 555-3612'
+    PostalCode: '97201'
+    Region: 'OR'
+  Customer
+    Address: '89 Jefferson Way Suite 2'
+    City: 'Portland'
+    CompanyName: 'The Big Cheese'
+    ContactName: 'Liz Nixon'
+    ContactTitle: 'Marketing Manager'
+    Country: 'USA'
+    CustomerID: 'THEBI'
+    Fax: null
+    Phone: '(503) 555-3612'
+    PostalCode: '97201'
+    Region: 'OR'
+  Customer
+    Address: '89 Jefferson Way Suite 2'
+    City: 'Portland'
+    CompanyName: 'The Big Cheese'
+    ContactName: 'Liz Nixon'
+    ContactTitle: 'Marketing Manager'
+    Country: 'USA'
+    CustomerID: 'THEBI'
+    Fax: null
+    Phone: '(503) 555-3612'
+    PostalCode: '97201'
+    Region: 'OR'
+  Customer
+    Address: '89 Jefferson Way Suite 2'
+    City: 'Portland'
+    CompanyName: 'The Big Cheese'
+    ContactName: 'Liz Nixon'
+    ContactTitle: 'Marketing Manager'
+    Country: 'USA'
+    CustomerID: 'THEBI'
+    Fax: null
+    Phone: '(503) 555-3612'
+    PostalCode: '97201'
+    Region: 'OR'
+  Customer
+    Address: '89 Jefferson Way Suite 2'
+    City: 'Portland'
+    CompanyName: 'The Big Cheese'
+    ContactName: 'Liz Nixon'
+    ContactTitle: 'Marketing Manager'
+    Country: 'USA'
+    CustomerID: 'THEBI'
+    Fax: null
+    Phone: '(503) 555-3612'
+    PostalCode: '97201'
+    Region: 'OR'
+}

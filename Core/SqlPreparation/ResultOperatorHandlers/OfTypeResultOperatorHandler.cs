@@ -37,7 +37,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       ArgumentUtility.CheckNotNull ("context", context);
 
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
+      EnsureNoSetOperations (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
+
       var typeCheckExpression = Expression.TypeIs (sqlStatementBuilder.SelectProjection, resultOperator.SearchedItemType);
       sqlStatementBuilder.AddWhereCondition (typeCheckExpression);
       sqlStatementBuilder.SelectProjection = Expression.Convert (sqlStatementBuilder.SelectProjection, resultOperator.SearchedItemType);

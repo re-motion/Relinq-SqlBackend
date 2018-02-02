@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlTableReferenceExpression, ISqlTableReferenceExpressionVisitor> (
           _tableReferenceExpression,
-          mock => mock.VisitSqlTableReferenceExpression (_tableReferenceExpression));
+          mock => mock.VisitSqlTableReference (_tableReferenceExpression));
     }
 
     [Test]

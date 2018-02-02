@@ -112,7 +112,6 @@ namespace Remotion.Linq.IntegrationTests.CSharp.LinqSamples101
     ///a customer or an employee live.
     ///</summary>
     [Test]
-    [Ignore ("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")]
     public void LinqToSqlAdvanced04 ()
     {
       IQueryable<Customer> custs = DB.Customers;

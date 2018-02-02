@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -30,7 +29,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// Calling <see cref="ResolveExpression"/> will automatically execute two passes in order to optimize away unnecessary left-outer joins.
   /// </summary>
   public class ResolvingExpressionVisitor : 
-      ExpressionTreeVisitor, 
+      ExpressionVisitor, 
       IUnresolvedSqlExpressionVisitor, 
       ISqlSubStatementVisitor, 
       IJoinConditionExpressionVisitor,
@@ -59,11 +58,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var visitor1 = new ResolvingExpressionVisitor (
           resolver, stage, context, generator, entityIdentityResolver, comparisonSplitter, namedExpressionCombiner, groupAggregateSimplifier, false);
-      var result1 = visitor1.VisitExpression (expression);
+      var result1 = visitor1.Visit (expression);
 
       var visitor2 = new ResolvingExpressionVisitor (
           resolver, stage, context, generator, entityIdentityResolver, comparisonSplitter, namedExpressionCombiner, groupAggregateSimplifier, true);
-      var result2 = visitor2.VisitExpression (result1);
+      var result2 = visitor2.Visit (result1);
       return result2;
     }
 
@@ -155,26 +154,26 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       _resolveEntityRefMemberExpressions = resolveEntityRefMemberExpressions;
     }
 
-    public Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression)
+    public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var resolvedExpression = _stage.ResolveTableReferenceExpression (expression, _context);
-      return VisitExpression (resolvedExpression);
+      return Visit (resolvedExpression);
     }
 
-    protected override Expression VisitConstantExpression (ConstantExpression expression)
+    protected override Expression VisitConstant (ConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var resolvedExpression = _resolver.ResolveConstantExpression (expression);
       if (resolvedExpression != expression)
-        return VisitExpression (resolvedExpression);
+        return Visit (resolvedExpression);
       else
         return expression;
     }
 
-    protected override Expression VisitMemberExpression (MemberExpression expression)
+    protected override Expression VisitMember (MemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -183,36 +182,38 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       // then newExpression1.Cook => newExpression2 (SqlEntityRef/SqlEntity)
       // then newExpression2.FirstName => result (SqlColumn)
 
-      var sourceExpression = VisitExpression (expression.Expression);
+      var sourceExpression = Visit (expression.Expression);
       var resolved = _stage.ResolveMemberAccess (sourceExpression, expression.Member, _resolver, _context);
 
       Assertion.DebugAssert (resolved != expression);
-      return VisitExpression (resolved);
+      return Visit (resolved);
     }
 
-    protected override Expression VisitBinaryExpression (BinaryExpression expression)
+    protected override Expression VisitBinary (BinaryExpression expression)
     {
-      var baseVisitedExpression = (BinaryExpression) base.VisitBinaryExpression (expression);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var baseVisitedExpression = (BinaryExpression) base.VisitBinary (expression);
 
       var binaryExpressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
       var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (binaryExpressionWithEntityComparisonResolved);
 
       if (result != baseVisitedExpression)
-        return VisitExpression (result);
+        return Visit (result);
 
       return result;
     }
 
-    protected override Expression VisitTypeBinaryExpression (TypeBinaryExpression expression)
+    protected override Expression VisitTypeBinary (TypeBinaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var newExpression = VisitExpression (expression.Expression);
+      var newExpression = Visit (expression.Expression);
       var resolvedTypeExpression = _resolver.ResolveTypeCheck (newExpression, expression.TypeOperand);
-      return VisitExpression (resolvedTypeExpression);
+      return Visit (resolvedTypeExpression);
     }
 
-    public virtual Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression)
+    public virtual Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -224,89 +225,93 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _groupAggregateSimplifier.SimplifyIfPossible (resolvedExpression, expression.SqlStatement.SelectProjection);
     }
 
-    public virtual Expression VisitJoinConditionExpression (JoinConditionExpression expression)
+    public virtual Expression VisitJoinCondition (JoinConditionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       var resolvedLeftJoinInfo = expression.JoinedTable.JoinInfo.GetResolvedJoinInfo();
-      return VisitExpression (resolvedLeftJoinInfo.JoinCondition);
+      return Visit (resolvedLeftJoinInfo.JoinCondition);
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var baseVisitedExpression =  (NamedExpression) VisitExtensionExpression (expression);
+      var baseVisitedExpression =  (NamedExpression) VisitExtension (expression);
 
       var result = _namedExpressionCombiner.ProcessNames (baseVisitedExpression);
 
       if (result != baseVisitedExpression)
-        return VisitExpression (result);
+        return Visit (result);
       
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlExistsExpression (SqlExistsExpression expression)
+    public Expression VisitSqlExists (SqlExistsExpression expression)
     {
-      var baseVisitedExpression = (SqlExistsExpression) VisitExtensionExpression (expression);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var baseVisitedExpression = (SqlExistsExpression) VisitExtension (expression);
 
       // Within an EXISTS query, an entity can be replaced by its IdentityExpression, so try to simplify it.
       var newInnerExpression = _entityIdentityResolver.ResolvePotentialEntity (baseVisitedExpression.Expression);
 
       if (newInnerExpression != baseVisitedExpression.Expression)
-        return VisitExpression (new SqlExistsExpression (newInnerExpression));
+        return Visit (new SqlExistsExpression (newInnerExpression));
 
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlInExpression (SqlInExpression expression)
+    public Expression VisitSqlIn (SqlInExpression expression)
     {
-      var baseVisitedExpression = (SqlInExpression) VisitExtensionExpression (expression);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      var baseVisitedExpression = (SqlInExpression) VisitExtension (expression);
 
       var expressionWithSimplifiedEntities = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
 
       if (expressionWithSimplifiedEntities != baseVisitedExpression)
-        return VisitExpression (expressionWithSimplifiedEntities);
+        return Visit (expressionWithSimplifiedEntities);
 
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlIsNullExpression (SqlIsNullExpression expression)
+    public Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var baseVisitedExpression = (SqlIsNullExpression) base.VisitExtensionExpression (expression);
+      var baseVisitedExpression = (SqlIsNullExpression) VisitExtension (expression);
 
       var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
       var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (expressionWithEntityComparisonResolved);
 
       if (baseVisitedExpression != result)
-        return VisitExpression (result);
+        return Visit (result);
 
       return baseVisitedExpression;
     }
 
-    public Expression VisitSqlIsNotNullExpression (SqlIsNotNullExpression expression)
+    public Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var baseVisitedExpression = (SqlIsNotNullExpression) base.VisitExtensionExpression (expression);
+      var baseVisitedExpression = (SqlIsNotNullExpression) VisitExtension (expression);
 
       var expressionWithEntityComparisonResolved = _entityIdentityResolver.ResolvePotentialEntityComparison (baseVisitedExpression);
       var result = _compoundComparisonSplitter.SplitPotentialCompoundComparison (expressionWithEntityComparisonResolved);
 
       if (baseVisitedExpression != result)
-        return VisitExpression (result);
+        return Visit (result);
 
       return baseVisitedExpression;
     }
 
-    public virtual Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    public virtual Expression VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       if (!_resolveEntityRefMemberExpressions)
-        return VisitExtensionExpression (expression);
+        return VisitExtension (expression);
 
       var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
       // No revisiting required since this visitor does not handle ISqlEntityExpressions.

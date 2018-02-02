@@ -17,9 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -27,10 +24,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlConvertExpression"/> is used to represent a convert expression.
   /// </summary>
-  public class SqlConvertExpression : ExtensionExpression
+  public class SqlConvertExpression : Expression
   {
-    private readonly Expression _source;
-
     private static readonly Dictionary<Type, string> s_sqlTypeMapping = new Dictionary<Type, string> 
                                                           {
                                                               { typeof (string), "NVARCHAR(MAX)" },
@@ -59,12 +54,26 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       return null;
     }
 
+    private readonly Type _targetType;
+    private readonly Expression _source;
+
     public SqlConvertExpression (Type targetType, Expression source)
-        : base (targetType)
     {
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("source", source);
 
+      _targetType = targetType;
       _source = source;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _targetType; }
     }
 
     public Expression Source
@@ -77,19 +86,16 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       var typeName = GetSqlTypeName(Type);
       if (typeName == null)
       {
-        var message = string.Format (
-            "Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'",
-            Type.Name,
-            FormattingExpressionTreeVisitor.Format (_source));
+        var message = string.Format ("Cannot obtain a SQL type for type '{0}'. Expression being converted: '{1}'", Type.Name, _source);
         throw new NotSupportedException (message);
       }
 
       return typeName;
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newSource = visitor.VisitExpression (_source);
+      var newSource = visitor.Visit (_source);
 
       if (newSource != _source)
         return new SqlConvertExpression (Type, newSource);
@@ -97,18 +103,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlConvertExpression (this);
+        return specificVisitor.VisitSqlConvert (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format ("CONVERT({0}, {1})", GetSqlTypeName (), FormattingExpressionTreeVisitor.Format (_source));
+      return string.Format ("CONVERT({0}, {1})", GetSqlTypeName (), _source);
     }
   }
 }

@@ -18,9 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -28,20 +25,31 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlFunctionExpression"/> holds the sql specific function with its parameters.
   /// </summary>
-  public class SqlFunctionExpression : ExtensionExpression
+  public class SqlFunctionExpression : Expression
   {
+    private readonly Type _type;
     private readonly string _sqlFunctioName;
     private readonly ReadOnlyCollection<Expression> _args;
 
     public SqlFunctionExpression (Type type, string sqlFunctioName, params Expression[] args)
-        : base (type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFunctioName", sqlFunctioName);
       ArgumentUtility.CheckNotNull ("args", args);
 
+      _type = type;
       _args = Array.AsReadOnly(args);
       _sqlFunctioName = sqlFunctioName;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public string SqlFunctioName
@@ -54,7 +62,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       get { return _args; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       var newArgs = visitor.VisitAndConvert (_args, "SqlFunctionExpression.VisitChildren");
 
@@ -64,18 +72,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlFunctionExpression (this);
+        return specificVisitor.VisitSqlFunction (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format ("{0}({1})", _sqlFunctioName, String.Join (",", _args.Select (arg => FormattingExpressionTreeVisitor.Format(arg)).ToArray()));
+      return string.Format ("{0}({1})", _sqlFunctioName, string.Join (",", _args.Select (arg => arg.ToString()).ToArray()));
     }
   }
 }

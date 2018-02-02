@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Utilities;
 
@@ -53,6 +54,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       BuildWherePart (sqlStatement, commandBuilder);
       BuildGroupByPart (sqlStatement, commandBuilder);
       BuildOrderByPart (sqlStatement, commandBuilder);
+      BuildSetOperationCombinedStatementsPart (sqlStatement, commandBuilder);
     }
 
     protected virtual void BuildSelectPart (
@@ -72,9 +74,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       }
 
       if (isOutermostStatement)
-        _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+      {
+        var setOperationsMode = sqlStatement.SetOperationCombinedStatements.Any()
+            ? SetOperationsMode.StatementIsSetCombined
+            : SetOperationsMode.StatementIsNotSetCombined;
+        _stage.GenerateTextForOuterSelectExpression (commandBuilder, sqlStatement.SelectProjection, setOperationsMode);
+      }
       else
+      {
         _stage.GenerateTextForSelectExpression (commandBuilder, sqlStatement.SelectProjection);
+      }
     }
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
@@ -148,6 +157,32 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       if (sqlStatement.IsDistinctQuery)
         commandBuilder.Append ("DISTINCT ");
     }
-    
+
+    protected virtual void BuildSetOperationCombinedStatementsPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+
+      foreach (var combinedStatement in sqlStatement.SetOperationCombinedStatements)
+      {
+        switch (combinedStatement.SetOperation)
+        {
+          case SetOperation.Union:
+            commandBuilder.Append (" UNION (");
+            break;
+
+          case SetOperation.UnionAll:
+            commandBuilder.Append (" UNION ALL (");
+            break;
+
+          default:
+            throw new InvalidOperationException ("Invalid enum value: " + combinedStatement.SetOperation);
+        }
+
+        _stage.GenerateTextForSqlStatement (commandBuilder, combinedStatement.SqlStatement);
+        commandBuilder.Append (")");
+      }
+    }
+   
   }
 }

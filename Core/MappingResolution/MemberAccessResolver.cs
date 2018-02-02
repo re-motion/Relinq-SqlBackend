@@ -19,14 +19,13 @@ using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Linq.Utilities;
+using Remotion.Linq.SqlBackend.Utilities;
 using Remotion.Utilities;
-using MemberBinding = Remotion.Linq.Parsing.ExpressionTreeVisitors.MemberBindings.MemberBinding;
+using MemberBinding = Remotion.Linq.Parsing.ExpressionVisitors.MemberBindings.MemberBinding;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
@@ -36,7 +35,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// result that itself needs to be resolved again.
   /// </summary>
   public class MemberAccessResolver
-      : ThrowingExpressionTreeVisitor,
+      : ThrowingExpressionVisitor,
         INamedExpressionVisitor,
         IResolvedSqlExpressionVisitor,
         ISqlGroupingSelectExpressionVisitor,
@@ -61,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
 
       var resolver = new MemberAccessResolver (memberInfo, mappingResolver, mappingResolutionStage, mappingResolutionContext);
-      return resolver.VisitExpression (resolvedSourceExpression);
+      return resolver.Visit (resolvedSourceExpression);
     }
 
     protected MemberAccessResolver (
@@ -87,11 +86,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           string.Format (
               "Cannot resolve member '{0}' applied to expression '{1}'; the expression type '{2}' is not supported in member expressions.",
               _memberInfo.Name,
-              FormattingExpressionTreeVisitor.Format ((Expression) (object) unhandledItem),
+              unhandledItem,
               unhandledItem.GetType().Name));
     }
 
-    protected override Expression VisitUnaryExpression (UnaryExpression expression)
+    protected override Expression VisitUnary (UnaryExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -99,16 +98,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       {
         // Scenario: ((SomeType) expr).Member
         // Strip away that cast, we don't care about it, we just care about the member in the context of the inner expression.
-        return VisitExpression (expression.Operand);
+        return Visit (expression.Operand);
       }
       else
       {
         // Can't handle any other unary expression.
-        return base.VisitUnaryExpression (expression);
+        return base.VisitUnary (expression);
       }
     }
 
-    public Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression)
+    public Expression VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -121,19 +120,19 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       // Optimized member access didn't work, so resolve the entity reference (adding joins and such), then retry.
       var unresolvedJoinInfo = new UnresolvedJoinInfo (expression.OriginatingEntity, expression.MemberInfo, JoinCardinality.One);
       var entityExpression = _stage.ResolveEntityRefMemberExpression (expression, unresolvedJoinInfo, _context);
-      return VisitExpression (entityExpression);
+      return Visit (entityExpression);
     }
 
-    public Expression VisitNamedExpression (NamedExpression expression)
+    public Expression VisitNamed (NamedExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
       // Scenario: (expr AS "Value")).Member
       // Just strip the name; we're resolving the Member and don't care about the name of the expression to which the member is applied.
-      return VisitExpression (expression.Expression);
+      return Visit (expression.Expression);
     }
 
-    protected override Expression VisitNewExpression (NewExpression expression)
+    protected override Expression VisitNew (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -164,10 +163,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
                 "The member '{0}.{1}' cannot be translated to SQL. Expression: '{2}'",
                 expression.Type.Name,
                 _memberInfo.Name,
-                FormattingExpressionTreeVisitor.Format (expression)));
+                expression));
     }
 
-    public Expression VisitSqlEntityExpression (SqlEntityExpression expression)
+    public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -183,14 +182,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             "The member '{0}.{1}' describes a collection and can only be used in places where collections are allowed. Expression: '{2}'",
             _memberInfo.DeclaringType.Name,
             _memberInfo.Name,
-            FormattingExpressionTreeVisitor.Format (expression));
+            expression);
         throw new NotSupportedException (message);
       }
 
       return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
     }
 
-    public Expression VisitSqlColumnExpression (SqlColumnExpression expression)
+    public Expression VisitSqlColumn (SqlColumnExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -200,7 +199,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _mappingResolver.ResolveMemberExpression (expression, _memberInfo);
     }
 
-    public Expression VisitSqlGroupingSelectExpression (SqlGroupingSelectExpression expression)
+    public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -212,11 +211,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return _context.RemoveNamesAndUpdateMapping (expression.KeyExpression);
     }
 
-    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstantExpression (SqlEntityConstantExpression expression)
+    Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       // Not supported, required by IUnresolvedSqlExpressionVisitor.
-      return VisitExtensionExpression (expression);
+      return VisitExtension (expression);
     }
   }
 }

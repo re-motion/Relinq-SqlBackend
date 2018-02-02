@@ -18,9 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Utilities;
@@ -31,16 +29,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   /// <see cref="SqlSubStatementExpression"/> represents a SQL database subquery. The <see cref="QueryModel"/> of the subquery is translated to 
   /// this model, and the <see cref="SqlSubStatementExpression"/> is transformed several times until it can easily be translated to SQL text.
   /// </summary>
-  public class SqlSubStatementExpression : ExtensionExpression
+  public class SqlSubStatementExpression : Expression
   {
     private readonly SqlStatement _sqlStatement;
 
     public SqlSubStatementExpression (SqlStatement sqlStatement)
-        : base (sqlStatement.DataInfo.DataType)
     {
       ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
 
       _sqlStatement = sqlStatement;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _sqlStatement.DataInfo.DataType; }
     }
 
     public SqlStatement SqlStatement
@@ -48,18 +55,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _sqlStatement; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
+      // TODO RMLNQSQL-61: This should visit all nested expressions of the SqlStatement and build a new one if necessary.
+
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as ISqlSubStatementVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlSubStatementExpression (this);
+        return specificVisitor.VisitSqlSubStatement (this);
       else
         return base.Accept (visitor);
     }

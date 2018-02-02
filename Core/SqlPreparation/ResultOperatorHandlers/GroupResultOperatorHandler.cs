@@ -46,6 +46,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       EnsureNoTopExpression (sqlStatementBuilder, generator, stage, context);
       EnsureNoGroupExpression (sqlStatementBuilder, generator, stage, context);
       EnsureNoDistinctQuery (sqlStatementBuilder, generator, stage, context);
+      EnsureNoSetOperations (sqlStatementBuilder, generator, stage, context);
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
 
       var preparedKeySelector = stage.PrepareResultOperatorItemExpression (resultOperator.KeySelector, context);

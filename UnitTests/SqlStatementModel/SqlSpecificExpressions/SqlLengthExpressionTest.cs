@@ -70,11 +70,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
       var expression = Expression.Constant ("test2");
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_innerExpression))
+          .Expect (mock => mock.Visit (_innerExpression))
           .Return (expression);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock);
@@ -87,10 +87,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_innerExpression))
+          .Expect (mock => mock.Visit (_innerExpression))
           .Return (_lengthExpression.Expression);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock);
@@ -105,7 +105,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlLengthExpression, ISqlSpecificExpressionVisitor> (
           _lengthExpression,
-          mock => mock.VisitSqlLengthExpression (_lengthExpression));
+          mock => mock.VisitSqlLength (_lengthExpression));
     }
 
     [Test]

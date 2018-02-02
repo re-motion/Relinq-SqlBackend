@@ -17,8 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -26,16 +24,25 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// <see cref="JoinConditionExpression"/> represents the data source defined by a member access in the from part of a linq expression.
   /// </summary>
-  public class JoinConditionExpression : ExtensionExpression
+  public class JoinConditionExpression : Expression
   {
     private readonly SqlJoinedTable _joinedTable;
 
     public JoinConditionExpression (SqlJoinedTable joinedTable)
-        : base (typeof (bool))
     {
       ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
 
       _joinedTable = joinedTable;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(bool); }
     }
 
     public SqlJoinedTable JoinedTable
@@ -43,18 +50,18 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _joinedTable; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as IJoinConditionExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitJoinConditionExpression (this);
+        return specificVisitor.VisitJoinCondition (this);
       else
         return base.Accept (visitor);
     }

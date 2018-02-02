@@ -17,15 +17,14 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Defines a custom visit method for <see cref="SqlSubStatementExpression"/> <see cref="ExtensionExpression"/> instances.
+  /// Defines a custom visit method for <see cref="SqlSubStatementExpression"/> instances.
   /// </summary>
   public interface ISqlSubStatementVisitor
   {
-    Expression VisitSqlSubStatementExpression (SqlSubStatementExpression expression);
+    Expression VisitSqlSubStatement (SqlSubStatementExpression expression);
   }
 }

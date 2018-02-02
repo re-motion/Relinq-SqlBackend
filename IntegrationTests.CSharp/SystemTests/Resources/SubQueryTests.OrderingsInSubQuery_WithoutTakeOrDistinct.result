@@ -1,0 +1,92 @@
+Enumerable {
+  Order
+    CustomerID: 'ALFKI'
+    EmployeeID: 6
+    Freight: 1.2100
+    OrderDate: 08/25/1997 00:00:00
+    OrderID: 10643
+    RequiredDate: 09/22/1997 00:00:00
+    ShipAddress: 'Obere Str. 57'
+    ShipCity: 'Berlin'
+    ShipCountry: 'Germany'
+    ShipName: 'Alfreds Futterkiste'
+    ShippedDate: 09/02/1997 00:00:00
+    ShipPostalCode: '12209'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'ALFKI'
+    EmployeeID: 4
+    Freight: 61.0200
+    OrderDate: 10/03/1997 00:00:00
+    OrderID: 10692
+    RequiredDate: 10/31/1997 00:00:00
+    ShipAddress: 'Obere Str. 57'
+    ShipCity: 'Berlin'
+    ShipCountry: 'Germany'
+    ShipName: 'Alfred''s Futterkiste'
+    ShippedDate: 10/13/1997 00:00:00
+    ShipPostalCode: '12209'
+    ShipRegion: null
+    ShipVia: 2
+  Order
+    CustomerID: 'ALFKI'
+    EmployeeID: 4
+    Freight: 23.9400
+    OrderDate: 10/13/1997 00:00:00
+    OrderID: 10702
+    RequiredDate: 11/24/1997 00:00:00
+    ShipAddress: 'Obere Str. 57'
+    ShipCity: 'Berlin'
+    ShipCountry: 'Germany'
+    ShipName: 'Alfred''s Futterkiste'
+    ShippedDate: 10/21/1997 00:00:00
+    ShipPostalCode: '12209'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'ALFKI'
+    EmployeeID: 1
+    Freight: 69.5300
+    OrderDate: 01/15/1998 00:00:00
+    OrderID: 10835
+    RequiredDate: 02/12/1998 00:00:00
+    ShipAddress: 'Obere Str. 57'
+    ShipCity: 'Berlin'
+    ShipCountry: 'Germany'
+    ShipName: 'Alfred''s Futterkiste'
+    ShippedDate: 01/21/1998 00:00:00
+    ShipPostalCode: '12209'
+    ShipRegion: null
+    ShipVia: 3
+  Order
+    CustomerID: 'ALFKI'
+    EmployeeID: 1
+    Freight: 40.4200
+    OrderDate: 03/16/1998 00:00:00
+    OrderID: 10952
+    RequiredDate: 04/27/1998 00:00:00
+    ShipAddress: 'Obere Str. 57'
+    ShipCity: 'Berlin'
+    ShipCountry: 'Germany'
+    ShipName: 'Alfred''s Futterkiste'
+    ShippedDate: 03/24/1998 00:00:00
+    ShipPostalCode: '12209'
+    ShipRegion: null
+    ShipVia: 1
+  Order
+    CustomerID: 'ALFKI'
+    EmployeeID: 3
+    Freight: 1.2100
+    OrderDate: 04/09/1998 00:00:00
+    OrderID: 11011
+    RequiredDate: 05/07/1998 00:00:00
+    ShipAddress: 'Obere Str. 57'
+    ShipCity: 'Berlin'
+    ShipCountry: 'Germany'
+    ShipName: 'Alfred''s Futterkiste'
+    ShippedDate: 04/13/1998 00:00:00
+    ShipPostalCode: '12209'
+    ShipRegion: null
+    ShipVia: 1
+}

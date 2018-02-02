@@ -26,6 +26,7 @@ using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
@@ -45,6 +46,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var rowNumberSelector = Expression.Constant("selector");
       var currentRowNumberOffset = Expression.Constant(1);
       var groupExpression = Expression.Constant ("group");
+      var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
 
       var sqlStatement = new SqlStatement (
           new TestStreamedValueInfo (typeof (int)),
@@ -56,20 +58,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           topExpression,
           isDistinctQuery,
           rowNumberSelector,
-          currentRowNumberOffset);
+          currentRowNumberOffset,
+          new[] { setOperationCombinedStatement });
 
       var testedBuilder = new SqlStatementBuilder (sqlStatement);
 
       Assert.That (testedBuilder.SelectProjection, Is.SameAs (selectProjection));
       Assert.That (testedBuilder.TopExpression, Is.SameAs (topExpression));
-      Assert.That (testedBuilder.SqlTables[0], Is.SameAs (sqlTable));
-      Assert.That (testedBuilder.Orderings[0], Is.SameAs (ordering));
+      Assert.That (testedBuilder.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (testedBuilder.Orderings, Is.EqualTo (new[] { ordering }));
       Assert.That (testedBuilder.WhereCondition, Is.EqualTo (whereCondition));
       Assert.That (testedBuilder.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
       Assert.That (testedBuilder.DataInfo, Is.SameAs (sqlStatement.DataInfo));
       Assert.That (testedBuilder.RowNumberSelector, Is.SameAs (sqlStatement.RowNumberSelector));
       Assert.That (testedBuilder.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
       Assert.That (testedBuilder.GroupByExpression, Is.SameAs (groupExpression));
+      Assert.That (testedBuilder.SetOperationCombinedStatements, Is.EqualTo (new[] { setOperationCombinedStatement }));
     }
 
     [Test]
@@ -87,7 +91,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (statementBuilder.RowNumberSelector, Is.Null);
       Assert.That (statementBuilder.CurrentRowNumberOffset, Is.Null);
       Assert.That (statementBuilder.GroupByExpression, Is.Null);
-
+      Assert.That (statementBuilder.SetOperationCombinedStatements, Is.Empty);
     }
 
     [Test]
@@ -143,7 +147,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var rowNumberSelector = Expression.Constant ("selector");
       var currentRowNumberOffset = Expression.Constant (1);
       var groupExpression = Expression.Constant ("group");
-
+      var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
+      
       var statementBuilder = new SqlStatementBuilder
                              {
                                  DataInfo = dataInfo,
@@ -155,7 +160,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                                  RowNumberSelector = rowNumberSelector,
                                  CurrentRowNumberOffset = currentRowNumberOffset,
                                  GroupByExpression = groupExpression,
-                                 Orderings = { ordering }
+                                 Orderings = { ordering },
+                                 SetOperationCombinedStatements = { setOperationCombinedStatement }
                              };
 
       var sqlStatement = statementBuilder.GetSqlStatement();
@@ -164,12 +170,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (sqlStatement.TopExpression, Is.SameAs (topExpression));
       Assert.That (sqlStatement.IsDistinctQuery, Is.EqualTo (isDistinctQuery));
       Assert.That (sqlStatement.SelectProjection, Is.SameAs (selectProjection));
-      Assert.That (sqlStatement.SqlTables[0], Is.SameAs (sqlTable));
-      Assert.That (sqlStatement.Orderings[0], Is.SameAs (ordering));
+      Assert.That (sqlStatement.SqlTables, Is.EqualTo (new[] { sqlTable }));
+      Assert.That (sqlStatement.Orderings, Is.EqualTo (new[] { ordering }));
       Assert.That (sqlStatement.WhereCondition, Is.SameAs (whereCondition));
       Assert.That (sqlStatement.RowNumberSelector, Is.SameAs (rowNumberSelector));
       Assert.That (sqlStatement.CurrentRowNumberOffset, Is.SameAs (currentRowNumberOffset));
       Assert.That (sqlStatement.GroupByExpression, Is.SameAs (groupExpression));
+      Assert.That (sqlStatement.SetOperationCombinedStatements, Is.EqualTo (new[] { setOperationCombinedStatement }));
     }
 
     [Test]
@@ -186,7 +193,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                                  RowNumberSelector = Expression.Constant ("selector"),
                                  CurrentRowNumberOffset = Expression.Constant (1),
                                  GroupByExpression = Expression.Constant ("group"),
-                                 Orderings = { new Ordering (Expression.Constant ("order"), OrderingDirection.Desc) }
+                                 Orderings = { new Ordering (Expression.Constant ("order"), OrderingDirection.Desc) },
+                                 SetOperationCombinedStatements = { SqlStatementModelObjectMother.CreateSetOperationCombinedStatement() }
                              };
       var sqlStatement = statementBuilder.GetSqlStatement();
 
@@ -205,6 +213,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (statementBuilder.RowNumberSelector, Is.Null);
       Assert.That (statementBuilder.CurrentRowNumberOffset, Is.Null);
       Assert.That (statementBuilder.GroupByExpression, Is.Null);
+      Assert.That (statementBuilder.SetOperationCombinedStatements, Is.Empty);
     }
 
     [Test]
@@ -319,6 +328,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var whereCondition = Expression.Constant (true);
       var topExpression = Expression.Constant (10);
       var groupExpression = Expression.Constant ("group");
+      var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
 
       var builder = new SqlStatementBuilder
                     {
@@ -329,7 +339,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
                         WhereCondition = whereCondition,
                         TopExpression = topExpression,
                         IsDistinctQuery = true,
-                        GroupByExpression = groupExpression
+                        GroupByExpression = groupExpression,
+                        SetOperationCombinedStatements = { setOperationCombinedStatement }
                     };
 
       var result = builder.ToString();
@@ -337,7 +348,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (
           result,
           Is.EqualTo (
-              "SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC"));
+              "SELECT DISTINCT TOP (10) 1 FROM [CookTable] [c], [KitchenTable] [k] WHERE True GROUP BY \"group\" ORDER BY \"ordering\" ASC "
+              + "UNION (" + setOperationCombinedStatement.SqlStatement + ")"));
     }
 
     [Test]

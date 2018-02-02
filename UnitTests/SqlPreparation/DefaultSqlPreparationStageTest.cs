@@ -18,9 +18,7 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
@@ -28,6 +26,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
+using Remotion.Linq.SqlBackend.UnitTests.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 {
@@ -58,14 +57,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void PrepareSelectExpression ()
     {
-      var singleDataInfo = new StreamedSingleValueInfo (typeof (int), false);
-      var selectProjection = Expression.Constant (0);
-      var subStatement = new SqlStatement (singleDataInfo, selectProjection, new SqlTable[0], null, null, new Ordering[0], null, false, null, null);
-      var expressionWithSubStatement = new SqlSubStatementExpression (subStatement);
+      var expression = Expression.Constant(0);
 
-      var result = _stage.PrepareSelectExpression (expressionWithSubStatement, _context);
+      var result = _stage.PrepareSelectExpression (expression, _context);
 
-      Assert.That (result, Is.SameAs(expressionWithSubStatement));
+      Assert.That (result, Is.SameAs(expression));
     }
 
     [Test]
@@ -90,7 +86,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     public void GetTableForFromExpression ()
     {
       var fromExpression = Expression.Constant (new Cook[0]);
-      var result = _stage.PrepareFromExpression (fromExpression, _context, info=>new SqlTable(info, JoinSemantics.Inner));
+      var result = _stage.PrepareFromExpression (
+          fromExpression,
+          _context,
+          info => new SqlTable (info, JoinSemantics.Inner),
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
       Assert.That (result.SqlTable, Is.TypeOf (typeof (SqlTable)));
     }

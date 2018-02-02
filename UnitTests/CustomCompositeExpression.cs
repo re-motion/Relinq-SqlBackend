@@ -17,19 +17,31 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
-  public class CustomCompositeExpression : ExtensionExpression
+  public class CustomCompositeExpression : Expression
   {
+    private readonly Type _type;
     private readonly Expression _child;
 
     public CustomCompositeExpression (Type type, Expression child)
-        : base (type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      _type = type;
       _child = child;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public Expression Child
@@ -37,9 +49,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       get { return _child; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      var newChild = visitor.VisitExpression (Child);
+      var newChild = visitor.Visit (Child);
       if (newChild != Child)
         return new CustomCompositeExpression (Type, newChild);
       else

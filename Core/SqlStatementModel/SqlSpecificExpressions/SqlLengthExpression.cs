@@ -16,9 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
@@ -26,12 +23,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
   /// <summary>
   /// <see cref="SqlLengthExpression"></see> emits SQL that deals with spaces when calculating lengths.
   /// </summary>
-  public class SqlLengthExpression : ExtensionExpression
+  public class SqlLengthExpression : Expression
   {
     private readonly Expression _expression;
 
     public SqlLengthExpression (Expression expression)
-        : base(typeof(int))
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -46,16 +42,26 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
       _expression = expression;
     }
 
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return typeof(int); }
+    }
+
     public Expression Expression
     {
       get { return _expression; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var newExpression = visitor.VisitExpression (_expression);
+      var newExpression = visitor.Visit (_expression);
 
       if (newExpression != _expression)
         return new SqlLengthExpression (newExpression);
@@ -63,20 +69,20 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
         return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlLengthExpression (this);
+        return specificVisitor.VisitSqlLength (this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format ("LEN({0})", FormattingExpressionTreeVisitor.Format (_expression));
+      return string.Format ("LEN({0})", _expression);
     }
   }
 }

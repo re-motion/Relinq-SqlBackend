@@ -30,8 +30,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
         ISqlPreparationStage stage,
         IMethodCallTransformerProvider provider,
         ISqlPreparationContext context,
-        Func<ITableInfo, SqlTable> tableGenerator)
-        : base (generator, stage, provider, context, tableGenerator)
+        Func<ITableInfo, SqlTable> tableGenerator,
+        OrderingExtractionPolicy orderingExtractionPolicy)
+        : base (generator, stage, provider, context, tableGenerator, orderingExtractionPolicy)
     {
     }
 
@@ -40,9 +41,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       get { return base.FromExpressionInfo; }
     }
 
-    public new Expression VisitQuerySourceReferenceExpression (QuerySourceReferenceExpression expression)
+    public new Expression VisitQuerySourceReference (QuerySourceReferenceExpression expression)
     {
-      return base.VisitQuerySourceReferenceExpression (expression);
+      return base.VisitQuerySourceReference (expression);
     }
   }
 }

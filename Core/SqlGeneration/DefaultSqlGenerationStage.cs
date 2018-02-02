@@ -45,12 +45,15 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
 
-    public virtual void GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    public virtual void GenerateTextForOuterSelectExpression (
+        ISqlCommandBuilder commandBuilder,
+        Expression expression,
+        SetOperationsMode setOperationsMode)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
+      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this, setOperationsMode);
     }
 
     public virtual void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression)

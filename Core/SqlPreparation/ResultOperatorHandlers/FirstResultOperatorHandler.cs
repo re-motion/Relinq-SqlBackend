@@ -35,8 +35,6 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
       takeHandler.HandleResultOperator (equivalentTakeOperator, sqlStatementBuilder, generator, stage, context);
 
       UpdateDataInfo (resultOperator, sqlStatementBuilder, sqlStatementBuilder.DataInfo);
-
-      
     }
   }
 }

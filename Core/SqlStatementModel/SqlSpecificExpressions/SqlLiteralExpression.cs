@@ -17,14 +17,17 @@
 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Parsing;
+using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
-  public class SqlLiteralExpression : ExtensionExpression
+  public class SqlLiteralExpression : Expression
   {
+    private readonly Type _type;
+
+    [NotNull]
     private readonly object _value;
 
     public SqlLiteralExpression (int value, bool nullable = false)
@@ -37,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
     }
 
-    public SqlLiteralExpression (string value)
+    public SqlLiteralExpression ([NotNull]string value)
       : this (ArgumentUtility.CheckNotNull ("value", value), typeof (string))
     {
     }
@@ -47,29 +50,40 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     {
     }
 
-    private SqlLiteralExpression (object value, Type type)
-        : base (type)
+    private SqlLiteralExpression ([NotNull]object value, [NotNull]Type type)
     {
+      _type = type;
       _value = value;
     }
 
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
+    }
+
+    [NotNull]
     public object Value
     {
       get { return _value; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlLiteralExpression (this);
+        return specificVisitor.VisitSqlLiteral (this);
       else
         return base.Accept (visitor);
     }

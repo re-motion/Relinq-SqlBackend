@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
@@ -37,7 +36,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       _sqlText = sqlText;
     }
 
-    public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionTreeVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
+    public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("textGeneratingExpressionVisitor", textGeneratingExpressionVisitor);
@@ -46,7 +45,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       commandBuilder.Append (_sqlText);
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       return this;
     }

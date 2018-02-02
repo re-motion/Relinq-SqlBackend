@@ -20,7 +20,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Utilities;
 
@@ -41,6 +40,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public List<Ordering> Orderings { get; private set; }
     public Expression RowNumberSelector { get; set; }
     public Expression CurrentRowNumberOffset { get; set; }
+    public List<SetOperationCombinedStatement> SetOperationCombinedStatements { get; private set; }
 
     public SqlStatementBuilder ()
     {
@@ -62,6 +62,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       SqlTables = new List<SqlTable> (sqlStatement.SqlTables);
       Orderings = new List<Ordering> (sqlStatement.Orderings);
+      SetOperationCombinedStatements = new List<SetOperationCombinedStatement> (sqlStatement.SetOperationCombinedStatements);
     }
 
     public SqlStatement GetSqlStatement ()
@@ -71,8 +72,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       if (SelectProjection == null)
         throw new InvalidOperationException ("A SelectProjection must be set before the SqlStatement can be retrieved.");
-
-
+      
       return new SqlStatement (
           DataInfo,
           SelectProjection,
@@ -83,7 +83,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
           TopExpression,
           IsDistinctQuery,
           RowNumberSelector,
-          CurrentRowNumberOffset);
+          CurrentRowNumberOffset,
+          SetOperationCombinedStatements);
     }
 
     public void AddWhereCondition (Expression translatedExpression)
@@ -125,9 +126,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       if (IsDistinctQuery)
         sb.Append ("DISTINCT ");
       if (TopExpression != null)
-        sb.Append ("TOP (").Append (FormattingExpressionTreeVisitor.Format (TopExpression)).Append (") ");
+        sb.Append ("TOP (").Append (TopExpression).Append (") ");
       if (SelectProjection != null)
-        sb.Append (FormattingExpressionTreeVisitor.Format (SelectProjection));
+        sb.Append (SelectProjection);
       if (SqlTables.Count > 0)
       {
         sb.Append (" FROM ");
@@ -135,18 +136,28 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         SqlTables.Skip (1).Aggregate (sb, (builder, table) => builder.Append (", ").Append (table));
       }
       if (WhereCondition != null)
-        sb.Append (" WHERE ").Append (FormattingExpressionTreeVisitor.Format (WhereCondition));
+        sb.Append (" WHERE ").Append (WhereCondition);
       if (GroupByExpression != null)
-        sb.Append (" GROUP BY ").Append (FormattingExpressionTreeVisitor.Format (GroupByExpression));
+        sb.Append (" GROUP BY ").Append (GroupByExpression);
       if (Orderings.Count > 0)
       {
         sb.Append (" ORDER BY ");
         Orderings.Aggregate (
             sb,
             (builder, ordering) => builder
-                                       .Append (FormattingExpressionTreeVisitor.Format (ordering.Expression))
+                                       .Append (ordering.Expression)
                                        .Append (" ")
                                        .Append (ordering.OrderingDirection.ToString().ToUpper()));
+      }
+
+      foreach (var combinedStatement in SetOperationCombinedStatements)
+      {
+        sb
+            .Append (" ")
+            .Append (combinedStatement.SetOperation.ToString().ToUpper())
+            .Append (" (")
+            .Append (combinedStatement.SqlStatement)
+            .Append (")");
       }
 
       return sb.ToString();
@@ -165,6 +176,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
       SqlTables = new List<SqlTable>();
       Orderings = new List<Ordering>();
+      SetOperationCombinedStatements = new List<SetOperationCombinedStatement>();
     }
   }
 }

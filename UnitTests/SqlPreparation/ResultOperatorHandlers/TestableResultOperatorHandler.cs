@@ -59,13 +59,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       base.EnsureNoDistinctQuery(sqlStatementBuilder, generator, stage, context);
     }
 
+    public new void EnsureNoSetOperations (
+        SqlStatementBuilder sqlStatementBuilder,
+        UniqueIdentifierGenerator generator,
+        ISqlPreparationStage stage,
+        ISqlPreparationContext context)
+    {
+      base.EnsureNoSetOperations(sqlStatementBuilder, generator, stage, context);
+    }
+
     public new void MoveCurrentStatementToSqlTable (
        SqlStatementBuilder sqlStatementBuilder,
-       UniqueIdentifierGenerator generator,
        ISqlPreparationContext context,
-       Func<ITableInfo, SqlTable> tableGenerator, ISqlPreparationStage stage)
+       Func<ITableInfo, SqlTable> tableGenerator,
+       ISqlPreparationStage stage,
+       OrderingExtractionPolicy orderingExtractionPolicy)
     {
-      base.MoveCurrentStatementToSqlTable (sqlStatementBuilder, generator, context, tableGenerator, stage);
+      base.MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, tableGenerator, stage, orderingExtractionPolicy);
     }
 
     public new void UpdateDataInfo (ResultOperatorBase resultOperator, SqlStatementBuilder sqlStatementBuilder, IStreamedDataInfo dataInfo)

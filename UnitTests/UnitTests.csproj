@@ -104,13 +104,13 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Linq, Version=1.15.22.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha00001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+      <HintPath>..\packages\Remotion.Linq.2.0.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Linq.Development, Version=1.15.22.10000, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Linq.Development, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.Development.2.0.0-alpha00001\lib\net45\Remotion.Linq.Development.dll</HintPath>
+      <HintPath>..\packages\Remotion.Linq.Development.2.0.0\lib\net45\Remotion.Linq.Development.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -126,6 +126,9 @@
   <ItemGroup>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="..\Core\Utilities\ReflectionUtility.cs">
+      <Link>Utilities\ReflectionUtility.cs</Link>
     </Compile>
     <Compile Include="App_Packages\Remotion.Development.BooleanObjectMother.Sources.1.25.23\BooleanObjectMother.cs" />
     <Compile Include="App_Packages\Remotion.Development.UnitTesting.PrivateInvoke.Sources.1.15.23.0\PrivateInvoke.cs" />
@@ -179,6 +182,7 @@
     <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\DateTimeMethodCallExpressionSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\TransformedMethodCallExpressionSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\EqualsMethodCallExpressionSqlBackendIntegrationTest.cs" />
+    <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\SetResultOperatorsSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\ContainsResultOperatorSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\AnyResultOperatorSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\AllResultOperatorSqlBackendIntegrationTest.cs" />
@@ -239,6 +243,10 @@
     <Compile Include="SqlPreparation\NameBasedMethodCallTransformerRegistryTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlerRegistryTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AggregationResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\ResultOperatorHandlerTestBase.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\SetOperationResultOperatorHandlerBaseTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\ConcatResultOperatorHandlerTest.cs" />
+    <Compile Include="SqlPreparation\ResultOperatorHandlers\UnionResultOperatorHandlerTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AllResultOperatorHandlerTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AnyResultOperatorHandlerTest.cs" />
     <Compile Include="SqlPreparation\ResultOperatorHandlers\AverageResultOperatorHandlerTest.cs" />
@@ -353,7 +361,10 @@
     <Compile Include="SqlStatementModel\SqlTableTest.cs" />
     <Compile Include="MappingResolution\ResolvingTableInfoVisitorTest.cs" />
     <Compile Include="Utilities\ITestRegistry.cs" />
+    <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="Utilities\RegistryBaseTest.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTest.cs" />
+    <Compile Include="Utilities\Some.cs" />
     <Compile Include="Utilities\TestRegistry.cs" />
     <Compile Include="Utilities\TestRegistryImplementation.cs" />
     <None Include="..\LGPL.licenseheader">

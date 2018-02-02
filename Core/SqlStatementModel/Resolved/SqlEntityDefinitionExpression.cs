@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
@@ -43,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       _columns = Array.AsReadOnly (projectionColumns);
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       var newColumns = visitor.VisitAndConvert (Columns, "VisitChildren");
       if (newColumns != Columns)

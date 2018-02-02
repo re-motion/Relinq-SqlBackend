@@ -25,6 +25,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// </summary>
   public interface ISqlEntityRefMemberExpressionVisitor
   {
-    Expression VisitSqlEntityRefMemberExpression (SqlEntityRefMemberExpression expression);
+    Expression VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression);
   }
 }

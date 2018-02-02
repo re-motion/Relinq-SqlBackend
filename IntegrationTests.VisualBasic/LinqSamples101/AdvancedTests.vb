@@ -113,7 +113,6 @@ Namespace LinqSamples101
 
     'This sample dynamically builds a Union to return a sequence of all countries where either a customer or an employee live.
     <Test()> _
-    <Ignore("RM-3202: Support for the Union, Concat, Intersect, and Except query operators")> _
     Public Sub LinqToSqlAdvanced04()
 
       Dim custs = DB.Customers

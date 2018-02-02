@@ -18,11 +18,8 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Linq.Clauses.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Linq.Utilities;
+using Remotion.Linq.SqlBackend.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
@@ -30,18 +27,30 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// Describes a member reference representing an entity rather than a simple column.
   /// </summary>
-  public class SqlEntityRefMemberExpression : ExtensionExpression
+  public class SqlEntityRefMemberExpression : Expression
   {
+    private readonly Type _type;
     private readonly SqlEntityExpression _originatingEntity;
     private readonly MemberInfo _memberInfo;
     
     public SqlEntityRefMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
-      : base (ReflectionUtility.GetMemberReturnType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
     {
-      ArgumentUtility.CheckNotNull ("entityExpression", originatingEntity);
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo); 
 
+      _type = ReflectionUtility.GetMemberReturnType (memberInfo);
       _originatingEntity = originatingEntity;
       _memberInfo = memberInfo;
+    }
+
+    public override ExpressionType NodeType
+    {
+      get { return ExpressionType.Extension; }
+    }
+
+    public override Type Type
+    {
+      get { return _type; }
     }
 
     public SqlEntityExpression OriginatingEntity
@@ -54,26 +63,26 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _memberInfo; }
     }
 
-    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return this;
     }
 
-    public override Expression Accept (ExpressionTreeVisitor visitor)
+    protected override Expression Accept (ExpressionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       var specificVisitor = visitor as ISqlEntityRefMemberExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlEntityRefMemberExpression(this);
+        return specificVisitor.VisitSqlEntityRefMember(this);
       else
         return base.Accept (visitor);
     }
 
     public override string ToString ()
     {
-      return string.Format ("{0}.[{1}]", FormattingExpressionTreeVisitor.Format (_originatingEntity), _memberInfo.Name);
+      return string.Format ("{0}.[{1}]", _originatingEntity, _memberInfo.Name);
     }
   }
 }

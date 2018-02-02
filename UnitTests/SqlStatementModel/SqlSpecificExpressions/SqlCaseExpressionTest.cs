@@ -136,22 +136,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSameExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate1))
+          .Expect (mock => mock.Visit (_predicate1))
           .Return (_predicate1);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate2))
+          .Expect (mock => mock.Visit (_predicate2))
           .Return (_predicate2);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_value1))
+          .Expect (mock => mock.Visit (_value1))
           .Return (_value1);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_value2))
+        .Expect (mock => mock.Visit (_value2))
         .Return (_value2);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_elseValue))
+        .Expect (mock => mock.Visit (_elseValue))
         .Return (_elseValue);
       
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock);
@@ -163,19 +163,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NoElse ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate1))
+          .Expect (mock => mock.Visit (_predicate1))
           .Return (_predicate1);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate2))
+          .Expect (mock => mock.Visit (_predicate2))
           .Return (_predicate2);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_nullableValue1))
+          .Expect (mock => mock.Visit (_nullableValue1))
           .Return (_nullableValue1);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_value2))
+        .Expect (mock => mock.Visit (_value2))
         .Return (_value2);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithoutElse, visitorMock);
@@ -187,24 +187,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ChangedWhen ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       var newPredicate = Expression.Constant (true);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate1))
+          .Expect (mock => mock.Visit (_predicate1))
           .Return (newPredicate);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate2))
+          .Expect (mock => mock.Visit (_predicate2))
           .Return (_predicate2);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_value1))
+          .Expect (mock => mock.Visit (_value1))
           .Return (_value1);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_value2))
+        .Expect (mock => mock.Visit (_value2))
         .Return (_value2);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_elseValue))
+        .Expect (mock => mock.Visit (_elseValue))
         .Return (_elseValue);
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock);
@@ -222,24 +222,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ChangedThen ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       var newValue = Expression.Constant (17);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate1))
+          .Expect (mock => mock.Visit (_predicate1))
           .Return (_predicate1);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate2))
+          .Expect (mock => mock.Visit (_predicate2))
           .Return (_predicate2);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_value1))
+          .Expect (mock => mock.Visit (_value1))
           .Return (newValue);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_value2))
+        .Expect (mock => mock.Visit (_value2))
         .Return (_value2);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_elseValue))
+        .Expect (mock => mock.Visit (_elseValue))
         .Return (_elseValue);
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock);
@@ -257,24 +257,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ChangedElse ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionTreeVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
 
       var newElseValue = Expression.Constant (17);
 
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate1))
+          .Expect (mock => mock.Visit (_predicate1))
           .Return (_predicate1);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_predicate2))
+          .Expect (mock => mock.Visit (_predicate2))
           .Return (_predicate2);
       visitorMock
-          .Expect (mock => mock.VisitExpression (_value1))
+          .Expect (mock => mock.Visit (_value1))
           .Return (_value1);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_value2))
+        .Expect (mock => mock.Visit (_value2))
         .Return (_value2);
       visitorMock
-        .Expect (mock => mock.VisitExpression (_elseValue))
+        .Expect (mock => mock.Visit (_elseValue))
         .Return (newElseValue);
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock);
@@ -360,7 +360,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlCaseExpression, ISqlSpecificExpressionVisitor> (
           _caseExpressionWithElse,
-          mock => mock.VisitSqlCaseExpression (_caseExpressionWithElse));
+          mock => mock.VisitSqlCase (_caseExpressionWithElse));
     }
 
     [Test]
