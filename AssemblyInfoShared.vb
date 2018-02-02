@@ -24,6 +24,6 @@ Imports System.Security
 <Assembly: AssemblyCopyright("Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: AssemblyConfiguration("Build type: Debug")> 
-<Assembly: AssemblyVersion("2.0.0.0")> 
-<Assembly: AssemblyFileVersion("2.0.0.24009")> 
-<Assembly: AssemblyInformationalVersion("2.0.0-x.9+Debug")> 
+<Assembly: AssemblyVersion("3.0.0.0")> 
+<Assembly: AssemblyFileVersion("3.0.0.24009")> 
+<Assembly: AssemblyInformationalVersion("3.0.0-x.9+Debug")> 
