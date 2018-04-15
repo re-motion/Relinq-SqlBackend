@@ -1,6 +1,13 @@
 @echo off
 pushd %~dp0
-set msbuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
+ 
+set program-path=%ProgramFiles(x86)%
+if not exist "%program-path%" set program-path=%ProgramFiles%
+set msbuild="%program-path%\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
+if not exist %msbuild% set msbuild="%program-path%\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe"
+if not exist %msbuild% set msbuild="%program-path%\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
+if not exist %msbuild% set msbuild="%program-path%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
+
 set log-dir=build\BuildOutput\log
 set nuget-bin=build\BuildOutput\temp\nuget-bin
 set nuget=%nuget-bin%\nuget.exe
@@ -13,13 +20,15 @@ if not [%1]==[] goto %1
 	
 echo Welcome to the re-motion build tool!
 echo.
+echo Using %msbuild%
+echo.
 echo Choose your desired build:
 echo [1] ... Test build ^(x86-debug^)
 echo [2] ... Full build ^(x86-debug/release, x64-debug/release^)
 rem echo [3] ... Quick build ^(x86-debug, no tests are run^)
 echo [4] ... Docs build ^(x86-debug if not present, docs^)
 echo           Requires Sandcastle Help File Builder to be installed!
-echo [5] ... Package ^(create zip package from pre-existent build^)
+echo [5] ... Package ^(create NuGet package from pre-existent build^)
 echo [6] ... Run DependDB
 echo [7] ... Oops, nothing please - exit.
 echo.
