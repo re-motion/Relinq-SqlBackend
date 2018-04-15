@@ -298,7 +298,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [Test]
     public void SplitPotentialCompoundComparison_BinaryExpression_MethodIsRemoved ()
     {
-      MethodInfo method = ((Func<int?, int?, bool>) ((i1, i2) => i1 == i2)).Method;
+      MethodInfo method = ((Func<int?, int?, bool>) SplitPotentialCompoundComparison_BinaryExpression_MethodIsRemoved_operator).Method;
       var leftArgumentExpression = Expression.Constant (1, typeof (int));
       var rightArgumentExpression = Expression.Constant (1, typeof (int));
       var leftExpression = Expression.New (typeof (Nullable<>).MakeGenericType (typeof (int)).GetConstructors ()[0], leftArgumentExpression);
@@ -311,6 +311,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       Assert.That (((BinaryExpression) result).Method, Is.Null);
     }
+
+    /// <summary>Test operator method, required to be declared as static but C# 6.0 compiler uses instance methods for anonymous methods.</summary>
+    private static bool SplitPotentialCompoundComparison_BinaryExpression_MethodIsRemoved_operator (int? i1, int? i2) => i1 == i2;
 
     [Test]
     public void SplitPotentialCompoundComparison_SqlIsNullExpression_ReturnsNonNewExpression_Unchanged ()
