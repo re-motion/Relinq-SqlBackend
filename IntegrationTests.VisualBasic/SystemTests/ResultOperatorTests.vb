@@ -336,7 +336,7 @@ Namespace SystemTests
 
     <Test> _
     Public Sub Query_WithAll_WithConditionStringNotEmpty()
-      Dim query = DB.Customers.All((Function(c) c.Fax <> String.Empty AndAlso c.Fax IsNot Nothing))
+      Dim query = DB.Customers.All(Function(c) c.Fax <> String.Empty AndAlso c.Fax IsNot Nothing)
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub
