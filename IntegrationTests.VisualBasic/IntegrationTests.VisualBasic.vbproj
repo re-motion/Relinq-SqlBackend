@@ -182,6 +182,9 @@
     <Content Include="SystemTests\Resources\SystemTests.Resources.SelectTests.WithMemberInitExpression_InOuterMostLevel.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="directory.build.props">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <Content Include="SystemTests\Resources\SystemTests.Resources.CustomProjectionTests.ComplexProjection_ContainingEntity.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
