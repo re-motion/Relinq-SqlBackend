@@ -25,5 +25,5 @@ Imports System.Security
 <Assembly: AssemblyTrademark("")> 
 <Assembly: AssemblyConfiguration("Build type: Debug")> 
 <Assembly: AssemblyVersion("2.0.0.0")> 
-<Assembly: AssemblyFileVersion("2.0.0.30000")> 
-<Assembly: AssemblyInformationalVersion("2.0.0+Debug")> 
+<Assembly: AssemblyFileVersion("2.0.1.24009")> 
+<Assembly: AssemblyInformationalVersion("2.0.1-x.9+Debug")> 
