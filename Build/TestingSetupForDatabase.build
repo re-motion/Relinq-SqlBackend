@@ -25,7 +25,7 @@
   <Import Project="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.tasks" />
 
   <Target Name="SetupTestConfiguration" DependsOnTargets="CreateAllDatabaseSystems">
-    <Message Text="Settting up test configuration." Importance="High"/>
+    <Message Text="Setting up test configuration." Importance="High"/>
 
     <Error Text="The property 'AppConfigFile' is not set." Condition="'$(AppConfigFile)' == ''" />
     <Error Text="The property 'DatabaseSystem' is not set." Condition="'$(DatabaseSystem)' == ''" />
@@ -70,7 +70,7 @@
                                        Key="%(_appConfigAttributes.Key)"
                                        Value="%(_appConfigAttributes.Value)"/>
 
-    <Message Text="Finished settting up test configuration." Importance="High"/>
+    <Message Text="Finished setting up test configuration." Importance="High"/>
   </Target>
 
   <Target Name="CreateAllDatabaseSystems">
