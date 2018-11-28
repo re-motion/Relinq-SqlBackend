@@ -32,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           Cooks.OfType<Chef> (),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID] " 
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] " 
           + "FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = 1)",
            row => (object) (Chef) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
@@ -43,13 +43,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
               new ColumnID ("SubstitutedID", 5),
               new ColumnID ("KitchenID", 6),
               new ColumnID ("KnifeID", 7),
-              new ColumnID ("KnifeClassID", 8))
+              new ColumnID ("KnifeClassID", 8),
+              new ColumnID ("CookRating", 9))
           );
 
       CheckQuery (
           Chefs.OfType<Chef>(),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],"+
-          "[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
+          "[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
 // ReSharper disable RedundantCast
            row => (object) (Chef) row.GetEntity<Chef> (
 // ReSharper restore RedundantCast
@@ -62,13 +63,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
               new ColumnID ("KitchenID", 6),
               new ColumnID ("KnifeID", 7),
               new ColumnID ("KnifeClassID", 8),
-              new ColumnID ("LetterOfRecommendation", 9)),
+              new ColumnID ("CookRating", 9),
+              new ColumnID ("LetterOfRecommendation", 10)),
           new CommandParameter("@1", 1));
 
       CheckQuery (
           Chefs.OfType<Cook> (),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],"+
-          "[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
+          "[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
            row => (object) (Cook) row.GetEntity<Chef> (
               new ColumnID ("ID", 0),
               new ColumnID ("FirstName", 1),
@@ -79,7 +81,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
               new ColumnID ("KitchenID", 6),
               new ColumnID ("KnifeID", 7),
               new ColumnID ("KnifeClassID", 8),
-              new ColumnID ("LetterOfRecommendation", 9)),
+              new ColumnID ("CookRating", 9),
+              new ColumnID ("LetterOfRecommendation", 10)),
           new CommandParameter("@1", 1));
     }
   }

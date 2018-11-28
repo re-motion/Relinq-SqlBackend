@@ -49,11 +49,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           "SELECT [q0].[inner_ID] AS [ID],[q0].[inner_FirstName] AS [FirstName],[q0].[inner_Name] AS [Name],"
           + "[q0].[inner_IsStarredCook] AS [IsStarredCook],[q0].[inner_IsFullTimeCook] AS [IsFullTimeCook],"
           + "[q0].[inner_SubstitutedID] AS [SubstitutedID],[q0].[inner_KitchenID] AS [KitchenID],"
-          + "[q0].[inner_KnifeID] AS [KnifeID],[q0].[inner_KnifeClassID] AS [KnifeClassID] " 
+          + "[q0].[inner_KnifeID] AS [KnifeID],[q0].[inner_KnifeClassID] AS [KnifeClassID],[q0].[inner_CookRating] AS [CookRating] " 
           + "FROM (SELECT [t1].[ID] AS [inner_ID],"
           + "[t1].[FirstName] AS [inner_FirstName],[t1].[Name] AS [inner_Name],[t1].[IsStarredCook] AS [inner_IsStarredCook],"
           + "[t1].[IsFullTimeCook] AS [inner_IsFullTimeCook],[t1].[SubstitutedID] AS [inner_SubstitutedID],"
-          + "[t1].[KitchenID] AS [inner_KitchenID],[t1].[KnifeID] AS [inner_KnifeID],[t1].[KnifeClassID] AS [inner_KnifeClassID] "
+          + "[t1].[KitchenID] AS [inner_KitchenID],[t1].[KnifeID] AS [inner_KnifeID],[t1].[KnifeClassID] AS [inner_KnifeClassID],"
+          + "[t1].[CookRating] AS [inner_CookRating] "
           + "FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[inner_ID] = @1)",
           new CommandParameter("@1", 1));
     }
