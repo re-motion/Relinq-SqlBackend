@@ -297,6 +297,7 @@
     <Compile Include="TestDomain\Chef.cs" />
     <Compile Include="TestDomain\Company.cs" />
     <Compile Include="TestDomain\Cook.cs" />
+    <Compile Include="TestDomain\CookRating.cs" />
     <Compile Include="TestDomain\ISpecificCook.cs" />
     <Compile Include="TestDomain\Kitchen.cs" />
     <Compile Include="TestDomain\Knife.cs" />

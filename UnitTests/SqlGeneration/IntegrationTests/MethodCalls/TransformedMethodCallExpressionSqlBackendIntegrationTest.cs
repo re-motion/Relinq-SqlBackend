@@ -59,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Meth
           "SELECT [q3].[value] AS [value] FROM [CookTable] AS [t1] "
           + "CROSS APPLY (SELECT TOP (1) [q0].[ID] AS [value] "
           + "FROM (SELECT TOP (3) [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
-          + "[t2].[KnifeID],[t2].[KnifeClassID] "
+          + "[t2].[KnifeID],[t2].[KnifeClassID],[t2].[CookRating] "
           + "FROM [CookTable] AS [t2] WHERE ([t1].[ID] = [t2].[AssistedID])) AS [q0]) AS [q3]");
     }
 

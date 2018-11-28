@@ -39,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       CheckQuery (
           from s in Cooks select s,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
           + "FROM [CookTable] AS [t0]",
           row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
@@ -50,7 +50,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
               new ColumnID ("SubstitutedID", 5),
               new ColumnID ("KitchenID", 6),
               new ColumnID ("KnifeID", 7),
-              new ColumnID ("KnifeClassID", 8)));
+              new ColumnID ("KnifeClassID", 8),
+              new ColumnID ("CookRating", 9)));
     }
 
     [Test]
@@ -207,11 +208,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
             "SELECT [q0].[A_ID] AS [ID],[q0].[A_FirstName] AS [FirstName],[q0].[A_Name] AS [Name],"
             + "[q0].[A_IsStarredCook] AS [IsStarredCook],[q0].[A_IsFullTimeCook] AS [IsFullTimeCook],"
             + "[q0].[A_SubstitutedID] AS [SubstitutedID],[q0].[A_KitchenID] AS [KitchenID],"
-            + "[q0].[A_KnifeID] AS [KnifeID],[q0].[A_KnifeClassID] AS [KnifeClassID] "
+            + "[q0].[A_KnifeID] AS [KnifeID],[q0].[A_KnifeClassID] AS [KnifeClassID],[q0].[A_CookRating] AS [CookRating] "
             + "FROM (SELECT DISTINCT [t1].[ID] AS [A_ID],[t1].[FirstName] AS [A_FirstName],[t1].[Name] AS [A_Name],"
             + "[t1].[IsStarredCook] AS [A_IsStarredCook],[t1].[IsFullTimeCook] AS [A_IsFullTimeCook],"
             + "[t1].[SubstitutedID] AS [A_SubstitutedID],[t1].[KitchenID] AS [A_KitchenID],"
-            + "[t1].[KnifeID] AS [A_KnifeID],[t1].[KnifeClassID] AS [A_KnifeClassID],[t1].[ID] AS [B] "
+            + "[t1].[KnifeID] AS [A_KnifeID],[t1].[KnifeClassID] AS [A_KnifeClassID],[t1].[CookRating] AS [A_CookRating],"
+            + "[t1].[ID] AS [B] "
             + "FROM [CookTable] AS [t1]) AS [q0] WHERE ([q0].[B] <> @1)",
           row => (object) row.GetEntity<Cook> (GetColumnIDsForCook ("")),
           new CommandParameter ("@1", 0)
@@ -254,7 +256,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           + "FROM (SELECT DISTINCT [t1].[ID] AS [A_ID],[t1].[FirstName] AS [A_FirstName],[t1].[Name] AS [A_Name],"
           + "[t1].[IsStarredCook] AS [A_IsStarredCook],[t1].[IsFullTimeCook] AS [A_IsFullTimeCook],"
           + "[t1].[SubstitutedID] AS [A_SubstitutedID],[t1].[KitchenID] AS [A_KitchenID],"
-          + "[t1].[KnifeID] AS [A_KnifeID],[t1].[KnifeClassID] AS [A_KnifeClassID],[t1].[ID] AS [B] "
+          + "[t1].[KnifeID] AS [A_KnifeID],[t1].[KnifeClassID] AS [A_KnifeClassID],[t1].[CookRating] AS [A_CookRating],"
+          + "[t1].[ID] AS [B] "
           + "FROM [CookTable] AS [t1]) AS [q0] "
           + "LEFT OUTER JOIN [CookTable] AS [t2] ON ([q0].[A_ID] = [t2].[SubstitutedID])",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
@@ -273,11 +276,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           + "[q0].[A_FirstName] AS [X_FirstName],[q0].[A_Name] AS [X_Name],"
           + "[q0].[A_IsStarredCook] AS [X_IsStarredCook],[q0].[A_IsFullTimeCook] AS [X_IsFullTimeCook],"
           + "[q0].[A_SubstitutedID] AS [X_SubstitutedID],[q0].[A_KitchenID] AS [X_KitchenID],"
-          + "[q0].[A_KnifeID] AS [X_KnifeID],[q0].[A_KnifeClassID] AS [X_KnifeClassID] " 
+          + "[q0].[A_KnifeID] AS [X_KnifeID],[q0].[A_KnifeClassID] AS [X_KnifeClassID],"
+          + "[q0].[A_CookRating] AS [X_CookRating] "
           + "FROM (SELECT DISTINCT [t2].[ID] AS [A_ID],[t2].[FirstName] AS [A_FirstName],[t2].[Name] AS [A_Name],"
           + "[t2].[IsStarredCook] AS [A_IsStarredCook],[t2].[IsFullTimeCook] AS [A_IsFullTimeCook],"
           + "[t2].[SubstitutedID] AS [A_SubstitutedID],[t2].[KitchenID] AS [A_KitchenID],"
-          + "[t2].[KnifeID] AS [A_KnifeID],[t2].[KnifeClassID] AS [A_KnifeClassID],[t2].[ID] AS [B] "
+          + "[t2].[KnifeID] AS [A_KnifeID],[t2].[KnifeClassID] AS [A_KnifeClassID],[t2].[CookRating] AS [A_CookRating],"
+          + "[t2].[ID] AS [B] "
           + "FROM [CookTable] AS [t2]) AS [q0]) AS [q1]",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
@@ -294,11 +299,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           "SELECT [q1].[FirstName] AS [value] FROM (SELECT DISTINCT [q0].[A_ID] AS [ID],[q0].[A_FirstName] AS [FirstName],"
           + "[q0].[A_Name] AS [Name],[q0].[A_IsStarredCook] AS [IsStarredCook],"
           + "[q0].[A_IsFullTimeCook] AS [IsFullTimeCook],[q0].[A_SubstitutedID] AS [SubstitutedID],"
-          + "[q0].[A_KitchenID] AS [KitchenID],[q0].[A_KnifeID] AS [KnifeID],[q0].[A_KnifeClassID] AS [KnifeClassID] "
+          + "[q0].[A_KitchenID] AS [KitchenID],[q0].[A_KnifeID] AS [KnifeID],[q0].[A_KnifeClassID] AS [KnifeClassID],"
+          + "[q0].[A_CookRating] AS [CookRating] "
           + "FROM (SELECT DISTINCT [t2].[ID] AS [A_ID],[t2].[FirstName] AS [A_FirstName],"
           + "[t2].[Name] AS [A_Name],[t2].[IsStarredCook] AS [A_IsStarredCook],[t2].[IsFullTimeCook] AS [A_IsFullTimeCook],"
           + "[t2].[SubstitutedID] AS [A_SubstitutedID],[t2].[KitchenID] AS [A_KitchenID],"
-          + "[t2].[KnifeID] AS [A_KnifeID],[t2].[KnifeClassID] AS [A_KnifeClassID],[t2].[ID] AS [B] "
+          + "[t2].[KnifeID] AS [A_KnifeID],[t2].[KnifeClassID] AS [A_KnifeClassID],[t2].[CookRating] AS [A_CookRating],"
+          + "[t2].[ID] AS [B] "
           + "FROM [CookTable] AS [t2]) AS [q0]) AS [q1]",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
     }
@@ -323,15 +330,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           "SELECT [q1].[A_ID] AS [A_ID],[q1].[A_FirstName] AS [A_FirstName],[q1].[A_Name] AS [A_Name],"
           + "[q1].[A_IsStarredCook] AS [A_IsStarredCook],[q1].[A_IsFullTimeCook] AS [A_IsFullTimeCook],"
           + "[q1].[A_SubstitutedID] AS [A_SubstitutedID],[q1].[A_KitchenID] AS [A_KitchenID],"
-          + "[q1].[A_KnifeID] AS [A_KnifeID],[q1].[A_KnifeClassID] AS [A_KnifeClassID] " 
+          + "[q1].[A_KnifeID] AS [A_KnifeID],[q1].[A_KnifeClassID] AS [A_KnifeClassID],[q1].[A_CookRating] AS [A_CookRating] " 
           + "FROM (SELECT DISTINCT [q0].[A_ID] AS [A_ID],[q0].[A_FirstName] AS [A_FirstName],[q0].[A_Name] AS [A_Name],"
           + "[q0].[A_IsStarredCook] AS [A_IsStarredCook],[q0].[A_IsFullTimeCook] AS [A_IsFullTimeCook],"
           + "[q0].[A_SubstitutedID] AS [A_SubstitutedID],[q0].[A_KitchenID] AS [A_KitchenID],"
-          + "[q0].[A_KnifeID] AS [A_KnifeID],[q0].[A_KnifeClassID] AS [A_KnifeClassID] " 
+          + "[q0].[A_KnifeID] AS [A_KnifeID],[q0].[A_KnifeClassID] AS [A_KnifeClassID],[q0].[A_CookRating] AS [A_CookRating] "
           + "FROM (SELECT DISTINCT [t2].[ID] AS [A_ID],[t2].[FirstName] AS [A_FirstName],[t2].[Name] AS [A_Name],"
           + "[t2].[IsStarredCook] AS [A_IsStarredCook],[t2].[IsFullTimeCook] AS [A_IsFullTimeCook],"
           + "[t2].[SubstitutedID] AS [A_SubstitutedID],[t2].[KitchenID] AS [A_KitchenID],"
-          + "[t2].[KnifeID] AS [A_KnifeID],[t2].[KnifeClassID] AS [A_KnifeClassID] "
+          + "[t2].[KnifeID] AS [A_KnifeID],[t2].[KnifeClassID] AS [A_KnifeClassID],[t2].[CookRating] AS [A_CookRating] "
           + "FROM [CookTable] AS [t2]) AS [q0]) AS [q1]",
           row => (object) new
                           {
@@ -344,7 +351,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
                                   new ColumnID ("A_SubstitutedID", 5),
                                   new ColumnID ("A_KitchenID", 6),
                                   new ColumnID ("A_KnifeID", 7),
-                                  new ColumnID ("A_KnifeClassID", 8))
+                                  new ColumnID ("A_KnifeClassID", 8),
+                                  new ColumnID ("A_CookRating", 9))
                           });
 
       CheckQuery (
@@ -448,7 +456,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           from c in Cooks select CustomStaticMethodWithEntity (c),
           "SELECT [t0].[ID] AS [Arg0_ID],[t0].[FirstName] AS [Arg0_FirstName],[t0].[Name] AS [Arg0_Name],[t0].[IsStarredCook] AS [Arg0_IsStarredCook],"
           + "[t0].[IsFullTimeCook] AS [Arg0_IsFullTimeCook],[t0].[SubstitutedID] AS [Arg0_SubstitutedID],[t0].[KitchenID] AS [Arg0_KitchenID],"
-          + "[t0].[KnifeID] AS [Arg0_KnifeID],[t0].[KnifeClassID] AS [Arg0_KnifeClassID] "
+          + "[t0].[KnifeID] AS [Arg0_KnifeID],[t0].[KnifeClassID] AS [Arg0_KnifeClassID],[t0].[CookRating] AS [Arg0_CookRating] "
           + "FROM [CookTable] AS [t0]",
           row => (object) CustomStaticMethodWithEntity (row.GetEntity<Cook> (GetColumnIDsForCook ("Arg0_"))));
       CheckQuery (
@@ -526,7 +534,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           "SELECT [t0].[ID] AS [A_Arg0_ID],[t0].[FirstName] AS [A_Arg0_FirstName],[t0].[Name] AS [A_Arg0_Name],"
           + "[t0].[IsStarredCook] AS [A_Arg0_IsStarredCook],[t0].[IsFullTimeCook] AS [A_Arg0_IsFullTimeCook],"
           + "[t0].[SubstitutedID] AS [A_Arg0_SubstitutedID],[t0].[KitchenID] AS [A_Arg0_KitchenID],"
-          + "[t0].[KnifeID] AS [A_Arg0_KnifeID],[t0].[KnifeClassID] AS [A_Arg0_KnifeClassID],"
+          + "[t0].[KnifeID] AS [A_Arg0_KnifeID],[t0].[KnifeClassID] AS [A_Arg0_KnifeClassID],[t0].[CookRating] AS [A_Arg0_CookRating],"
           + "[t0].[ID] AS [B_Arg0] " +
           "FROM [CookTable] AS [t0]",
           row =>
@@ -618,7 +626,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
                     new ColumnID (prefix + "SubstitutedID", 5),
                     new ColumnID (prefix + "KitchenID", 6),
                     new ColumnID (prefix + "KnifeID", 7),
-                    new ColumnID (prefix + "KnifeClassID", 8)
+                    new ColumnID (prefix + "KnifeClassID", 8),
+                    new ColumnID (prefix + "CookRating", 9)
                    };
     }
   }

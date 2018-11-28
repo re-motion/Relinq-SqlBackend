@@ -174,7 +174,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests
                 CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeID", false),
-                CreateColumn (typeof (string), tableInfo.TableAlias, "KnifeClassID", false)
+                CreateColumn (typeof (string), tableInfo.TableAlias, "KnifeClassID", false),
+                CreateColumn (typeof (CookRating), tableInfo.TableAlias, "CookRating", false)
             });
       }
       else if (type == typeof (Kitchen))
@@ -222,6 +223,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeClassID", false),
+                CreateColumn (typeof (CookRating), tableInfo.TableAlias, "CookRating", false),
                 CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
             });
       }
@@ -278,6 +280,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests
           case "Kitchen":
           case "Knife":
             return new SqlEntityRefMemberExpression (originatingEntity, memberInfo);
+          case "CookRating":
+            return originatingEntity.GetColumn (typeof (CookRating), "CookRating", false);
         }
       }
       else if (memberInfo.DeclaringType == typeof (ISpecificCook))

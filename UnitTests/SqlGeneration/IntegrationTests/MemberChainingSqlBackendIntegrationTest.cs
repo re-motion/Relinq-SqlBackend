@@ -45,7 +45,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens select k.Cook,
           "SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
-          + "[t1].[KnifeID],[t1].[KnifeClassID] "
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating] "
           + "FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t1] ON ([t0].[ID] = [t1].[KitchenID])",
            row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
@@ -56,7 +56,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
               new ColumnID ("SubstitutedID", 5),
               new ColumnID ("KitchenID", 6),
               new ColumnID ("KnifeID", 7),
-              new ColumnID ("KnifeClassID", 8)));
+              new ColumnID ("KnifeClassID", 8),
+               new ColumnID ("CookRating", 9)));
     }
 
     [Test]
@@ -81,7 +82,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       CheckQuery (
           from k in Kitchens select k.Restaurant.SubKitchen.Cook,
           "SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
-          + "[t3].[KnifeID],[t3].[KnifeClassID] "
+          + "[t3].[KnifeID],[t3].[KnifeClassID],[t3].[CookRating] "
           + "FROM [KitchenTable] AS [t0] "
           + "LEFT OUTER JOIN [RestaurantTable] AS [t1] ON ([t0].[RestaurantID] = [t1].[ID]) "
           + "LEFT OUTER JOIN [KitchenTable] AS [t2] ON ([t1].[ID] = [t2].[RestaurantID]) "
