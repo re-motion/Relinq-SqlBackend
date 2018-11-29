@@ -53,7 +53,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore ("RMLNQSQL-133")]
     public void First_WithEntityExpression_RMLNQSQL_133 ()
     {
       CheckQuery (
