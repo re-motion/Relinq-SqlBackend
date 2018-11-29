@@ -45,6 +45,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.TestDomain
     public double Weight { get; set; }
     public string SpecificInformation { get; set; }
     public Kitchen Kitchen { get; set; }
+    public CookRating CookRating { get; set; }
 
     public Cook GetSubKitchenCook (Restaurant restaurant)
     {

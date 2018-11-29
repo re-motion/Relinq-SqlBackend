@@ -79,6 +79,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
+    public void ResolvePotentialEntity_Entity_WithIdentityExpressionGeneratorReturningSelf_ThrowsInvalidOperationException ()
+    {
+      var expression = new SqlEntityDefinitionExpression (typeof (Cook), "t", "Cook", e => e);
+
+      Assert.That (
+          () => _entityIdentityResolver.ResolvePotentialEntity (expression),
+          Throws.InvalidOperationException.With.Message.EqualTo ("SqlEntityExpression cannot be the same instance as its identity Expression."));
+    }
+
+    [Test]
     public void ResolvePotentialEntity_EntityConstant_ResolvesToIdentity ()
     {
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityConstantExpression);
@@ -148,6 +158,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
+    public void ResolvePotentialEntity_EntityRefMemeber_WithResolverReturningSameExpression_IsLeftUnchanged ()
+    {
+      _resolverMock
+          .Expect (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+          .Return (_entityRefMemberExpression);
+
+      var expression = Expression.Convert (_entityRefMemberExpression, typeof (object));
+
+      var result = _entityIdentityResolver.ResolvePotentialEntity (expression);
+      Assert.That (result, Is.SameAs (expression));
+    }
+
+    [Test]
     public void ResolvePotentialEntity_Substatement_WithEntity_ResolvesToSubstatement_WithIdentity ()
     {
       var subStatement = SqlStatementModelObjectMother.CreateSqlStatement (_entityExpression, SqlStatementModelObjectMother.CreateSqlTable());
@@ -197,6 +220,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expectedSelectProjection = _entityExpression.GetIdentityExpression ();
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, ((SqlSubStatementExpression) result).SqlStatement.SelectProjection);
       Assert.That (((SqlSubStatementExpression) result).SqlStatement.DataInfo.DataType, Is.SameAs (typeof (IQueryable<int>)));
+    }
+
+    [Test]
+    public void ResolvePotentialEntity_ConvertedSubstatement_WithNoEntity_IsLeftUnchanged ()
+    {
+      var selectProjectionExpression = Expression.Constant (0);
+      var subStatement = SqlStatementModelObjectMother.CreateSqlStatement (selectProjectionExpression, SqlStatementModelObjectMother.CreateSqlTable());
+      var subStatementExpression = new SqlSubStatementExpression (subStatement);
+      var expression = Expression.Convert (subStatementExpression, typeof (object));
+
+      var result = _entityIdentityResolver.ResolvePotentialEntity (expression);
+
+      Assert.That (result, Is.SameAs (expression));
     }
 
     [Test]
