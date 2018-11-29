@@ -59,19 +59,35 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       var entityExpression = strippedExpression as SqlEntityExpression;
       if (entityExpression != null)
-        return entityExpression.GetIdentityExpression ();
+      {
+        var result = entityExpression.GetIdentityExpression();
+        Assertion.IsTrue (result != entityExpression, "SqlEntityExpression cannot be the same instance as its identity Expression.");
+        return result;
+      }
 
       var entityConstantExpression = strippedExpression as SqlEntityConstantExpression;
       if (entityConstantExpression != null)
-        return entityConstantExpression.IdentityExpression;
+      {
+        var result = entityConstantExpression.IdentityExpression;
+        Assertion.IsTrue (result != entityConstantExpression, "SqlEntityConstantExpression cannot be the same instance as its identity Expression.");
+        return result;
+      }
 
       var entityRefMemberExpression = strippedExpression as SqlEntityRefMemberExpression;
       if (entityRefMemberExpression != null)
-        return GetIdentityExpressionForReferencedEntity (entityRefMemberExpression);
+      {
+        var result = GetIdentityExpressionForReferencedEntity (entityRefMemberExpression);
+        if (result != entityRefMemberExpression)
+          return result;
+      }
 
       var sqlSubStatementExpression = strippedExpression as SqlSubStatementExpression;
       if (sqlSubStatementExpression != null)
-        return CheckAndSimplifyEntityWithinSubStatement (sqlSubStatementExpression);
+      {
+        var result = CheckAndSimplifyEntityWithinSubStatement (sqlSubStatementExpression);
+        if (result != sqlSubStatementExpression)
+          return result;
+      }
 
       return expression;
     }
