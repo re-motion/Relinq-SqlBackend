@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       CheckQuery (
           from c in Cooks where ((ISpecificCook) c).SpecificInformation == "test" select c,
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID] " 
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] " 
           + "FROM [CookTable] AS [t0] WHERE ([t0].[SpecificInformation] = @1)",
           new CommandParameter("@1", "test"));
     }

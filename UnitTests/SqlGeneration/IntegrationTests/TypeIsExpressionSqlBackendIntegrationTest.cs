@@ -32,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       CheckQuery (
           Cooks.Where (c => c is Chef),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
           + "FROM [CookTable] AS [t0] WHERE ([t0].[IsStarredCook] = 1)"
           );
 
@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           Cooks.Where (c => c is Cook),
 #pragma warning restore 183
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
           + "FROM [CookTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 1)
           );
@@ -51,7 +51,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           Chefs.Where (c => c is Cook),
 #pragma warning restore 183
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],"
           + "[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 1));
 
@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           Chefs.Where (c => c is Chef),
 #pragma warning restore 183
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],"
           + "[t0].[LetterOfRecommendation] FROM [dbo].[ChefTable] AS [t0] WHERE (@1 = 1)",
           new CommandParameter ("@1", 1));
     }
