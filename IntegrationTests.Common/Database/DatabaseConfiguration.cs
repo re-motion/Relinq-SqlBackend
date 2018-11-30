@@ -42,11 +42,29 @@ namespace Remotion.Linq.IntegrationTests.Common.Database
       get { return ConfigurationManager.AppSettings["DatabaseNamePrefix"]; }
     }
 
+    public static bool IntegratedSecurity
+    {
+      get { return Boolean.Parse (ConfigurationManager.AppSettings["IntegratedSecurity"]); }
+    }
+
+    public static string Username
+    {
+      get { return ConfigurationManager.AppSettings["Username"]; }
+    }
+
+    public static string Password
+    {
+      get { return ConfigurationManager.AppSettings["Password"]; }
+    }
+
     public static string ReplaceDataSource (string connectionString)
     {
       var sqlConnectionStringBuilder = new SqlConnectionStringBuilder (connectionString);
       sqlConnectionStringBuilder.DataSource = DataSource;
       sqlConnectionStringBuilder.InitialCatalog = sqlConnectionStringBuilder.InitialCatalog.Replace (DefaultDatabaseNamePrefix, DatabaseNamePrefix);
+      sqlConnectionStringBuilder.IntegratedSecurity = IntegratedSecurity;
+      sqlConnectionStringBuilder.UserID = Username;
+      sqlConnectionStringBuilder.Password = Password;
       return sqlConnectionStringBuilder.ConnectionString;
     }
   }
