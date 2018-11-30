@@ -16,5 +16,26 @@
     <DatabaseDirectoryMsSql2012>C:\Databases\MsSql2012</DatabaseDirectoryMsSql2012>
     <DatabaseDirectoryMsSql2014>C:\Databases\MsSql2014</DatabaseDirectoryMsSql2014>
     <DatabaseDirectoryMsSql2016>C:\Databases\MsSql2016</DatabaseDirectoryMsSql2016>
+
+    <IntegratedSecurityMsSql2005>true</IntegratedSecurityMsSql2005>
+    <IntegratedSecurityMsSql2008>true</IntegratedSecurityMsSql2008>
+    <IntegratedSecurityMsSql2008R2>true</IntegratedSecurityMsSql2008R2>
+    <IntegratedSecurityMsSql2012>true</IntegratedSecurityMsSql2012>
+    <IntegratedSecurityMsSql2014>true</IntegratedSecurityMsSql2014>
+    <IntegratedSecurityMsSql2016>true</IntegratedSecurityMsSql2016>
+
+    <UsernameMsSql2005></UsernameMsSql2005>
+    <UsernameMsSql2008></UsernameMsSql2008>
+    <UsernameMsSql2008R2></UsernameMsSql2008R2>
+    <UsernameMsSql2012></UsernameMsSql2012>
+    <UsernameMsSql2014></UsernameMsSql2014>
+    <UsernameMsSql2016></UsernameMsSql2016>
+
+    <PasswordMsSql2005></PasswordMsSql2005>
+    <PasswordMsSql2008></PasswordMsSql2008>
+    <PasswordMsSql2008R2></PasswordMsSql2008R2>
+    <PasswordMsSql2012></PasswordMsSql2012>
+    <PasswordMsSql2014></PasswordMsSql2014>
+    <PasswordMsSql2016></PasswordMsSql2016>
   </PropertyGroup>
 </Project>
