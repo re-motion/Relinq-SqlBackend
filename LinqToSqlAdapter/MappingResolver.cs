@@ -279,7 +279,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       {
         throw new NotSupportedException (
             string.Format (
-                "Members mapped to more than one column are currently not supported. ({0}.{1})",
+                "Members mapped to more than one column are currently not supported. ({0})",
                 entity.Type));
       }
 

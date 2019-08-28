@@ -1,18 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DDB5BD34-5F14-43F5-BC6B-28374737AF23}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.Linq.IntegrationTests.CSharp</RootNamespace>
     <AssemblyName>Remotion.Linq.IntegrationTests.CSharp</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net472</TargetFramework>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -28,23 +20,14 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -56,72 +39,17 @@
     <AssemblyOriginatorKeyFile>..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0\lib\net45\Remotion.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <PackageReference Include="NUnit" Version="2.6.3" />
+    <PackageReference Include="Remotion.Linq" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblyInfoShared.cs">
-      <Link>Properties\AssemblyInfoShared.cs</Link>
-    </Compile>
-    <Compile Include="LinqSamples101\AdvancedTests.cs" />
-    <Compile Include="LinqSamples101\AggregatesTests.cs" />
-    <Compile Include="LinqSamples101\CompiledQueryTests.cs" />
-    <Compile Include="LinqSamples101\ConversionOperatorsTests.cs" />
-    <Compile Include="LinqSamples101\ExistsInAnyAllContainsTests.cs" />
-    <Compile Include="LinqSamples101\ExternalMappingTests.cs" />
-    <Compile Include="LinqSamples101\GroupByHavingTests.cs" />
-    <Compile Include="LinqSamples101\InheritanceTests.cs" />
-    <Compile Include="LinqSamples101\JoinTests.cs" />
-    <Compile Include="LinqSamples101\NullTests.cs" />
-    <Compile Include="LinqSamples101\ObjectIdentityTests.cs" />
-    <Compile Include="LinqSamples101\ObjectLoadingTests.cs" />
-    <Compile Include="LinqSamples101\OrderByTests.cs" />
-    <Compile Include="LinqSamples101\PagingTests.cs" />
-    <Compile Include="LinqSamples101\SelectDistinctTests.cs" />
-    <Compile Include="LinqSamples101\SqlMethodsTests.cs" />
-    <Compile Include="LinqSamples101\StoredProceduresTests.cs" />
-    <Compile Include="LinqSamples101\StringDateFunctionsTests.cs" />
-    <Compile Include="MiscTests\DistinctTests.cs" />
-    <Compile Include="MiscTests\GroupByTests.cs" />
-    <Compile Include="MiscTests\DateTimeAddTests.cs" />
-    <Compile Include="MiscTests\DynamicLinqTest.cs" />
-    <Compile Include="MiscTests\DynamicLinq\Dynamic.cs" />
+    <Reference Include="System.Data.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs" Link="Properties\AssemblyInfoShared.cs" />
     <Content Include="SystemTests\Resources\SelectTests.WithMemberInitExpression_InOuterMostLevel.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="SystemTests\CustomProjectionTests.cs" />
-    <Compile Include="SystemTests\ExplicitJoinsTests.cs" />
-    <Compile Include="SystemTests\GroupByTests.cs" />
-    <Compile Include="SystemTests\ImplicitJoinTests.cs" />
-    <Compile Include="SystemTests\LetTests.cs" />
-    <Compile Include="SystemTests\MethodCallsTests.cs" />
-    <Compile Include="SystemTests\MultiFromTests.cs" />
-    <Compile Include="SystemTests\OrderByTests.cs" />
-    <Compile Include="SystemTests\ResultOperatorTests.cs" />
-    <Compile Include="SystemTests\SelectTests.cs" />
-    <Compile Include="SystemTests\SetOperationsTests.cs" />
-    <Compile Include="SystemTests\SubQueryTests.cs" />
-    <Compile Include="SystemTests\UnionConcatTests.cs" />
-    <Compile Include="SystemTests\WhereTests.cs" />
-    <Compile Include="TestBase.cs" />
-    <Compile Include="LinqSamples101\TopBottomTests.cs" />
-    <Compile Include="LinqSamples101\UnionAllIntersectTests.cs" />
-    <Compile Include="LinqSamples101\UserDefinedFunctionsTests.cs" />
-    <Compile Include="LinqSamples101\ViewTests.cs" />
-    <Compile Include="LinqSamples101\WhereTests.cs" />
-    <Compile Include="LinqSamples101\Name.cs" />
-    <Compile Include="MiscTests\ConvertTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="..\MSPL.licenseheader">
       <Link>MSPL.licenseheader</Link>
     </None>
@@ -131,7 +59,6 @@
     <None Include="..\IntegrationTests.Common\App.config">
       <Link>App.config</Link>
     </None>
-    <Compile Include="SetupFixture.cs" />
     <Content Include="MiscTests\Resources\ConvertTests.Convert_ToString_MoreThan30Characters.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -189,7 +116,6 @@
     <Content Include="MiscTests\Resources\DistinctTests.Distinct_BeforeSkipTake.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="packages.config" />
     <Content Include="SystemTests\Resources\SetOperationsTests.Concat_SubQuery.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1148,20 +1074,6 @@
     <Content Include="License.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj">
-      <Project>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</Project>
-      <Name>IntegrationTests.Common</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

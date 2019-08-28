@@ -1,20 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
-    <SchemaVersion>
-    </SchemaVersion>
+    <ProductVersion />
+    <SchemaVersion />
     <ProjectGuid>{F0DC28F8-34FA-488A-BEF4-3F11398A5339}</ProjectGuid>
-    <OutputType>Library</OutputType>
     <RootNamespace>Remotion.Linq.IntegrationTests.VisualBasic</RootNamespace>
     <AssemblyName>Remotion.Linq.IntegrationTests.VisualBasic</AssemblyName>
-    <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFramework>net472</TargetFramework>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -30,28 +22,19 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DocumentationFile>Remotion.Linq.IntegrationTests.VisualBasic.xml</DocumentationFile>
+    <DefineTrace>true</DefineTrace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Remotion.Linq.IntegrationTests.VisualBasic.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Remotion.Linq.IntegrationTests.VisualBasic.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <OptionExplicit>On</OptionExplicit>
@@ -72,25 +55,17 @@
     <AssemblyOriginatorKeyFile>..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject />
   </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0\lib\net45\Remotion.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
+    <PackageReference Include="NUnit" Version="2.6.3" />
+    <PackageReference Include="Remotion.Linq" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
@@ -104,53 +79,8 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblyInfoShared.vb">
-      <Link>My Project\AssemblyInfoShared.vb</Link>
-    </Compile>
-    <Compile Include="LinqSamples101\AdvancedTests.vb" />
-    <Compile Include="LinqSamples101\AggregatesTests.vb" />
-    <Compile Include="LinqSamples101\CompiledQueryTests.vb" />
-    <Compile Include="LinqSamples101\ConversionOperatorsTests.vb" />
-    <Compile Include="LinqSamples101\ExternalMappingTests.vb" />
-    <Compile Include="LinqSamples101\GroupByHavingTests.vb" />
-    <Compile Include="LinqSamples101\ExistsInAnyAllContainsTests.vb" />
-    <Compile Include="LinqSamples101\InheritanceTests.vb" />
-    <Compile Include="LinqSamples101\JoinTests.vb" />
-    <Compile Include="LinqSamples101\NullTests.vb" />
-    <Compile Include="LinqSamples101\ObjectIdentityTests.vb" />
-    <Compile Include="LinqSamples101\ObjectLoadingTests.vb" />
-    <Compile Include="LinqSamples101\OrderByTests.vb" />
-    <Compile Include="LinqSamples101\PagingTests.vb" />
-    <Compile Include="LinqSamples101\SelectDistinctTests.vb" />
-    <Compile Include="LinqSamples101\SqlMethodsTests.vb" />
-    <Compile Include="LinqSamples101\StoredProceduresTests.vb" />
-    <Compile Include="LinqSamples101\StringDateFunctionsTests.vb" />
-    <Compile Include="MiscTests\BinaryExpressionTests.vb" />
-    <Compile Include="MiscTests\InheritanceTests.vb" />
-    <Compile Include="SystemTests\CustomProjectionTests.vb" />
-    <Compile Include="SystemTests\ExplicitJoinsTests.vb" />
-    <Compile Include="SystemTests\GroupByTests.vb" />
-    <Compile Include="SystemTests\ImplicitJoinTests.vb" />
-    <Compile Include="SystemTests\LetTests.vb" />
-    <Compile Include="SystemTests\MethodCallsTests.vb" />
-    <Compile Include="SystemTests\MultiFromTests.vb" />
-    <Compile Include="SystemTests\OrderByTests.vb" />
-    <Compile Include="SystemTests\ResultOperatorTests.vb" />
-    <Compile Include="SystemTests\SelectTests.vb" />
-    <Compile Include="SystemTests\SetOperationsTests.vb" />
-    <Compile Include="SystemTests\SubQueryTests.vb" />
-    <Compile Include="SystemTests\UnionConcatTests.vb" />
-    <Compile Include="SystemTests\WhereTests.vb" />
-    <Compile Include="TestBase.vb" />
-    <Compile Include="LinqSamples101\TopBottomTests.vb" />
-    <Compile Include="LinqSamples101\UnionAllIntersectTests.vb" />
-    <Compile Include="LinqSamples101\UserDefinedFunctionsTests.vb" />
-    <Compile Include="LinqSamples101\VBSamplesOnlyTests.vb" />
-    <Compile Include="LinqSamples101\ViewTests.vb" />
-    <Compile Include="LinqSamples101\WhereTests.vb" />
-    <Compile Include="MiscTests\IsNothingTests.vb" />
-    <Compile Include="My Project\AssemblyInfo.vb" />
-    <Compile Include="My Project\Application.Designer.vb">
+    <Compile Include="..\AssemblyInfoShared.vb" Link="My Project\AssemblyInfoShared.vb" />
+    <Compile Update="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
@@ -169,12 +99,12 @@
     <Content Include="MiscTests\Resources\MiscTests.Resources.IsNothingTests.IsNothingOperator.result">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Compile Include="My Project\Resources.Designer.vb">
+    <Compile Update="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="My Project\Settings.Designer.vb">
+    <Compile Update="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -185,7 +115,6 @@
     <None Include="directory.build.props">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
     <Content Include="SystemTests\Resources\SystemTests.Resources.CustomProjectionTests.ComplexProjection_ContainingEntity.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -701,7 +630,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="My Project\Resources.resx">
+    <EmbeddedResource Update="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
@@ -1099,52 +1028,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />
-    <Compile Include="SetupFixture.vb" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Sql.Server.Express.10.0">
-      <Visible>False</Visible>
-      <ProductName>SQL Server 2008 Express</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj">
-      <Project>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</Project>
-      <Name>IntegrationTests.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
