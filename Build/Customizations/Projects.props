@@ -2,9 +2,51 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <TestingSetupBuildFile>$(SolutionDirectory)Build\TestingSetupForDatabase.build</TestingSetupBuildFile>
+    <TestSetupBuildFileForDatabase>$(SolutionDirectory)Build\TestSetupForDatabase.build</TestSetupBuildFileForDatabase>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DatabaseTestConfiguration Condition="'$(DatabaseTestConfiguration)' == ''">
+      Win_NET48 + NET48 + NoBrowser + SqlServer2012 + Debug + x86;
+      Win_NET48 + NET48 + NoBrowser + SqlServer2012 + Release + x86;
+      Win_NET48 + NET48 + NoBrowser + SqlServer2012 + Debug + x64;
+      Win_NET48 + NET48 + NoBrowser + SqlServer2012 + Release + x64;
+
+      <!-- Local-->
+      LocalMachine + NET48 + NoBrowser + SqlServerDefault + Debug + x86;
+      LocalMachine + NET48 + NoBrowser + SqlServerDefault + Release + x86;
+      LocalMachine + NET48 + NoBrowser + SqlServerDefault + Debug + x64;
+      LocalMachine + NET48 + NoBrowser + SqlServerDefault + Release + x64;
+
+      <!-- Exercise compatibility between installed .NET version, target framework and SQL Server -->
+      Win_NET48 + NET472 + NoBrowser + SqlServer2014 + Release + x64;<!-- Change to SqlServer2019 once it exists -->
+      Win_NET48 + NET462 + NoBrowser + SqlServer2017 + Release + x64;
+      Win_NET472 + NET472 + NoBrowser + SqlServer2016 + Release + x64;
+      Win_NET472 + NET462 + NoBrowser + SqlServer2014 + Release + x64;
+      Win_NET462 + NET462 + NoBrowser + SqlServer2008R2 + Release + x64;
+      Win_NET462 + NET462 + NoBrowser + SqlServer2008 + Release + x64;
+      Win_NET462 + NET462 + NoBrowser + SqlServer2005 + Release + x64;
+    </DatabaseTestConfiguration>
+    <NormalTestConfiguration Condition="'$(NormalTestConfiguration)' == ''">
+      Win_NET48 + NET48 + NoBrowser + NoDB + Debug + x86;
+      Win_NET48 + NET48 + NoBrowser + NoDB + Release + x86;
+      Win_NET48 + NET48 + NoBrowser + NoDB + Debug + x64;
+      Win_NET48 + NET48 + NoBrowser + NoDB + Release + x64;
+
+      <!-- Local-->
+      LocalMachine + NET48 + NoBrowser + NoDB + Debug + x86;
+      LocalMachine + NET48 + NoBrowser + NoDB + Release + x86;
+      LocalMachine + NET48 + NoBrowser + NoDB + Debug + x64;
+      LocalMachine + NET48 + NoBrowser + NoDB + Release + x64;
+
+      <!-- Exercise compatibility between installed .NET version, target framework and SQL Server -->
+      Win_NET48 + NET472 + NoBrowser + NoDB + Release + x64;
+      Win_NET48 + NET462 + NoBrowser + NoDB + Release + x64;
+      Win_NET472 + NET472 + NoBrowser + NoDB + Release + x64;
+      Win_NET472 + NET462 + NoBrowser + NoDB + Release + x64;
+      Win_NET462 + NET462 + NoBrowser + NoDB + Release + x64;
+    </NormalTestConfiguration>
+  </PropertyGroup>
   <ItemGroup>
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)Core\Core.csproj">
@@ -18,20 +60,26 @@
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter\LinqToSqlAdapter.csproj"/>
 
-    <UnitTestProjectFiles Include="$(SolutionDirectory)UnitTests\UnitTests.csproj"/>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)UnitTests\UnitTests.csproj">
+      <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
+    </UnitTestProjectFiles>
 
-    <UnitTestProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj"/>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj">
+      <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
+    </UnitTestProjectFiles>
 
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.Common\IntegrationTests.Common.csproj"/>
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.Common\IntegrationTests.Common.csproj">
+      <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
+    </IntegrationTestProjectFiles>
 
     <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.CSharp\IntegrationTests.CSharp.csproj">
-      <IsDatabaseTest>True</IsDatabaseTest>
-      <TestingSetupBuildFile>$(TestingSetupBuildFile)</TestingSetupBuildFile>
+      <TestConfiguration>$(DatabaseTestConfiguration)</TestConfiguration>
+      <TestSetupBuildFile>$(TestSetupBuildFileForDatabase)</TestSetupBuildFile>
     </IntegrationTestProjectFiles>
     
     <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.VisualBasic\IntegrationTests.VisualBasic.vbproj">
-      <IsDatabaseTest>True</IsDatabaseTest>
-      <TestingSetupBuildFile>$(TestingSetupBuildFile)</TestingSetupBuildFile>
+      <TestConfiguration>$(DatabaseTestConfiguration)</TestConfiguration>
+      <TestSetupBuildFile>$(TestSetupBuildFileForDatabase)</TestSetupBuildFile>
     </IntegrationTestProjectFiles>
 
   </ItemGroup>
