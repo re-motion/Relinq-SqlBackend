@@ -39,20 +39,20 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      _dataReaderMock = MockRepository.GenerateMock<IDataReader>();
+      _dataReaderMock = new Mock<IDataReader>();
 
-      _dataParameter = MockRepository.GenerateMock<IDbDataParameter>();
+      _dataParameter = new Mock<IDbDataParameter>();
 
-      _commandMock = MockRepository.GenerateMock<IDbCommand>();
+      _commandMock = new Mock<IDbCommand>();
       _commandMock.Setup (stub => stub.ExecuteReader()).Returns (_dataReaderMock.Object);
       _commandMock.Setup (stub => stub.CreateParameter()).Returns (_dataParameter);
 
-      _connectionMock = MockRepository.GenerateMock<IDbConnection>();
+      _connectionMock = new Mock<IDbConnection>();
       _connectionMock.Setup (stub => stub.CreateCommand()).Returns (_commandMock.Object);
 
       _connectionManagerStub = new Mock<IConnectionManager>();
       _connectionManagerStub.Setup (stub => stub.Open()).Returns (_connectionMock.Object);
-      _resolverStub = MockRepository.GenerateMock<IReverseMappingResolver>();
+      _resolverStub = new Mock<IReverseMappingResolver>();
 
       _projection = row => row.GetValue<string> (new ColumnID ("test", 0));
       _scalarProjection = row => row.GetValue<int> (new ColumnID ("test", 0));
@@ -67,7 +67,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       _dataReaderMock.Stub (stub => stub.GetValue (0)).Return ("testColumnValue2").Repeat.Once();
       _dataReaderMock.Setup (stub => stub.Read()).Returns (false);
 
-      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
+      var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
 
       var result = retriever.GetResults (_projection, "Text", new CommandParameter[0]).ToArray();
 
@@ -79,7 +79,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       _dataReaderMock.Setup (stub => stub.Read()).Returns (false);
 
-      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
+      var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
 
       var result = retriever.GetResults (_projection, "Text", new CommandParameter[0]).ToArray();
 
@@ -101,7 +101,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
          .Returns (0);
       _commandMock.Setup (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
 
-      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
+      var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
 
       var result = retriever.GetResults (_projection, "Text", new[] { new CommandParameter ("p1", "value1") }).ToArray();
 
@@ -122,7 +122,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var projectionMock = new Mock<Func<IDatabaseResultRow, string>>();
 
-      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
+      var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
       var result = retriever.GetResults (projectionMock.Object, "Text", new CommandParameter[0]).ToArray();
 
       Assert.That (result[0], Is.Null);
@@ -137,7 +137,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       _dataReaderMock.Stub (stub => stub.Read()).Return (true).Repeat.Once();
       _dataReaderMock.Stub (stub => stub.GetValue (0)).Return (fakeResult).Repeat.Once();
 
-      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
+      var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
 
       var result = retriever.GetScalar (_scalarProjection, "Text", new CommandParameter[0]);
 
@@ -147,7 +147,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [Test]
     public void GetScalar_DisposesAllObjects ()
     {
-      var retriever = new QueryResultRetriever (_connectionManagerStub, _resolverStub);
+      var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
 
       retriever.GetScalar (_scalarProjection, "Text", new CommandParameter[0]);
 
@@ -170,10 +170,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var connectionMock = new Mock<IDbConnection>();
       connectionMock.Setup (stub => stub.CreateCommand()).Returns (_commandMock.Object);
 
-      var connectionManagerStub = MockRepository.GenerateStub<IConnectionManager>();
+      var connectionManagerStub = new Mock<IConnectionManager>();
       connectionManagerStub.Setup (stub => stub.Open()).Returns (connectionMock.Object);
 
-      var retriever = new QueryResultRetriever (connectionManagerStub, _resolverStub);
+      var retriever = new QueryResultRetriever (connectionManagerStub.Object, _resolverStub.Object);
 
       retriever.GetScalar (_scalarProjection, "Text", new[] { new CommandParameter ("p1", "value1") });
 

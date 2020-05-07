@@ -50,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _statementBuilder.SelectProjection = Expression.Constant ("select");
       _statementBuilder.DataInfo = new StreamedSequenceInfo (typeof (Cook[]), Expression.Constant (new Cook()));
       _generator = new UniqueIdentifierGenerator();
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
     }
 

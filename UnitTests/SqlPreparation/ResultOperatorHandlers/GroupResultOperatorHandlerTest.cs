@@ -46,7 +46,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       base.SetUp();
 
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _handler = new GroupResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
                              {

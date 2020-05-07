@@ -53,7 +53,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _cookMainFromClause = ExpressionHelper.CreateMainFromClause<Cook>();
       _cookQuerySourceReferenceExpression = new QuerySourceReferenceExpression (_cookMainFromClause);

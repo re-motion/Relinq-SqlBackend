@@ -44,7 +44,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       base.SetUp();
 
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _handler = new UnionResultOperatorHandler ();
       
       var selectProjection = ExpressionHelper.CreateExpression(typeof (int));

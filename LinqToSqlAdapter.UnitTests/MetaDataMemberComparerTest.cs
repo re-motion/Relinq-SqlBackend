@@ -30,10 +30,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       const string name = "equal";
 
-      var metaDataMember1 = MockRepository.GenerateStub<MetaDataMember>();
+      var metaDataMember1 = new Mock<MetaDataMember>();
       metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
 
-      var metaDataMember2 = MockRepository.GenerateStub<MetaDataMember>();
+      var metaDataMember2 = new Mock<MetaDataMember>();
       metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (name);
 
       var comparer = new MetaDataMemberComparer();
@@ -47,10 +47,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       const string name = "equal";
       const string otherName = "notequal";
 
-      var metaDataMember1 = MockRepository.GenerateStub<MetaDataMember>();
+      var metaDataMember1 = new Mock<MetaDataMember>();
       metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
 
-      var metaDataMember2 = MockRepository.GenerateStub<MetaDataMember>();
+      var metaDataMember2 = new Mock<MetaDataMember>();
       metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (otherName);
 
       var comparer = new MetaDataMemberComparer();

@@ -46,7 +46,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
+      _resolverMock = new Mock<IMappingResolver>();
       _uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
 
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));

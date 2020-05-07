@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
@@ -27,7 +28,7 @@ using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Rhino.Mocks;
+using MockRepository = Rhino.Mocks.MockRepository;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
@@ -47,7 +48,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       _selectClause = new SelectClause (Expression.Constant (null, typeof (DataContextTestClass.Customer)));
       _queryModel = new QueryModel (_mainFromClause, _selectClause);
 
-      _resolverStub = MockRepository.GenerateStub<IMappingResolver> ();
+      _resolverStub = new Mock<IMappingResolver>();
       _resolverStub
          .Setup (stub => stub.ResolveTableInfo (It.IsAny<TEMPLATE>(), It.IsAny<TEMPLATE>()))
          .Returns (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));

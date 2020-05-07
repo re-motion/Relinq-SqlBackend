@@ -36,7 +36,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<IMappingResolutionStage> ();
+      _stageMock = new Mock<IMappingResolutionStage>();
       _mappingresolutionContext = new MappingResolutionContext();
     }
 

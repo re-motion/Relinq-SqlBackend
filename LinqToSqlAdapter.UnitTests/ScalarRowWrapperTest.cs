@@ -32,7 +32,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      _readerMock = MockRepository.GenerateMock<IDataReader>();
+      _readerMock = new Mock<IDataReader>();
     }
 
     [Test]

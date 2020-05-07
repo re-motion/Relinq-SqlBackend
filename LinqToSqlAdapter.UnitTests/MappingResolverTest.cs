@@ -280,12 +280,12 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
-      var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
+      var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
          .Setup (stub => stub.DeclaringType)
          .Returns (_unmappedType);
 
-      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
+      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object);
     }
 
     [Test]
@@ -295,7 +295,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
-      var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
+      var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
          .Setup (stub => stub.DeclaringType)
          .Returns (typeof (PersonTestClass));
@@ -303,7 +303,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
          .Setup (stub => stub.Name)
          .Returns ("stub");
 
-      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
+      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object);
     }
 
     [Test]

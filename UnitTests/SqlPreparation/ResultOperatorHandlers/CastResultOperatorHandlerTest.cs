@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _generator = new UniqueIdentifierGenerator ();
       _handler = new CastResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
