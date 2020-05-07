@@ -28,14 +28,14 @@ using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
   public class SetOperationResultOperatorHandlerBaseTest : ResultOperatorHandlerTestBase
   {
-    private ISqlPreparationStage _stageMock;
+    private Mock<ISqlPreparationStage> _stageMock;
     private UnionResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
@@ -63,12 +63,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var preparedSource2Statement = SqlStatementModelObjectMother.CreateSqlStatement();
       var preparedSource2Expression = new SqlSubStatementExpression (preparedSource2Statement);
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
-          .Return(preparedSource2Expression);
+         .Setup (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
+         .Returns (preparedSource2Expression)
+         .Verifiable();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.VerifyAllExpectations();
+      _stageMock.Verify();
       
       // Main functionality
       Assert.That (_sqlStatementBuilder.SetOperationCombinedStatements, Has.Count.EqualTo (1));
@@ -94,10 +95,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new UnionResultOperator ("x", typeof (int), Expression.Constant (new[] { 1, 2, 3 }));
       var preparedSource2Expression = ExpressionHelper.CreateExpression (typeof (int[]));
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
-          .Return(preparedSource2Expression);
+         .Setup (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
+         .Returns (preparedSource2Expression)
+         .Verifiable();
 
-      Assert.That(() =>_handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context),
+      Assert.That(() =>_handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context),
           Throws.TypeOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "The 'Union' operation is only supported for combining two query results, but a 'ConstantExpression' was supplied as the "

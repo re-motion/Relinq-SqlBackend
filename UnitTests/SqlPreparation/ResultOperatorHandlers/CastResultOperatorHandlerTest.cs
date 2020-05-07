@@ -26,14 +26,14 @@ using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
   public class CastResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private Mock<ISqlPreparationStage> _stageMock;
     private UniqueIdentifierGenerator _generator;
     private CastResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -59,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _sqlStatementBuilder.SelectProjection = constantExpression;
       var castResultOperator = new CastResultOperator (typeof (Chef));
 
-      _handler.HandleResultOperator (castResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (castResultOperator, _sqlStatementBuilder, _generator, _stageMock.Object, _context);
 
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (UnaryExpression)));
       Assert.That (_sqlStatementBuilder.SelectProjection.NodeType, Is.EqualTo(ExpressionType.Convert));

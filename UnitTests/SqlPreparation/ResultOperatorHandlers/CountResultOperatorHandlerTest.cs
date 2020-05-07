@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
   [TestFixture]
   public class CountResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private Mock<ISqlPreparationStage> _stageMock;
     private UniqueIdentifierGenerator _generator;
     private CountResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -57,7 +57,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _sqlStatementBuilder.SelectProjection = new NamedExpression (null, _sqlStatementBuilder.SelectProjection);
       var countResultOperator = new CountResultOperator ();
 
-      _handler.HandleResultOperator (countResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (countResultOperator, _sqlStatementBuilder, _generator, _stageMock.Object, _context);
 
       Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Count));
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));

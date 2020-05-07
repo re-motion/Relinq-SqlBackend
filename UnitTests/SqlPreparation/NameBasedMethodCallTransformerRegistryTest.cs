@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 {
@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     private string _methodName;
     private MethodInfo _methodInfo;
     private NameBasedMethodCallTransformerRegistry _methodCallTransformerRegistry;
-    private IMethodCallTransformer _transformerStub;
+    private Mock<IMethodCallTransformer> _transformerStub;
 
     [SetUp]
     public void SetUp ()
@@ -39,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _methodName = "Concat";
       _methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       _methodCallTransformerRegistry = new NameBasedMethodCallTransformerRegistry ();
-      _transformerStub = MockRepository.GenerateStub<IMethodCallTransformer> ();
+      _transformerStub = new Mock<IMethodCallTransformer>();
     }
 
     [Test]

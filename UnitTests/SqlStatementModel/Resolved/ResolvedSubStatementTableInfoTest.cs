@@ -24,7 +24,7 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 {
@@ -83,12 +83,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
 
       var generator = new UniqueIdentifierGenerator ();
-      var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver> ();
+      var resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
       var mappingResolutionContext = new MappingResolutionContext ();
 
-      resolverMock.Replay ();
-
-      var result = _tableInfo.ResolveReference (sqlTable, resolverMock, mappingResolutionContext, generator);
+      var result = _tableInfo.ResolveReference (sqlTable, resolverMock.Object, mappingResolutionContext, generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
       Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));
@@ -96,7 +94,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
 
-     [Test]
+    [Test]
     public new void ToString ()
     {
       var sqlStatement = new SqlStatementBuilder ()

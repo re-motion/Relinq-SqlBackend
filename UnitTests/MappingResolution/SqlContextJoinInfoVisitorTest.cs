@@ -24,14 +24,14 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 {
   [TestFixture]
   public class SqlContextJoinInfoVisitorTest
   {
-    private IMappingResolutionStage _stageMock;
+    private Mock<IMappingResolutionStage> _stageMock;
     private IMappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
@@ -47,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Cook).GetProperty ("ID"), JoinCardinality.One);
       
-      var result = SqlContextJoinInfoVisitor.ApplyContext (unresolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var result = SqlContextJoinInfoVisitor.ApplyContext (unresolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 
       Assert.That (result, Is.SameAs (unresolvedJoinInfo));
     }
@@ -57,7 +57,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var unresolvedJoinInfo = new UnresolvedCollectionJoinInfo (Expression.Constant (new Cook ()), typeof (Cook).GetProperty ("IllnessDays"));
       
-      var result = SqlContextJoinInfoVisitor.ApplyContext (unresolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var result = SqlContextJoinInfoVisitor.ApplyContext (unresolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 
       Assert.That (result, Is.SameAs (unresolvedJoinInfo));
     }
@@ -68,13 +68,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var resolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
       
       _stageMock
-          .Expect (mock => mock.ApplyContext (resolvedJoinInfo.ForeignTableInfo, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
-          .Return (resolvedJoinInfo.ForeignTableInfo);
-      _stageMock.Replay ();
+         .Setup (mock => mock.ApplyContext (resolvedJoinInfo.ForeignTableInfo, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
+         .Returns (resolvedJoinInfo.ForeignTableInfo)
+         .Verifiable ();
 
-      var result = SqlContextJoinInfoVisitor.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var result = SqlContextJoinInfoVisitor.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.Verify ();
       Assert.That (result, Is.SameAs (resolvedJoinInfo));
     }
 
@@ -85,13 +85,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeTableInfo = new ResolvedSimpleTableInfo (typeof (Restaurant), "RestaurantTable", "r");
 
       _stageMock
-          .Expect (mock => mock.ApplyContext (resolvedJoinInfo.ForeignTableInfo, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
-          .Return (fakeTableInfo);
-      _stageMock.Replay ();
+         .Setup (mock => mock.ApplyContext (resolvedJoinInfo.ForeignTableInfo, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
+         .Returns (fakeTableInfo)
+         .Verifiable ();
 
-      var result = SqlContextJoinInfoVisitor.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var result = SqlContextJoinInfoVisitor.ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.Verify ();
       Assert.That (((ResolvedJoinInfo) result).ForeignTableInfo, Is.SameAs (fakeTableInfo));
       Assert.That (((ResolvedJoinInfo) result).JoinCondition, Is.SameAs (resolvedJoinInfo.JoinCondition));
     }

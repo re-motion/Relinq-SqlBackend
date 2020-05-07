@@ -32,7 +32,7 @@ using Remotion.Linq.SqlBackend.UnitTests.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Remotion.Utilities;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 {
@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
   public class SqlContextExpressionVisitorTest
   {
     private TestableSqlContextExpressionVisitor _valueRequiredVisitor;
-    private IMappingResolutionStage _stageMock;
+    private Mock<IMappingResolutionStage> _stageMock;
     private IMappingResolutionContext _mappingResolutionContext;
     private TestableSqlContextExpressionVisitor _singleValueRequiredVisitor;
     private TestableSqlContextExpressionVisitor _predicateRequiredVisitor;
@@ -48,15 +48,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage>();
+      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
       _mappingResolutionContext = new MappingResolutionContext();
-      _valueRequiredVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      _valueRequiredVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
       _singleValueRequiredVisitor = new TestableSqlContextExpressionVisitor (
           SqlExpressionContext.SingleValueRequired,
-          _stageMock,
+          _stageMock.Object,
           _mappingResolutionContext);
       _predicateRequiredVisitor = new TestableSqlContextExpressionVisitor (
-          SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+          SqlExpressionContext.PredicateRequired, _stageMock.Object, _mappingResolutionContext);
     }
 
     [Test]
@@ -66,9 +66,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var predicateExpression = Expression.Constant (true);
 
       var convertedValue = SqlContextExpressionVisitor.ApplySqlExpressionContext (
-          new SqlConvertedBooleanExpression (valueExpression), SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+          new SqlConvertedBooleanExpression (valueExpression), SqlExpressionContext.PredicateRequired, _stageMock.Object, _mappingResolutionContext);
       var convertedPredicate = SqlContextExpressionVisitor.ApplySqlExpressionContext (
-          predicateExpression, SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
+          predicateExpression, SqlExpressionContext.SingleValueRequired, _stageMock.Object, _mappingResolutionContext);
 
       var expectedConvertedValue = Expression.Equal (valueExpression, new SqlLiteralExpression (1));
       var expectedConvertedPredicate = new SqlConvertedBooleanExpression (Expression.Constant (1));
@@ -106,7 +106,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock.Object, _mappingResolutionContext);
       Assert.That (() => visitor.Visit (entityExpression), Throws.TypeOf<NotSupportedException>());
     }
 
@@ -116,7 +116,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new CustomExpression (typeof (bool));
       var nullableExpression = new CustomExpression (typeof (bool?));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.Visit (expression);
       var resultNullable = visitor.Visit (nullableExpression);
 
@@ -132,7 +132,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new CustomExpression (typeof (bool));
       var nullableExpression = new CustomExpression (typeof (bool?));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.Visit (expression);
       var resultNullable = visitor.Visit (nullableExpression);
 
@@ -147,7 +147,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = CreateNewExpression ();
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.Visit (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -158,7 +158,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = new CustomExpression (typeof (int));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.SingleValueRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.Visit (expression);
 
       Assert.That (result, Is.SameAs (expression));
@@ -190,7 +190,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new CustomExpression (typeof (bool));
       var nullableExpression = new CustomExpression (typeof (bool?));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.Visit (expression);
       var resultNullable = visitor.Visit (nullableExpression);
 
@@ -204,7 +204,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlConvertedBooleanExpression (new CustomExpression (typeof (int)));
       var nullableExpression = new SqlConvertedBooleanExpression (new CustomExpression (typeof (int?)));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.Visit (expression);
       var resultNullable = visitor.Visit (nullableExpression);
 
@@ -221,7 +221,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = new CustomExpression (typeof (string));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock.Object, _mappingResolutionContext);
       visitor.Visit (expression);
     }
 
@@ -231,7 +231,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var expression = new CustomExpression (typeof (string));
 
-      var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), _stageMock.Object, _mappingResolutionContext);
       visitor.Visit (expression);
     }
 
@@ -240,7 +240,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.Visit (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
@@ -429,7 +429,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
-      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock, _mappingResolutionContext);
+      var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
       var result = visitor.VisitSqlEntity (entityExpression);
 
       Assert.That (result, Is.SameAs (entityExpression));
@@ -861,15 +861,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
       _stageMock
-          .Expect (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
-          .Return (fakeResult);
-      _stageMock.Replay();
+         .Setup (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
+         .Returns (fakeResult)
+         .Verifiable ();
 
       var result = _valueRequiredVisitor.VisitSqlSubStatement (sqlSubStatementExpression);
 
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.Not.SameAs (sqlStatement));
-      _stageMock.VerifyAllExpectations();
+      _stageMock.Verify();
     }
 
     [Test]

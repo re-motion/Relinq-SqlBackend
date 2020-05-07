@@ -22,7 +22,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -52,13 +52,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameItems ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
-      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[0])).Return (_collectionExpression.Items[0]);
-      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[1])).Return (_collectionExpression.Items[1]);
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      visitorMock
+         .Setup (mock => mock.Visit (_collectionExpression.Items[0])).Returns (_collectionExpression.Items[0]).Verifiable ();
+      visitorMock
+         .Setup (mock => mock.Visit (_collectionExpression.Items[1])).Returns (_collectionExpression.Items[1]).Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_collectionExpression));
     }
@@ -68,13 +70,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       var newItem = Expression.Constant (14);
 
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
-      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[0])).Return (newItem);
-      visitorMock.Expect (mock => mock.Visit (_collectionExpression.Items[1])).Return (_collectionExpression.Items[1]);
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      visitorMock
+         .Setup (mock => mock.Visit (_collectionExpression.Items[0])).Returns (newItem).Verifiable ();
+      visitorMock
+         .Setup (mock => mock.Visit (_collectionExpression.Items[1])).Returns (_collectionExpression.Items[1]).Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
 
       Assert.That (result, Is.Not.SameAs (_collectionExpression));
       Assert.That (result, Is.TypeOf<SqlCollectionExpression>());

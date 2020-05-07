@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -49,21 +49,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsNewSqlInExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
       var newLeftExpression = Expression.Constant (3);
       var newRightExpression = Expression.Constant (4);
 
       visitorMock
-          .Expect (mock => mock.Visit (_leftExpression))
-          .Return (newLeftExpression);
+         .Setup (mock => mock.Visit (_leftExpression))
+         .Returns (newLeftExpression)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_rightExpression))
-          .Return (newRightExpression);
-      visitorMock.Replay();
+         .Setup (mock => mock.Visit (_rightExpression))
+         .Returns (newRightExpression)
+         .Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_expression));
       Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (newLeftExpression));
       Assert.That (((SqlInExpression) result).RightExpression, Is.SameAs (newRightExpression));

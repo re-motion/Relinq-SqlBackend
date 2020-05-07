@@ -20,14 +20,14 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
   [TestFixture]
   public class ScalarRowWrapperTest
   {
-    private IDataReader _readerMock;
+    private Mock<IDataReader> _readerMock;
 
     [SetUp]
     public void SetUp ()
@@ -39,14 +39,15 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     public void GetValue_ShouldReturnValue ()
     {
       var columnID = new ColumnID ("Name", 0);
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
       _readerMock
-          .Expect (mock => mock.GetValue (columnID.Position))
-          .Return ("Peter");
+         .Setup (mock => mock.GetValue (columnID.Position))
+         .Returns ("Peter")
+         .Verifiable ();
 
       var value = scalarRowWrapper.GetValue<string> (columnID);
 
-      _readerMock.VerifyAllExpectations();
+      _readerMock.Verify();
       Assert.That ("Peter", Is.EqualTo (value));
     }
 
@@ -54,7 +55,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [ExpectedException (typeof (ArgumentException))]
     public void GetValue_ShouldThrowException ()
     {
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
 
       scalarRowWrapper.GetValue<string> (new ColumnID ("Name", 1));
     }
@@ -63,7 +64,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [ExpectedException (typeof (ArgumentException))]
     public void GetEntity_ShouldThrowException ()
     {
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
 
       scalarRowWrapper.GetEntity<PersonTestClass> (null);
     }
@@ -73,10 +74,11 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var columnID = new ColumnID ("Name", 0);
       _readerMock
-          .Expect (mock => mock.GetValue (columnID.Position))
-          .Return ("Peter");
+         .Setup (mock => mock.GetValue (columnID.Position))
+         .Returns ("Peter")
+         .Verifiable ();
 
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
 
       var value = scalarRowWrapper.GetEntity<string> (columnID);
       Assert.That ("Peter", Is.EqualTo (value));
@@ -92,7 +94,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
                           new ColumnID ("Age", 2)
                       };
 
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
 
       scalarRowWrapper.GetEntity<PersonTestClass> (columnIDs);
     }

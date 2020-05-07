@@ -27,7 +27,7 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
@@ -282,8 +282,8 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
       memberInfoStub
-          .Stub (stub => stub.DeclaringType)
-          .Return (_unmappedType);
+         .Setup (stub => stub.DeclaringType)
+         .Returns (_unmappedType);
 
       _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
     }
@@ -297,11 +297,11 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
       memberInfoStub
-          .Stub (stub => stub.DeclaringType)
-          .Return (typeof (PersonTestClass));
+         .Setup (stub => stub.DeclaringType)
+         .Returns (typeof (PersonTestClass));
       memberInfoStub
-          .Stub (stub => stub.Name)
-          .Return ("stub");
+         .Setup (stub => stub.Name)
+         .Returns ("stub");
 
       _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
     }

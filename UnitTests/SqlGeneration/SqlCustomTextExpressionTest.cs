@@ -19,7 +19,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlGeneration;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
@@ -39,8 +39,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void Generate ()
     {
       var commandBuilder = new SqlCommandBuilder();
-      var visitor = MockRepository.GenerateMock<ExpressionVisitor>();
-      var stage = MockRepository.GenerateMock<ISqlGenerationStage>();
+      var visitor = new Mock<ExpressionVisitor>();
+      var stage = new Mock<ISqlGenerationStage>();
 
       _sqlCustomTextExpression.Generate (commandBuilder, visitor, stage);
 
@@ -50,12 +50,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void VisitChildren_ReturnsThis ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
-      visitorMock.Replay ();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCustomTextExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCustomTextExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify ();
       Assert.That (result, Is.SameAs (_sqlCustomTextExpression));
     }
 

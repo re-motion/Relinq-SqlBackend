@@ -20,7 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
 {
@@ -55,12 +55,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     [Test]
     public void Accept ()
     {
-      var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor> ();
-      tableInfoVisitorMock.Expect (mock => mock.VisitUnresolvedGroupReferenceTableInfo (_tableInfo));
+      var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
+      tableInfoVisitorMock
+         .Setup (mock => mock.VisitUnresolvedGroupReferenceTableInfo (_tableInfo)).Verifiable ();
 
-      tableInfoVisitorMock.Replay ();
-      _tableInfo.Accept (tableInfoVisitorMock);
-      tableInfoVisitorMock.VerifyAllExpectations ();
+      _tableInfo.Accept (tableInfoVisitorMock.Object);
+      tableInfoVisitorMock.Verify ();
     }
 
     [Test]

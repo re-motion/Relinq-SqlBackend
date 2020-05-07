@@ -30,15 +30,15 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Remotion.Utilities;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 {
   [TestFixture]
   public class EntityIdentityResolverTest
   {
-    private IMappingResolutionStage _stageMock;
-    private IMappingResolver _resolverMock;
+    private Mock<IMappingResolutionStage> _stageMock;
+    private Mock<IMappingResolver> _resolverMock;
     private MappingResolutionContext _context;
     private EntityIdentityResolver _entityIdentityResolver;
 
@@ -49,11 +49,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage>();
-      _resolverMock = MockRepository.GenerateStrictMock<IMappingResolver>();
+      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
+      _resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
       _context = new MappingResolutionContext();
 
-      _entityIdentityResolver = new EntityIdentityResolver (_stageMock, _resolverMock, _context);
+      _entityIdentityResolver = new EntityIdentityResolver (_stageMock.Object, _resolverMock.Object, _context);
 
       _entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), primaryKeyType: typeof (int));
       _entityConstantExpression = new SqlEntityConstantExpression (typeof (Cook), new Cook (), Expression.Constant (0));
@@ -109,12 +109,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var fakeOptimizedIdentity = ExpressionHelper.CreateExpression();
       _resolverMock
-          .Expect (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-          .Return (fakeOptimizedIdentity);
+         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+         .Returns (fakeOptimizedIdentity)
+         .Verifiable ();
       
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify ();
       Assert.That (result, Is.SameAs (fakeOptimizedIdentity));
     }
 
@@ -122,24 +123,26 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_ResolvesToJoinAndIdentity ()
     {
       _resolverMock
-        .Expect (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-        .Return (null);
+         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+         .Returns (null)
+         .Verifiable ();
       
       var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
       _stageMock
-          .Expect (
-              mock => mock.ResolveEntityRefMemberExpression (
-                  Arg.Is (_entityRefMemberExpression),
-                  Arg<UnresolvedJoinInfo>.Matches (
-                      e => e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity
-                      && e.MemberInfo == _entityRefMemberExpression.MemberInfo
-                      && e.Cardinality == JoinCardinality.One),
-                  Arg.Is (_context)))
-          .Return (fakeResolvedEntity);
+         .Setup (mock => mock.ResolveEntityRefMemberExpression (
+                     It.Is<TEMPLATE> (param => param == _entityRefMemberExpression),
+                     It.Is<UnresolvedJoinInfo> (
+                         e => e.OriginatingEntity == _entityRefMemberExpression.OriginatingEntity
+                           && e.MemberInfo == _entityRefMemberExpression.MemberInfo
+                           && e.Cardinality == JoinCardinality.One),
+                     It.Is<TEMPLATE> (param => param == _context)))
+         .Returns (
+              fakeResolvedEntity)
+         .Verifiable ();
 
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
-      _stageMock.VerifyAllExpectations();
+      _stageMock.Verify();
       SqlExpressionTreeComparer.CheckAreEqualTrees (fakeResolvedEntity.GetIdentityExpression(), result);
     }
 
@@ -148,12 +151,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var fakeOptimizedIdentity = ExpressionHelper.CreateExpression ();
       _resolverMock
-          .Expect (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-          .Return (fakeOptimizedIdentity);
+         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+         .Returns (fakeOptimizedIdentity)
+         .Verifiable ();
 
       var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (_entityRefMemberExpression, typeof (object)));
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify ();
       Assert.That (result, Is.SameAs (fakeOptimizedIdentity));
     }
 
@@ -161,8 +165,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void ResolvePotentialEntity_EntityRefMemeber_WithResolverReturningSameExpression_IsLeftUnchanged ()
     {
       _resolverMock
-          .Expect (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-          .Return (_entityRefMemberExpression);
+         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+         .Returns (_entityRefMemberExpression)
+         .Verifiable ();
 
       var expression = Expression.Convert (_entityRefMemberExpression, typeof (object));
 

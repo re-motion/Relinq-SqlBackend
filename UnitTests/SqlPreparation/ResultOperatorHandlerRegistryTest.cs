@@ -22,7 +22,7 @@ using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 {
@@ -49,24 +49,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     public void GetItem ()
     {
       var registry = new ResultOperatorHandlerRegistry();
-      var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler>();
-      registry.Register (typeof (CastResultOperator), handlerMock);
+      var handlerMock = new Mock<IResultOperatorHandler>();
+      registry.Register (typeof (CastResultOperator), handlerMock.Object);
 
       var result = registry.GetItem(typeof (CastResultOperator));
 
-      Assert.That (result, Is.SameAs(handlerMock));
+      Assert.That (result, Is.SameAs(handlerMock.Object));
     }
 
     [Test]
     public void GetItem_ForBaseResultOperator ()
     {
       var registry = new ResultOperatorHandlerRegistry ();
-      var handlerMock = MockRepository.GenerateMock<IResultOperatorHandler> ();
-      registry.Register (typeof (ResultOperatorBase), handlerMock);
+      var handlerMock = new Mock<IResultOperatorHandler>();
+      registry.Register (typeof (ResultOperatorBase), handlerMock.Object);
 
       var result = registry.GetItem (typeof (InheritedResultOperator));
 
-      Assert.That (result, Is.SameAs (handlerMock));
+      Assert.That (result, Is.SameAs (handlerMock.Object));
     }
 
     [Test]

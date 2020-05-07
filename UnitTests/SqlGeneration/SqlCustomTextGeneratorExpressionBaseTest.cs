@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
@@ -36,13 +36,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var customTextGeneratorExpression = new TestableSqlCustomTextGeneratorExpression (typeof (Cook));
 
       visitorMock
-          .Expect (mock => ((ISqlCustomTextGeneratorExpressionVisitor)mock).VisitSqlCustomTextGenerator (customTextGeneratorExpression))
-          .Return (customTextGeneratorExpression);
-      visitorMock.Replay();
+         .Setup (mock => ((ISqlCustomTextGeneratorExpressionVisitor)mock).VisitSqlCustomTextGenerator (customTextGeneratorExpression))
+         .Returns (customTextGeneratorExpression)
+         .Verifiable ();
 
-      ExtensionExpressionTestHelper.CallAccept (customTextGeneratorExpression, visitorMock);
+      ExtensionExpressionTestHelper.CallAccept (customTextGeneratorExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
     }
   }
 }

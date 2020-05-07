@@ -19,7 +19,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
@@ -29,38 +29,36 @@ namespace Remotion.Linq.SqlBackend.UnitTests
         TExpression expression,
         Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : Expression
     {
-      var mockRepository = new MockRepository ();
       var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (TVisitorInterface));
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-          .Expect (mock => visitMethodCall ((TVisitorInterface) (object) mock))
-          .Return (returnedExpression);
-      visitorMock.Replay ();
+         .Setup (mock => visitMethodCall ((TVisitorInterface) (object) mock))
+         .Returns (returnedExpression)
+         .Verifiable ();
 
-      var result = CallAccept (expression, visitorMock);
+      var result = CallAccept (expression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify ();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
     public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : Expression
     {
-      var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtension", expression))
-          .Return (returnedExpression);
-      visitorMock.Replay ();
+         .Setup (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtension", expression))
+         .Returns (returnedExpression)
+         .Verifiable ();
 
-      var result = CallAccept (expression, visitorMock);
+      var result = CallAccept (expression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify ();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }

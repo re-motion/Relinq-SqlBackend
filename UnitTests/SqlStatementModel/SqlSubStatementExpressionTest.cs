@@ -26,7 +26,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 {
@@ -52,13 +52,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
-      visitorMock.Replay();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 
       Assert.That (result, Is.SameAs (_expression));
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
     }
 
     [Test]

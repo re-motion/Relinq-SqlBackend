@@ -22,7 +22,7 @@ using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -149,45 +149,49 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Left))
-          .Return (_likeExpression.Left);
+         .Setup (mock => mock.Visit (_likeExpression.Left))
+         .Returns (_likeExpression.Left)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Right))
-          .Return (_likeExpression.Right);
+         .Setup (mock => mock.Visit (_likeExpression.Right))
+         .Returns (_likeExpression.Right)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.EscapeExpression))
-          .Return (_likeExpression.EscapeExpression);
-      visitorMock.Replay();
+         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+         .Returns (_likeExpression.EscapeExpression)
+         .Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_likeExpression));
     }
 
     [Test]
     public void VisitChildren_ReturnsDifferentRightExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
       var newRightExpression = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Left))
-          .Return (_likeExpression.Left);
+         .Setup (mock => mock.Visit (_likeExpression.Left))
+         .Returns (_likeExpression.Left)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Right))
-          .Return (newRightExpression);
+         .Setup (mock => mock.Visit (_likeExpression.Right))
+         .Returns (newRightExpression)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.EscapeExpression))
-          .Return (_likeExpression.EscapeExpression);
-      visitorMock.Replay();
+         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+         .Returns (_likeExpression.EscapeExpression)
+         .Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_likeExpression));
       Assert.That (((SqlLikeExpression) result).Left, Is.SameAs (_likeExpression.Left));
       Assert.That (((SqlLikeExpression) result).Right, Is.SameAs (newRightExpression));
@@ -197,23 +201,25 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsDifferentLeftExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
       var newLeftExpression = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Left))
-          .Return (newLeftExpression);
+         .Setup (mock => mock.Visit (_likeExpression.Left))
+         .Returns (newLeftExpression)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Right))
-          .Return (_likeExpression.Right);
+         .Setup (mock => mock.Visit (_likeExpression.Right))
+         .Returns (_likeExpression.Right)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.EscapeExpression))
-          .Return (_likeExpression.EscapeExpression);
-      visitorMock.Replay ();
+         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+         .Returns (_likeExpression.EscapeExpression)
+         .Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify ();
       Assert.That (result, Is.Not.SameAs (_likeExpression));
       Assert.That (((SqlLikeExpression) result).Left, Is.SameAs (newLeftExpression));
       Assert.That (((SqlLikeExpression) result).Right, Is.SameAs (_likeExpression.Right));
@@ -223,23 +229,25 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsDifferentEscapeExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
       var newEscapeExpression = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Left))
-          .Return (_likeExpression.Left);
+         .Setup (mock => mock.Visit (_likeExpression.Left))
+         .Returns (_likeExpression.Left)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.Right))
-          .Return (_likeExpression.Right);
+         .Setup (mock => mock.Visit (_likeExpression.Right))
+         .Returns (_likeExpression.Right)
+         .Verifiable ();
       visitorMock
-          .Expect (mock => mock.Visit (_likeExpression.EscapeExpression))
-          .Return (newEscapeExpression);
-      visitorMock.Replay ();
+         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+         .Returns (newEscapeExpression)
+         .Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify ();
       Assert.That (result, Is.Not.SameAs (_likeExpression));
       Assert.That (((SqlLikeExpression) result).Left, Is.SameAs (_likeExpression.Left));
       Assert.That (((SqlLikeExpression) result).Right, Is.SameAs (_likeExpression.Right));

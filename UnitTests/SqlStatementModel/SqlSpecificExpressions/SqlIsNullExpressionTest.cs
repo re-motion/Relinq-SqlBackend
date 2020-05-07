@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -38,16 +38,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
       var expression = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.Visit (_sqlIsNullExpression.Expression))
-          .Return (expression);
+         .Setup (mock => mock.Visit (_sqlIsNullExpression.Expression))
+         .Returns (expression)
+         .Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify ();
       Assert.That (result, Is.Not.SameAs (_sqlIsNullExpression));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (expression));
     }
@@ -55,15 +56,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
       
       visitorMock
-          .Expect (mock => mock.Visit (_sqlIsNullExpression.Expression))
-          .Return (_sqlIsNullExpression.Expression);
+         .Setup (mock => mock.Visit (_sqlIsNullExpression.Expression))
+         .Returns (_sqlIsNullExpression.Expression)
+         .Verifiable ();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify ();
 
       Assert.That (result, Is.SameAs (_sqlIsNullExpression));
     }

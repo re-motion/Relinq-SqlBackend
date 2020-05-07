@@ -28,14 +28,14 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
   public class AllResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
-    private ISqlPreparationStage _stageMock;
+    private Mock<ISqlPreparationStage> _stageMock;
     private AllResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
@@ -64,13 +64,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedSelectProjection = Expression.Constant (false);
 
       _stageMock
-          .Expect (mock => mock.PrepareWhereExpression (
-              Arg<Expression>.Matches(e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
-              Arg<ISqlPreparationContext>.Matches(c=>c==_context)))
-          .Return (preparedPredicate);
+         .Setup (mock => mock.PrepareWhereExpression (
+                     It.Is<Expression> (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
+                     It.Is<ISqlPreparationContext> (c=>c==_context)))
+         .Returns (preparedPredicate)
+         .Verifiable ();
       _stageMock
-          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Matches (e => e.NodeType == ExpressionType.Not), Arg.Is (_context)))
-          .WhenCalled (
+         .Expect (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<TEMPLATE> (param => param == _context)))
+         .Callback (
               mi =>
               {
                 var selectProjection = (Expression) mi.Arguments[0];
@@ -80,12 +81,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
                 SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
               })
-          .Return (fakePreparedSelectProjection);
-      _stageMock.Replay();
+         .Return (fakePreparedSelectProjection);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.Verify ();
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));

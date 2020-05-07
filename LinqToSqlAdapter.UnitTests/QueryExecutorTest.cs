@@ -37,7 +37,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     private MainFromClause _mainFromClause;
     private SelectClause _selectClause;
     private QueryModel _queryModel;
-    private IMappingResolver _resolverStub;
+    private Mock<IMappingResolver> _resolverStub;
 
     [SetUp]
     public void SetUp ()
@@ -49,11 +49,11 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       _resolverStub = MockRepository.GenerateStub<IMappingResolver> ();
       _resolverStub
-          .Stub (stub => stub.ResolveTableInfo (Arg<UnresolvedTableInfo>.Is.Anything, Arg<UniqueIdentifierGenerator>.Is.Anything))
-          .Return (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));
+         .Setup (stub => stub.ResolveTableInfo (It.IsAny<TEMPLATE>(), It.IsAny<TEMPLATE>()))
+         .Returns (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));
       _resolverStub
-          .Stub (stub => stub.ResolveConstantExpression ((ConstantExpression) _selectClause.Selector))
-          .Return (_selectClause.Selector);
+         .Setup (stub => stub.ResolveConstantExpression ((ConstantExpression) _selectClause.Selector))
+         .Returns (_selectClause.Selector);
     }
 
     [Test] 
@@ -68,7 +68,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteScalar<object> (_queryModel);
 
-      retrieverMock.VerifyAllExpectations ();
+      retrieverMock.Verify ();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
-      retrieverMock.VerifyAllExpectations ();
+      retrieverMock.Verify ();
       Assert.That (result, Is.SameAs (fakeResult[0]));
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
-      retrieverMock.VerifyAllExpectations ();
+      retrieverMock.Verify ();
       Assert.That (result, Is.EqualTo (default (DataContextTestClass.Customer)));
     }
 
@@ -134,37 +134,37 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var executor = CreateQueryExecutor (retrieverMock);
       var result = executor.ExecuteCollection<DataContextTestClass.Customer> (_queryModel);
 
-      retrieverMock.VerifyAllExpectations();
+      retrieverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
     private QueryExecutor CreateQueryExecutor(IQueryResultRetriever retrieverMock)
     {
-      return new QueryExecutor (_resolverStub, retrieverMock, ResultOperatorHandlerRegistry.CreateDefault (), CompoundMethodCallTransformerProvider.CreateDefault (), false);
+      return new QueryExecutor (_resolverStub, retrieverMock.Object, ResultOperatorHandlerRegistry.CreateDefault (), CompoundMethodCallTransformerProvider.CreateDefault (), false);
     }
 
     private static IQueryResultRetriever GetRetrieverMockStrict(IEnumerable<DataContextTestClass.Customer> fakeResult)
     {
-      var retrieverMock = MockRepository.GenerateStrictMock<IQueryResultRetriever> ();
+      var retrieverMock = new Mock<IQueryResultRetriever>(MockBehavior.Strict);
       retrieverMock
-          .Expect (stub => stub.GetResults (
-              Arg<Func<IDatabaseResultRow, DataContextTestClass.Customer>>.Is.Anything,
-              Arg.Is ("SELECT NULL AS [value] FROM [CustomerTable] AS [t0]"),
-              Arg<CommandParameter[]>.List.Equal (new CommandParameter[0])))
-          .Return (fakeResult);
-      retrieverMock.Replay ();
+         .Setup (stub => stub.GetResults (
+                     It.IsAny<TEMPLATE>(),
+                     It.Is<TEMPLATE> (param => param == "SELECT NULL AS [value] FROM [CustomerTable] AS [t0]"),
+                     It.Is<CommandParameter[]> (l => l.Equals(new CommandParameter[0]))))
+         .Returns (fakeResult)
+         .Verifiable ();
       return retrieverMock;
     }
 
     private static IQueryResultRetriever GetRetrieverMockStrictScalar (object fakeResult)
     {
-      var retrieverMock = MockRepository.GenerateStrictMock<IQueryResultRetriever> ();
+      var retrieverMock = new Mock<IQueryResultRetriever>(MockBehavior.Strict);
       retrieverMock
-          .Expect (stub => stub.GetScalar (Arg< Func<IDatabaseResultRow, object>>.Is.Anything, 
-              Arg.Is ("SELECT COUNT(*) AS [value] FROM [CustomerTable] AS [t0]"),
-              Arg<CommandParameter[]>.List.Equal (new CommandParameter[0])))
-          .Return (fakeResult);
-      retrieverMock.Replay ();
+         .Setup (stub => stub.GetScalar (It.IsAny<TEMPLATE>(), 
+                                         It.Is<TEMPLATE> (param => param == "SELECT COUNT(*) AS [value] FROM [CustomerTable] AS [t0]"),
+                                         It.Is<CommandParameter[]> (l => l.Equals(new CommandParameter[0]))))
+         .Returns (fakeResult)
+         .Verifiable ();
       return retrieverMock;
     }
   }

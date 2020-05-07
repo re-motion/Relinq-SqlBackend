@@ -22,7 +22,7 @@ using NUnit.Framework;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 {
@@ -75,15 +75,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void VisitChildren_NoColumnChanged ()
     {
-      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
-      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[0])).Return (_originalColumnsReadonly[0]);
-      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[1])).Return (_originalColumnsReadonly[1]);
-      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[2])).Return (_originalColumnsReadonly[2]);
-      visitorMock.Replay();
+      var visitorMock = new Mock<ExpressionVisitor>();
+      visitorMock
+         .Setup (mock => mock.Visit (_originalColumnsReadonly[0])).Returns (_originalColumnsReadonly[0]).Verifiable ();
+      visitorMock
+         .Setup (mock => mock.Visit (_originalColumnsReadonly[1])).Returns (_originalColumnsReadonly[1]).Verifiable ();
+      visitorMock
+         .Setup (mock => mock.Visit (_originalColumnsReadonly[2])).Returns (_originalColumnsReadonly[2]).Verifiable ();
 
-      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);
+      var expression = ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
       Assert.That (expression, Is.SameAs (_entityExpression));
     }
 
@@ -92,15 +94,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       var newColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Test", false);
 
-      var visitorMock = MockRepository.GenerateMock<ExpressionVisitor>();
+      var visitorMock = new Mock<ExpressionVisitor>();
       var expectedColumns = new[] { _columnExpression1, newColumnExpression, _columnExpression3 };
 
-      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[0])).Return (expectedColumns[0]);
-      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[1])).Return (expectedColumns[1]);
-      visitorMock.Expect (mock => mock.Visit (_originalColumnsReadonly[2])).Return (expectedColumns[2]);
-      visitorMock.Replay();
+      visitorMock
+         .Setup (mock => mock.Visit (_originalColumnsReadonly[0])).Returns (expectedColumns[0]).Verifiable ();
+      visitorMock
+         .Setup (mock => mock.Visit (_originalColumnsReadonly[1])).Returns (expectedColumns[1]).Verifiable ();
+      visitorMock
+         .Setup (mock => mock.Visit (_originalColumnsReadonly[2])).Returns (expectedColumns[2]).Verifiable ();
 
-      var expression = (SqlEntityExpression) ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock);
+      var expression = (SqlEntityExpression) ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock.Object);
 
       Assert.That (expression, Is.Not.SameAs (_entityExpression));
       Assert.That (expression.Type, Is.SameAs (_entityExpression.Type));

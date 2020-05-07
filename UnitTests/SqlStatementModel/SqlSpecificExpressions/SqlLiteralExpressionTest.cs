@@ -19,7 +19,7 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -71,12 +71,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsThis ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
-      visitorMock.Replay();
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_literalExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_literalExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_literalExpression));
     }
 

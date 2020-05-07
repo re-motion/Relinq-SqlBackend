@@ -18,7 +18,7 @@
 using System;
 using System.Data.Linq.Mapping;
 using NUnit.Framework;
-using Rhino.Mocks;
+using Moq;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
@@ -31,10 +31,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       const string name = "equal";
 
       var metaDataMember1 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember1.Stub (dataMember => dataMember.MappedName).Return (name);
+      metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
 
       var metaDataMember2 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember2.Stub (dataMember => dataMember.MappedName).Return (name);
+      metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (name);
 
       var comparer = new MetaDataMemberComparer();
 
@@ -48,10 +48,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       const string otherName = "notequal";
 
       var metaDataMember1 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember1.Stub (dataMember => dataMember.MappedName).Return (name);
+      metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
 
       var metaDataMember2 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember2.Stub (dataMember => dataMember.MappedName).Return (otherName);
+      metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (otherName);
 
       var comparer = new MetaDataMemberComparer();
 
