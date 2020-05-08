@@ -70,18 +70,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
          .Returns (preparedPredicate)
          .Verifiable ();
       _stageMock
-         .Expect (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<TEMPLATE> (param => param == _context)))
+         .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Callback (
-              mi =>
+              (Expression mi, ISqlPreparationContext _) =>
               {
-                var selectProjection = (Expression) mi.Arguments[0];
+                var selectProjection = mi;
                 var expectedSubStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = preparedPredicate }.GetSqlStatement();
                 var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
                 var expectedExpression = Expression.Not (expectedExistsExpression);
 
                 SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
               })
-         .Return (fakePreparedSelectProjection);
+         .Returns (fakePreparedSelectProjection);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 

@@ -50,13 +50,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var commandBuilder = new SqlCommandBuilder();
 
       visitor
-         .Expect (mock => mock.Visit (_expression1))
-         .Return (_expression1);
+         .Setup (mock => mock.Visit (_expression1))
+         .Returns (_expression1);
       visitor
-         .Expect (mock => mock.Visit (_expression2))
-         .Return (_expression2);
+         .Setup (mock => mock.Visit (_expression2))
+         .Returns (_expression2);
 
-      _sqlCompositeCustomTextGeneratorExpression.Generate (commandBuilder, visitor, MockRepository.GenerateStub<ISqlGenerationStage>());
+      _sqlCompositeCustomTextGeneratorExpression.Generate (commandBuilder, visitor.Object, new Mock<ISqlGenerationStage>().Object);
 
       visitor.Verify();
     }

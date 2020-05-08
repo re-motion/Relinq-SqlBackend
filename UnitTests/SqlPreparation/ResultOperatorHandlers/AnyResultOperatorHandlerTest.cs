@@ -62,17 +62,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedSelectProjection = Expression.Constant (false);
 
       _stageMock
-         .Expect (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e is SqlExistsExpression), It.Is<TEMPLATE> (param => param == _context)))
+         .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e is SqlExistsExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Callback (
-             mi =>
+             (Expression mi, ISqlPreparationContext _) =>
              {
-               var selectProjection = (Expression) mi.Arguments[0];
+               var selectProjection = mi;
                Assert.That (selectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
 
                var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
                SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
              })
-         .Return (fakePreparedSelectProjection);
+         .Returns (fakePreparedSelectProjection);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock.Object, _context);
 

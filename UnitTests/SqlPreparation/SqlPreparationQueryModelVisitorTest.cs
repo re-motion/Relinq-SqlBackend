@@ -114,16 +114,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel));
       _visitorPartialMock
          .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
-         .Callback (mi => _visitorPartialMock.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
+         .Callback ((SelectClause _0, QueryModel _1) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
          .Verifiable ();
 
-      _visitorPartialMock.VisitQueryModel (_queryModel);
+      _visitorPartialMock.Object.VisitQueryModel (_queryModel);
 
       _visitorPartialMock.Verify ();
 
-      Assert.That (_visitorPartialMock.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
-      Assert.That (((NamedExpression) _visitorPartialMock.SqlStatementBuilder.SelectProjection).Name, Is.Null);
-      Assert.That (((NamedExpression) _visitorPartialMock.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (fakeSelectProjection));
+      Assert.That (_visitorPartialMock.Object.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection).Name, Is.Null);
+      Assert.That (((NamedExpression) _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (fakeSelectProjection));
     }
 
     [Test]
@@ -132,21 +132,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel));
       _visitorPartialMock
          .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
-         .Callback (mi =>
+         .Callback ((SelectClause _0, QueryModel _1) =>
                     {
-                      _visitorPartialMock.SqlStatementBuilder.SelectProjection = Expression.Constant (0);
-                      _visitorPartialMock.SqlStatementBuilder.DataInfo =
+                      _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = Expression.Constant (0);
+                      _visitorPartialMock.Object.SqlStatementBuilder.DataInfo =
                           new StreamedSequenceInfo (typeof (IEnumerable<Cook>), Expression.Constant (null, typeof (Cook)));
                     });
 
       _queryModel.ResultTypeOverride = typeof (List<>);
 
-      _visitorPartialMock.VisitQueryModel (_queryModel);
+      _visitorPartialMock.Object.VisitQueryModel (_queryModel);
 
       _visitorPartialMock.Verify ();
 
-      Assert.That (_visitorPartialMock.SqlStatementBuilder.DataInfo, Is.Not.Null);
-      Assert.That (_visitorPartialMock.SqlStatementBuilder.DataInfo.DataType, Is.SameAs (typeof (List<Cook>)));
+      Assert.That (_visitorPartialMock.Object.SqlStatementBuilder.DataInfo, Is.Not.Null);
+      Assert.That (_visitorPartialMock.Object.SqlStatementBuilder.DataInfo.DataType, Is.SameAs (typeof (List<Cook>)));
     }
 
     [Test]
@@ -251,14 +251,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel));
       _visitorPartialMock
          .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
-         .Callback (mi => _visitorPartialMock.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
+         .Callback ((SelectClause _0, QueryModel _1) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
          .Verifiable ();
 
-      _visitorPartialMock.VisitQueryModel (_queryModel);
+      _visitorPartialMock.Object.VisitQueryModel (_queryModel);
 
       _visitorPartialMock.Verify ();
 
-      Assert.That (((NamedExpression) _visitorPartialMock.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (fakeSelectProjection));
+      Assert.That (((NamedExpression) _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (fakeSelectProjection));
     }
 
     [Test]
@@ -272,8 +272,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
          .Setup (mock => mock.PrepareFromExpression (
                      It.Is<Expression> (e => e == _mainFromClause.FromExpression),
                      It.Is<ISqlPreparationContext> (c => c != _context),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
          .Verifiable ();
@@ -308,8 +308,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
          .Setup (mock => mock.PrepareFromExpression (
                      It.Is<Expression> (e => e == constantExpression),
                      It.Is<ISqlPreparationContext> (c => c != _context),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
          .Verifiable ();
@@ -342,8 +342,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
          .Setup (mock => mock.PrepareFromExpression (
                      It.Is<Expression> (e => e == fromClause.FromExpression),
                      It.Is<ISqlPreparationContext> (c => c != _context),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
          .Verifiable ();
@@ -460,15 +460,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
          .Setup (mock => mock.PrepareFromExpression (
                      It.Is<Expression> (e => e == joinClause.InnerSequence),
                      It.Is<ISqlPreparationContext> (c => c != _context),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
          .Verifiable ();
       _stageMock
          .Setup (mock =>
                      mock.PrepareWhereExpression (
-                         It.IsAny<TEMPLATE>(),
+                         It.IsAny<Expression>(),
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               fakeWhereCondition)
@@ -495,16 +495,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
          .Setup (mock =>
                      mock.PrepareFromExpression (
                          It.Is<Expression> (e => e == joinClause.InnerSequence),
-                         It.IsAny<TEMPLATE>(),
-                         It.IsAny<TEMPLATE>(),
-                         It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                         It.IsAny<ISqlPreparationContext>(),
+                         It.IsAny<Func<ITableInfo, SqlTable>>(),
+                         It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
          .Verifiable ();
       _stageMock
          .Setup (mock =>
                      mock.PrepareWhereExpression (
-                         It.IsAny<TEMPLATE>(),
+                         It.IsAny<Expression>(),
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               fakeWhereCondition)
@@ -631,15 +631,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock =>
                      mock.PrepareFromExpression (
-                         It.Is<TEMPLATE> (param => param == _mainFromClause.FromExpression),
+                         It.Is<Expression> (param => param == _mainFromClause.FromExpression),
                          It.Is<ISqlPreparationContext> (c => c != _context),
-                         It.IsAny<TEMPLATE>(),
-                         It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                         It.IsAny<Func<ITableInfo, SqlTable>>(),
+                         It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
-         .Callback (mi => 
+         .Callback ((Expression _0, ISqlPreparationContext _1, Func<ITableInfo, SqlTable> mi, OrderingExtractionPolicy _3)=> 
                     {
-                      var tableCreator = (Func<ITableInfo, SqlTable>) mi.Arguments[2];
+                      var tableCreator = mi;
                       var sampleTableInfo = new UnresolvedTableInfo (typeof (Cook));
             
                       var table = tableCreator (sampleTableInfo);
@@ -763,8 +763,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                      mock.PrepareFromExpression (
                          It.Is<Expression> (e => e == joinClause.InnerSequence),
                          It.Is<ISqlPreparationContext> (c => c != _context),
-                         It.IsAny<TEMPLATE>(),
-                         It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                         It.IsAny<Func<ITableInfo, SqlTable>>(),
+                         It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
          .Verifiable ();

@@ -68,7 +68,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock.Verify();
       Assert.That (_sqlTable.TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
     }
-
+    
     [Test]
     public void ResolveSqlTable_ResolvesJoinInfo ()
     {
@@ -79,19 +79,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
-      using (_stageMock.GetMockRepository().Ordered())
-      {
-        _stageMock
+      var sequence = new MockSequence();
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
            .Returns (_fakeResolvedSimpleTableInfo)
            .Verifiable ();
         _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveJoinInfo (@join.JoinInfo, _mappingResolutionContext))
            .Returns (fakeResolvedJoinInfo)
            .Verifiable ();
-      }
 
-      _visitor.ResolveSqlTable (_sqlTable);
+        _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.Verify();
       Assert.That (join.JoinInfo, Is.SameAs (fakeResolvedJoinInfo));
@@ -112,21 +112,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedJoinInfo1 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Restaurant));
 
-      using (_stageMock.GetMockRepository().Ordered())
-      {
-        _stageMock
+      var sequence = new MockSequence();
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
            .Returns (_fakeResolvedSimpleTableInfo)
            .Verifiable ();
-        _stageMock
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveJoinInfo (join1.JoinInfo, _mappingResolutionContext))
            .Returns (fakeResolvedJoinInfo1)
            .Verifiable ();
-        _stageMock
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveJoinInfo (join2.JoinInfo, _mappingResolutionContext))
            .Returns (fakeResolvedJoinInfo2)
            .Verifiable ();
-      }
 
       _visitor.ResolveSqlTable (_sqlTable);
 
@@ -156,27 +157,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedJoinInfo2 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
       var fakeResolvedJoinInfo3 = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (string));
 
-      using (_stageMock.GetMockRepository().Ordered())
-      {
-        _stageMock
+      var sequence = new MockSequence();
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
            .Returns (_fakeResolvedSimpleTableInfo)
            .Verifiable ();
-        _stageMock
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveJoinInfo (join1.JoinInfo, _mappingResolutionContext))
            .Returns (fakeResolvedJoinInfo1)
            .Verifiable ();
-        _stageMock
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveJoinInfo (join2.JoinInfo, _mappingResolutionContext))
            .Returns (fakeResolvedJoinInfo2)
            .Verifiable ();
-        _stageMock
+      _stageMock
+           .InSequence(sequence)
            .Setup (mock => mock.ResolveJoinInfo (join3.JoinInfo, _mappingResolutionContext))
            .Returns (fakeResolvedJoinInfo3)
            .Verifiable ();
-      }
 
-      _visitor.ResolveSqlTable (_sqlTable);
+        _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.Verify();
       Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
@@ -322,7 +325,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (fakeSqlStatement, Is.Not.EqualTo (setOperationCombinedStatement.SqlStatement), "This is important for the test below.");
 
       _stageMock
-         .Setup (mock => mock.ResolveSelectExpression (It.Is<TEMPLATE> (param => param == constantExpression), It.IsAny<TEMPLATE>(), It.Is<TEMPLATE> (param => param == _mappingResolutionContext)))
+         .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
          .Returns (fakeExpression)
          .Verifiable ();
       _stageMock
@@ -386,7 +389,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var sqlStatement = builder.GetSqlStatement();
 
       _stageMock
-         .Setup (mock => mock.ResolveSelectExpression (It.Is<TEMPLATE> (param => param == constantExpression), It.IsAny<TEMPLATE>(), It.Is<TEMPLATE> (param => param == _mappingResolutionContext)))
+         .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
          .Returns (constantExpression)
          .Verifiable ();
       _stageMock

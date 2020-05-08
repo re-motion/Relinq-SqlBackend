@@ -631,7 +631,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var transformerMock = new Mock<IMethodCallTransformer>();
       transformerMock
-         .Setup (mock => mock.Transform (It.Is<TEMPLATE> (param => param == methodCallExpression)))
+         .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
          .Returns (methodCallExpression)
          .Verifiable ();
 
@@ -651,7 +651,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var transformerMock = new Mock<IMethodCallTransformer>();
       transformerMock
-         .Setup (mock => mock.Transform (It.Is<TEMPLATE> (param => param == methodCallExpression)))
+         .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
          .Returns (_cookQuerySourceReferenceExpression)
          .Verifiable ();
 

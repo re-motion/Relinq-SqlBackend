@@ -28,8 +28,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests
     public static void CheckAcceptForVisitorSupportingType<TExpression, TVisitorInterface> (
         TExpression expression,
         Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : Expression
+                                                             where TVisitorInterface : class
     {
-      var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (TVisitorInterface));
+      var baseMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
+      var visitorMock = baseMock.As<TVisitorInterface>();
 
       var returnedExpression = Expression.Constant (0);
 
@@ -38,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
          .Returns (returnedExpression)
          .Verifiable ();
 
-      var result = CallAccept (expression, visitorMock.Object);
+      var result = CallAccept (expression, baseMock.Object);
 
       visitorMock.Verify ();
 

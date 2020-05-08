@@ -36,9 +36,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var metaDataMember2 = new Mock<MetaDataMember>();
       metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (name);
 
-      var comparer = new MetaDataMemberComparer();
-
-      Assert.That (comparer.Equals (metaDataMember1, metaDataMember2), Is.True);
+      Assert.That (MetaDataMemberComparer.Equals (metaDataMember1, metaDataMember2), Is.True);
     }
 
     [Test]
@@ -53,9 +51,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var metaDataMember2 = new Mock<MetaDataMember>();
       metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (otherName);
 
-      var comparer = new MetaDataMemberComparer();
-
-      Assert.That (comparer.Equals (metaDataMember1, metaDataMember2), Is.False);
+      Assert.That (MetaDataMemberComparer.Equals (metaDataMember1, metaDataMember2), Is.False);
     }
   }
 }

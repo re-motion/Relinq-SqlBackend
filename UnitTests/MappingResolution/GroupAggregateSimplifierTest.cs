@@ -246,14 +246,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new NamedExpression ("element", Expression.Constant ("e")), 
           AggregationModifier.Count);
       _stageMock
-         .Setup (mock => mock.ResolveAggregationExpression(It.IsAny<TEMPLATE>(), It.Is<TEMPLATE> (param => param == _context)))
+         .Setup (mock => mock.ResolveAggregationExpression(It.IsAny<Expression>(), It.Is<IMappingResolutionContext> (param => param == _context)))
          .Returns (preparedResolvedAggregate)
-         .Callback (mi => {
+         .Callback (
+              (Expression mi, IMappingResolutionContext _) => {
                       var expectedReplacedAggregate = new AggregationExpression (
                           typeof (int),
                           ((NamedExpression) _associatedGroupingSelectExpression.ElementExpression).Expression, 
                           AggregationModifier.Count);
-                      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, (Expression) mi.Arguments[0]);
+                      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, mi);
                     })
          .Verifiable ();
 

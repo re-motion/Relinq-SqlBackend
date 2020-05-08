@@ -261,7 +261,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _groupAggregateSimplifierMock
          .Setup (mock => mock.SimplifyIfPossible (
                      It.Is<SqlSubStatementExpression> (e => ReferenceEquals (e.SqlStatement, fakeResolvedStatement)),
-                     It.Is<TEMPLATE> (param => param == expression.SqlStatement.SelectProjection)))
+                     It.Is<Expression> (param => param == expression.SqlStatement.SelectProjection)))
          .Returns (
               fakeSimplifiedExpression)
          .Verifiable ();
@@ -360,15 +360,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable ();
 
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
+         .Returns ((BinaryExpression param1) => param1)
          .Verifiable ();
 
       _compoundComparisonSplitterMock
-         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<BinaryExpression>()))
+         .Returns ((BinaryExpression param1) => param1)
          .Verifiable ();
 
       // No revisiting
@@ -397,16 +395,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (
                      It.Is<BinaryExpression> (b => b.Left == leftKey && b.Right == rightKey)))
-         .Returns (
-              null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Returns ((BinaryExpression param1) => param1)
          .Verifiable ();
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (
                      It.Is<BinaryExpression> (b => b.Left == leftKey && b.Right == rightKey)))
-         .Returns (
-              null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Returns ((BinaryExpression param1) => param1)
          .Verifiable ();
 
       var result = _visitor.Visit (joinConditionExpression);
@@ -442,8 +436,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Verifiable ();
       _namedExpressionCombinerMock
          .Setup (mock => mock.ProcessNames (It.Is<NamedExpression> (e => e.Name == "Name2" && e.Expression == fakeResolvedInnerExpression2)))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Returns ((NamedExpression param1) => param1)
          .Verifiable ();
 
       var result = _visitor.Visit (namedExpression);
@@ -467,9 +460,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (innerExpression)).Returns (fakeResolvedInnerExpression).Verifiable ();
 
       _namedExpressionCombinerMock
-         .Setup (mock => mock.ProcessNames (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.ProcessNames (It.IsAny<NamedExpression>()))
+         .Returns ((NamedExpression param1) => param1)
          .Verifiable ();
 
       // No revisiting
@@ -600,9 +592,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable ();
 
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
+         .Returns ((BinaryExpression param1) => param1)
          .Verifiable ();
 
       // No revisiting
@@ -673,14 +664,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
 
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
+         .Returns ((BinaryExpression param1) => param1)
+
          .Verifiable ();
       _compoundComparisonSplitterMock
-         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<BinaryExpression>()))
+         .Returns ((BinaryExpression param1) => param1)
+
          .Verifiable ();
 
       // No revisiting
@@ -751,14 +742,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
 
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
+         .Returns ((BinaryExpression param1) => param1)
          .Verifiable ();
       _compoundComparisonSplitterMock
-         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<TEMPLATE>()))
-         .Returns (null)
-         .Callback (mi => mi.ReturnValue = mi.Arguments[0])
+         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<BinaryExpression>()))
+         .Returns ((BinaryExpression param1) => param1)
          .Verifiable ();
 
 
@@ -793,12 +782,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression();
       _stageMock
          .Setup (mock => mock.ResolveEntityRefMemberExpression (
-                     It.Is<TEMPLATE> (param => param == entityRefMemberExpression),
+                     It.Is<SqlEntityRefMemberExpression> (param => param == entityRefMemberExpression),
                      It.Is<UnresolvedJoinInfo> (
                          ji =>
                              ji.OriginatingEntity == entityRefMemberExpression.OriginatingEntity && ji.MemberInfo == entityRefMemberExpression.MemberInfo
                                                                                                  && ji.Cardinality == JoinCardinality.One),
-                     It.Is<TEMPLATE> (param => param == _mappingResolutionContext)))
+                     It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
          .Returns (
               fakeResolvedExpression)
          .Verifiable ();
@@ -841,10 +830,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Kitchen));
       _stageMock
          .Setup (mock => mock.ResolveEntityRefMemberExpression (
-                     It.Is<TEMPLATE> (param => param == entityRefMemberExpression),
+                     It.Is<SqlEntityRefMemberExpression> (param => param == entityRefMemberExpression),
                      It.Is<UnresolvedJoinInfo> (
                          i => i.OriginatingEntity == entityExpression && i.MemberInfo == memberInfo && i.Cardinality == JoinCardinality.One),
-                     It.Is<TEMPLATE> (param => param == _mappingResolutionContext)))
+                     It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
          .Returns (
               fakeResult)
          .Verifiable ();

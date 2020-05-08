@@ -374,7 +374,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock =>
                      mock.ResolveJoinInfo (
-                         It.Is<UnresolvedJoinInfo> (joinInfo => joinInfo.MemberInfo == kitchenCookMember), It.IsAny<TEMPLATE>()))
+                         It.Is<UnresolvedJoinInfo> (joinInfo => joinInfo.MemberInfo == kitchenCookMember), It.IsAny<UniqueIdentifierGenerator>()))
          .Returns (
               fakeJoinInfo)
          .Verifiable ();
@@ -382,8 +382,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock =>
                      mock.ResolveSimpleTableInfo (
-                         It.IsAny<TEMPLATE>(),
-                         It.IsAny<TEMPLATE>()))
+                         It.IsAny<IResolvedTableInfo>(),
+                         It.IsAny<UniqueIdentifierGenerator>()))
          .Returns (
               fakeEntityExpression)
          .Verifiable ();

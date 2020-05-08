@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var visitor = new Mock<ExpressionVisitor>();
       var stage = new Mock<ISqlGenerationStage>();
 
-      _sqlCustomTextExpression.Generate (commandBuilder, visitor, stage);
+      _sqlCustomTextExpression.Generate (commandBuilder, visitor.Object, stage.Object);
 
       Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("test"));
     }

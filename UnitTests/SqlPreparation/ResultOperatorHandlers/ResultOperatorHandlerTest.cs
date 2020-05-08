@@ -68,14 +68,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
          .Setup (mock => mock.PrepareFromExpression (
-                     Arg<SqlSubStatementExpression>.Is.TypeOf,
-                     It.Is<TEMPLATE> (param => param == _context),
-                     It.Is<TEMPLATE> (param => param == tableGenerator),
-                     It.Is<TEMPLATE> (param => param == someOrderingExtractionPolicy)))
+                     It.IsAny<SqlSubStatementExpression>(),
+                     It.Is<ISqlPreparationContext> (param => param == _context),
+                     It.Is<Func<ITableInfo, SqlTable>> (param => param == tableGenerator),
+                     It.Is<OrderingExtractionPolicy> (param => param == someOrderingExtractionPolicy)))
          .Returns (fakeFromExpressionInfo)
-         .Callback (mi => 
+         .Callback (
+              (Expression mi, ISqlPreparationContext _1, Func<ITableInfo, SqlTable> _2, OrderingExtractionPolicy _3) => 
                     {
-                      var sqlStatement = ((SqlSubStatementExpression) mi.Arguments[0]).SqlStatement;
+                      var sqlStatement = ((SqlSubStatementExpression) mi).SqlStatement;
                       SqlExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression (null, originalStatement.SelectProjection), sqlStatement.SelectProjection);
 
                       Assert.That (sqlStatement.DataInfo, Is.SameAs (originalStatement.DataInfo));
@@ -105,10 +106,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
          .Setup (mock => mock.PrepareFromExpression (
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>()))
+                     It.IsAny<Expression>(),
+                     It.IsAny<ISqlPreparationContext>(),
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
          .Verifiable ();
@@ -132,10 +133,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
          .Setup (mock => mock.PrepareFromExpression (
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Expression>(),
+                     It.IsAny<ISqlPreparationContext>(),
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
          .Verifiable ();
@@ -180,10 +181,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
          .Setup (mock => mock.PrepareFromExpression (
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Expression>(),
+                     It.IsAny<ISqlPreparationContext>(),
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
          .Verifiable ();
@@ -208,10 +209,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
          .Setup (mock => mock.PrepareFromExpression (
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Expression>(),
+                     It.IsAny<ISqlPreparationContext>(),
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
          .Verifiable ();
@@ -248,10 +249,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _stageMock
          .Setup (mock => mock.PrepareFromExpression (
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.IsAny<TEMPLATE>(),
-                     It.Is<TEMPLATE> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                     It.IsAny<Expression>(),
+                     It.IsAny<ISqlPreparationContext>(),
+                     It.IsAny<Func<ITableInfo, SqlTable>>(),
+                     It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
          .Verifiable ();

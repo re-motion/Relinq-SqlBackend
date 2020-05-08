@@ -92,7 +92,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<TEMPLATE>(), It.Is<TEMPLATE> (param => param == _context)))
+         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
          .Verifiable ();
 
@@ -128,7 +128,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<TEMPLATE>(), It.Is<TEMPLATE> (param => param == _context)))
+         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
          .Verifiable ();
 
@@ -150,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<TEMPLATE>(), It.Is<TEMPLATE> (param => param == _context)))
+         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
          .Verifiable ();
 
@@ -204,11 +204,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Expect (mock => mock.PrepareSelectExpression (
-                      It.IsAny<TEMPLATE>(), 
-                      It.Is<TEMPLATE> (param => param == _context)))
-         .Callback (mi => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, (Expression) mi.Arguments[0]))
-         .Return (fakeSelectProjection);
+         .Setup (mock => mock.PrepareSelectExpression (
+                      It.IsAny<Expression>(), 
+                      It.Is<ISqlPreparationContext> (param => param == _context)))
+         .Callback ((Expression mi, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, mi))
+         .Returns (fakeSelectProjection);
 
       _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
@@ -230,7 +230,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, string> ());
 
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<TEMPLATE>(), It.Is<ISqlPreparationContext> (c => c == _context)))
+         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (c => c == _context)))
          .Returns (fakeSelectProjection)
          .Verifiable ();
 
@@ -254,7 +254,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (0);
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<TEMPLATE>(), It.Is<TEMPLATE> (param => param == _context)))
+         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
          .Verifiable ();
 

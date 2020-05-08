@@ -30,17 +30,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void Accept ()
     {
-      var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (ISqlCustomTextGeneratorExpressionVisitor));
+      var baseMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
+      var visitorMock = baseMock.As<ISqlCustomTextGeneratorExpressionVisitor>();
 
       var customTextGeneratorExpression = new TestableSqlCustomTextGeneratorExpression (typeof (Cook));
 
       visitorMock
-         .Setup (mock => ((ISqlCustomTextGeneratorExpressionVisitor)mock).VisitSqlCustomTextGenerator (customTextGeneratorExpression))
+         .Setup (mock => mock.VisitSqlCustomTextGenerator (customTextGeneratorExpression))
          .Returns (customTextGeneratorExpression)
          .Verifiable ();
 
-      ExtensionExpressionTestHelper.CallAccept (customTextGeneratorExpression, visitorMock.Object);
+      ExtensionExpressionTestHelper.CallAccept (customTextGeneratorExpression, baseMock.Object);
 
       visitorMock.Verify();
     }

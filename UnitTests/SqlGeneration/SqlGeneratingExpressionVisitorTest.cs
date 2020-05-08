@@ -406,8 +406,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
          .Setup (mock =>
                      mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
          .Callback (
-              mi =>
-                  ((SqlCommandBuilder) mi.Arguments[0]).Append ("SELECT [t].[Name] FROM [Table] AS [t]"))
+              (ISqlCommandBuilder mi, SqlStatement _) =>
+                  ((SqlCommandBuilder) mi).Append ("SELECT [t].[Name] FROM [Table] AS [t]"))
          .Verifiable ();
 
       SqlGeneratingExpressionVisitor.GenerateSql (subStatementExpression, _commandBuilder, _stageMock.Object);
@@ -426,10 +426,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock =>
                      mock.GenerateTextForSqlStatement (
-                         It.Is<TEMPLATE> (param => param == _commandBuilder), It.IsAny<TEMPLATE>()))
+                         It.Is<ISqlCommandBuilder> (param => param == _commandBuilder), It.IsAny<SqlStatement>()))
          .Callback (
-              mi =>
-                  ((SqlCommandBuilder) mi.Arguments[0]).Append (
+              (ISqlCommandBuilder mi, SqlStatement _) =>
+                  ((SqlCommandBuilder) mi).Append (
                       "test"))
          .Verifiable ();
 
@@ -609,11 +609,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering1))
-         .Callback (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order1 ASC"))
+         .Callback ((ISqlGenerationStage mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order1 ASC"))
          .Verifiable ();
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering2))
-         .Callback (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("order2 DESC"))
+         .Callback ((ISqlGenerationStage mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order2 DESC"))
          .Verifiable ();
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlRowNumberRÉxpression, _commandBuilder, _stageMock.Object);
