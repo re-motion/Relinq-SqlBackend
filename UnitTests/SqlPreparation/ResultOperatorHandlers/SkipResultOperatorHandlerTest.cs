@@ -90,7 +90,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Callback ((Expression mi, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNewProjection, mi))
-         .Returns (fakePreparedProjection);
+         .Returns (fakePreparedProjection)
+         .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
@@ -124,7 +125,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                         var ordering = rowNumberExpression.Orderings[0];
                         SqlExpressionTreeComparer.CheckAreEqualTrees (ordering.Expression, Expression.Constant (1));
                       })
-         .Returns (fakePreparedProjection);
+         .Returns (fakePreparedProjection)
+         .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
