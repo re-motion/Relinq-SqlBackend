@@ -33,7 +33,8 @@
       CreateSqlServer2012;
       CreateSqlServer2014;
       CreateSqlServer2016;
-      CreateSqlServer2017
+      CreateSqlServer2017;
+      CreateSqlServer2019
     </CreateDatabaseProperties>
   </PropertyGroup>
 
@@ -242,6 +243,25 @@
       <IntegratedSecurity>$(IntegratedSecurityMsSql2017)</IntegratedSecurity>
       <Username>$(UsernameMsSql2017)</Username>
       <Password>$(PasswordMsSql2017)</Password>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSqlServer2019" Condition="'$(DatabaseSystem)' == 'SqlServer2019'">
+    <Error Text="The property 'DataSourceMsSql2019' is not set." Condition="'$(DataSourceMsSql2019)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2019' is not set." Condition="'$(DatabaseDirectoryMsSql2019)' == ''" />
+    <Error Text="The property 'IntegratedSecurityMsSql2019' is not set." Condition="'$(IntegratedSecurityMsSql2019)' == ''" />
+    <Error Text="The property 'UsernameMsSql2019' is not set." Condition="'$(IntegratedSecurityMsSql2019)' == 'false' and '$(UsernameMsSql2019)' == ''" />
+    <Error Text="The property 'PasswordMsSql2019' is not set." Condition="'$(IntegratedSecurityMsSql2019)' == 'false' and '$(PasswordMsSql2019)' == ''" />
+
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>
+      <DataSource>$(DataSourceMsSql2019)</DataSource>
+      <DatabaseDirectory>$(DatabaseDirectoryMsSql2019)</DatabaseDirectory>
+      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      <IntegratedSecurity>$(IntegratedSecurityMsSql2019)</IntegratedSecurity>
+      <Username>$(UsernameMsSql2019)</Username>
+      <Password>$(PasswordMsSql2019)</Password>
     </PropertyGroup>
   </Target>
 </Project>

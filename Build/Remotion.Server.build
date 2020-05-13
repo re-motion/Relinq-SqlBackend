@@ -61,7 +61,7 @@
   <Target Name="FullBuild_Configuration">
     <PropertyGroup>
       <Platforms>x86+x64</Platforms>
-      <DatabaseSystems>NoDB+SqlServer2005+SqlServer2008+SqlServer2008R2+SqlServer2012+SqlServer2014+SqlServer2016+SqlServer2017</DatabaseSystems>
+      <DatabaseSystems>NoDB+SqlServer2005+SqlServer2008+SqlServer2008R2+SqlServer2012+SqlServer2014+SqlServer2016+SqlServer2017+SqlServer2019</DatabaseSystems>
       <Browsers>NoBrowser</Browsers>
       <ExecutionRuntimes>Win_NET462+Win_NET472+Win_NET48</ExecutionRuntimes>
       <TargetRuntimes>NET462+NET472+NET48</TargetRuntimes>
