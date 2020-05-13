@@ -638,7 +638,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var registry = new MethodInfoBasedMethodCallTransformerRegistry();
       registry.Register (method, transformerMock.Object);
 
-      SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock.Object, registry);
+      SqlPreparationExpressionVisitor.TranslateExpression (methodCallExpression, _context, _stageMock.Object, registry); //REVIEW throws StackOverFlow at .Visit
 
       transformerMock.Verify();
     }

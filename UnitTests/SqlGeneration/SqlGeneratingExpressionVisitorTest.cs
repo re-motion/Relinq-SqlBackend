@@ -599,7 +599,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var ordering1 = new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc);
       var ordering2 = new Ordering (Expression.Constant ("order2"), OrderingDirection.Desc);
-      var sqlRowNumberRÉxpression =
+      var sqlRowNumberExpression =
           new SqlRowNumberExpression (
               new[]
               {
@@ -609,14 +609,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering1))
-         .Callback ((ISqlGenerationStage mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order1 ASC"))
+         .Callback ((ISqlCommandBuilder mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order1 ASC"))
          .Verifiable ();
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering2))
-         .Callback ((ISqlGenerationStage mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order2 DESC"))
+         .Callback ((ISqlCommandBuilder mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order2 DESC"))
          .Verifiable ();
 
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlRowNumberRÉxpression, _commandBuilder, _stageMock.Object);
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlRowNumberExpression, _commandBuilder, _stageMock.Object);
 
       _stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("ROW_NUMBER() OVER (ORDER BY order1 ASC, order2 DESC)"));

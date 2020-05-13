@@ -86,9 +86,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       Assert.That (result, Is.Empty);
 
-      _dataReaderMock.AssertWasCalled (mock => mock.Dispose());
-      _commandMock.AssertWasCalled (mock => mock.Dispose());
-      _connectionMock.AssertWasCalled (mock => mock.Dispose());
+      _dataReaderMock.Verify (mock => mock.Dispose());
+      _commandMock.Verify (mock => mock.Dispose());
+      _connectionMock.Verify (mock => mock.Dispose());
     }
 
     [Test]
@@ -108,9 +108,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       Assert.That (result, Is.Empty);
 
-      _dataParameter.AssertWasCalled (mock => mock.ParameterName = "p1");
-      _dataParameter.AssertWasCalled (mock => mock.Value = "value1");
-      _commandMock.AssertWasCalled (mock => mock.CommandText = "Text");
+      _dataParameter.VerifySet (mock => mock.ParameterName = "p1");
+      _dataParameter.VerifySet (mock => mock.Value = "value1");
+      _commandMock.VerifySet (mock => mock.CommandText = "Text");
       dataParameterCollectionMock.Verify();
     }
 
@@ -128,7 +128,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var result = retriever.GetResults (projectionMock.Object, "Text", new CommandParameter[0]).ToArray();
 
       Assert.That (result[0], Is.Null);
-      projectionMock.AssertWasCalled (p => p.Invoke (It.IsAny<TEMPLATE>()));
+      projectionMock.Verify (p => p.Invoke (It.IsAny<IDatabaseResultRow>()));
       projectionMock.Verify();
     }
 
@@ -154,9 +154,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       retriever.GetScalar (_scalarProjection, "Text", new CommandParameter[0]);
 
-      _commandMock.AssertWasCalled (mock => mock.Dispose());
-      _connectionMock.AssertWasCalled (mock => mock.Dispose());
-      _dataReaderMock.AssertWasCalled (mock => mock.Dispose());
+      _commandMock.Verify (mock => mock.Dispose());
+      _connectionMock.Verify (mock => mock.Dispose());
+      _dataReaderMock.Verify (mock => mock.Dispose());
     }
 
     [Test]
@@ -180,9 +180,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       retriever.GetScalar (_scalarProjection, "Text", new[] { new CommandParameter ("p1", "value1") });
 
-      _dataParameter.AssertWasCalled (mock => mock.ParameterName = "p1");
-      _dataParameter.AssertWasCalled (mock => mock.Value = "value1");
-      _commandMock.AssertWasCalled (mock => mock.CommandText = "Text");
+      _dataParameter.VerifySet (mock => mock.ParameterName = "p1");
+      _dataParameter.VerifySet (mock => mock.Value = "value1");
+      _commandMock.VerifySet (mock => mock.CommandText = "Text");
       dataParameterCollectionMock.Verify();
     }
   }

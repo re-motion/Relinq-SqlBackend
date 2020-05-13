@@ -243,7 +243,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
 
       var stageMock = new Mock<DefaultSqlGenerationStage>();
-      stageMock.CallBase = true;
+      stageMock.CallBase = true; //REVIEW abstract CallGenerateTextForNonSelectExpression
       stageMock
          .Setup (mock => CallGenerateTextForNonSelectExpression (mock, expression))
          .Callback ((DefaultSqlGenerationStage _0, Expression _1) => _commandBuilder.Append ("GROUP BY keyExpression"))

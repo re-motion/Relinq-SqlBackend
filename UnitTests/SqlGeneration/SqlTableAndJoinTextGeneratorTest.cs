@@ -150,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append("[Table] AS [t]"));
+         .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append("[Table] AS [t]"));
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: false);
 
@@ -230,7 +230,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("XXX"))
+         .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("XXX"))
          .Verifiable ();
 
       _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
@@ -250,7 +250,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("XXX"))
+         .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("XXX"))
          .Verifiable ();
 
       _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
