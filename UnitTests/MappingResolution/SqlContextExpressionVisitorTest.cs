@@ -227,7 +227,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    public void Visit_ThrowsOnInvalidContext ()
+    public void Visit_ThrowsOnInvalidContext () //REVIEW throws unexpected exception, also does so on develop branch
     {
       var expression = new CustomExpression (typeof (string));
 
