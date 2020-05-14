@@ -592,8 +592,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable ();
 
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
-         .Returns ((BinaryExpression param1) => param1)
+         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<SqlInExpression>()))
+         .Returns ((SqlInExpression param1) => param1)
          .Verifiable ();
 
       // No revisiting
@@ -664,13 +664,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
 
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
-         .Returns ((BinaryExpression param1) => param1)
+         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<SqlIsNullExpression>()))
+         .Returns ((SqlIsNullExpression param1) => param1)
 
          .Verifiable ();
       _compoundComparisonSplitterMock
-         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<BinaryExpression>()))
-         .Returns ((BinaryExpression param1) => param1)
+         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<SqlIsNullExpression>()))
+         .Returns ((SqlIsNullExpression param1) => param1)
 
          .Verifiable ();
 
@@ -742,12 +742,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
 
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
-         .Returns ((BinaryExpression param1) => param1)
+         .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<SqlIsNotNullExpression>()))
+         .Returns ((SqlIsNotNullExpression param1) => param1)
          .Verifiable ();
       _compoundComparisonSplitterMock
-         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<BinaryExpression>()))
-         .Returns ((BinaryExpression param1) => param1)
+         .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<SqlIsNotNullExpression>()))
+         .Returns ((SqlIsNotNullExpression param1) => param1)
          .Verifiable ();
 
 

@@ -27,6 +27,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Utilities;
 using Moq;
+using Moq.Protected;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
@@ -238,14 +239,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateTextForGroupByExpression ()
+    public void GenerateTextForGroupByExpression () //TODO this
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
 
       var stageMock = new Mock<DefaultSqlGenerationStage>();
-      stageMock.CallBase = true; //REVIEW abstract CallGenerateTextForNonSelectExpression
+      stageMock.CallBase = true;
       stageMock
-         .Setup (mock => CallGenerateTextForNonSelectExpression (mock, expression))
+         .Protected()
+         .Setup ("GenerateTextForNonSelectExpression", _commandBuilder, expression) //TODO move 250 and 249 into helper method
          .Callback ((DefaultSqlGenerationStage _0, Expression _1) => _commandBuilder.Append ("GROUP BY keyExpression"))
          .Verifiable ();
 
