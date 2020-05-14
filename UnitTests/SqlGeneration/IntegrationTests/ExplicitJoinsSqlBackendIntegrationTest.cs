@@ -253,19 +253,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression.")]
     public void ExplicitJoinWithInto_PropagatedFromSubStatement ()
     {
-      // To enable this test, see RM-3037
-      CheckQuery (
+      Assert.That (
+          () => CheckQuery (
           from cooks in (from k in Kitchens join c in Cooks on k.Name equals c.FirstName into cooks select cooks).Take(2)
           from c in cooks
           select c.Name,
           "SELECT [t2].[Name] AS [value] "
           + "FROM (SELECT [k].[Name] AS [key] FROM [KitchenTable] AS [t0]) AS [q1] "
           + "CROSS JOIN [CookTable] AS [t2] WHERE ([t0].[Name] = [q1].[FirstName])"
-          );
+          ),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression."));
     }
 
   }

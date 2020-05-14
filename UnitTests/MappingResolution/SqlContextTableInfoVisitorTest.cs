@@ -177,12 +177,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "UnresolvedGroupReferenceTableInfo is not valid at this point.")]
     public void ApplyContext_UnresolvedGroupReferenceTableInfo ()
     {
       var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedGroupReferenceTableInfo();
-
-      SqlContextTableInfoVisitor.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext);
+      Assert.That (
+          () => SqlContextTableInfoVisitor.ApplyContext (tableInfo, SqlExpressionContext.ValueRequired, _stageMock, _mappingresolutionContext),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "UnresolvedGroupReferenceTableInfo is not valid at this point."));
     }
 
   }

@@ -49,9 +49,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The results of constructor invocations can only be compared if the same constructors are used for both invocations. Expressions: "
-        + "'new TypeForNewExpression(1)', 'new TypeForNewExpression(1, 2)'")]
     public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionsWithDifferentCtors_ThrowsException ()
     {
       var leftArgumentExpression = Expression.Constant (1);
@@ -61,8 +58,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var rightExpression = Expression.New (
           TypeForNewExpression.GetConstructor (typeof (int), typeof (int)), rightArgumentExpression1, rightArgumentExpression2);
       var expression = Expression.Equal (leftExpression, rightExpression);
-
-      _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
+      Assert.That (
+          () => _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The results of constructor invocations can only be compared if the same constructors are used for both invocations. Expressions: "
+                  + "'new TypeForNewExpression(1)', 'new TypeForNewExpression(1, 2)'"));
     }
 
     [Test]
@@ -124,9 +125,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
-            + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.SqlBackend.UnitTests.TypeForNewExpression)'")]
     public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnLeftSideWithoutMembers_ThrowsException ()
     {
       var leftArgumentExpression = Expression.Constant (1);
@@ -134,8 +132,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           TypeForNewExpression.GetConstructor (typeof (int)), leftArgumentExpression);
       var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
       var expression = Expression.Equal (leftExpression, newConstantExpression);
-
-      _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
+      Assert.That (
+          () => _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
+                  + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.SqlBackend.UnitTests.TypeForNewExpression)'"));
     }
 
     [Test]
@@ -265,9 +267,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
-        + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.SqlBackend.UnitTests.TypeForNewExpression)'")]
     public void SplitPotentialCompoundComparison_BinaryExpression_NewExpressionOnRightSideWithoutMembers_ThrowsException ()
     {
       var rightArgumentExpression = Expression.Constant (1);
@@ -275,8 +274,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           TypeForNewExpression.GetConstructor (typeof (int)), rightArgumentExpression);
       var newConstantExpression = Expression.Constant (new TypeForNewExpression (0));
       var expression = Expression.Equal (newConstantExpression, rightExpression);
-
-      _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression);
+      Assert.That (
+          () => _compoundExpressionComparisonSplitter.SplitPotentialCompoundComparison (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Compound values can only be compared if the respective constructor invocation has members associated with it. Expressions: "
+                  + "'new TypeForNewExpression(1)', 'value(Remotion.Linq.SqlBackend.UnitTests.TypeForNewExpression)'"));
     }
 
     [Test]

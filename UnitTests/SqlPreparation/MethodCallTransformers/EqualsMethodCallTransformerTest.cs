@@ -94,15 +94,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), 
-      ExpectedMessage = "ToString function with 0 arguments is not supported. Expression: '\"test\".ToString()'")]
     public void Transform_WrongNumberOfArguments ()
     {
       var method = typeof (object).GetMethod ("ToString", new Type[0]);
       var expression = Expression.Call (Expression.Constant("test"), method);
 
       var transformer = new EqualsMethodCallTransformer ();
-      transformer.Transform (expression);
+      Assert.That (
+          () => transformer.Transform (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("ToString function with 0 arguments is not supported. Expression: '\"test\".ToString()'"));
     }
   }
 }

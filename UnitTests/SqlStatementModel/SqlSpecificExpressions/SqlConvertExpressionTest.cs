@@ -74,12 +74,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "Cannot obtain a SQL type for type 'Cook'. Expression being converted: '\"1\"'")]
     public void GetSqlTypeName_KeyNotFound_ThrowsException ()
     {
       var convertExpression = new SqlConvertExpression (typeof (Cook), Expression.Constant ("1"));
-      convertExpression.GetSqlTypeName ();
+      Assert.That (
+          () => convertExpression.GetSqlTypeName (),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("Cannot obtain a SQL type for type 'Cook'. Expression being converted: '\"1\"'"));
     }
 
     [Test]

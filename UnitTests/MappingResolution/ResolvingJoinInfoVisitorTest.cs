@@ -209,8 +209,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Only entities can be used as the collection source in from expressions, '1' cannot. Member: 'Int32[] IllnessDays'")]
     public void ResolveJoinInfo_ResolvesCollectionJoinInfo_NoEntity ()
     {
       var memberInfo = typeof (Cook).GetProperty ("IllnessDays");
@@ -220,8 +218,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
           .Expect (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
           .Return (fakeExpression);
-
-      ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Only entities can be used as the collection source in from expressions, '1' cannot. Member: 'Int32[] IllnessDays'"));
     }
     
     [Test]

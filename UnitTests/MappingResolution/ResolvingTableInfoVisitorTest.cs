@@ -259,27 +259,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This SQL generator only supports sequences in from expressions if they are members of an entity or if they come from a GroupBy operator. "
-        + "Sequence: 'GROUP-REF-TABLE(TABLE-REF(t))'")]
     public void ResolveTableInfo_GroupReferenceTableInfo_NoSubStatement ()
     {
       var groupSource = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (IEnumerable<Cook>));
       var tableInfo = new UnresolvedGroupReferenceTableInfo (groupSource);
-
-      ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "This SQL generator only supports sequences in from expressions if they are members of an entity or if they come from a GroupBy operator. "
+                  + "Sequence: 'GROUP-REF-TABLE(TABLE-REF(t))'"));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "When a sequence retrieved by a subquery is used in a from expression, the subquery must end with a GroupBy operator.")]
     public void ResolveTableInfo_GroupReferenceTableInfo_NoGorupingSubStatement ()
     {
       var subStatement = SqlStatementModelObjectMother.CreateSqlStatement (Expression.Constant (new int[0]));
       var groupSource = SqlStatementModelObjectMother.CreateSqlTable (new ResolvedSubStatementTableInfo ("q0", subStatement));
       var tableInfo = new UnresolvedGroupReferenceTableInfo (groupSource);
-
-      ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolverMock, _generator, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "When a sequence retrieved by a subquery is used in a from expression, the subquery must end with a GroupBy operator."));
     }
   }
 }

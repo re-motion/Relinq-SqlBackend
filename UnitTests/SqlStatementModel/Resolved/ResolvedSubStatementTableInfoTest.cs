@@ -65,7 +65,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     }
 
     [Test]
-    [ExpectedException(typeof(ArgumentException))]
     public void Initialization_NoSequenceData_ThrowsExeption ()
     {
       var sqlStatement = new SqlStatementBuilder ()
@@ -73,8 +72,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
         SelectProjection = Expression.Constant (new Cook ()),
         DataInfo = new StreamedScalarValueInfo(typeof(Cook))
       }.GetSqlStatement ();
-      
-      new ResolvedSubStatementTableInfo ("c", sqlStatement);
+      Assert.That (
+          () => new ResolvedSubStatementTableInfo ("c", sqlStatement),
+          Throws.ArgumentException);
     }
 
     [Test]

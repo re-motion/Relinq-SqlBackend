@@ -559,11 +559,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     //}
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void NotSupportedNodeType ()
     {
       var binaryExpression = Expression.ArrayIndex (Expression.Constant (new[] { 1, 2, 3 }), Expression.Constant (10));
-      _generator.GenerateSqlForBinaryExpression (binaryExpression);
+      Assert.That (
+          () => _generator.GenerateSqlForBinaryExpression (binaryExpression),
+          Throws.InstanceOf<NotSupportedException>());
     }
   }
 }

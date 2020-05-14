@@ -126,18 +126,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot be "
-        + "translated to SQL: 'new MetaID(Value = [t0].[KnifeID] AS Value, ClassID = [t0].[KnifeClassID] AS ClassID) "
-        + "IN (value(Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID),value(Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID))'.")]
     public void Contains_WithCompoundMember_IsNotSupported ()
     {
       var someIDs = new[] { new MetaID (0, "C0"), new MetaID (1, "C1") };
-      CheckQuery (
+      Assert.That (
+          () => CheckQuery (
           from c in Cooks
           where someIDs.Contains (c.KnifeID)
           select c.ID,
-          "Not supported");
+          "Not supported"),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot be "
+                  + "translated to SQL: 'new MetaID(Value = [t0].[KnifeID] AS Value, ClassID = [t0].[KnifeClassID] AS ClassID) "
+                  + "IN (value(Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID),value(Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID))'."));
     }
 
     [Test]

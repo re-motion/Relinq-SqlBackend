@@ -42,17 +42,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'value' has type 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Restaurant' "
-        + "when type 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook' was expected."
-        + "\r\nParameter name: value")]
     public void DifferentType ()
     {
       var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var newJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenRestaurant();
-
-      sqlJoinedTable.JoinInfo = newJoinInfo;
+      Assert.That (
+          () => sqlJoinedTable.JoinInfo = newJoinInfo,
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'value' has type 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Restaurant' "
+                  + "when type 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook' was expected."
+                  + "\r\nParameter name: value"));
     }
 
     [Test]

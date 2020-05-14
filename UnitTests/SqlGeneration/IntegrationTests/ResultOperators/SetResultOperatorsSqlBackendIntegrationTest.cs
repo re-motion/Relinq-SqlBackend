@@ -185,18 +185,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "
-        + "Rewrite the query to perform the in-memory operation after the set operation has been performed.\r\n"
-        + "For example, instead of the following query:\r\n"
-        + "    SomeOrders.Select (o => SomeMethod (o.ID)).Concat (OtherOrders.Select (o => SomeMethod (o.ID)))\r\n"
-        + "Try the following query:\r\n"
-        + "    SomeOrders.Select (o => o.ID).Concat (OtherOrders.Select (o => o.ID)).Select (i => SomeMethod (i))")]
     public void SetOperation_WithDifferentInMemoryProjections ()
     {
-      CheckQuery (
+      Assert.That (
+          () => CheckQuery (
           () => Cooks.Select(c => InMemoryToUpper (c.Name)).Union (Kitchens.Select (c => c.Name)),
-          "SELECT [t0].[Name] AS [Arg0] FROM [CookTable] AS [t0] UNION (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1])");
+          "SELECT [t0].[Name] AS [Arg0] FROM [CookTable] AS [t0] UNION (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1])"),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "
+                  + "Rewrite the query to perform the in-memory operation after the set operation has been performed.\r\n"
+                  + "For example, instead of the following query:\r\n"
+                  + "    SomeOrders.Select (o => SomeMethod (o.ID)).Concat (OtherOrders.Select (o => SomeMethod (o.ID)))\r\n"
+                  + "Try the following query:\r\n"
+                  + "    SomeOrders.Select (o => o.ID).Concat (OtherOrders.Select (o => o.ID)).Select (i => SomeMethod (i))"));
     }
 
     [Test]
@@ -216,14 +218,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [ExpectedException(typeof (NotSupportedException), ExpectedMessage = 
-        "The 'Union' operation is only supported for combining two query results, but a 'ConstantExpression' was supplied as the second sequence: "
-        + "value(System.Int32[])")]
     public void SetOperation_WithCollection ()
     {
-      CheckQuery (
+      Assert.That (
+          () => CheckQuery (
           () => Cooks.Select(c => c.ID).Union (new[] { 1, 2, 3}),
-          "not supported");
+          "not supported"),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The 'Union' operation is only supported for combining two query results, but a 'ConstantExpression' was supplied as the second sequence: "
+                  + "value(System.Int32[])"));
     }
     
     [Test]
