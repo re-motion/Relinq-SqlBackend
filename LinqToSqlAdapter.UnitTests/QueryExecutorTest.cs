@@ -101,7 +101,6 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
     public void ExecuteSingle_Empty_ShouldThrowException ()
     {
       var fakeResult = new DataContextTestClass.Customer[0];
@@ -109,11 +108,13 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var retrieverMock = GetRetrieverMockStrict (fakeResult);
 
       var executor = CreateQueryExecutor (retrieverMock);
-      executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false);
+      Assert.That (
+          () => executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Sequence contains no elements"));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
     public void ExecuteSingle_Many_ShouldThrowException ()
     {
       var fakeResult = new[] { new DataContextTestClass.Customer(),new DataContextTestClass.Customer() };
@@ -121,7 +122,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var retrieverMock = GetRetrieverMockStrict (fakeResult);
 
       var executor = CreateQueryExecutor (retrieverMock);
-      executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false);
+      Assert.That (
+          () => executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, false),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Sequence contains more than one element"));
     }
 
     [Test]

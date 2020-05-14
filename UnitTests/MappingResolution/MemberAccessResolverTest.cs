@@ -65,14 +65,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The member 'Cook.Courses' describes a collection and can only be used in places where collections are allowed. Expression: '[c]'")]
     public void ResolveMemberAccess_OnEntity_WithCollectionMember ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Courses");
       var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "c");
-
-      MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The member 'Cook.Courses' describes a collection and can only be used in places where collections are allowed. Expression: '[c]'"));
     }
 
     [Test]
@@ -151,16 +152,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "Cannot resolve member 'LetterOfRecommendation' applied to expression '-[c].[ID]'; the expression type 'UnaryExpression' is not supported in "
-        + "member expressions.")]
     public void ResolveMemberAccess_OnUnaryExpression_NotConvert ()
     {
       var operand = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
       var convertExpression = Expression.Negate (operand);
       var memberInfo = typeof (Chef).GetProperty ("LetterOfRecommendation");
-
-      MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve member 'LetterOfRecommendation' applied to expression '-[c].[ID]'; the expression type 'UnaryExpression' is not supported in "
+                  + "member expressions."));
     }
 
     [Test]
@@ -208,7 +210,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void ResolveMemberAccess_MemberAppliedToConstant ()
     {
       var memberInfo = typeof (Cook).GetProperty ("Substitution");
@@ -219,8 +220,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Expect (mock => mock.ResolveConstantExpression (expression))
           .Return (fakeResult);
       _resolverMock.Replay ();
-
-      MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>());
     }
 
     [Test]
@@ -304,58 +306,63 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The member 'TypeForNewExpression.C' cannot be translated to SQL. "+
-      "Expression: 'new TypeForNewExpression(1 AS value, 2 AS value)'")]
     public void ResolveMemberAccess_OnNewExpression_NoMembers ()
     {
       var constructorInfo = TypeForNewExpression.GetConstructor (typeof (int), typeof (int));
       var newExpression = Expression.New (
           constructorInfo,
           new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) });
-
-      MemberAccessResolver.ResolveMemberAccess (
+      Assert.That (
+          () => MemberAccessResolver.ResolveMemberAccess (
           newExpression,
           typeof (TypeForNewExpression).GetField ("C"),
           _resolverMock,
           _stageMock,
-          _mappingResolutionContext);
+          _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The member 'TypeForNewExpression.C' cannot be translated to SQL. "+
+                  "Expression: 'new TypeForNewExpression(1 AS value, 2 AS value)'"));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot resolve member 'LetterOfRecommendation' applied to expression '([c].[ID] & [c].[ID])'; the expression type 'SimpleBinaryExpression' is not "
-        + "supported in member expressions.")]
     public void ResolveMemberAccess_OnUnsupportedExpression ()
     {
       var operand = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
       var convertExpression = Expression.And (operand, operand);
       var memberInfo = typeof (Chef).GetProperty ("LetterOfRecommendation");
-
-      MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve member 'LetterOfRecommendation' applied to expression '([c].[ID] & [c].[ID])'; the expression type 'SimpleBinaryExpression' is not "
+                  + "supported in member expressions."));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot resolve member 'FirstName' applied to expression 'TABLE-REF(UnresolvedTableInfo(Cook))'; "
-        +"the expression type 'SqlTableReferenceExpression' is not supported in member expressions.")]
     public void ResolveMemberAccess_OnSqlTableReferenceExpression ()
     {
       var expression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-
-      MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve member 'FirstName' applied to expression 'TABLE-REF(UnresolvedTableInfo(Cook))'; "
+                  +"the expression type 'SqlTableReferenceExpression' is not supported in member expressions."));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot resolve member 'FirstName' applied to expression 'ENTITY(14)'; the expression type 'SqlEntityConstantExpression' is not supported in "
-        + "member expressions.")]
     public void ResolveMemberAccess_OnSqlEntityConstantExpression ()
     {
       var expression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), Expression.Constant (14));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
-
-      MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve member 'FirstName' applied to expression 'ENTITY(14)'; the expression type 'SqlEntityConstantExpression' is not supported in "
+                  + "member expressions."));
     }
   }
 }

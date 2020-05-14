@@ -66,13 +66,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Queries selecting collections are not supported because SQL is not well-suited to returning collections.",
-        MatchType = MessageMatch.Contains)]
     public void GenerateSql_Collection ()
     {
       var expression = Expression.Constant (new Cook[] { });
-      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, _someSetOperationsMode);
+      Assert.That (
+          () => SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, _someSetOperationsMode),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.Contains ("Queries selecting collections are not supported because SQL is not well-suited to returning collections."));
     }
 
     [Test]
@@ -459,14 +459,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
-         + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
-         + "from clause, or perform an aggregation on the groupings.", MatchType = MessageMatch.Contains)]
     public void VisitSqlGroupingSelectExpression ()
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
-      _visitor.VisitSqlGroupingSelect (expression);
+      Assert.That (
+          () => _visitor.VisitSqlGroupingSelect (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.Contains (
+                  "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
+                  + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
+                  + "from clause, or perform an aggregation on the groupings."));
     }
 
     private TestableSqlGeneratingOuterSelectExpressionVisitor CreateVisitor (SetOperationsMode setOperationsMode)

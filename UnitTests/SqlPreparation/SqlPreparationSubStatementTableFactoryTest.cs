@@ -249,8 +249,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "The SQL Preparation stage must not change the type of the select projection.")]
     public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_InvalidPreparedExpression ()
     {
       var fakeSelectProjection = Expression.Constant (0);
@@ -258,11 +256,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
           .Return (fakeSelectProjection);
       _stageMock.Replay ();
-
-      _factory.CreateSqlTableForStatement (
+      Assert.That (
+          () => _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
           info => new SqlTable (info, JoinSemantics.Inner),
-          OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
+          OrderingExtractionPolicy.ExtractOrderingsIntoProjection),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("The SQL Preparation stage must not change the type of the select projection."));
     }
 
     [Test]

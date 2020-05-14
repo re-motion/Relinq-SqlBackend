@@ -58,13 +58,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "SqlLengthExpression can only be used on values of type 'System.String' or 'System.Char', not on 'System.Int32'. (Add a conversion if you need "
-        + "to get the string length of a non-string value.)\r\nParameter name: expression")]
     public void Initialization_OtherType ()
     {
       var intExpression = Expression.Constant (0);
-      new SqlLengthExpression (intExpression);
+      Assert.That (
+          () => new SqlLengthExpression (intExpression),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "SqlLengthExpression can only be used on values of type 'System.String' or 'System.Char', not on 'System.Int32'. (Add a conversion if you need "
+                  + "to get the string length of a non-string value.)\r\nParameter name: expression"));
     }
 
     [Test]

@@ -212,10 +212,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The method call 'Concat(CustomExpression)' is not supported. When the array overloads of String.Concat are used, only constant or new array "
-        + "expressions can be translated to SQL; in this usage, the expression has type "
-        + "'Remotion.Linq.SqlBackend.UnitTests.CustomExpression'.")]
     public void Transform_NonParseableArray ()
     {
       var argument = new CustomExpression (typeof (string[]));
@@ -223,15 +219,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var expression = Expression.Call (
           typeof (string).GetMethod ("Concat", new[] { typeof (string[]) }),
           argument);
-
-      _transformer.Transform (expression);
+      Assert.That (
+          () => _transformer.Transform (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The method call 'Concat(CustomExpression)' is not supported. When the array overloads of String.Concat are used, only constant or new array "
+                  + "expressions can be translated to SQL; in this usage, the expression has type "
+                  + "'Remotion.Linq.SqlBackend.UnitTests.CustomExpression'."));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The method call 'Concat(CustomExpression)' is not supported. When the array overloads of String.Concat are used, only constant or new array "
-        + "expressions can be translated to SQL; in this usage, the expression has type "
-        + "'Remotion.Linq.SqlBackend.UnitTests.CustomExpression'.")]
     public void Transform_NonParseableEnumerable ()
     {
       var argument = new CustomExpression (typeof (IEnumerable<string>));
@@ -239,8 +236,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var expression = Expression.Call (
           typeof (string).GetMethod ("Concat", new[] { typeof (IEnumerable<string>) }),
           argument);
-
-      _transformer.Transform (expression);
+      Assert.That (
+          () => _transformer.Transform (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The method call 'Concat(CustomExpression)' is not supported. When the array overloads of String.Concat are used, only constant or new array "
+                  + "expressions can be translated to SQL; in this usage, the expression has type "
+                  + "'Remotion.Linq.SqlBackend.UnitTests.CustomExpression'."));
     }
   }
 }

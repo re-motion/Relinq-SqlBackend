@@ -206,16 +206,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (0));
     }
-
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The expression 'CustomExpression' cannot be translated to SQL text by this SQL generator. Expression type 'CustomExpression' is not supported."
-        )]
     [Test]
     public void GenerateSql_UnsupportedExpression ()
     {
       var unknownExpression = new CustomExpression (typeof (int));
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          unknownExpression, _commandBuilder, _stageMock);
+      Assert.That (
+          () => SqlGeneratingExpressionVisitor.GenerateSql (
+          unknownExpression, _commandBuilder, _stageMock),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The expression 'CustomExpression' cannot be translated to SQL text by this SQL generator. Expression type 'CustomExpression' is not supported."
+));
     }
 
     [Test]
@@ -378,22 +379,27 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot generate SQL for unary expression '(\"1\" As String)'.")]
     public void VisitUnaryExpression_NotSupported ()
     {
       var unaryExpression = Expression.TypeAs (Expression.Constant ("1"), typeof (string));
-      SqlGeneratingExpressionVisitor.GenerateSql (
-          unaryExpression, _commandBuilder, _stageMock);
+      Assert.That (
+          () => SqlGeneratingExpressionVisitor.GenerateSql (
+          unaryExpression, _commandBuilder, _stageMock),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Cannot generate SQL for unary expression '(\"1\" As String)'."));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The method 'System.Linq.Queryable.Count' is not supported by this code generator, and no custom transformer has been registered. "
-        + "Expression: 'TestQueryable<Cook>().Count()'")]
     public void VisitMethodCallExpression_NotSupported ()
     {
       var methodCallExpression = ExpressionHelper.CreateMethodCallExpression<Cook>();
-      SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, _stageMock);
+      Assert.That (
+          () => SqlGeneratingExpressionVisitor.GenerateSql (methodCallExpression, _commandBuilder, _stageMock),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The method 'System.Linq.Queryable.Count' is not supported by this code generator, and no custom transformer has been registered. "
+                  + "Expression: 'TestQueryable<Cook>().Count()'"));
     }
 
     [Test]

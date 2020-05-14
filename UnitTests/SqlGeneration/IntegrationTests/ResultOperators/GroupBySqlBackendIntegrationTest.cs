@@ -27,15 +27,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
   public class GroupBySqlBackendIntegrationTest : SqlBackendIntegrationTestBase
   {
     [Test]
-    [ExpectedException(typeof(NotSupportedException), ExpectedMessage =
-        "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
-         + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
-         + "from clause, or perform an aggregation on the groupings.", MatchType = MessageMatch.Contains)]
     public void GroupBy_TopLevel ()
     {
-      CheckQuery (
+      Assert.That (
+          () => CheckQuery (
           () => Cooks.GroupBy (c => c.Name),
-          "");
+          ""),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.Contains (
+                  "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
+                  + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
+                  + "from clause, or perform an aggregation on the groupings."));
     }
 
     [Test]
