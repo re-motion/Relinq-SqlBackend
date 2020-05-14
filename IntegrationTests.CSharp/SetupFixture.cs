@@ -42,7 +42,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp
   [SetUpFixture]
   public class SetupFixture
   {
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
       Console.WriteLine ("Setting up database...");
