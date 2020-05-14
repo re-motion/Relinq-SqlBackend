@@ -170,13 +170,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Data sources cannot be null.")]
     public void VisitQueryModel_ConstantExpression_NullCollection ()
     {
       var constantExpression = Expression.Constant (null, typeof (int[]));
       _queryModel.MainFromClause.FromExpression = constantExpression;
 
-      _visitor.VisitQueryModel (_queryModel);
+      Assert.That (
+          () => _visitor.VisitQueryModel (_queryModel),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("Data sources cannot be null."));
     }
 
     [Test]
@@ -612,15 +614,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The result operator 'TestChoiceResultOperator' is not supported and no custom handler has been registered.")]
     public void VisitResultOperator_NoHandlerFound ()
     {
       var resultOperator = new TestChoiceResultOperator (false);
       var registry = new ResultOperatorHandlerRegistry ();
       var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
 
-      queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
+      Assert.That (
+          () => queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("The result operator 'TestChoiceResultOperator' is not supported and no custom handler has been registered."));
     }
 
     [Test]

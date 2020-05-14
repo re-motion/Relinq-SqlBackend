@@ -44,12 +44,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: referencedGroupSource")]
     public void Initialization_ThrowsWhenNoSequenceType ()
     {
       var invalidGroupSource = SqlStatementModelObjectMother.CreateSqlTable (typeof (int));
-      new UnresolvedGroupReferenceTableInfo (invalidGroupSource);
+
+      Assert.That (
+          () => new UnresolvedGroupReferenceTableInfo (invalidGroupSource),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: referencedGroupSource"));
     }
 
     [Test]
@@ -70,10 +73,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")]
     public void GetResolvedTableInfo ()
     {
-      _tableInfo.GetResolvedTableInfo();
+      Assert.That (
+          () => _tableInfo.GetResolvedTableInfo(),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "This table has not yet been resolved; call the resolution step first."));
     }
 
     [Test]

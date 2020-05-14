@@ -215,24 +215,27 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Cannot convert an expression of type 'System.String' to a boolean expression. Expression: 'CustomExpression'")]
     public void Visit_ThrowsOnNonConvertible_ToPredicate ()
     {
       var expression = new CustomExpression (typeof (string));
 
       var visitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
-      visitor.Visit (expression);
+      Assert.That (
+          () => visitor.Visit (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("Cannot convert an expression of type 'System.String' to a boolean expression. Expression: 'CustomExpression'"));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid enum value: -1")]
     public void Visit_ThrowsOnInvalidContext ()
     {
       var expression = new CustomExpression (typeof (string));
 
       var visitor = new TestableSqlContextExpressionVisitor ((SqlExpressionContext) (-1), _stageMock, _mappingResolutionContext);
-      visitor.Visit (expression);
+      Assert.That (
+          () => visitor.Visit (expression),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Invalid enum value: -1"));
     }
 
     [Test]

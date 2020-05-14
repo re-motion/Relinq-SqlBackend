@@ -37,12 +37,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Expected a closed generic type implementing IEnumerable<T>, but found 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook'."
-        + "\r\nParameter name: memberInfo")]
     public void Initialization_CardinalityMany_NonEnumerable_Throws ()
     {
-      new UnresolvedJoinInfo (_entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many);
+      Assert.That (
+          () => new UnresolvedJoinInfo (_entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Expected a closed generic type implementing IEnumerable<T>, but found 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook'."
+                  + "\r\nParameter name: memberInfo"));
     }
 
     [Test]
@@ -75,11 +77,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This join has not yet been resolved; call the resolution step first.")]
     public void GetResolvedTableInfo_Throws ()
     {
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
-      joinInfo.GetResolvedJoinInfo();
+
+      Assert.That (
+          () => joinInfo.GetResolvedJoinInfo(),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "This join has not yet been resolved; call the resolution step first."));
     }
 
     [Test]

@@ -38,7 +38,7 @@ Imports Remotion.Linq.IntegrationTests.Common.Database
 ''' </summary>
 <SetUpFixture()> _
 Public Class SetupFixture
-  <SetUp()> _
+  <OneTimeSetUp()> _
   Public Sub SetUp()
     Console.WriteLine("Setting up database...")
     NorthwindSetup.SetupDatabase()

@@ -50,10 +50,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
     public void DifferentType ()
     {
-      _sqlTable.TableInfo = _newTableInfo;
+      Assert.That (
+          () => _sqlTable.TableInfo = _newTableInfo,
+          Throws.ArgumentException);
     }
 
     [Test]

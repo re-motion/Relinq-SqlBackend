@@ -294,14 +294,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The unresolved projection doesn't match the resolved statement: it has no aggregation.\r\nParameter name: unresolvedSelectProjection")]
     public void SimplifyIfPossible_WithUnresolvedProjection_NotMatchingResolvedOned_NoAggregation ()
     {
       var expression = new SqlSubStatementExpression (_simplifiableResolvedSqlStatement);
 
       var nonSimplifiableProjection = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable ());
-      _groupAggregateSimplifier.SimplifyIfPossible (expression, nonSimplifiableProjection);
+      Assert.That (
+          () => _groupAggregateSimplifier.SimplifyIfPossible (expression, nonSimplifiableProjection),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "The unresolved projection doesn't match the resolved statement: it has no aggregation.\r\nParameter name: unresolvedSelectProjection"));
     }
 
     [Test]
