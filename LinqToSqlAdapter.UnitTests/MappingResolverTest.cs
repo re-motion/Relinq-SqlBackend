@@ -1,4 +1,4 @@
-// This file is part of the re-linq project (relinq.codeplex.com)
+﻿// This file is part of the re-linq project (relinq.codeplex.com)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // re-linq is free software; you can redistribute it and/or modify it under 
@@ -324,14 +324,16 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
 
       var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CustomerID");
-      var result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo);
+      Expression result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo);
+      Assert.That (
+          () => result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo),
+          Throws.InstanceOf<UnmappedItemException>()
+                .With.Message.EqualTo (
+                     "Cannot resolve members appplied to expressions representing columns. (Member: CustomerID, Column: [c].[CustomerID])"));
 
       var expectedExpression = columnExpression;
-      Assert.That (
-          () => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result),
-          Throws.InstanceOf<UnmappedItemException>()
-              .With.Message.EqualTo (
-                  "Cannot resolve members appplied to expressions representing columns. (Member: CustomerID, Column: [c].[CustomerID])"));
+
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]

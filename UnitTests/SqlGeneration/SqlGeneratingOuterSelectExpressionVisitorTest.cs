@@ -403,7 +403,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var methodCallExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => StaticMethodWithoutArguments()));
       Assert.That (
           () => visitor.VisitMethodCall (methodCallExpression),
-          Throws.TypeOf<NotSupportedException>().With.Message.StringContaining (
+          Throws.TypeOf<NotSupportedException>().With.Message.Contains (
               "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. Rewrite "
               + "the query to perform the in-memory operation after the set operation has been performed."));
     }
