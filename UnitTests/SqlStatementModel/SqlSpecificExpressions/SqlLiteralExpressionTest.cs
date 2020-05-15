@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Moq;
+using Moq.Protected;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -91,6 +92,56 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     public void Accept_VisitorNotSupportingExpressionType ()
     {
       ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_literalExpression);
+    }
+
+    [Test]
+    public void test1 ()
+    {
+      var mock = new Mock<MockTest>();
+
+      string str = "test";
+
+      mock
+         .Protected()
+         .Setup ("Test4", str)
+         .Verifiable();
+
+      mock.Object.Test1 ("test");
+      mock.Verify();
+    }
+
+    [Test]
+    public void test2 ()
+    {
+      var mock = new Mock<MockTest>();
+
+      Expression exp = Expression.Constant (2);
+
+      mock
+         .Protected()
+         .Setup ("Test2", exp)
+         .Verifiable();
+
+      mock.Object.Test3 (exp);
+      mock.Verify();
+    }
+
+    public class MockTest
+    {
+      public void Test1 (string str)
+      {
+        Test4 (str);
+      }
+      protected virtual void Test2 (Expression exp)
+      {
+      }
+      public void Test3 (Expression exp)
+      {
+        Test2 (exp);
+      }
+      protected virtual void Test4 (string str)
+      {
+      }
     }
 
     [Test]

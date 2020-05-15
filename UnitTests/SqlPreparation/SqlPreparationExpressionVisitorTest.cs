@@ -623,17 +623,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
-    //[Test] TODO fix in pair
+    [Test]
     public void VisitMethodCallExpression_ExpressionPropertiesVisitedBeforeTransformation ()
     {
       var method = MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "ToString");
       var methodCallExpression = Expression.Call (_cookQuerySourceReferenceExpression, method);
 
       var transformerMock = new Mock<IMethodCallTransformer>();
+      var sequence = new MockSequence();
       transformerMock
+         .InSequence (sequence)
          .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
-         .Returns (methodCallExpression)
-         .Verifiable ();
+         .Returns (methodCallExpression);
+      transformerMock
+         .InSequence (sequence)
+         .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
+         .Returns ((Expression) null);
 
       var registry = new MethodInfoBasedMethodCallTransformerRegistry();
       registry.Register (method, transformerMock.Object);

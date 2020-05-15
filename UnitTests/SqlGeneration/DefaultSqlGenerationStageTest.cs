@@ -228,7 +228,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var stageMock = new Mock<DefaultSqlGenerationStage>();
       stageMock.CallBase = true;
       stageMock
-         .Setup (mock => CallGenerateTextForNonSelectExpression (mock, expression))
+         .Protected()
+         .Setup ("GenerateTextForNonSelectExpression", _commandBuilder, expression)
          .Callback ((DefaultSqlGenerationStage _0, Expression _1) => _commandBuilder.Append ("test"))
          .Verifiable ();
 

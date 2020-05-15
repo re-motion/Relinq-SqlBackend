@@ -67,6 +67,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock = new Mock<ISqlPreparationStage>(MockBehavior.Strict);
       _visitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock.Object);
       _visitorPartialMock = new Mock<TestableSqlPreparationQueryModelVisitor> (_context, _stageMock.Object);
+      _visitorPartialMock.CallBase = true;
     }
 
     [Test]

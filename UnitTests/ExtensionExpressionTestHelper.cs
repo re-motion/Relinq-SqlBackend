@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Moq;
+using Moq.Protected;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
@@ -27,8 +28,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests
   {
     public static void CheckAcceptForVisitorSupportingType<TExpression, TVisitorInterface> (
         TExpression expression,
-        Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : Expression
-                                                             where TVisitorInterface : class
+        Expression<Func<TVisitorInterface, Expression>> visitMethodCall) 
+        where TExpression : Expression
+        where TVisitorInterface : class
     {
       var baseMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var visitorMock = baseMock.As<TVisitorInterface>();
@@ -36,7 +38,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-         .Setup (mock => visitMethodCall ((TVisitorInterface) (object) mock))
+         .Setup (visitMethodCall)
          .Returns (returnedExpression)
          .Verifiable ();
 
@@ -54,7 +56,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-         .Setup (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtension", expression))
+         .Protected()
+         .Setup<Expression> ("VisitExtension", (Expression) expression)
          .Returns (returnedExpression)
          .Verifiable ();
 
