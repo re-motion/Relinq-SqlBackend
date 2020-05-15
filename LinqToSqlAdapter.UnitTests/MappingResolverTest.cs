@@ -324,16 +324,16 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
 
       var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CustomerID");
-      Expression result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo);
       Assert.That (
-          () => result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo),
+          () => _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo),
           Throws.InstanceOf<UnmappedItemException>()
                 .With.Message.EqualTo (
                      "Cannot resolve members appplied to expressions representing columns. (Member: CustomerID, Column: [c].[CustomerID])"));
 
+      /* according to Daniel this is copy and paste code and should be removed for the test to function correctly - needs input from Michael
       var expectedExpression = columnExpression;
 
-      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result); */
     }
 
     [Test]

@@ -28,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust
   public class MediumTrustSqlBackendIntegrationTest
   {
     [Test]
-    public void MediumTrust ()
+    public void MediumTrust () //REVIEW test fails: needs input from Michael
     {
       var permissions = PermissionSets
           .GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName)
