@@ -57,7 +57,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
 
       visitorMock
          .Protected()
-         .Setup<Expression> ("VisitExtension", (Expression) expression)
+         .Setup<Expression> ("VisitExtension", ItExpr.Is<Expression> (_ => _ == expression))
          .Returns (returnedExpression)
          .Verifiable ();
 
