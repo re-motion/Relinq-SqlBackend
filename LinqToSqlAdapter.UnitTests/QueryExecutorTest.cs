@@ -147,12 +147,13 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var retrieverMock = new Mock<IQueryResultRetriever>(MockBehavior.Strict);
       retrieverMock
-         .Setup (stub => stub.GetResults (
-                     It.IsAny<Func<IDatabaseResultRow, DataContextTestClass.Customer>>(),
-                     It.Is<string> (param => param == "SELECT NULL AS [value] FROM [CustomerTable] AS [t0]"),
-                     It.Is<CommandParameter[]> (l => l.Equals(new CommandParameter[0]))))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (
+              stub => stub.GetResults (
+                  It.IsAny<Func<IDatabaseResultRow, DataContextTestClass.Customer>>(),
+                  It.Is<string> (p => p == "SELECT NULL AS [value] FROM [CustomerTable] AS [t0]"),
+                  It.Is<CommandParameter[]> (p => p.Length == 0)))
+          .Returns (fakeResult)
+          .Verifiable();
       return retrieverMock;
     }
 
@@ -160,11 +161,13 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var retrieverMock = new Mock<IQueryResultRetriever>(MockBehavior.Strict);
       retrieverMock
-         .Setup (stub => stub.GetScalar (It.IsAny<Func<IDatabaseResultRow, object>>(), 
-                                         It.Is<string> (param => param == "SELECT COUNT(*) AS [value] FROM [CustomerTable] AS [t0]"),
-                                         It.Is<CommandParameter[]> (l => l.Equals(new CommandParameter[0]))))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (
+              stub => stub.GetScalar (
+                  It.IsAny<Func<IDatabaseResultRow, object>>(),
+                  It.Is<string> (p => p == "SELECT COUNT(*) AS [value] FROM [CustomerTable] AS [t0]"),
+                  It.Is<CommandParameter[]> (p => p.Length == 0)))
+          .Returns (fakeResult)
+          .Verifiable();
       return retrieverMock;
     }
   }
