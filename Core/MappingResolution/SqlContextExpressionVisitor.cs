@@ -76,7 +76,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (expression == null)
         return null;
 
-      switch (_currentContext)
+      var currentContext = _currentContext;
+      switch (currentContext)
       {
         case SqlExpressionContext.SingleValueRequired:
         case SqlExpressionContext.ValueRequired:
@@ -85,7 +86,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
           return HandlePredicateSemantics (expression);
       }
 
-      throw new InvalidOperationException ("Invalid enum value: " + _currentContext);
+      throw new InvalidOperationException ("Invalid enum value: " + currentContext);
     }
 
     public Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression)
