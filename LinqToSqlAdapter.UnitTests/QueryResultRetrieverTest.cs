@@ -37,7 +37,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     private Func<IDatabaseResultRow, int> _scalarProjection;
 
     [SetUp]
-    public void SetUp () //TODO go over Assert calls in pair
+    public void SetUp ()
     {
       _dataReaderMock = new Mock<IDataReader>();
 
