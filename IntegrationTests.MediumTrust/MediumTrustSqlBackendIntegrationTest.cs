@@ -28,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust
   public class MediumTrustSqlBackendIntegrationTest
   {
     [Test]
-    public void MediumTrust () //REVIEW test fails: medium trust + sandboxing - NUnit2 project @Michael
+    public void MediumTrust ()
     {
       var permissions = PermissionSets
           .GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName)
