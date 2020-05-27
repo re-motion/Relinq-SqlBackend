@@ -20,6 +20,7 @@ using System.Linq;
 using System.Security.Permissions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting.Sandboxing;
+using Remotion.Linq.SqlBackend.UnitTests.SqlPreparation;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
 {
@@ -34,11 +35,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           .Concat (new[] { new ReflectionPermission (ReflectionPermissionFlag.MemberAccess) })
           .ToArray();
 
-      var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
-                   where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 
-                       && t != typeof (MediumTrustSqlBackendIntegrationTest)
-                       && !t.IsAbstract && t.IsDefined(typeof(TestFixtureAttribute), false)
-                   select t).ToArray();
+      var temp = typeof(ConditionalExpressionSqlBackendIntegrationTest);
+      Console.WriteLine(temp);
+
+      var assembly = AppDomain.CurrentDomain.GetAssemblies().Single(x => x.FullName == "Remotion.Linq.SqlBackend.UnitTests");
+      var types = assembly.GetTypes().Where (t => t.Namespace == "Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests"
+                                               && !t.IsAbstract && t.IsDefined (typeof (TestFixtureAttribute), false));
+
+      // var types = (from t in typeof (NullableBoolExpressionSqlBackendIntegrationTest).Assembly.GetTypes ()
+      //              where t.Namespace == typeof (NullableBoolExpressionSqlBackendIntegrationTest).Namespace 
+      //                  && t != typeof (NullableBoolExpressionSqlBackendIntegrationTest)
+      //                  && !t.IsAbstract && t.IsDefined(typeof(TestFixtureAttribute), false)
+      //              select t).ToArray();
+
+      // var types = new Type[0];
 
       var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (types, permissions, null); 
       var testResults = testFixtureResults.SelectMany (r => r.TestResults).ToArray();

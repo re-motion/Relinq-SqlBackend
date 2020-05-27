@@ -22,7 +22,7 @@ using System.Security.Permissions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting.Sandboxing;
 
-namespace Remotion.Linq.SqlBackend.UnitTests
+namespace Remotion.Linq.SqlBackend.UnitTests.NUnit2
 {
   [TestFixture]
   [Ignore ("Serialization using ISafeSerializationData should actually work without the SerializationFormatter permission.")]

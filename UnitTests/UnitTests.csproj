@@ -175,7 +175,6 @@
     <Compile Include="MappingResolution\SqlContextTableInfoVisitorTest.cs" />
     <Compile Include="MappingResolution\SubStatementReferenceResolverTest.cs" />
     <Compile Include="MappingResolverStub_CreateDatabaseUtility.cs" />
-    <Compile Include="MediumTrustUnmappedItemExceptionIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ConditionalExpressionSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\CompoundMemberSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\MethodCalls\ConversionMethodCallExpressionSqlBackendIntegrationTest.cs" />
@@ -202,7 +201,6 @@
     <Compile Include="SqlGeneration\IntegrationTests\DelegateInvocationSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ResultOperators\GroupBySqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\ExplicitJoinsSqlBackendIntegrationTest.cs" />
-    <Compile Include="SqlGeneration\IntegrationTests\MediumTrustSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\NamedEntitiesSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\NullableExpressionSqlBackendIntegrationTest.cs" />
     <Compile Include="SqlGeneration\IntegrationTests\PartialEvaluationSqlBackendIntegrationTest.cs" />
