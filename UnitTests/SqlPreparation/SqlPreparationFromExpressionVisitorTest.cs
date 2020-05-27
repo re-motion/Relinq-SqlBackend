@@ -243,7 +243,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     public void VisitMemberExpression_InnerExpressionIsPrepared ()
     {
       var fakeQuerySource = new Mock<IQuerySource>();
-      fakeQuerySource.Setup (stub => stub.ItemType).Returns (typeof (Cook));
+      fakeQuerySource.SetupGet (stub => stub.ItemType).Returns (typeof (Cook));
 
       var replacement = Expression.Constant (null, typeof (Cook));
       _context.AddExpressionMapping (new QuerySourceReferenceExpression (fakeQuerySource.Object), replacement);

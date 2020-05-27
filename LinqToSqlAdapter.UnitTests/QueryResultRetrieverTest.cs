@@ -100,7 +100,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       dataParameterCollectionMock
          .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals(_dataParameter.Object))))
          .Returns (0);
-      _commandMock.Setup (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
+      _commandMock.SetupGet (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
 
       var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
 
@@ -167,7 +167,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
          .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals(_dataParameter.Object))))
          .Returns (0);
 
-      _commandMock.Setup (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
+      _commandMock.SetupGet (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
       _commandMock.Setup (stub => stub.CreateParameter()).Returns (_dataParameter.Object);
 
       var connectionMock = new Mock<IDbConnection>();

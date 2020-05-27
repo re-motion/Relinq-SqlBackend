@@ -31,10 +31,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       const string name = "equal";
 
       var metaDataMember1 = new Mock<MetaDataMember>();
-      metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
+      metaDataMember1.SetupGet (dataMember => dataMember.MappedName).Returns (name);
 
       var metaDataMember2 = new Mock<MetaDataMember>();
-      metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (name);
+      metaDataMember2.SetupGet (dataMember => dataMember.MappedName).Returns (name);
 
       var comparer = new MetaDataMemberComparer();
 
@@ -48,10 +48,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       const string otherName = "notequal";
 
       var metaDataMember1 = new Mock<MetaDataMember>();
-      metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
+      metaDataMember1.SetupGet (dataMember => dataMember.MappedName).Returns (name);
 
       var metaDataMember2 = new Mock<MetaDataMember>();
-      metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (otherName);
+      metaDataMember2.SetupGet (dataMember => dataMember.MappedName).Returns (otherName);
 
       var comparer = new MetaDataMemberComparer();
 

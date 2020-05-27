@@ -282,7 +282,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
-         .Setup (stub => stub.DeclaringType)
+         .SetupGet (stub => stub.DeclaringType)
          .Returns (_unmappedType);
 
       _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object);
@@ -297,10 +297,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
-         .Setup (stub => stub.DeclaringType)
+         .SetupGet (stub => stub.DeclaringType)
          .Returns (typeof (PersonTestClass));
       memberInfoStub
-         .Setup (stub => stub.Name)
+         .SetupGet (stub => stub.Name)
          .Returns ("stub");
 
       _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object);
