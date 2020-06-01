@@ -863,7 +863,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _valueRequiredVisitor.VisitSqlSubStatement (sqlSubStatementExpression);
 

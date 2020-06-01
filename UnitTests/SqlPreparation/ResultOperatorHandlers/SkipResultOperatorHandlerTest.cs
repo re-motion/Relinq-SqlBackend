@@ -130,7 +130,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
     }
 
     [Test]

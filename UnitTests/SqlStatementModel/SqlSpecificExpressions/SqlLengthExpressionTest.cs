@@ -76,11 +76,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       visitorMock
          .Setup (mock => mock.Visit (_innerExpression))
          .Returns (expression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_lengthExpression));
       Assert.That (((SqlLengthExpression) result).Expression, Is.SameAs (expression));
     }
@@ -93,11 +93,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       visitorMock
          .Setup (mock => mock.Visit (_innerExpression))
          .Returns (_lengthExpression.Expression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_lengthExpression));
     }

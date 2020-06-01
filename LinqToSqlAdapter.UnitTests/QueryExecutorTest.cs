@@ -68,7 +68,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var executor = CreateQueryExecutor (retrieverMock.Object);
       var result = executor.ExecuteScalar<object> (_queryModel);
 
-      retrieverMock.Verify ();
+      retrieverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var executor = CreateQueryExecutor (retrieverMock.Object);
       var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
-      retrieverMock.Verify ();
+      retrieverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult[0]));
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var executor = CreateQueryExecutor (retrieverMock.Object);
       var result = executor.ExecuteSingle<DataContextTestClass.Customer> (_queryModel, true);
 
-      retrieverMock.Verify ();
+      retrieverMock.Verify();
       Assert.That (result, Is.EqualTo (default (DataContextTestClass.Customer)));
     }
 

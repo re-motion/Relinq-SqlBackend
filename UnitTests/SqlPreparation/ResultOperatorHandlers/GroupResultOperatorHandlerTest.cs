@@ -66,11 +66,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock
          .Setup (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
          .Returns (keySelector)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
          .Returns (elementSelector)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
@@ -166,15 +166,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock
          .Setup (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
          .Returns (preparedSubStatementKeySelector)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
          .Returns (elementSelector)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (2));
       Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof(SqlTable)));
@@ -205,15 +205,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock
          .Setup (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
          .Returns (preparedConstantKeySelector)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
          .Returns (elementSelector)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (2));
       Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof (SqlTable)));
       Assert.That (_sqlStatementBuilder.SqlTables[1].TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));

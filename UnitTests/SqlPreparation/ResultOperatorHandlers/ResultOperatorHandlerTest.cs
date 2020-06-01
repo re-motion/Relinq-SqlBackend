@@ -82,7 +82,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                       Assert.That (sqlStatement.DataInfo, Is.SameAs (originalStatement.DataInfo));
                       Assert.That (sqlStatement.WhereCondition, Is.SameAs (originalStatement.WhereCondition));
                     })
-         .Verifiable ();
+         .Verifiable();
 
       _handler.MoveCurrentStatementToSqlTable (_statementBuilder, _context, tableGenerator, _stageMock.Object, someOrderingExtractionPolicy);
 
@@ -112,7 +112,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.MoveCurrentStatementToSqlTable (
           _statementBuilder,
@@ -139,7 +139,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.EnsureNoTopExpression (_statementBuilder, _generator, _stageMock.Object, _context);
 
@@ -187,11 +187,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.EnsureNoGroupExpression (_statementBuilder, _generator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
       Assert.That (_statementBuilder.GroupByExpression, Is.Null);
 
@@ -215,11 +215,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.EnsureNoDistinctQuery (_statementBuilder, _generator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
       Assert.That (_statementBuilder.IsDistinctQuery, Is.False);
 
@@ -255,11 +255,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               fakeFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _handler.EnsureNoSetOperations (_statementBuilder, _generator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (_statementBuilder.GetSqlStatement(), Is.Not.EqualTo (originalStatement));
       Assert.That (_statementBuilder.SetOperationCombinedStatements, Is.Empty);
 

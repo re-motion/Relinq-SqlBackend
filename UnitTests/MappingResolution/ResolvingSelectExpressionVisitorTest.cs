@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
          .Returns (sqlStatement)
-         .Verifiable ();
+         .Verifiable();
       _groupAggregateSimplifier
           .Setup (mock => mock.SimplifyIfPossible (expression, sqlStatement.SelectProjection))
           .Returns (expression)
@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = visitor.Visit (expression);
 
       _stageMock.Verify();
-      _groupAggregateSimplifier.Verify ();
+      _groupAggregateSimplifier.Verify();
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
     }
@@ -84,7 +84,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
          .Returns (sqlStatement)
-         .Verifiable ();
+         .Verifiable();
       _groupAggregateSimplifier
           .Setup (mock => mock.SimplifyIfPossible (expression, sqlStatement.SelectProjection))
           .Returns (expression)
@@ -94,7 +94,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = visitor.Visit (expression);
 
       _stageMock.Verify();
-      _groupAggregateSimplifier.Verify ();
+      _groupAggregateSimplifier.Verify();
       Assert.That (result, Is.TypeOf (typeof (SqlSubStatementExpression)));
       Assert.That (((SqlSubStatementExpression) result).SqlStatement, Is.SameAs (sqlStatement));
     }
@@ -112,7 +112,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
          .Returns (fakeResolvedSqlStatement)
-         .Verifiable ();
+         .Verifiable();
       _groupAggregateSimplifier
          .Setup (
               mock => mock.SimplifyIfPossible (
@@ -135,7 +135,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Verifiable();
 
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (resolvedReference)).Returns (resolvedReference).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (resolvedReference)).Returns (resolvedReference).Verifiable();
 
       var sqlStatementBuilder = new SqlStatementBuilder (sqlStatement);
       var visitor = CreateVisitor (sqlStatementBuilder);
@@ -194,7 +194,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                      It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
          .Returns (
               fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ResolvingSelectExpressionVisitor.ResolveExpression (
           entityRefMemberExpression, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext, _generator, sqlStatementBuilder);

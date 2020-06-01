@@ -70,12 +70,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (constantExpression))
          .Returns (constantExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (constantExpression);
 
-      _stageMock.Verify ();
-      _resolverMock.Verify ();
+      _stageMock.Verify();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (constantExpression));
     }
 
@@ -88,16 +88,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (constantExpression))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (constantExpression);
 
-      _stageMock.Verify ();
-      _resolverMock.Verify ();
+      _stageMock.Verify();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -110,12 +110,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _mappingResolutionContext))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (tableReferenceExpression);
 
@@ -133,11 +133,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveTableReferenceExpression (tableReferenceExpression, _mappingResolutionContext))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (tableReferenceExpression);
 
@@ -157,7 +157,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _mappingResolutionContext))
          .Returns (fakeResolvedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (memberExpression, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext, _generator);
 
@@ -176,13 +176,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (expression))
          .Returns (fakeResolvedSourceExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var fakeResolvedExpression = new SqlLiteralExpression (1);
       _stageMock
          .Setup (mock => mock.ResolveMemberAccess (fakeResolvedSourceExpression, memberInfo, _resolverMock.Object, _mappingResolutionContext))
          .Returns (fakeResolvedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.Visit (memberExpression);
 
@@ -202,11 +202,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _mappingResolutionContext))
          .Returns (fakeResult1)
-         .Verifiable ();
+         .Verifiable();
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (fakeResult1))
          .Returns (fakeResult2)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (memberExpression);
 
@@ -233,15 +233,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
          .Returns (sqlStatement)
-         .Verifiable ();
+         .Verifiable();
       _groupAggregateSimplifierMock
          .Setup (mock => mock.SimplifyIfPossible (expression, expression.SqlStatement.SelectProjection))
          .Returns (expression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (expression);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       _groupAggregateSimplifierMock.Verify();
       Assert.That (result, Is.SameAs (expression));
     }
@@ -256,7 +256,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
          .Returns (fakeResolvedStatement)
-         .Verifiable ();
+         .Verifiable();
       var fakeSimplifiedExpression = Expression.Constant (0);
       _groupAggregateSimplifierMock
          .Setup (mock => mock.SimplifyIfPossible (
@@ -264,12 +264,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                      It.Is<Expression> (param => param == expression.SqlStatement.SelectProjection)))
          .Returns (
               fakeSimplifiedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (expression);
 
-      _stageMock.Verify ();
-      _groupAggregateSimplifierMock.Verify ();
+      _stageMock.Verify();
+      _groupAggregateSimplifierMock.Verify();
       Assert.That (result, Is.SameAs (fakeSimplifiedExpression));
     }
 
@@ -283,13 +283,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (expression)).Returns (expression)
-         .Verifiable ();
+         .Verifiable();
       _resolverMock
          .Setup (mock => mock.ResolveTypeCheck (expression, typeof (Chef))).Returns (resolvedTypeExpression)
-         .Verifiable ();
+         .Verifiable();
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (resolvedTypeExpression)).Returns (resolvedRevisitedResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (typeBinaryExpression);
 
@@ -307,34 +307,33 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedLeft = new SqlLiteralExpression (2);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable();
       var fakeResolvedRight = new SqlLiteralExpression (3);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable();
 
       var fakeResolvedEntityComparison = Expression.Equal (Expression.Constant (2), Expression.Constant (3));
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (
                      It.Is<BinaryExpression> (e => e.Left == fakeResolvedLeft && e.Right == fakeResolvedRight)))
-         .Returns (
-              fakeResolvedEntityComparison)
-         .Verifiable ();
+         .Returns (fakeResolvedEntityComparison)
+         .Verifiable();
 
       var fakeSplitComparison = Expression.Equal (Expression.Constant (4), Expression.Constant (5));
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (fakeResolvedEntityComparison))
          .Returns (fakeSplitComparison)
-         .Verifiable ();
+         .Verifiable();
 
       // Result is revisited
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitComparison.Left)).Returns (fakeSplitComparison.Left).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitComparison.Left)).Returns (fakeSplitComparison.Left).Verifiable();
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitComparison.Right)).Returns (fakeSplitComparison.Right).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitComparison.Right)).Returns (fakeSplitComparison.Right).Verifiable();
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntityComparison (fakeSplitComparison)).Returns (fakeSplitComparison).Verifiable ();
+         .Setup (mock => mock.ResolvePotentialEntityComparison (fakeSplitComparison)).Returns (fakeSplitComparison).Verifiable();
       _compoundComparisonSplitterMock
-         .Setup (mock => mock.SplitPotentialCompoundComparison (fakeSplitComparison)).Returns (fakeSplitComparison).Verifiable ();
+         .Setup (mock => mock.SplitPotentialCompoundComparison (fakeSplitComparison)).Returns (fakeSplitComparison).Verifiable();
 
       var result = _visitor.Visit (binary);
 
@@ -354,28 +353,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedLeft = new SqlLiteralExpression (2);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable();
       var fakeResolvedRight = new SqlLiteralExpression (3);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable();
 
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<BinaryExpression>()))
          .Returns ((BinaryExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
 
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<BinaryExpression>()))
          .Returns ((BinaryExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
 
       // No revisiting
 
       var result = _visitor.Visit (binary);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
-      _compoundComparisonSplitterMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
+      _compoundComparisonSplitterMock.Verify();
 
       Assert.That (result, Is.AssignableTo<BinaryExpression> ());
       Assert.That (((BinaryExpression) result).Left, Is.SameAs (fakeResolvedLeft));
@@ -396,12 +395,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
          .Setup (mock => mock.ResolvePotentialEntityComparison (
                      It.Is<BinaryExpression> (b => b.Left == leftKey && b.Right == rightKey)))
          .Returns ((BinaryExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (
                      It.Is<BinaryExpression> (b => b.Left == leftKey && b.Right == rightKey)))
          .Returns ((BinaryExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (joinConditionExpression);
 
@@ -420,29 +419,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInnerExpression = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (innerExpression)).Returns (fakeResolvedInnerExpression).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (innerExpression)).Returns (fakeResolvedInnerExpression).Verifiable();
 
       var fakeCombinedExpression = new NamedExpression ("Name2", Expression.Constant (2));
       _namedExpressionCombinerMock
          .Setup (mock => mock.ProcessNames (It.Is<NamedExpression> (e => e.Name == "Name" && e.Expression == fakeResolvedInnerExpression)))
          .Returns (fakeCombinedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       // Result is revisited.
       var fakeResolvedInnerExpression2 = new SqlLiteralExpression (3);
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeCombinedExpression.Expression))
          .Returns (fakeResolvedInnerExpression2)
-         .Verifiable ();
+         .Verifiable();
       _namedExpressionCombinerMock
          .Setup (mock => mock.ProcessNames (It.Is<NamedExpression> (e => e.Name == "Name2" && e.Expression == fakeResolvedInnerExpression2)))
          .Returns ((NamedExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (namedExpression);
 
-      _resolverMock.Verify ();
-      _namedExpressionCombinerMock.Verify ();
+      _resolverMock.Verify();
+      _namedExpressionCombinerMock.Verify();
 
       Assert.That (result, Is.TypeOf<NamedExpression> ());
       Assert.That (((NamedExpression) result).Name, Is.EqualTo ("Name2"));
@@ -457,19 +456,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInnerExpression = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (innerExpression)).Returns (fakeResolvedInnerExpression).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (innerExpression)).Returns (fakeResolvedInnerExpression).Verifiable();
 
       _namedExpressionCombinerMock
          .Setup (mock => mock.ProcessNames (It.IsAny<NamedExpression>()))
          .Returns ((NamedExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
 
       // No revisiting
 
       var result = _visitor.Visit (namedExpression);
 
-      _resolverMock.Verify ();
-      _namedExpressionCombinerMock.Verify ();
+      _resolverMock.Verify();
+      _namedExpressionCombinerMock.Verify();
 
       Assert.That (result, Is.TypeOf<NamedExpression> ());
       Assert.That (((NamedExpression) result).Name, Is.EqualTo ("Name"));
@@ -484,24 +483,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInner = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable();
 
       var fakeResolvedEntityIdentity = Expression.Constant (1);
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntity (fakeResolvedInner))
          .Returns (fakeResolvedEntityIdentity)
-         .Verifiable ();
+         .Verifiable();
 
       // Result is revisited
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (fakeResolvedEntityIdentity)).Returns (fakeResolvedEntityIdentity).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (fakeResolvedEntityIdentity)).Returns (fakeResolvedEntityIdentity).Verifiable();
       _entityIdentityResolverMock
-         .Setup (mock => mock.ResolvePotentialEntity (fakeResolvedEntityIdentity)).Returns (fakeResolvedEntityIdentity).Verifiable ();
+         .Setup (mock => mock.ResolvePotentialEntity (fakeResolvedEntityIdentity)).Returns (fakeResolvedEntityIdentity).Verifiable();
 
       var result = _visitor.Visit (existsExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
 
       Assert.That (result, Is.TypeOf<SqlExistsExpression>());
       Assert.That (((SqlExistsExpression) result).Expression, Is.SameAs (fakeResolvedEntityIdentity));
@@ -515,19 +514,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInner = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable();
 
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntity (fakeResolvedInner))
          .Returns (fakeResolvedInner)
-         .Verifiable ();
+         .Verifiable();
 
       // No revisiting!
 
       var result = _visitor.Visit (existsExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
 
       Assert.That (result, Is.TypeOf<SqlExistsExpression> ());
       Assert.That (((SqlExistsExpression) result).Expression, Is.SameAs (fakeResolvedInner));
@@ -542,37 +541,36 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedLeft = new SqlLiteralExpression (2);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable();
       var fakeResolvedRight = new SqlLiteralExpression (3);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable();
 
       var fakeResolvedInExpression = new SqlInExpression (Expression.Constant (4), Expression.Constant (5));
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (
                      It.Is<SqlInExpression> (e => e.LeftExpression == fakeResolvedLeft && e.RightExpression == fakeResolvedRight)))
-         .Returns (
-              fakeResolvedInExpression)
-         .Verifiable ();
+         .Returns (fakeResolvedInExpression)
+         .Verifiable();
       
       // Result is revisited
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeResolvedInExpression.LeftExpression))
          .Returns (fakeResolvedInExpression.LeftExpression)
-         .Verifiable ();
+         .Verifiable();
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeResolvedInExpression.RightExpression))
          .Returns (fakeResolvedInExpression.RightExpression)
-         .Verifiable ();
+         .Verifiable();
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (fakeResolvedInExpression))
          .Returns (fakeResolvedInExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (inExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeResolvedInExpression));
     }
@@ -586,22 +584,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedLeft = new SqlLiteralExpression (2);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (left)).Returns (fakeResolvedLeft).Verifiable();
       var fakeResolvedRight = new SqlLiteralExpression (3);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (right)).Returns (fakeResolvedRight).Verifiable();
 
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<SqlInExpression>()))
          .Returns ((SqlInExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
 
       // No revisiting
 
       var result = _visitor.Visit (inExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
 
       Assert.That (result, Is.TypeOf<SqlInExpression> ());
       Assert.That (((SqlInExpression) result).LeftExpression, Is.SameAs (fakeResolvedLeft));
@@ -616,39 +614,39 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInner = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable();
 
       var fakeResolvedEntityComparison = new SqlIsNullExpression (Expression.Constant (2));
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (It.Is<SqlIsNullExpression> (e => e.Expression == fakeResolvedInner)))
          .Returns (fakeResolvedEntityComparison)
-         .Verifiable ();
+         .Verifiable();
 
       var fakeSplitCompoundComparison = new SqlIsNullExpression (Expression.Constant (3));
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (fakeResolvedEntityComparison))
          .Returns (fakeSplitCompoundComparison)
-         .Verifiable ();
+         .Verifiable();
 
       // Result is revisited
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitCompoundComparison.Expression))
          .Returns (fakeSplitCompoundComparison.Expression)
-         .Verifiable ();
+         .Verifiable();
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (fakeSplitCompoundComparison))
          .Returns (fakeSplitCompoundComparison)
-         .Verifiable ();
+         .Verifiable();
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (fakeSplitCompoundComparison))
          .Returns (fakeSplitCompoundComparison)
-         .Verifiable ();
+         .Verifiable();
      
       var result = _visitor.Visit (isNullExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
-      _compoundComparisonSplitterMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
+      _compoundComparisonSplitterMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeSplitCompoundComparison));
     }
@@ -661,26 +659,26 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInner = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable();
 
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<SqlIsNullExpression>()))
          .Returns ((SqlIsNullExpression param1) => param1)
 
-         .Verifiable ();
+         .Verifiable();
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<SqlIsNullExpression>()))
          .Returns ((SqlIsNullExpression param1) => param1)
 
-         .Verifiable ();
+         .Verifiable();
 
       // No revisiting
 
       var result = _visitor.Visit (isNullExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
-      _compoundComparisonSplitterMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
+      _compoundComparisonSplitterMock.Verify();
 
       Assert.That (result, Is.TypeOf<SqlIsNullExpression> ());
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (fakeResolvedInner));
@@ -694,39 +692,39 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInner = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable();
 
       var fakeResolvedEntityComparison = new SqlIsNotNullExpression (Expression.Constant (2));
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (It.Is<SqlIsNotNullExpression> (e => e.Expression == fakeResolvedInner)))
          .Returns (fakeResolvedEntityComparison)
-         .Verifiable ();
+         .Verifiable();
 
       var fakeSplitCompoundComparison = new SqlIsNotNullExpression (Expression.Constant (3));
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (fakeResolvedEntityComparison))
          .Returns (fakeSplitCompoundComparison)
-         .Verifiable ();
+         .Verifiable();
 
       // Result is revisited
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeSplitCompoundComparison.Expression))
          .Returns (fakeSplitCompoundComparison.Expression)
-         .Verifiable ();
+         .Verifiable();
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (fakeSplitCompoundComparison))
          .Returns (fakeSplitCompoundComparison)
-         .Verifiable ();
+         .Verifiable();
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (fakeSplitCompoundComparison))
          .Returns (fakeSplitCompoundComparison)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.Visit (isNotNullExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
-      _compoundComparisonSplitterMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
+      _compoundComparisonSplitterMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeSplitCompoundComparison));
     }
@@ -739,25 +737,25 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedInner = new SqlLiteralExpression (1);
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable ();
+         .Setup (mock => mock.ResolveConstantExpression (inner)).Returns (fakeResolvedInner).Verifiable();
 
       _entityIdentityResolverMock
          .Setup (mock => mock.ResolvePotentialEntityComparison (It.IsAny<SqlIsNotNullExpression>()))
          .Returns ((SqlIsNotNullExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
       _compoundComparisonSplitterMock
          .Setup (mock => mock.SplitPotentialCompoundComparison (It.IsAny<SqlIsNotNullExpression>()))
          .Returns ((SqlIsNotNullExpression param1) => param1)
-         .Verifiable ();
+         .Verifiable();
 
 
       // No revisiting
 
       var result = _visitor.Visit (isNotNullExpression);
 
-      _resolverMock.Verify ();
-      _entityIdentityResolverMock.Verify ();
-      _compoundComparisonSplitterMock.Verify ();
+      _resolverMock.Verify();
+      _entityIdentityResolverMock.Verify();
+      _compoundComparisonSplitterMock.Verify();
 
       Assert.That (result, Is.TypeOf<SqlIsNotNullExpression> ());
       Assert.That (((SqlIsNotNullExpression) result).Expression, Is.SameAs (fakeResolvedInner));
@@ -788,9 +786,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                              ji.OriginatingEntity == entityRefMemberExpression.OriginatingEntity && ji.MemberInfo == entityRefMemberExpression.MemberInfo
                                                                                                  && ji.Cardinality == JoinCardinality.One),
                      It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
-         .Returns (
-              fakeResolvedExpression)
-         .Verifiable ();
+         .Returns (fakeResolvedExpression)
+         .Verifiable();
 
       var visitor = CreateVisitor (true);
       var result = visitor.Visit (entityRefMemberExpression);
@@ -834,9 +831,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                      It.Is<UnresolvedJoinInfo> (
                          i => i.OriginatingEntity == entityExpression && i.MemberInfo == memberInfo && i.Cardinality == JoinCardinality.One),
                      It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
-         .Returns (
-              fakeResult)
-         .Verifiable ();
+         .Returns (fakeResult)
+         .Verifiable();
 
       var result = ResolvingExpressionVisitor.ResolveExpression (
           entityRefMemberExpression, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext, _generator);

@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var resolvedTableInfo = new ResolvedSimpleTableInfo (typeof (int), "Table", "t");
       _resolverMock
-         .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator)).Returns (resolvedTableInfo).Verifiable ();
+         .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator)).Returns (resolvedTableInfo).Verifiable();
 
       var result = ResolvingTableInfoVisitor.ResolveTableInfo (resolvedTableInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
@@ -74,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _generator))
          .Returns (_resolvedTableInfo)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ResolvingTableInfoVisitor.ResolveTableInfo (_unresolvedTableInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
@@ -90,11 +90,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (_sqlStatement, _mappingResolutionContext))
          .Returns (_sqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = (ResolvedSubStatementTableInfo) ResolvingTableInfoVisitor.ResolveTableInfo (sqlSubStatementTableInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (result, Is.SameAs (sqlSubStatementTableInfo));
     }
 
@@ -108,11 +108,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
          .Returns (_sqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = (ResolvedSubStatementTableInfo) ResolvingTableInfoVisitor.ResolveTableInfo (sqlSubStatementTableInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (result, Is.Not.SameAs (sqlSubStatementTableInfo));
       Assert.That (result.SqlStatement, Is.SameAs (_sqlStatement));
       Assert.That (result.TableAlias, Is.EqualTo (sqlSubStatementTableInfo.TableAlias));
@@ -126,11 +126,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (_sqlStatement, _mappingResolutionContext))
          .Returns (_sqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = (ResolvedJoinedGroupingTableInfo) ResolvingTableInfoVisitor.ResolveTableInfo (sqlJoinedGroupingTableInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (result, Is.SameAs (sqlJoinedGroupingTableInfo));
     }
 
@@ -144,11 +144,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ResolveSqlStatement (sqlStatement, _mappingResolutionContext))
          .Returns (_sqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = (ResolvedJoinedGroupingTableInfo) ResolvingTableInfoVisitor.ResolveTableInfo (sqlJoinedGroupingTableInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (result, Is.Not.SameAs (sqlJoinedGroupingTableInfo));
       Assert.That (result.SqlStatement, Is.SameAs (_sqlStatement));
       Assert.That (result.TableAlias, Is.EqualTo (sqlJoinedGroupingTableInfo.TableAlias));

@@ -52,7 +52,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
          .Returns (sqlStatement.SelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 
@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 
@@ -94,7 +94,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
          .Returns (sqlStatement.SelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 
@@ -127,7 +127,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
          .Setup (mock => mock.ApplyContext (sqlStatement.SelectProjection, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
 

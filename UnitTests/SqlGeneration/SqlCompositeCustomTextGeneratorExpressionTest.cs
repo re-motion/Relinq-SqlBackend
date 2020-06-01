@@ -67,13 +67,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var visitorMock = new Mock<ExpressionVisitor>();
       var expressions = _sqlCompositeCustomTextGeneratorExpression.Expressions;
       visitorMock
-         .Setup (mock => mock.Visit (expressions[0])).Returns (expressions[0]).Verifiable ();
+         .Setup (mock => mock.Visit (expressions[0])).Returns (expressions[0]).Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (expressions[1])).Returns (expressions[1]).Verifiable ();
+         .Setup (mock => mock.Visit (expressions[1])).Returns (expressions[1]).Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCompositeCustomTextGeneratorExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_sqlCompositeCustomTextGeneratorExpression));
     }
 
@@ -83,13 +83,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var visitorMock = new Mock<ExpressionVisitor>();
       var expressions = new ReadOnlyCollection<Expression> (new List<Expression> { Expression.Constant (1), Expression.Constant (2) });
       visitorMock
-         .Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[0])).Returns (expressions[0]).Verifiable ();
+         .Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[0])).Returns (expressions[0]).Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[1])).Returns (expressions[1]).Verifiable ();
+         .Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[1])).Returns (expressions[1]).Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCompositeCustomTextGeneratorExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_sqlCompositeCustomTextGeneratorExpression));
     }
 

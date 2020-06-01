@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       var tableInfo = result.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -94,14 +94,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       var tableInfo = result.SqlTable.TableInfo;
       Assert.That (tableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -130,14 +130,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       var expectedItemSelector = Expression.MakeMemberAccess (
           new SqlTableReferenceExpression (result.SqlTable),
@@ -152,14 +152,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (result.ExtractedOrderings.Count, Is.EqualTo (2));
 
@@ -215,7 +215,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
     }
 
     [Test]
@@ -232,14 +232,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (c => c == _context)))
          .Returns (fakeSelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           statement,
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       var sqlTable = result.SqlTable;
       Assert.That (sqlTable.TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
@@ -256,7 +256,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Returns (fakeSelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
@@ -272,7 +272,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.DoNotExtractOrderings);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (result.ExtractedOrderings, Is.Empty);
       
@@ -299,7 +299,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           info => new SqlTable (info, JoinSemantics.Inner),
           OrderingExtractionPolicy.DoNotExtractOrderings);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (result.ExtractedOrderings, Is.Empty);
       

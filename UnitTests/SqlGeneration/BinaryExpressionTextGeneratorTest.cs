@@ -367,7 +367,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      _expressionVisitorMock.Verify ();
+      _expressionVisitorMock.Verify();
 
       var result = _commandBuilder.GetCommandText ();
 

@@ -408,7 +408,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
          .Callback (
               (ISqlCommandBuilder mi, SqlStatement _) =>
                   ((SqlCommandBuilder) mi).Append ("SELECT [t].[Name] FROM [Table] AS [t]"))
-         .Verifiable ();
+         .Verifiable();
 
       SqlGeneratingExpressionVisitor.GenerateSql (subStatementExpression, _commandBuilder, _stageMock.Object);
 
@@ -431,7 +431,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
               (ISqlCommandBuilder mi, SqlStatement _) =>
                   ((SqlCommandBuilder) mi).Append (
                       "test"))
-         .Verifiable ();
+         .Verifiable();
 
       SqlGeneratingExpressionVisitor.GenerateSql (
           sqlInExpression, _commandBuilder, _stageMock.Object);
@@ -610,11 +610,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering1))
          .Callback ((ISqlCommandBuilder mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order1 ASC"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, ordering2))
          .Callback ((ISqlCommandBuilder mi, Ordering _) => ((SqlCommandBuilder) mi).Append ("order2 DESC"))
-         .Verifiable ();
+         .Verifiable();
 
       SqlGeneratingExpressionVisitor.GenerateSql (sqlRowNumberExpression, _commandBuilder, _stageMock.Object);
 

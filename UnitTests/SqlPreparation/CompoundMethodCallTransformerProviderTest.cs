@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       registryMock
          .Setup (mock => mock.GetTransformer (methodCallExpression))
          .Returns (fakeTransformer)
-         .Verifiable ();
+         .Verifiable();
 
       var result = methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 

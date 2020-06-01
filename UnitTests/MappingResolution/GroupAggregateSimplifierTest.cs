@@ -222,9 +222,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void SimplifyIfPossible_NonSimplifiableStatement ()
     {
       var resolvedSqlStatement = new SqlStatementBuilder (_simplifiableResolvedSqlStatement)
-                                 {
-                                   IsDistinctQuery = true
-                                 }.GetSqlStatement ();
+      {
+         IsDistinctQuery = true
+      }.GetSqlStatement ();
       var expression = new SqlSubStatementExpression (resolvedSqlStatement);
 
       var result = _groupAggregateSimplifier.SimplifyIfPossible (expression, _simplifiableUnresolvedProjection);
@@ -282,7 +282,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable ()), AggregationModifier.Count);
       var result = _groupAggregateSimplifier.SimplifyIfPossible (expression, nonSimplifiableProjection);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       var expected = new SqlSubStatementExpression (_simplifiableResolvedSqlStatement);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);

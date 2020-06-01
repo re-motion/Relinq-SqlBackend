@@ -435,7 +435,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression(It.IsAny<Expression>(), It.IsAny<ISqlPreparationContext>()))
          .Returns (fakeSelectExpression)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Callback (
@@ -448,7 +448,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (visitor.FromExpressionInfo != null); // inline condition because of ReSharper
       var fromExpressionInfo = (FromExpressionInfo) visitor.FromExpressionInfo;
@@ -513,7 +513,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.DoNotExtractOrderings);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (visitor.FromExpressionInfo != null); // inline condition because of ReSharper
       var fromExpressionInfo = (FromExpressionInfo) visitor.FromExpressionInfo;

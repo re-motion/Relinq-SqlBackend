@@ -67,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       visitorMock
          .Setup (mock => mock.Visit (_wrappedExpression))
          .Returns (_wrappedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_namedExpression, visitorMock.Object);
 
@@ -84,7 +84,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       visitorMock
          .Setup (mock => mock.Visit (_wrappedExpression))
          .Returns (newExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_namedExpression, visitorMock.Object);
 

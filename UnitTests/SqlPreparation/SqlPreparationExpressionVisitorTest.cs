@@ -110,7 +110,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSqlStatement (querModel, _context))
          .Returns (fakeSqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
@@ -130,7 +130,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSqlStatement (querModel, _context))
          .Returns (fakeSqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
@@ -156,7 +156,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSqlStatement (querModel, _context))
          .Returns (fakeSqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
@@ -183,7 +183,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSqlStatement (querModel, _context))
          .Returns (fakeSqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
@@ -211,7 +211,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSqlStatement (querModel, _context))
          .Returns (fakeSqlStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
@@ -411,7 +411,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareSqlStatement (queryModel, _context))
          .Returns (fakeStatement)
-         .Verifiable ();
+         .Verifiable();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (memberExpression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
@@ -658,7 +658,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       transformerMock
          .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
          .Returns (_cookQuerySourceReferenceExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var registry = new MethodInfoBasedMethodCallTransformerRegistry();
       registry.Register (method, transformerMock.Object);

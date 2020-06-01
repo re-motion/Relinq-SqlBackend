@@ -116,11 +116,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock
          .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
          .Callback ((SelectClause _0, QueryModel _1) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       _visitorPartialMock.Object.VisitQueryModel (_queryModel);
 
-      _visitorPartialMock.Verify ();
+      _visitorPartialMock.Verify();
 
       Assert.That (_visitorPartialMock.Object.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
       Assert.That (((NamedExpression) _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection).Name, Is.Null);
@@ -144,7 +144,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       _visitorPartialMock.Object.VisitQueryModel (_queryModel);
 
-      _visitorPartialMock.Verify ();
+      _visitorPartialMock.Verify();
 
       Assert.That (_visitorPartialMock.Object.SqlStatementBuilder.DataInfo, Is.Not.Null);
       Assert.That (_visitorPartialMock.Object.SqlStatementBuilder.DataInfo.DataType, Is.SameAs (typeof (List<Cook>)));
@@ -253,11 +253,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock
          .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
          .Callback ((SelectClause _0, QueryModel _1) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
-         .Verifiable ();
+         .Verifiable();
 
       _visitorPartialMock.Object.VisitQueryModel (_queryModel);
 
-      _visitorPartialMock.Verify ();
+      _visitorPartialMock.Verify();
 
       Assert.That (((NamedExpression) _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (fakeSelectProjection));
     }
@@ -277,7 +277,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitMainFromClause (_mainFromClause, _queryModel);
       _stageMock.Verify();
@@ -313,7 +313,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitAdditionalFromClause (additionalFromClause, _queryModel, 0);
 
@@ -347,7 +347,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitAdditionalFromClause (fromClause, _queryModel, 0);
 
@@ -379,7 +379,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitWhereClause (whereClause, _queryModel, 0);
 
@@ -407,7 +407,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedExpression1)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock =>
                      mock.PrepareWhereExpression (
@@ -415,7 +415,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedExpression2)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitWhereClause (whereClause1, _queryModel, 0);
       _visitor.VisitWhereClause (whereClause2, _queryModel, 1);
@@ -438,7 +438,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitSelectClause (_selectClause, _queryModel);
 
@@ -465,7 +465,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                      It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock =>
                      mock.PrepareWhereExpression (
@@ -473,7 +473,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               fakeWhereCondition)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitJoinClause (joinClause, _queryModel, 5);
 
@@ -501,7 +501,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock =>
                      mock.PrepareWhereExpression (
@@ -509,7 +509,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               fakeWhereCondition)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitJoinClause (joinClause, _queryModel, 5);
 
@@ -531,7 +531,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedOrdering.Expression)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitOrderByClause (_orderByClause, _queryModel, 1);
 
@@ -564,7 +564,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedOrderingExpression2)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock =>
                      mock.PrepareOrderByExpression (
@@ -572,7 +572,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedOrderingExpression3)
-         .Verifiable ();
+         .Verifiable();
 
       _visitor.VisitOrderByClause (_orderByClause, _queryModel, 1);
 
@@ -649,7 +649,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                       Assert.That (table.TableInfo, Is.SameAs (sampleTableInfo));
                       Assert.That (table.JoinSemantics, Is.EqualTo (JoinSemantics.Inner));
                     })
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.AddQuerySource (_mainFromClause, _mainFromClause.FromExpression);
 
@@ -768,7 +768,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
          .Returns (
               preparedFromExpressionInfo)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock =>
                      mock.PrepareWhereExpression (
@@ -777,7 +777,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                          It.Is<ISqlPreparationContext> (c => c != _context)))
          .Returns (
               preparedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _visitor.AddJoinClause (joinClause);
 

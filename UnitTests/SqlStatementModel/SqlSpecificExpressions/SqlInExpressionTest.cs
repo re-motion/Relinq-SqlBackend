@@ -56,11 +56,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       visitorMock
          .Setup (mock => mock.Visit (_leftExpression))
          .Returns (newLeftExpression)
-         .Verifiable ();
+         .Verifiable();
       visitorMock
          .Setup (mock => mock.Visit (_rightExpression))
          .Returns (newRightExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 

@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var visitorMock = new Mock<ISqlTableBaseVisitor>();
       visitorMock
-         .Setup (mock => mock.VisitSqlTable (_sqlTable)).Verifiable ();
+         .Setup (mock => mock.VisitSqlTable (_sqlTable)).Verifiable();
 
       _sqlTable.Accept (visitorMock.Object);
 

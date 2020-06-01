@@ -56,11 +56,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -97,18 +97,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                          It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
          .Returns (
               fakeEntityExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var fakeResult = Expression.Constant (0);
       _resolverMock
          .Setup (mock => mock.ResolveMemberExpression (fakeEntityExpression, memberInfo))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.Verify ();
-      _resolverMock.Verify ();
+      _stageMock.Verify();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -122,12 +122,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
          .Returns (fakeResolvedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
-      //REVIEW How to handle AssertNotCalled? Shouldn't strict behavior handle this?
+      _resolverMock.Verify();
+      _stageMock.Verify(
+          mock => mock.ResolveEntityRefMemberExpression (It.IsAny<SqlEntityRefMemberExpression>(), It.IsAny<IJoinInfo>(), It.IsAny<IMappingResolutionContext>()),
+          Times.Never());
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }
 
@@ -143,11 +145,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess(convertExpression, memberInfo,  _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -176,11 +178,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (namedExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -200,11 +202,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (outerMostConvertExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -219,7 +221,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveConstantExpression (expression))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
     }
@@ -234,11 +236,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
          .Returns (constantExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (columnExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (constantExpression));
     }
 

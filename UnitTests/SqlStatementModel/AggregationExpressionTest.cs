@@ -51,11 +51,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       visitorMock
          .Setup (mock => mock.Visit (_wrappedExpression))
          .Returns (_wrappedExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_aggregationEpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_aggregationEpression));
     }
 
@@ -68,11 +68,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       visitorMock
          .Setup (mock => mock.Visit (_wrappedExpression))
          .Returns (newExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_aggregationEpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_aggregationEpression));
       Assert.That (((AggregationExpression) result).Expression, Is.SameAs (newExpression));
       Assert.That (((AggregationExpression) result).AggregationModifier, Is.EqualTo (AggregationModifier.Max));

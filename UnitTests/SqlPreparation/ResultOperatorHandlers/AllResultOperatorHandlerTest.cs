@@ -68,7 +68,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                      It.Is<Expression> (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
                      It.Is<ISqlPreparationContext> (c=>c==_context)))
          .Returns (preparedPredicate)
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Callback (
@@ -85,7 +85,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));

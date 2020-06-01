@@ -53,7 +53,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => ((SqlCommandBuilder) mi).Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
@@ -68,7 +68,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true)).Callback ((ISqlCommandBuilder mi, SqlTable _1, bool _2) => mi.Append ("[Table] AS [t]"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildFromPart (sqlStatement, _commandBuilder);
 
@@ -85,7 +85,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, aggregationExpression)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("COUNT(*)"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
@@ -101,7 +101,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
@@ -116,11 +116,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression)).Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("@1"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
@@ -135,11 +135,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression)).Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("@1"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, false);
 
@@ -156,7 +156,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
          .Setup (mock => mock.GenerateTextForOuterSelectExpression (
                      _commandBuilder,
                      sqlStatement.SelectProjection,
-                     SetOperationsMode.StatementIsNotSetCombined)).Verifiable ();
+                     SetOperationsMode.StatementIsNotSetCombined)).Verifiable();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, true);
 
@@ -175,7 +175,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
          .Setup (mock => mock.GenerateTextForOuterSelectExpression (
                      _commandBuilder,
                      sqlStatement.SelectProjection,
-                     SetOperationsMode.StatementIsSetCombined)).Verifiable ();
+                     SetOperationsMode.StatementIsSetCombined)).Verifiable();
 
       _generator.BuildSelectPart (sqlStatement, _commandBuilder, true);
 
@@ -189,7 +189,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition)).Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("(@1 = 1)"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildWherePart (sqlStatement, _commandBuilder);
 
@@ -207,7 +207,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, orderByClause)).Callback ((ISqlCommandBuilder mi, Ordering _) => mi.Append ("[t].[Name] ASC"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildOrderByPart (sqlStatement, _commandBuilder);
 
@@ -229,13 +229,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, sqlStatement.Orderings[0])).Callback ((ISqlCommandBuilder mi, Ordering _) => mi.Append ("[t].[ID] ASC"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, sqlStatement.Orderings[1])).Callback ((ISqlCommandBuilder mi, Ordering _) => mi.Append ("[t].[Name] DESC"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, sqlStatement.Orderings[2])).Callback ((ISqlCommandBuilder mi, Ordering _) => mi.Append ("[t].[City] DESC"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildOrderByPart (sqlStatement, _commandBuilder);
 
@@ -262,12 +262,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForTopExpression (_commandBuilder, topExpression)).Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("top"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildTopPart (sqlStatement, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("TOP (top) "));
-      _stageMock.Verify ();
+      _stageMock.Verify();
     }
 
     [Test]
@@ -282,12 +282,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, setOperationCombinedStatement.SqlStatement)).Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("statement"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildSetOperationCombinedStatementsPart (sqlStatement, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" UNION (statement)"));
-      _stageMock.Verify ();
+      _stageMock.Verify();
     }
 
     [Test]
@@ -302,12 +302,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, setOperationCombinedStatement.SqlStatement)).Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("statement"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.BuildSetOperationCombinedStatementsPart (sqlStatement, _commandBuilder);
 
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo (" UNION ALL (statement)"));
-      _stageMock.Verify ();
+      _stageMock.Verify();
     }
     
     [Test]
@@ -318,10 +318,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true)).Callback ((ISqlCommandBuilder mi, SqlTable _1, bool _2) => mi.Append ("[Table] AS [t]"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.Build (sqlStatement, _commandBuilder, false);
 
@@ -340,7 +340,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.Build (sqlStatement, _commandBuilder, false);
 
@@ -360,14 +360,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true)).Callback ((ISqlCommandBuilder mi, SqlTable _1, bool _2) => mi.Append ("[Table] AS [t]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForGroupByExpression (_commandBuilder, sqlStatement.GroupByExpression)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("keyExpression"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.Build (sqlStatement, _commandBuilder, false);
 
@@ -383,13 +383,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true)).Callback ((ISqlCommandBuilder mi, SqlTable _1, bool _2) => mi.Append ("[Table] AS [t]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForWhereExpression (_commandBuilder, sqlStatement.WhereCondition)).Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("(@1 = 1)"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.Build (sqlStatement, _commandBuilder, false);
 
@@ -411,13 +411,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true)).Callback ((ISqlCommandBuilder mi, SqlTable _1, bool _2) => mi.Append ("[Table] AS [t]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForOrdering (_commandBuilder, sqlStatement.Orderings[0])).Callback ((ISqlCommandBuilder mi, Ordering _) => mi.Append ("[t].[Name] ASC"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.Build (sqlStatement, _commandBuilder, false);
 
@@ -441,13 +441,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
          .Setup (mock => mock.GenerateTextForSelectExpression (_commandBuilder, sqlStatement.SelectProjection)).Callback (
               (ISqlCommandBuilder mi, Expression _) => mi.Append ("[t].[ID],[t].[Name],[t].[City]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForFromTable (_commandBuilder, sqlStatement.SqlTables[0], true)).Callback ((ISqlCommandBuilder mi, SqlTable _1, bool _2) => mi.Append ("[Table] AS [t]"))
-         .Verifiable ();
+         .Verifiable();
       _stageMock
          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement.SetOperationCombinedStatements[0].SqlStatement)).Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("SELECT FOO FROM BAR"))
-         .Verifiable ();
+         .Verifiable();
 
       _generator.Build (sqlStatement, _commandBuilder, false);
 
