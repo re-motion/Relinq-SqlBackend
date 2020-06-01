@@ -41,7 +41,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
       tableInfoVisitorMock
-         .Setup (mock => mock.VisitSimpleTableInfo (_tableInfo)).Verifiable();
+          .Setup (mock => mock.VisitSimpleTableInfo (_tableInfo))
+          .Verifiable();
 
       _tableInfo.Accept (tableInfoVisitorMock.Object);
 
@@ -63,13 +64,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var generator = new UniqueIdentifierGenerator();
-      var resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
+      var resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       var mappingResolutionContext = new MappingResolutionContext();
 
       resolverMock
-         .Setup (mock => mock.ResolveSimpleTableInfo (_tableInfo, generator))
-         .Returns (fakeResult)
-         .Verifiable();
+          .Setup (mock => mock.ResolveSimpleTableInfo (_tableInfo, generator))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _tableInfo.ResolveReference (sqlTable, resolverMock.Object, mappingResolutionContext, generator);
 

@@ -96,10 +96,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       _dataReaderMock.Setup (stub => stub.Read()).Returns (false);
 
-      var dataParameterCollectionMock = new Mock<IDataParameterCollection>(MockBehavior.Strict);
+      var dataParameterCollectionMock = new Mock<IDataParameterCollection> (MockBehavior.Strict);
       dataParameterCollectionMock
-         .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals(_dataParameter.Object))))
-         .Returns (0);
+          .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals(_dataParameter.Object))))
+          .Returns (0);
       _commandMock.SetupGet (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
 
       var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
@@ -162,10 +162,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [Test]
     public void GetScalar_SetsCommandData ()
     {
-      var dataParameterCollectionMock = new Mock<IDataParameterCollection>(MockBehavior.Strict);
+      var dataParameterCollectionMock = new Mock<IDataParameterCollection> (MockBehavior.Strict);
       dataParameterCollectionMock
-         .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals(_dataParameter.Object))))
-         .Returns (0);
+          .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals(_dataParameter.Object))))
+          .Returns (0);
 
       _commandMock.SetupGet (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
       _commandMock.Setup (stub => stub.CreateParameter()).Returns (_dataParameter.Object);

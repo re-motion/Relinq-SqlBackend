@@ -39,8 +39,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     public void Accept ()
     {
       var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
-      tableInfoVisitorMock
-         .Setup (mock => mock.VisitUnresolvedTableInfo (_tableInfo)).Verifiable();
+      tableInfoVisitorMock.Setup (mock => mock.VisitUnresolvedTableInfo (_tableInfo)).Verifiable();
 
       _tableInfo.Accept (tableInfoVisitorMock.Object);
       tableInfoVisitorMock.Verify();

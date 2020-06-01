@@ -149,20 +149,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Left))
-         .Returns (_likeExpression.Left)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Left))
+          .Returns (_likeExpression.Left)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Right))
-         .Returns (_likeExpression.Right)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Right))
+          .Returns (_likeExpression.Right)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
-         .Returns (_likeExpression.EscapeExpression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+          .Returns (_likeExpression.EscapeExpression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 
@@ -173,21 +173,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsDifferentRightExpression ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var newRightExpression = Expression.Constant (3);
 
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Left))
-         .Returns (_likeExpression.Left)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Left))
+          .Returns (_likeExpression.Left)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Right))
-         .Returns (newRightExpression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Right))
+          .Returns (newRightExpression)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
-         .Returns (_likeExpression.EscapeExpression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+          .Returns (_likeExpression.EscapeExpression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 
@@ -201,21 +201,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsDifferentLeftExpression ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var newLeftExpression = Expression.Constant (3);
 
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Left))
-         .Returns (newLeftExpression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Left))
+          .Returns (newLeftExpression)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Right))
-         .Returns (_likeExpression.Right)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Right))
+          .Returns (_likeExpression.Right)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
-         .Returns (_likeExpression.EscapeExpression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+          .Returns (_likeExpression.EscapeExpression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 
@@ -229,21 +229,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsDifferentEscapeExpression ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var newEscapeExpression = Expression.Constant (3);
 
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Left))
-         .Returns (_likeExpression.Left)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Left))
+          .Returns (_likeExpression.Left)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.Right))
-         .Returns (_likeExpression.Right)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.Right))
+          .Returns (_likeExpression.Right)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
-         .Returns (newEscapeExpression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_likeExpression.EscapeExpression))
+          .Returns (newEscapeExpression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_likeExpression, visitorMock.Object);
 

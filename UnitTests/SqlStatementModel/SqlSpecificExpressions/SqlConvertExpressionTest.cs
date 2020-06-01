@@ -100,13 +100,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NewSource ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var newPrefix = Expression.Constant (3);
 
       visitorMock
-         .Setup (mock => mock.Visit (_convertExpresion.Source))
-         .Returns (newPrefix)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_convertExpresion.Source))
+          .Returns (newPrefix)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock.Object);
 
@@ -118,12 +118,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameSource ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_convertExpresion.Source))
-         .Returns (_convertExpresion.Source)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_convertExpresion.Source))
+          .Returns (_convertExpresion.Source)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock.Object);
 

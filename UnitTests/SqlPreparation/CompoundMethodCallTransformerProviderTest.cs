@@ -41,15 +41,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void GetTransformer ()
     {
-      var registryMock = new Mock<IMethodCallTransformerProvider>(MockBehavior.Strict);
+      var registryMock = new Mock<IMethodCallTransformerProvider> (MockBehavior.Strict);
       var methodCallTransformerRegistry = new CompoundMethodCallTransformerProvider (registryMock.Object);
       var methodCallExpression = ExpressionHelper.CreateMethodCallExpression<Cook>();
       var fakeTransformer = new ContainsFulltextMethodCallTransformer();
 
       registryMock
-         .Setup (mock => mock.GetTransformer (methodCallExpression))
-         .Returns (fakeTransformer)
-         .Verifiable();
+          .Setup (mock => mock.GetTransformer (methodCallExpression))
+          .Returns (fakeTransformer)
+          .Verifiable();
 
       var result = methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 

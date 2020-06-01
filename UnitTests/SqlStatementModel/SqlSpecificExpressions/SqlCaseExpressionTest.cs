@@ -136,28 +136,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSameExpression ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (_value1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (_value1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (_elseValue)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (_elseValue)
+          .Verifiable();
       
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 
@@ -168,24 +168,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NoElse ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_nullableValue1))
-         .Returns (_nullableValue1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_nullableValue1))
+          .Returns (_nullableValue1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithoutElse, visitorMock.Object);
 
@@ -196,30 +196,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ChangedWhen ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       var newPredicate = Expression.Constant (true);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (newPredicate)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (newPredicate)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (_value1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (_value1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (_elseValue)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (_elseValue)
+          .Verifiable();
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 
@@ -236,30 +236,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ChangedThen ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       var newValue = Expression.Constant (17);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (newValue)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (newValue)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (_elseValue)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (_elseValue)
+          .Verifiable();
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 
@@ -276,30 +276,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ChangedElse ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       var newElseValue = Expression.Constant (17);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (_value1)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (_value1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (newElseValue)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (newElseValue)
+          .Verifiable();
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 

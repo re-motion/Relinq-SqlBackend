@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new SqlTableReferenceExpression (_resolvedJoinedGroupingTable),
           AggregationModifier.Count);
 
-      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _context = new MappingResolutionContext();
 
       _groupAggregateSimplifier = new GroupAggregateSimplifier (_stageMock.Object, _context);
@@ -223,7 +223,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var resolvedSqlStatement = new SqlStatementBuilder (_simplifiableResolvedSqlStatement)
       {
-         IsDistinctQuery = true
+        IsDistinctQuery = true
       }.GetSqlStatement ();
       var expression = new SqlSubStatementExpression (resolvedSqlStatement);
 
@@ -246,17 +246,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new NamedExpression ("element", Expression.Constant ("e")), 
           AggregationModifier.Count);
       _stageMock
-         .Setup (mock => mock.ResolveAggregationExpression(It.IsAny<Expression>(), It.Is<IMappingResolutionContext> (param => param == _context)))
-         .Returns (preparedResolvedAggregate)
-         .Callback (
-              (Expression mi, IMappingResolutionContext _) => {
-                      var expectedReplacedAggregate = new AggregationExpression (
-                          typeof (int),
-                          ((NamedExpression) _associatedGroupingSelectExpression.ElementExpression).Expression, 
-                          AggregationModifier.Count);
-                      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, mi);
-                    })
-         .Verifiable ();
+          .Setup (mock => mock.ResolveAggregationExpression(It.IsAny<Expression>(), It.Is<IMappingResolutionContext> (param => param == _context)))
+          .Returns (preparedResolvedAggregate)
+          .Callback (
+              (Expression mi, IMappingResolutionContext _) =>
+              {
+                var expectedReplacedAggregate = new AggregationExpression (
+                    typeof (int),
+                    ((NamedExpression) _associatedGroupingSelectExpression.ElementExpression).Expression,
+                    AggregationModifier.Count);
+                SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, mi);
+              })
+          .Verifiable ();
 
       var result = _groupAggregateSimplifier.SimplifyIfPossible (expression, _simplifiableUnresolvedProjection);
 

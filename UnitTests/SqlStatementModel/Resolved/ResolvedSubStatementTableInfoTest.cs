@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
 
       var generator = new UniqueIdentifierGenerator ();
-      var resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
+      var resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       var mappingResolutionContext = new MappingResolutionContext ();
 
       var result = _tableInfo.ResolveReference (sqlTable, resolverMock.Object, mappingResolutionContext, generator);
@@ -94,7 +94,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
 
-    [Test]
+     [Test]
     public new void ToString ()
     {
       var sqlStatement = new SqlStatementBuilder ()

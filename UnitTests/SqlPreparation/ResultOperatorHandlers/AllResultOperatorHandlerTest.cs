@@ -64,14 +64,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedSelectProjection = Expression.Constant (false);
 
       _stageMock
-         .Setup (mock => mock.PrepareWhereExpression (
-                     It.Is<Expression> (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
-                     It.Is<ISqlPreparationContext> (c=>c==_context)))
-         .Returns (preparedPredicate)
-         .Verifiable();
+          .Setup (
+              mock => mock.PrepareWhereExpression (
+                  It.Is<Expression> (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)),
+                  It.Is<ISqlPreparationContext> (c=>c==_context)))
+          .Returns (preparedPredicate)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback (
+          .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback (
               (Expression mi, ISqlPreparationContext _) =>
               {
                 var selectProjection = mi;
@@ -81,7 +82,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
                 SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
               })
-         .Returns (fakePreparedSelectProjection);
+          .Returns (fakePreparedSelectProjection);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 

@@ -49,9 +49,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var columnID = new ColumnID ("Name", 1);
       var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
       _readerMock
-         .Setup (mock => mock.GetValue (columnID.Position))
-         .Returns ("Peter")
-         .Verifiable();
+          .Setup (mock => mock.GetValue (columnID.Position))
+          .Returns ("Peter")
+          .Verifiable();
 
       var value = rowWrapper.GetValue<string> (columnID);
 
@@ -63,17 +63,17 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     public void GetEntity_TypeWithoutDiscriminator ()
     {
       _readerMock
-         .Setup (mock => mock.GetValue (1))
-         .Returns ("Peter")
-         .Verifiable();
+          .Setup (mock => mock.GetValue (1))
+          .Returns ("Peter")
+          .Verifiable();
       _readerMock
-         .Setup (mock => mock.GetValue (2))
-         .Returns (21)
-         .Verifiable();
+          .Setup (mock => mock.GetValue (2))
+          .Returns (21)
+          .Verifiable();
       _reverseMappingResolverMock
-         .Setup (mock => mock.GetMetaDataMembers (typeof (PersonTestClass)))
-         .Returns (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray())
-         .Verifiable();
+          .Setup (mock => mock.GetMetaDataMembers (typeof (PersonTestClass)))
+          .Returns (_metaModel.GetTable (typeof (PersonTestClass)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray())
+          .Verifiable();
 
       var columnIDs = new[]
                       {
@@ -94,13 +94,13 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     public void GetEntity_CreatesInstanceAccordingToDiscriminatorColumn ()
     {
       _readerMock
-         .Setup (mock => mock.GetValue (2))
-         .Returns ("Customer") //return value of discriminator column
-         .Verifiable();
+          .Setup (mock => mock.GetValue (2))
+          .Returns ("Customer") //return value of discriminator column
+          .Verifiable();
       _reverseMappingResolverMock
-         .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
-         .Returns (_metaModel.GetTable (typeof (ContactWithInheritanceHierarchy)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray())
-         .Verifiable();
+          .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
+          .Returns (_metaModel.GetTable (typeof (ContactWithInheritanceHierarchy)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray())
+          .Verifiable();
 
       var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
 
@@ -121,13 +121,13 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     public void GetEntity_CreateDefaultInstanceIfDiscriminatorIsNull ()
     {
       _readerMock
-         .Setup (mock => mock.GetValue (2))
-         .Returns (null) //return value of discriminator column
-         .Verifiable();
+          .Setup (mock => mock.GetValue (2))
+          .Returns (null) //return value of discriminator column
+          .Verifiable();
       _reverseMappingResolverMock
-         .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
-         .Returns (_metaModel.GetTable (typeof (ContactWithInheritanceHierarchy)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray())
-         .Verifiable();
+          .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
+          .Returns (_metaModel.GetTable (typeof (ContactWithInheritanceHierarchy)).RowType.DataMembers.Where (dataMember => !dataMember.IsAssociation).ToArray())
+          .Verifiable();
 
       var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
 
@@ -148,22 +148,22 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     public void GetEntity_AdditionalMappedMembersInSubTypesDontCauseException ()
     {
       _readerMock
-         .Setup (mock => mock.GetValue (2))
-         .Returns (1)
-         .Verifiable();
+          .Setup (mock => mock.GetValue (2))
+          .Returns (1)
+          .Verifiable();
       _readerMock
-         .Setup (mock => mock.GetValue (3))
-         .Returns ("Supplier") //return value of discriminator column
-         .Verifiable();
+          .Setup (mock => mock.GetValue (3))
+          .Returns ("Supplier") //return value of discriminator column
+          .Verifiable();
       _readerMock
-         .Setup (mock => mock.GetValue (1))
-         .Returns ("www.homepage.com")
-         .Verifiable();
+          .Setup (mock => mock.GetValue (1))
+          .Returns ("www.homepage.com")
+          .Verifiable();
 
       _reverseMappingResolverMock
-         .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
-         .Returns (_metaModel.GetMetaType (typeof (ContactWithInheritanceHierarchy.SupplierContact)).DataMembers.ToArray())
-         .Verifiable();
+          .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
+          .Returns (_metaModel.GetMetaType (typeof (ContactWithInheritanceHierarchy.SupplierContact)).DataMembers.ToArray())
+          .Verifiable();
 
       var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
 
@@ -196,26 +196,26 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var photo = encoding.GetBytes ("myPhoto");
 
       _readerMock
-         .Setup (mock => mock.GetValue (1))
-         .Returns (pw)
-         .Verifiable();
+          .Setup (mock => mock.GetValue (1))
+          .Returns (pw)
+          .Verifiable();
       _readerMock
-         .Setup (mock => mock.GetValue (2))
-         .Returns (photo)
-         .Verifiable();
+          .Setup (mock => mock.GetValue (2))
+          .Returns (photo)
+          .Verifiable();
       _readerMock
-         .Setup (mock => mock.GetValue (3))
-         .Returns (1) //return value of discriminator column
-         .Verifiable();
+          .Setup (mock => mock.GetValue (3))
+          .Returns (1) //return value of discriminator column
+          .Verifiable();
       _readerMock
-         .Setup (mock => mock.GetValue (4))
-         .Returns ("Employee")
-         .Verifiable();
+          .Setup (mock => mock.GetValue (4))
+          .Returns ("Employee")
+          .Verifiable();
 
       _reverseMappingResolverMock
-         .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
-         .Returns (_metaModel.GetMetaType (typeof (ContactWithInheritanceHierarchy.EmployeeContact)).DataMembers.ToArray())
-         .Verifiable();
+          .Setup (mock => mock.GetMetaDataMembers (typeof (ContactWithInheritanceHierarchy)))
+          .Returns (_metaModel.GetMetaType (typeof (ContactWithInheritanceHierarchy.EmployeeContact)).DataMembers.ToArray())
+          .Verifiable();
 
       var rowWrapper = new RowWrapper (_readerMock.Object, _reverseMappingResolverMock.Object);
 

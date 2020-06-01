@@ -70,13 +70,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var expression = Expression.Constant ("test2");
 
       visitorMock
-         .Setup (mock => mock.Visit (_innerExpression))
-         .Returns (expression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_innerExpression))
+          .Returns (expression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock.Object);
 
@@ -88,12 +88,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_innerExpression))
-         .Returns (_lengthExpression.Expression)
-         .Verifiable();
+          .Setup (mock => mock.Visit (_innerExpression))
+          .Returns (_lengthExpression.Expression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock.Object);
 

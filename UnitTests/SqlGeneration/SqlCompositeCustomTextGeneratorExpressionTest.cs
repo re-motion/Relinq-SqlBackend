@@ -50,11 +50,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var commandBuilder = new SqlCommandBuilder();
 
       visitor
-         .Setup (mock => mock.Visit (_expression1))
-         .Returns (_expression1);
+          .Setup (mock => mock.Visit (_expression1))
+          .Returns (_expression1);
       visitor
-         .Setup (mock => mock.Visit (_expression2))
-         .Returns (_expression2);
+          .Setup (mock => mock.Visit (_expression2))
+          .Returns (_expression2);
 
       _sqlCompositeCustomTextGeneratorExpression.Generate (commandBuilder, visitor.Object, new Mock<ISqlGenerationStage>().Object);
 
@@ -66,10 +66,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var visitorMock = new Mock<ExpressionVisitor>();
       var expressions = _sqlCompositeCustomTextGeneratorExpression.Expressions;
-      visitorMock
-         .Setup (mock => mock.Visit (expressions[0])).Returns (expressions[0]).Verifiable();
-      visitorMock
-         .Setup (mock => mock.Visit (expressions[1])).Returns (expressions[1]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (expressions[0])).Returns (expressions[0]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (expressions[1])).Returns (expressions[1]).Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCompositeCustomTextGeneratorExpression, visitorMock.Object);
 
@@ -82,10 +80,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var visitorMock = new Mock<ExpressionVisitor>();
       var expressions = new ReadOnlyCollection<Expression> (new List<Expression> { Expression.Constant (1), Expression.Constant (2) });
-      visitorMock
-         .Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[0])).Returns (expressions[0]).Verifiable();
-      visitorMock
-         .Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[1])).Returns (expressions[1]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[0])).Returns (expressions[0]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_sqlCompositeCustomTextGeneratorExpression.Expressions[1])).Returns (expressions[1]).Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCompositeCustomTextGeneratorExpression, visitorMock.Object);
 

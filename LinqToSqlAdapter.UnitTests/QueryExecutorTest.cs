@@ -49,11 +49,11 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       _resolverStub = new Mock<IMappingResolver>();
       _resolverStub
-         .Setup (stub => stub.ResolveTableInfo (It.IsAny<UnresolvedTableInfo>(), It.IsAny<UniqueIdentifierGenerator>()))
-         .Returns (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));
+          .Setup (stub => stub.ResolveTableInfo (It.IsAny<UnresolvedTableInfo>(), It.IsAny<UniqueIdentifierGenerator>()))
+          .Returns (new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "CustomerTable", "t0"));
       _resolverStub
-         .Setup (stub => stub.ResolveConstantExpression ((ConstantExpression) _selectClause.Selector))
-         .Returns (_selectClause.Selector);
+          .Setup (stub => stub.ResolveConstantExpression ((ConstantExpression) _selectClause.Selector))
+          .Returns (_selectClause.Selector);
     }
 
     [Test] 

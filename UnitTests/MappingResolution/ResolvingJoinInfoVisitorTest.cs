@@ -40,10 +40,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
+      _resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       _unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       _generator = new UniqueIdentifierGenerator();
-      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _mappingResolutionContext = new MappingResolutionContext();
     }
 
@@ -56,18 +56,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var resolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, condition);
 
       _resolverMock
-         .Setup (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
-         .Returns (resolvedJoinInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
+          .Returns (resolvedJoinInfo)
+          .Verifiable();
 
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
-         .Returns (foreignTableInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
+          .Returns (foreignTableInfo)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveJoinCondition (condition, _mappingResolutionContext))
-         .Returns (condition)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinCondition (condition, _mappingResolutionContext))
+          .Returns (condition)
+          .Verifiable();
       
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
@@ -84,19 +84,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var resolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, condition);
       _resolverMock
-         .Setup (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
-         .Returns (resolvedJoinInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
+          .Returns (resolvedJoinInfo)
+          .Verifiable();
 
       var fakeResolvedForeignTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (string));
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
-         .Returns (fakeResolvedForeignTableInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
+          .Returns (fakeResolvedForeignTableInfo)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveJoinCondition (condition, _mappingResolutionContext))
-         .Returns (condition)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinCondition (condition, _mappingResolutionContext))
+          .Returns (condition)
+          .Verifiable();
 
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
@@ -116,19 +116,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var resolvedJoinInfo = new ResolvedJoinInfo (foreignTableInfo, condition);
 
       _resolverMock
-         .Setup (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
-         .Returns (resolvedJoinInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinInfo (_unresolvedJoinInfo, _generator))
+          .Returns (resolvedJoinInfo)
+          .Verifiable();
 
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
-         .Returns (foreignTableInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveTableInfo (foreignTableInfo, _mappingResolutionContext))
+          .Returns (foreignTableInfo)
+          .Verifiable();
       var fakeResolvedCondition = ExpressionHelper.CreateExpression (typeof (bool));
       _stageMock
-         .Setup (mock => mock.ResolveJoinCondition (condition, _mappingResolutionContext))
-         .Returns (fakeResolvedCondition)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinCondition (condition, _mappingResolutionContext))
+          .Returns (fakeResolvedCondition)
+          .Verifiable();
 
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (_unresolvedJoinInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
@@ -150,27 +150,26 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
 
       _stageMock
-         .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
-         .Returns (sqlEntityExpression)
-         .Verifiable();
+          .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
+          .Returns (sqlEntityExpression)
+          .Verifiable();
 
       _resolverMock
-         .Setup (mock =>
-                     mock.ResolveJoinInfo (
-                         It.Is<UnresolvedJoinInfo> (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof(Cook)),
-                         It.Is<UniqueIdentifierGenerator> (param => param == _generator)))
-         .Returns (
-              fakeResolvedJoinInfo)
+          .Setup (
+              mock => mock.ResolveJoinInfo (
+                  It.Is<UnresolvedJoinInfo> (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof(Cook)),
+                  It.Is<UniqueIdentifierGenerator> (param => param == _generator)))
+         .Returns (fakeResolvedJoinInfo)
          .Verifiable();
 
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo (fakeResolvedJoinInfo.ForeignTableInfo, _mappingResolutionContext))
-         .Returns (fakeResolvedJoinInfo.ForeignTableInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveTableInfo (fakeResolvedJoinInfo.ForeignTableInfo, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinInfo.ForeignTableInfo)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveJoinCondition (fakeResolvedJoinInfo.JoinCondition, _mappingResolutionContext))
-         .Returns (fakeResolvedJoinInfo.JoinCondition)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinCondition (fakeResolvedJoinInfo.JoinCondition, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinInfo.JoinCondition)
+          .Verifiable();
       
       var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
@@ -192,31 +191,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
 
       _stageMock
-         .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
-         .Returns (fakeUnaryExpression)
-         .Verifiable();
+          .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
+          .Returns (fakeUnaryExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveCollectionSourceExpression (fakeUnaryExpression.Operand, _mappingResolutionContext))
-         .Returns (sqlEntityExpression)
-         .Verifiable();
+          .Setup (mock => mock.ResolveCollectionSourceExpression (fakeUnaryExpression.Operand, _mappingResolutionContext))
+          .Returns (sqlEntityExpression)
+          .Verifiable();
 
       _resolverMock
-         .Setup (mock =>
-                     mock.ResolveJoinInfo (
-                         It.Is<UnresolvedJoinInfo> (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof (Cook)),
-                         It.Is<UniqueIdentifierGenerator> (param => param == _generator)))
-         .Returns (
-              fakeResolvedJoinInfo)
+          .Setup (
+              mock => mock.ResolveJoinInfo (
+                  It.Is<UnresolvedJoinInfo> (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof (Cook)),
+                  It.Is<UniqueIdentifierGenerator> (param => param == _generator)))
+         .Returns (fakeResolvedJoinInfo)
          .Verifiable();
 
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo (fakeResolvedJoinInfo.ForeignTableInfo, _mappingResolutionContext))
-         .Returns (fakeResolvedJoinInfo.ForeignTableInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveTableInfo (fakeResolvedJoinInfo.ForeignTableInfo, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinInfo.ForeignTableInfo)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveJoinCondition (fakeResolvedJoinInfo.JoinCondition, _mappingResolutionContext))
-         .Returns (fakeResolvedJoinInfo.JoinCondition)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinCondition (fakeResolvedJoinInfo.JoinCondition, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinInfo.JoinCondition)
+          .Verifiable();
 
       var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 
@@ -236,9 +234,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeExpression = Expression.Constant (1);
 
       _stageMock
-         .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
-         .Returns (fakeExpression)
-         .Verifiable();
+          .Setup (mock => mock.ResolveCollectionSourceExpression (unresolvedCollectionJoinInfo.SourceExpression, _mappingResolutionContext))
+          .Returns (fakeExpression)
+          .Verifiable();
 
       ResolvingJoinInfoVisitor.ResolveJoinInfo (unresolvedCollectionJoinInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
     }
@@ -250,14 +248,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo();
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo (resolvedJoinInfo.ForeignTableInfo, _mappingResolutionContext))
-         .Returns (fakeResolvedTableInfo)
-         .Verifiable();
+          .Setup (mock => mock.ResolveTableInfo (resolvedJoinInfo.ForeignTableInfo, _mappingResolutionContext))
+          .Returns (fakeResolvedTableInfo)
+          .Verifiable();
       var fakeResolvedJoinCondition = ExpressionHelper.CreateExpression (typeof (bool));
       _stageMock
-         .Setup (mock => mock.ResolveJoinCondition (resolvedJoinInfo.JoinCondition, _mappingResolutionContext))
-         .Returns (fakeResolvedJoinCondition)
-         .Verifiable();
+          .Setup (mock => mock.ResolveJoinCondition (resolvedJoinInfo.JoinCondition, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinCondition)
+          .Verifiable();
 
       var result = ResolvingJoinInfoVisitor.ResolveJoinInfo (resolvedJoinInfo, _resolverMock.Object, _generator, _stageMock.Object, _mappingResolutionContext);
 

@@ -52,11 +52,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameItems ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       visitorMock
-         .Setup (mock => mock.Visit (_collectionExpression.Items[0])).Returns (_collectionExpression.Items[0]).Verifiable();
+          .Setup (mock => mock.Visit (_collectionExpression.Items[0]))
+          .Returns (_collectionExpression.Items[0])
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_collectionExpression.Items[1])).Returns (_collectionExpression.Items[1]).Verifiable();
+          .Setup (mock => mock.Visit (_collectionExpression.Items[1]))
+          .Returns (_collectionExpression.Items[1])
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock.Object);
 
@@ -70,11 +74,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       var newItem = Expression.Constant (14);
 
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       visitorMock
-         .Setup (mock => mock.Visit (_collectionExpression.Items[0])).Returns (newItem).Verifiable();
+          .Setup (mock => mock.Visit (_collectionExpression.Items[0]))
+          .Returns (newItem)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_collectionExpression.Items[1])).Returns (_collectionExpression.Items[1]).Verifiable();
+          .Setup (mock => mock.Visit (_collectionExpression.Items[1]))
+          .Returns (_collectionExpression.Items[1])
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_collectionExpression, visitorMock.Object);
 

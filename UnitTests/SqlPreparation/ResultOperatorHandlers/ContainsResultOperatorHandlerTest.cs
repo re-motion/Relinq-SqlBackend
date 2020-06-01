@@ -62,7 +62,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
       var preparedExpression = Expression.Constant (new Cook (), typeof (Cook));
       _stageMock
-         .Setup (mock => mock.PrepareResultOperatorItemExpression (itemExpression, _context)).Returns (preparedExpression).Verifiable();
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (itemExpression, _context))
+          .Returns (preparedExpression)
+          .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock.Object, _context);
 

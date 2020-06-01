@@ -47,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<ISqlPreparationStage>(MockBehavior.Strict);
+      _stageMock = new Mock<ISqlPreparationStage> (MockBehavior.Strict);
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _generator = new UniqueIdentifierGenerator();
       _factory = new SqlPreparationSubStatementTableFactory (_stageMock.Object, _context, _generator);
@@ -92,9 +92,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Returns (fakeSelectProjection)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Returns (fakeSelectProjection)
+          .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
@@ -110,13 +110,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       Assert.That (subStatement.DataInfo, Is.TypeOf (typeof (StreamedSequenceInfo)));
       Assert.That (((StreamedSequenceInfo) subStatement.DataInfo).ItemExpression, Is.SameAs (subStatement.SelectProjection));
       Assert.That (((StreamedSequenceInfo) subStatement.DataInfo).DataType, 
-                   Is.SameAs (typeof (IQueryable<KeyValuePair<Cook, KeyValuePair<string, string>>>)));
+          Is.SameAs (typeof (IQueryable<KeyValuePair<Cook, KeyValuePair<string, string>>>)));
 
       var expectedSubStatementBuilder = new SqlStatementBuilder (_statementWithOrderings) 
-                                        { 
-                                          SelectProjection = fakeSelectProjection, 
-                                          DataInfo = subStatement.DataInfo
-                                        };
+          {
+            SelectProjection = fakeSelectProjection,
+            DataInfo = subStatement.DataInfo
+          };
       expectedSubStatementBuilder.Orderings.Clear();
       Assert.That (subStatement, Is.EqualTo (expectedSubStatementBuilder.GetSqlStatement()));
 
@@ -128,9 +128,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Returns (fakeSelectProjection)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Returns (fakeSelectProjection)
+          .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
@@ -150,9 +150,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Returns (fakeSelectProjection)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Returns (fakeSelectProjection)
+          .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
@@ -191,24 +191,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var expectedSelectProjection = Expression.New (
           outerTupleCtor,
           new[] {
-                  _statementWithOrderings.SelectProjection,
-                  Expression.New (
-                      middleTupleCtor,
-                      new[] { 
-                              _statementWithOrderings.Orderings[0].Expression,
-                              _statementWithOrderings.Orderings[1].Expression},
-                      _middleTupleKeyGetter,
-                      _middleTupleValueGetter)},
+              _statementWithOrderings.SelectProjection,
+              Expression.New (
+                  middleTupleCtor,
+                  new[] {
+                      _statementWithOrderings.Orderings[0].Expression,
+                      _statementWithOrderings.Orderings[1].Expression},
+                  _middleTupleKeyGetter,
+                  _middleTupleValueGetter)},
           _outerTupleKeyGetter,
           _outerTupleValueGetter);
 
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, KeyValuePair<string, string>> ());
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (
-                      It.IsAny<Expression>(), 
-                      It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback ((Expression mi, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, mi))
-         .Returns (fakeSelectProjection);
+          .Setup (mock => mock.PrepareSelectExpression (
+              It.IsAny<Expression>(),
+              It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback ((Expression mi, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, mi))
+          .Returns (fakeSelectProjection);
 
       _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
@@ -222,17 +222,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     public void CreateSqlTableForSubStatement_WithOrderings_AndExtractOrderingsPolicy_WithTopExpression ()
     {
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatementWithCook())
-                    {
-                      TopExpression = Expression.Constant ("top"),
-                      Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) }
-                    };
+      {
+        TopExpression = Expression.Constant ("top"),
+        Orderings = { new Ordering (Expression.Constant ("order1"), OrderingDirection.Asc) }
+      };
       var statement = builder.GetSqlStatement ();
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, string> ());
 
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (c => c == _context)))
-         .Returns (fakeSelectProjection)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (c => c == _context)))
+          .Returns (fakeSelectProjection)
+          .Verifiable();
 
       var result = _factory.CreateSqlTableForStatement (
           statement,
@@ -254,9 +254,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (0);
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Returns (fakeSelectProjection)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Returns (fakeSelectProjection)
+          .Verifiable();
 
       _factory.CreateSqlTableForStatement (
           _statementWithOrderings,

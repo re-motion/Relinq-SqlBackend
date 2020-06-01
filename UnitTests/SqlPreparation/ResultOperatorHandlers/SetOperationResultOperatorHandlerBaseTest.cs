@@ -63,9 +63,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var preparedSource2Statement = SqlStatementModelObjectMother.CreateSqlStatement();
       var preparedSource2Expression = new SqlSubStatementExpression (preparedSource2Statement);
       _stageMock
-         .Setup (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
-         .Returns (preparedSource2Expression)
-         .Verifiable();
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
+          .Returns (preparedSource2Expression)
+          .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
@@ -95,9 +95,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new UnionResultOperator ("x", typeof (int), Expression.Constant (new[] { 1, 2, 3 }));
       var preparedSource2Expression = ExpressionHelper.CreateExpression (typeof (int[]));
       _stageMock
-         .Setup (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
-         .Returns (preparedSource2Expression)
-         .Verifiable();
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (resultOperator.Source2, _context))
+          .Returns (preparedSource2Expression)
+          .Verifiable();
 
       Assert.That(() =>_handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context),
           Throws.TypeOf<NotSupportedException>()

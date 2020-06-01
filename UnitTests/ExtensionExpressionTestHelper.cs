@@ -32,15 +32,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests
         where TExpression : Expression
         where TVisitorInterface : class
     {
-      var baseMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var baseMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var visitorMock = baseMock.As<TVisitorInterface>();
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-         .Setup (visitMethodCall)
-         .Returns (returnedExpression)
-         .Verifiable();
+          .Setup (visitMethodCall)
+          .Returns (returnedExpression)
+          .Verifiable();
 
       var result = CallAccept (expression, baseMock.Object);
 
@@ -56,10 +56,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-         .Protected()
-         .Setup<Expression> ("VisitExtension", ItExpr.Is<Expression> (_ => _ == expression))
-         .Returns (returnedExpression)
-         .Verifiable();
+          .Protected()
+          .Setup<Expression> ("VisitExtension", ItExpr.Is<Expression> (_ => _ == expression))
+          .Returns (returnedExpression)
+          .Verifiable();
 
       var result = CallAccept (expression, visitorMock.Object);
 
