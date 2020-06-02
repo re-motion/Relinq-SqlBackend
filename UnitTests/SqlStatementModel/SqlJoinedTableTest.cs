@@ -47,6 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var newJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenRestaurant();
+
       Assert.That (
           () => sqlJoinedTable.JoinInfo = newJoinInfo,
           Throws.ArgumentException

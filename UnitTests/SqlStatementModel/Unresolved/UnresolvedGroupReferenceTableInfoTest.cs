@@ -47,6 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     public void Initialization_ThrowsWhenNoSequenceType ()
     {
       var invalidGroupSource = SqlStatementModelObjectMother.CreateSqlTable (typeof (int));
+
       Assert.That (
           () => new UnresolvedGroupReferenceTableInfo (invalidGroupSource),
           Throws.ArgumentException

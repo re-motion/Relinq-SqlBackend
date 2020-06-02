@@ -131,10 +131,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       var someIDs = new[] { new MetaID (0, "C0"), new MetaID (1, "C1") };
       Assert.That (
           () => CheckQuery (
-          from c in Cooks
-          where someIDs.Contains (c.KnifeID)
-          select c.ID,
-          "Not supported"),
+              from c in Cooks
+              where someIDs.Contains (c.KnifeID)
+              select c.ID,
+              "Not supported"),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot be "

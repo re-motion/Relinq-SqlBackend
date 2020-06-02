@@ -77,6 +77,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     public void GetSqlTypeName_KeyNotFound_ThrowsException ()
     {
       var convertExpression = new SqlConvertExpression (typeof (Cook), Expression.Constant ("1"));
+
       Assert.That (
           () => convertExpression.GetSqlTypeName (),
           Throws.InstanceOf<NotSupportedException>()

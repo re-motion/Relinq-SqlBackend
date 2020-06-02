@@ -37,17 +37,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       Assert.That (
           () => new SqlStatement (
-          new TestStreamedValueInfo (typeof (int)),
-          Expression.Constant (1),
-          new SqlTable[0],
-          Expression.Constant (1),
-          null,
-          new Ordering[0],
-          null,
-          false,
-          null,
-          null,
-          new SetOperationCombinedStatement[0]),
+              new TestStreamedValueInfo (typeof (int)),
+              Expression.Constant (1),
+              new SqlTable[0],
+              Expression.Constant (1),
+              null,
+              new Ordering[0],
+              null,
+              false,
+              null,
+              null,
+              new SetOperationCombinedStatement[0]),
           Throws.ArgumentException
               .With.Message.EqualTo (
                   "Parameter 'whereCondition' has type 'System.Int32' when type 'System.Boolean' was expected.\r\nParameter name: whereCondition"));

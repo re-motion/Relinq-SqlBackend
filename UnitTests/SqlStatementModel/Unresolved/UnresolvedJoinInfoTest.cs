@@ -80,6 +80,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     public void GetResolvedTableInfo_Throws ()
     {
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
+
       Assert.That (
           () => joinInfo.GetResolvedJoinInfo(),
           Throws.InvalidOperationException

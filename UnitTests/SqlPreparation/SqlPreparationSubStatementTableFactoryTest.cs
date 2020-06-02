@@ -255,12 +255,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
           .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Is.Anything, Arg.Is (_context)))
           .Return (fakeSelectProjection);
-      _stageMock.Replay ();
+      _stageMock.Replay();
+
       Assert.That (
           () => _factory.CreateSqlTableForStatement (
-          _statementWithOrderings,
-          info => new SqlTable (info, JoinSemantics.Inner),
-          OrderingExtractionPolicy.ExtractOrderingsIntoProjection),
+              _statementWithOrderings,
+              info => new SqlTable (info, JoinSemantics.Inner),
+              OrderingExtractionPolicy.ExtractOrderingsIntoProjection),
           Throws.InvalidOperationException
               .With.Message.EqualTo ("The SQL Preparation stage must not change the type of the select projection."));
     }

@@ -399,14 +399,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
       var cook = new Cook { ID = 1 };
       Assert.That (
           () => CheckQuery (
-          from c in Cooks
-          from x in (from k in Kitchens select cook)
-          where x == c select c.ID,
-          "SELECT [t0].[ID] AS [value] "
-          + "FROM [CookTable] AS [t0] "
-          + "CROSS JOIN (SELECT @1 AS [value] FROM [KitchenTable] AS [t2]) AS [q1] "
-          + "WHERE ([q1].[value] = [c].[ID])",
-          new CommandParameter ("@1", 1)),
+              from c in Cooks
+              from x in (from k in Kitchens select cook)
+              where x == c select c.ID,
+              "SELECT [t0].[ID] AS [value] "
+              + "FROM [CookTable] AS [t0] "
+              + "CROSS JOIN (SELECT @1 AS [value] FROM [KitchenTable] AS [t2]) AS [q1] "
+              + "WHERE ([q1].[value] = [c].[ID])",
+              new CommandParameter ("@1", 1)),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "It is not supported to use a constant entity object in any other context than to compare it with another entity. "

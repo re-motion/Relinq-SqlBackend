@@ -189,8 +189,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       Assert.That (
           () => CheckQuery (
-          () => Cooks.Select(c => InMemoryToUpper (c.Name)).Union (Kitchens.Select (c => c.Name)),
-          "SELECT [t0].[Name] AS [Arg0] FROM [CookTable] AS [t0] UNION (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1])"),
+              () => Cooks.Select (c => InMemoryToUpper (c.Name)).Union (Kitchens.Select (c => c.Name)),
+              "SELECT [t0].[Name] AS [Arg0] FROM [CookTable] AS [t0] UNION (SELECT [t1].[Name] AS [value] FROM [KitchenTable] AS [t1])"),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. "

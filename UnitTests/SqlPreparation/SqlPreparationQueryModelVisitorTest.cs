@@ -174,6 +174,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var constantExpression = Expression.Constant (null, typeof (int[]));
       _queryModel.MainFromClause.FromExpression = constantExpression;
+
       Assert.That (
           () => _visitor.VisitQueryModel (_queryModel),
           Throws.InstanceOf<NotSupportedException>()
@@ -618,6 +619,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var resultOperator = new TestChoiceResultOperator (false);
       var registry = new ResultOperatorHandlerRegistry ();
       var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock, _generator, registry);
+
       Assert.That (
           () => queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0),
           Throws.InstanceOf<NotSupportedException>()

@@ -219,6 +219,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var expression = Expression.Call (
           typeof (string).GetMethod ("Concat", new[] { typeof (string[]) }),
           argument);
+
       Assert.That (
           () => _transformer.Transform (expression),
           Throws.InstanceOf<NotSupportedException>()
@@ -236,6 +237,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var expression = Expression.Call (
           typeof (string).GetMethod ("Concat", new[] { typeof (IEnumerable<string>) }),
           argument);
+
       Assert.That (
           () => _transformer.Transform (expression),
           Throws.InstanceOf<NotSupportedException>()

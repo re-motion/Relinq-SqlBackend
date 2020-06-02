@@ -151,8 +151,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     {
       Assert.That (
           () => CheckQuery (
-          from c in Cooks select c.Assistants,
-          ""),
+              from c in Cooks select c.Assistants,
+              ""),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed. Expression: '[t0]'"));

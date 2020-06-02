@@ -119,7 +119,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var customExpression = new CustomExpression (typeof (Cook[]));
       Assert.That (
           () => SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          customExpression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
+              customExpression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "Error parsing expression 'CustomExpression'. Expressions of type 'Cook[]' cannot be used as the SqlTables of a from clause."));
@@ -130,9 +130,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Restaurant));
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
       Assert.That (
           () => SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
+              expression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
           Throws.InstanceOf<NotSupportedException>());
     }
 
@@ -300,9 +301,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var memberInfo = typeof (Restaurant).GetProperty ("Cooks");
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Restaurant));
       var expression = new SqlEntityRefMemberExpression (entityExpression, memberInfo);
+
       Assert.That (
           () => SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
+              expression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
           Throws.InstanceOf<NotSupportedException>());
     }
 
@@ -310,9 +312,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     public void VisitSqlEntityConstantExpression ()
     {
       var expression = new SqlEntityConstantExpression (typeof (Cook), "test", new SqlLiteralExpression (12));
+
       Assert.That (
           () => SqlPreparationFromExpressionVisitor.AnalyzeFromExpression (
-          expression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
+              expression, _stageMock, _generator, _methodCallTransformerProvider, _context, _tableGenerator, _someOrderingExtractionPolicy),
           Throws.InstanceOf<NotSupportedException>());
     }
 

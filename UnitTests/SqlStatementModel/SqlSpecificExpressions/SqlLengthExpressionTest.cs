@@ -61,6 +61,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     public void Initialization_OtherType ()
     {
       var intExpression = Expression.Constant (0);
+
       Assert.That (
           () => new SqlLengthExpression (intExpression),
           Throws.ArgumentException

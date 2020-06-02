@@ -31,8 +31,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     {
       Assert.That (
           () => CheckQuery (
-          () => Cooks.GroupBy (c => c.Name),
-          ""),
+              () => Cooks.GroupBy (c => c.Name),
+              ""),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.Contains (
                   "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "

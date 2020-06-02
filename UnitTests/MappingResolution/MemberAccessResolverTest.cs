@@ -314,14 +314,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new[] { new NamedExpression ("value", new SqlLiteralExpression (1)), new NamedExpression ("value", new SqlLiteralExpression (2)) });
       Assert.That (
           () => MemberAccessResolver.ResolveMemberAccess (
-          newExpression,
-          typeof (TypeForNewExpression).GetField ("C"),
-          _resolverMock,
-          _stageMock,
-          _mappingResolutionContext),
+              newExpression,
+              typeof (TypeForNewExpression).GetField ("C"),
+              _resolverMock,
+              _stageMock,
+              _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
-                  "The member 'TypeForNewExpression.C' cannot be translated to SQL. "+
+                  "The member 'TypeForNewExpression.C' cannot be translated to SQL. " +
                   "Expression: 'new TypeForNewExpression(1 AS value, 2 AS value)'"));
     }
 
@@ -349,7 +349,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "Cannot resolve member 'FirstName' applied to expression 'TABLE-REF(UnresolvedTableInfo(Cook))'; "
-                  +"the expression type 'SqlTableReferenceExpression' is not supported in member expressions."));
+                  + "the expression type 'SqlTableReferenceExpression' is not supported in member expressions."));
     }
 
     [Test]

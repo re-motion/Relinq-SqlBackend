@@ -72,6 +72,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
         SelectProjection = Expression.Constant (new Cook ()),
         DataInfo = new StreamedScalarValueInfo(typeof(Cook))
       }.GetSqlStatement ();
+
       Assert.That (
           () => new ResolvedSubStatementTableInfo ("c", sqlStatement),
           Throws.ArgumentException);

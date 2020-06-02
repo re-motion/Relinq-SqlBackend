@@ -206,17 +206,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1"));
       Assert.That (_commandBuilder.GetCommandParameters()[0].Value, Is.EqualTo (0));
     }
+
     [Test]
     public void GenerateSql_UnsupportedExpression ()
     {
       var unknownExpression = new CustomExpression (typeof (int));
+
       Assert.That (
-          () => SqlGeneratingExpressionVisitor.GenerateSql (
-          unknownExpression, _commandBuilder, _stageMock),
+          () => SqlGeneratingExpressionVisitor.GenerateSql (unknownExpression, _commandBuilder, _stageMock),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
-                  "The expression 'CustomExpression' cannot be translated to SQL text by this SQL generator. Expression type 'CustomExpression' is not supported."
-));
+                  "The expression 'CustomExpression' cannot be translated to SQL text by this SQL generator. Expression type 'CustomExpression' is not supported."));
     }
 
     [Test]
@@ -382,9 +382,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void VisitUnaryExpression_NotSupported ()
     {
       var unaryExpression = Expression.TypeAs (Expression.Constant ("1"), typeof (string));
+
       Assert.That (
-          () => SqlGeneratingExpressionVisitor.GenerateSql (
-          unaryExpression, _commandBuilder, _stageMock),
+          () => SqlGeneratingExpressionVisitor.GenerateSql (unaryExpression, _commandBuilder, _stageMock),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "Cannot generate SQL for unary expression '(\"1\" As String)'."));
