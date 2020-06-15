@@ -75,9 +75,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                   It.Is<OrderingExtractionPolicy> (param => param == someOrderingExtractionPolicy)))
           .Returns (fakeFromExpressionInfo)
           .Callback (
-              (Expression mi, ISqlPreparationContext _1, Func<ITableInfo, SqlTable> _2, OrderingExtractionPolicy _3) => 
+              (Expression expression, ISqlPreparationContext _1, Func<ITableInfo, SqlTable> _2, OrderingExtractionPolicy _3) =>
               {
-                var sqlStatement = ((SqlSubStatementExpression) mi).SqlStatement;
+                var sqlStatement = ((SqlSubStatementExpression) expression).SqlStatement;
                 SqlExpressionTreeComparer.CheckAreEqualTrees (new NamedExpression (null, originalStatement.SelectProjection), sqlStatement.SelectProjection);
 
                 Assert.That (sqlStatement.DataInfo, Is.SameAs (originalStatement.DataInfo));

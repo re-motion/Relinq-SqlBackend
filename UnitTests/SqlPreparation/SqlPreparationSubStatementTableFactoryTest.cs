@@ -207,7 +207,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Setup (mock => mock.PrepareSelectExpression (
               It.IsAny<Expression>(),
               It.Is<ISqlPreparationContext> (param => param == _context)))
-          .Callback ((Expression mi, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, mi))
+          .Callback ((Expression expression, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, expression))
           .Returns (fakeSelectProjection);
 
       _factory.CreateSqlTableForStatement (

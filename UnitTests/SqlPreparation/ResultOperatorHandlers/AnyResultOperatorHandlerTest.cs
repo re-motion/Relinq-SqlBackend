@@ -64,9 +64,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock
           .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e is SqlExistsExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
           .Callback (
-              (Expression mi, ISqlPreparationContext _) =>
+              (Expression selectProjection, ISqlPreparationContext _) =>
               {
-                var selectProjection = mi;
                 Assert.That (selectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
 
                 var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));

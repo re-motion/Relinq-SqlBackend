@@ -80,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).JoinCondition))
-          .Callback ((ISqlCommandBuilder mi, Expression _) => ((SqlCommandBuilder) mi).Append ("([t1].[ID] = [t2].[FK])"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => ((SqlCommandBuilder) sqlCommandBuilder).Append ("([t1].[ID] = [t2].[FK])"))
           .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
@@ -101,11 +101,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).JoinCondition))
-          .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("X"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("X"))
           .Verifiable();
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).JoinCondition))
-          .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("Y"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("Y"))
           .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
@@ -150,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
           .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-          .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("[Table] AS [t]"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) => sqlCommandBuilder.Append ("[Table] AS [t]"))
           .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: false);
@@ -192,7 +192,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
-          .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("condition"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("condition"))
           .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: true);
@@ -231,7 +231,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
           .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-          .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("XXX"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) => sqlCommandBuilder.Append ("XXX"))
           .Verifiable();
 
       _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
@@ -251,7 +251,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
           .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-          .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("XXX"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) => sqlCommandBuilder.Append ("XXX"))
           .Verifiable();
 
       _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
@@ -268,7 +268,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _stageMock
           .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
-          .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("condition"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("condition"))
           .Verifiable();
 
       _generator.VisitResolvedJoinInfo (resolvedJoinInfo);

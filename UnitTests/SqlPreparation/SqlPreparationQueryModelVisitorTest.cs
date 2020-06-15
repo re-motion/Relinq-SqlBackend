@@ -629,9 +629,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                   It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Returns (preparedFromExpressionInfo)
           .Callback (
-              (Expression _0, ISqlPreparationContext _1, Func<ITableInfo, SqlTable> mi, OrderingExtractionPolicy _3) =>
+              (Expression _0, ISqlPreparationContext _1, Func<ITableInfo, SqlTable> tableCreator, OrderingExtractionPolicy _3) =>
               {
-                var tableCreator = mi;
                 var sampleTableInfo = new UnresolvedTableInfo (typeof (Cook));
 
                 var table = tableCreator (sampleTableInfo);

@@ -123,12 +123,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
           .Setup (mock => mock.ResolveTableReferenceExpression (It.IsAny<SqlTableReferenceExpression>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
           .Callback (
-              (SqlTableReferenceExpression mi, IMappingResolutionContext _) =>
+              (SqlTableReferenceExpression sqlTableReferenceExpression, IMappingResolutionContext _) =>
               {
                 var expectedStatement =
                     new SqlStatementBuilder (fakeResolvedSqlStatement)
                     { DataInfo = new StreamedSequenceInfo (typeof (IEnumerable<int>), fakeResolvedSqlStatement.SelectProjection) }.GetSqlStatement();
-                sqlTable = (SqlTable) mi.SqlTable;
+                sqlTable = (SqlTable) sqlTableReferenceExpression.SqlTable;
                 Assert.That (((ResolvedSubStatementTableInfo) sqlTable.TableInfo).SqlStatement, Is.EqualTo (expectedStatement));
               })
           .Returns (resolvedReference)

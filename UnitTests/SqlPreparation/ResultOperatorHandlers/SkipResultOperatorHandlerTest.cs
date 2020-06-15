@@ -119,9 +119,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock
           .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
           .Callback (
-              (Expression mi, ISqlPreparationContext _) =>
+              (Expression expression, ISqlPreparationContext _) =>
               {
-                var selectProjection = (NewExpression) mi;
+                var selectProjection = (NewExpression) expression;
                 var rowNumberExpression = (SqlRowNumberExpression) selectProjection.Arguments[1];
                 var ordering = rowNumberExpression.Orderings[0];
                 SqlExpressionTreeComparer.CheckAreEqualTrees (ordering.Expression, Expression.Constant (1));

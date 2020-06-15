@@ -73,9 +73,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       _stageMock
           .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
           .Callback (
-              (Expression mi, ISqlPreparationContext _) =>
+              (Expression selectProjection, ISqlPreparationContext _) =>
               {
-                var selectProjection = mi;
                 var expectedSubStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = preparedPredicate }.GetSqlStatement();
                 var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
                 var expectedExpression = Expression.Not (expectedExistsExpression);

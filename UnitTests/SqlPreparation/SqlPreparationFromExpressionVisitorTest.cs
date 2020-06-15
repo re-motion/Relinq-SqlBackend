@@ -501,10 +501,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Callback (
-              (Expression mi, ISqlPreparationContext _1) =>
+              (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
-                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
-                      mi))
+                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
          .Returns (fakeWhereExpression);
 
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.DoNotExtractOrderings);
