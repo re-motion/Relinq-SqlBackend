@@ -42,15 +42,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var newArgs = new[] { Expression.Constant (1), Expression.Constant (8), Expression.Constant (9) };
       
       visitorMock
-         .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[0])).Returns (newArgs[0]).Verifiable ();
+          .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[0]))
+          .Returns (newArgs[0])
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[1])).Returns (newArgs[1]).Verifiable ();
+          .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[1]))
+          .Returns (newArgs[1])
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[2])).Returns (newArgs[2]).Verifiable ();
+          .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[2]))
+          .Returns (newArgs[2])
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlFunctionExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.Not.SameAs (_sqlFunctionExpression));
       Assert.That (((SqlFunctionExpression) result).Args, Is.EqualTo (newArgs));
@@ -63,15 +69,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       
       visitorMock
-         .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[0])).Returns (_sqlFunctionExpression.Args[0]).Verifiable ();
+          .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[0]))
+          .Returns (_sqlFunctionExpression.Args[0])
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[1])).Returns (_sqlFunctionExpression.Args[1]).Verifiable ();
+          .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[1]))
+          .Returns (_sqlFunctionExpression.Args[1])
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[2])).Returns (_sqlFunctionExpression.Args[2]).Verifiable ();
+          .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[2]))
+          .Returns (_sqlFunctionExpression.Args[2])
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlFunctionExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_sqlFunctionExpression));
     }

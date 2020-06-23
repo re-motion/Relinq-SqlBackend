@@ -66,8 +66,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
 
       var joinInfoVisitorMock = new Mock<IJoinInfoVisitor>();
-      joinInfoVisitorMock
-         .Setup (mock => mock.VisitUnresolvedJoinInfo (joinInfo)).Verifiable ();
+      joinInfoVisitorMock.Setup (mock => mock.VisitUnresolvedJoinInfo (joinInfo)).Verifiable();
 
       joinInfo.Accept (joinInfoVisitorMock.Object);
       joinInfoVisitorMock.Verify();

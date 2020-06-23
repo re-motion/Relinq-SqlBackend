@@ -54,13 +54,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var newRightExpression = Expression.Constant (4);
 
       visitorMock
-         .Setup (mock => mock.Visit (_leftExpression))
-         .Returns (newLeftExpression)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_leftExpression))
+          .Returns (newLeftExpression)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_rightExpression))
-         .Returns (newRightExpression)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_rightExpression))
+          .Returns (newRightExpression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 

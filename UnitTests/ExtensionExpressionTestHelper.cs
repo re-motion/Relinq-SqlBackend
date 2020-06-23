@@ -38,32 +38,32 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-         .Setup (visitMethodCall)
-         .Returns (returnedExpression)
-         .Verifiable ();
+          .Setup (visitMethodCall)
+          .Returns (returnedExpression)
+          .Verifiable();
 
       var result = CallAccept (expression, baseMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
     public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : Expression
     {
-      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-         .Protected()
-         .Setup<Expression> ("VisitExtension", ItExpr.Is<Expression> (_ => _ == expression))
-         .Returns (returnedExpression)
-         .Verifiable ();
+          .Protected()
+          .Setup<Expression> ("VisitExtension", ItExpr.Is<Expression> (_ => _ == expression))
+          .Returns (returnedExpression)
+          .Verifiable();
 
       var result = CallAccept (expression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }

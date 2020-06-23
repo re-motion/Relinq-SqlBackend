@@ -331,13 +331,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeWhereExpression = Expression.Constant (true);
 
       _stageMock
-         .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback (
-              (Expression mi, ISqlPreparationContext _1) =>
+          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback (
+              (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
-                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
-                       mi))
-         .Returns (fakeWhereExpression);
+                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
+          .Returns (fakeWhereExpression);
 
       var visitor = CreateTestableVisitor(_someOrderingExtractionPolicy);
       var result = visitor.VisitQuerySourceReference (querySourceReferenceExpression);
@@ -375,13 +374,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeWhereExpression = Expression.Constant (true);
 
       _stageMock
-         .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback (
-              (Expression mi, ISqlPreparationContext _1) =>
+          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback (
+              (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
-                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
-                      mi))
-         .Returns (fakeWhereExpression);
+                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
+          .Returns (fakeWhereExpression);
 
       var visitor = CreateTestableVisitor(_someOrderingExtractionPolicy);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
@@ -433,22 +431,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (groupJoinClause);
 
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression(It.IsAny<Expression>(), It.IsAny<ISqlPreparationContext>()))
-         .Returns (fakeSelectExpression)
-         .Verifiable ();
+          .Setup (mock => mock.PrepareSelectExpression(It.IsAny<Expression>(), It.IsAny<ISqlPreparationContext>()))
+          .Returns (fakeSelectExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback (
-              (Expression mi, ISqlPreparationContext _1) =>
+          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback (
+              (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
-                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
-                      mi))
-         .Returns (fakeWhereExpression);
+                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
+          .Returns (fakeWhereExpression);
 
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (visitor.FromExpressionInfo != null); // inline condition because of ReSharper
       var fromExpressionInfo = (FromExpressionInfo) visitor.FromExpressionInfo;
@@ -482,11 +479,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var orderingExpression = Expression.MakeMemberAccess (sqlTableReferenceExpression, typeof (Cook).GetProperty ("ID"));
       var sqlStatement = new SqlStatementBuilder
                          {
-                           DataInfo = new StreamedSequenceInfo(typeof (DateTime[]), Expression.Constant (new DateTime (2000, 1, 1))),
-                           SelectProjection = selectProjection,
-                           SqlTables = { sqlTable },
-                           Orderings =
-                               { new Ordering (orderingExpression, OrderingDirection.Asc) }
+                             DataInfo = new StreamedSequenceInfo(typeof (DateTime[]), Expression.Constant (new DateTime (2000, 1, 1))),
+                             SelectProjection = selectProjection,
+                             SqlTables = { sqlTable },
+                             Orderings =
+                                 { new Ordering (orderingExpression, OrderingDirection.Asc) }
                          }.GetSqlStatement();
       var fakeWhereExpression = Expression.Constant (true);
 
@@ -504,16 +501,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
          .Callback (
-              (Expression mi, ISqlPreparationContext _1) =>
+              (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
-                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector),
-                      mi))
+                      Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
          .Returns (fakeWhereExpression);
 
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.DoNotExtractOrderings);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (visitor.FromExpressionInfo != null); // inline condition because of ReSharper
       var fromExpressionInfo = (FromExpressionInfo) visitor.FromExpressionInfo;

@@ -54,13 +54,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-         .Setup (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -82,33 +82,33 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityRefMemberExpression = SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ();
 
       _resolverMock
-         .Setup (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
-         .Returns ((Expression) null);
+          .Setup (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
+          .Returns ((Expression) null);
 
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       _stageMock
-         .Setup (mock =>
-                     mock.ResolveEntityRefMemberExpression (
-                         It.Is<SqlEntityRefMemberExpression> (param => param == entityRefMemberExpression),
-                         It.Is<UnresolvedJoinInfo> (j => 
-                                                        j.OriginatingEntity == entityRefMemberExpression.OriginatingEntity 
-                                                     && j.MemberInfo == entityRefMemberExpression.MemberInfo
-                                                     && j.Cardinality == JoinCardinality.One),
-                         It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
-         .Returns (
-              fakeEntityExpression)
-         .Verifiable ();
+          .Setup (
+              mock =>
+              mock.ResolveEntityRefMemberExpression (
+                  It.Is<SqlEntityRefMemberExpression> (param => param == entityRefMemberExpression),
+                  It.Is<UnresolvedJoinInfo> (j =>
+                      j.OriginatingEntity == entityRefMemberExpression.OriginatingEntity
+                      && j.MemberInfo == entityRefMemberExpression.MemberInfo
+                      && j.Cardinality == JoinCardinality.One),
+                  It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+         .Returns (fakeEntityExpression)
+         .Verifiable();
 
       var fakeResult = Expression.Constant (0);
       _resolverMock
-         .Setup (mock => mock.ResolveMemberExpression (fakeEntityExpression, memberInfo))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveMemberExpression (fakeEntityExpression, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.Verify ();
-      _resolverMock.Verify ();
+      _stageMock.Verify();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -120,14 +120,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedExpression = ExpressionHelper.CreateExpression ();
       _resolverMock
-         .Setup (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
-         .Returns (fakeResolvedExpression)
-         .Verifiable ();
+          .Setup (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
+          .Returns (fakeResolvedExpression)
+          .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
-      //REVIEW How to handle AssertNotCalled? Shouldn't strict behavior handle this?
+      _resolverMock.Verify();
+      _stageMock.Verify(
+          mock => mock.ResolveEntityRefMemberExpression (It.IsAny<SqlEntityRefMemberExpression>(), It.IsAny<IJoinInfo>(), It.IsAny<IMappingResolutionContext>()),
+          Times.Never());
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }
 
@@ -141,13 +143,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-         .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
-      var result = MemberAccessResolver.ResolveMemberAccess(convertExpression, memberInfo,  _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo,  _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -174,13 +176,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-         .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (namedExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -200,11 +202,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
          .Returns (fakeResult)
-         .Verifiable ();
+         .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (outerMostConvertExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -217,9 +219,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-         .Setup (mock => mock.ResolveConstantExpression (expression))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
 
       MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
     }
@@ -232,13 +234,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
 
       _resolverMock
-         .Setup (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
-         .Returns (constantExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
+          .Returns (constantExpression)
+          .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (columnExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (constantExpression));
     }
 

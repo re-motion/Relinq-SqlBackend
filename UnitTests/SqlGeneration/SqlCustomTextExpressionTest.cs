@@ -54,7 +54,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlCustomTextExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_sqlCustomTextExpression));
     }
 

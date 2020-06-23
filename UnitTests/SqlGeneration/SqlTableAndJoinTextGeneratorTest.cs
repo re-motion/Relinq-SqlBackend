@@ -79,9 +79,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       joinedTable.JoinInfo = CreateResolvedJoinInfo (typeof (Cook), "t1", "ID", "CookTable", "t2", "FK");
 
       _stageMock
-         .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).JoinCondition))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => ((SqlCommandBuilder) mi).Append ("([t1].[ID] = [t2].[FK])"))
-         .Verifiable ();
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable.JoinInfo).JoinCondition))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => ((SqlCommandBuilder) sqlCommandBuilder).Append ("([t1].[ID] = [t2].[FK])"))
+          .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
 
@@ -100,13 +100,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var joinedTable2 = joinedTable1.GetOrAddLeftJoin (CreateResolvedJoinInfo (typeof (Cook), "t2", "ID2", "CookTable2", "t3", "FK2"), memberInfo2);
 
       _stageMock
-         .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).JoinCondition))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("X"))
-         .Verifiable ();
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable1.JoinInfo).JoinCondition))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("X"))
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).JoinCondition))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("Y"))
-         .Verifiable ();
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, ((ResolvedJoinInfo) joinedTable2.JoinInfo).JoinCondition))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("Y"))
+          .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (originalTable, _commandBuilder, _stageMock.Object, true);
 
@@ -115,8 +115,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           _commandBuilder.GetCommandText(),
           Is.EqualTo (
               "[KitchenTable] AS [t1] LEFT OUTER JOIN "
-            + "[CookTable] AS [t2] ON X LEFT OUTER JOIN "
-            + "[CookTable2] AS [t3] ON Y"));
+              + "[CookTable] AS [t2] ON X LEFT OUTER JOIN "
+              + "[CookTable2] AS [t3] ON Y"));
     }
 
     [Test]
@@ -149,8 +149,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);
 
       _stageMock
-         .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-         .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append("[Table] AS [t]"));
+          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) => sqlCommandBuilder.Append ("[Table] AS [t]"))
+          .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: false);
 
@@ -190,9 +191,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       sqlTable.GetOrAddLeftJoin (joinInfo, ExpressionHelper.GetMember<Kitchen> (k => k.Cook));
       
       _stageMock
-         .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("condition"))
-         .Verifiable ();
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("condition"))
+          .Verifiable();
 
       SqlTableAndJoinTextGenerator.GenerateSql (sqlTable, _commandBuilder, _stageMock.Object, isFirstTable: true);
       
@@ -223,15 +224,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void VisitSubStatementTableInfo ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-                         {
-                           DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-                         }.GetSqlStatement ();
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
       var resolvedSubTableInfo = new ResolvedSubStatementTableInfo ("cook", sqlStatement);
 
       _stageMock
-         .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-         .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("XXX"))
-         .Verifiable ();
+          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) => sqlCommandBuilder.Append ("XXX"))
+          .Verifiable();
 
       _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
 
@@ -243,19 +244,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void VisitResolvedJoinedGroupingTableInfo ()
     {
       var sqlStatement = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook[])))
-                         {
-                           DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
-                         }.GetSqlStatement ();
+      {
+        DataInfo = new StreamedSequenceInfo (typeof (IQueryable<Cook>), Expression.Constant (new Cook ()))
+      }.GetSqlStatement ();
       var resolvedSubTableInfo = SqlStatementModelObjectMother.CreateResolvedJoinedGroupingTableInfo (sqlStatement);
 
       _stageMock
-         .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
-         .Callback ((ISqlCommandBuilder mi, SqlStatement _) => mi.Append ("XXX"))
-         .Verifiable ();
+          .Setup (mock => mock.GenerateTextForSqlStatement (_commandBuilder, sqlStatement))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) => sqlCommandBuilder.Append ("XXX"))
+          .Verifiable();
 
       _generator.VisitSubStatementTableInfo (resolvedSubTableInfo);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("(XXX) AS [cook]"));
     }
 
@@ -266,9 +267,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var resolvedJoinInfo = new ResolvedJoinInfo (new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c"), condition);
 
       _stageMock
-         .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
-         .Callback ((ISqlCommandBuilder mi, Expression _) => mi.Append ("condition"))
-         .Verifiable ();
+          .Setup (mock => mock.GenerateTextForJoinCondition (_commandBuilder, condition))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression _) => sqlCommandBuilder.Append ("condition"))
+          .Verifiable();
 
       _generator.VisitResolvedJoinInfo (resolvedJoinInfo);
 

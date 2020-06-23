@@ -59,9 +59,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void ResolveSqlTable_ResolvesTableInfo ()
     {
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
-         .Returns (_fakeResolvedSimpleTableInfo)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
+          .Returns (_fakeResolvedSimpleTableInfo)
+          .Verifiable();
 
       _visitor.ResolveSqlTable (_sqlTable);
 
@@ -81,13 +81,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var sequence = new MockSequence();
       _stageMock
-         .InSequence (sequence)
-         .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
-         .Returns (_fakeResolvedSimpleTableInfo);
+          .InSequence (sequence)
+          .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _mappingResolutionContext))
+          .Returns (_fakeResolvedSimpleTableInfo);
       _stageMock
-         .InSequence (sequence)
-         .Setup (mock => mock.ResolveJoinInfo (@join.JoinInfo, _mappingResolutionContext))
-         .Returns (fakeResolvedJoinInfo);
+          .InSequence (sequence)
+          .Setup (mock => mock.ResolveJoinInfo (@join.JoinInfo, _mappingResolutionContext))
+          .Returns (fakeResolvedJoinInfo);
 
       _visitor.ResolveSqlTable (_sqlTable);
 
@@ -186,9 +186,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-         .Setup (mock => mock.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _visitor.ResolveSelectProjection (expression, sqlStatementBuilder);
 
@@ -204,9 +204,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-         .Setup (mock => mock.ResolveTopExpression (expression, _mappingResolutionContext))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveTopExpression (expression, _mappingResolutionContext))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _visitor.ResolveTopExpression (expression);
 
@@ -222,13 +222,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-         .Setup (mock => mock.ResolveGroupByExpression (expression, _mappingResolutionContext))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveGroupByExpression (expression, _mappingResolutionContext))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _visitor.ResolveGroupByExpression (expression);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeResult));
     }
@@ -240,9 +240,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-         .Setup (mock => mock.ResolveWhereExpression (expression, _mappingResolutionContext))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveWhereExpression (expression, _mappingResolutionContext))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _visitor.ResolveWhereCondition (expression);
 
@@ -258,9 +258,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _stageMock
-         .Setup (mock => mock.ResolveOrderingExpression (expression, _mappingResolutionContext))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveOrderingExpression (expression, _mappingResolutionContext))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _visitor.ResolveOrderingExpression (expression);
 
@@ -278,9 +278,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo();
       
       _stageMock
-         .Setup (mock => mock.ResolveJoinInfo (joinInfo, _mappingResolutionContext))
-         .Returns (fakeJoinInfo)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveJoinInfo (joinInfo, _mappingResolutionContext))
+          .Returns (fakeJoinInfo)
+          .Verifiable();
 
       _visitor.ResolveJoinedTable (joinedTable);
 
@@ -297,14 +297,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Desc);
       var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                    {
-                      SelectProjection = constantExpression,
-                      DataInfo = new StreamedSequenceInfo(typeof(Restaurant[]), constantExpression),
-                      WhereCondition = whereCondition,
-                      GroupByExpression =  groupExpression,
-                      TopExpression = topExpression,
-                      SetOperationCombinedStatements = { setOperationCombinedStatement }
-                    };
+                                {
+                                    SelectProjection = constantExpression,
+                                    DataInfo = new StreamedSequenceInfo(typeof(Restaurant[]), constantExpression),
+                                    WhereCondition = whereCondition,
+                                    GroupByExpression =  groupExpression,
+                                    TopExpression = topExpression,
+                                    SetOperationCombinedStatements = { setOperationCombinedStatement }
+                                };
       builder.Orderings.Add (ordering);
       var sqlStatement = builder.GetSqlStatement();
       var fakeExpression = Expression.Constant (new Cook());
@@ -316,33 +316,33 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (fakeSqlStatement, Is.Not.EqualTo (setOperationCombinedStatement.SqlStatement), "This is important for the test below.");
 
       _stageMock
-         .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
-         .Returns (fakeExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+          .Returns (fakeExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))
-         .Returns (fakeWhereCondition)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))
+          .Returns (fakeWhereCondition)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveGroupByExpression (groupExpression, _mappingResolutionContext))
-         .Returns (fakeGroupExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveGroupByExpression (groupExpression, _mappingResolutionContext))
+          .Returns (fakeGroupExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveTopExpression(topExpression, _mappingResolutionContext))
-         .Returns (fakeTopExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveTopExpression(topExpression, _mappingResolutionContext))
+          .Returns (fakeTopExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
-         .Returns (fakeOrderExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
+          .Returns (fakeOrderExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
-         .Returns (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"))
-         .Verifiable ();
+          .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
+          .Returns (new ResolvedSimpleTableInfo(typeof(Cook), "CookTable", "c"))
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
-         .Returns (fakeSqlStatement)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
+          .Returns (fakeSqlStatement)
+          .Verifiable();
 
       var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
 
@@ -368,45 +368,45 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var ordering = new Ordering (Expression.Constant ("ordering"), OrderingDirection.Desc);
       var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
       var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
-                    {
-                      SelectProjection = constantExpression,
-                      DataInfo = new StreamedSequenceInfo(typeof(Restaurant[]), constantExpression),
-                      WhereCondition = whereCondition,
-                      GroupByExpression =  groupExpression,
-                      TopExpression = topExpression,
-                      SetOperationCombinedStatements = { setOperationCombinedStatement }
-                    };
+                                {
+                                    SelectProjection = constantExpression,
+                                    DataInfo = new StreamedSequenceInfo(typeof(Restaurant[]), constantExpression),
+                                    WhereCondition = whereCondition,
+                                    GroupByExpression =  groupExpression,
+                                    TopExpression = topExpression,
+                                    SetOperationCombinedStatements = { setOperationCombinedStatement }
+                                };
       builder.Orderings.Add (ordering);
       var sqlStatement = builder.GetSqlStatement();
 
       _stageMock
-         .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
-         .Returns (constantExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+          .Returns (constantExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))
-         .Returns (whereCondition)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveWhereExpression(whereCondition, _mappingResolutionContext))
+          .Returns (whereCondition)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveGroupByExpression (groupExpression, _mappingResolutionContext))
-         .Returns (groupExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveGroupByExpression (groupExpression, _mappingResolutionContext))
+          .Returns (groupExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveTopExpression(topExpression, _mappingResolutionContext))
-         .Returns (topExpression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveTopExpression(topExpression, _mappingResolutionContext))
+          .Returns (topExpression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
-         .Returns (ordering.Expression)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveOrderingExpression(ordering.Expression, _mappingResolutionContext))
+          .Returns (ordering.Expression)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
-         .Returns ((IResolvedTableInfo) sqlStatement.SqlTables[0].TableInfo)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveTableInfo(sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
+          .Returns ((IResolvedTableInfo) sqlStatement.SqlTables[0].TableInfo)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
-         .Returns (setOperationCombinedStatement.SqlStatement)
-         .Verifiable ();
+          .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
+          .Returns (setOperationCombinedStatement.SqlStatement)
+          .Verifiable();
 
       var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
 

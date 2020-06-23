@@ -70,8 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void Accept_VisitorSupportingExpressionType ()
     {
       var visitorMock = new Mock<ISqlTableBaseVisitor>();
-      visitorMock
-         .Setup (mock => mock.VisitSqlTable (_sqlTable)).Verifiable ();
+      visitorMock.Setup (mock => mock.VisitSqlTable (_sqlTable)).Verifiable();
 
       _sqlTable.Accept (visitorMock.Object);
 

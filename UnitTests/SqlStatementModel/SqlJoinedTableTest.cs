@@ -63,11 +63,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       var visitorMock = new Mock<ISqlTableBaseVisitor>();
       visitorMock
-         .Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable)).Verifiable ();
+          .Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable))
+          .Verifiable();
 
       sqlJoinedTable.Accept (visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (sqlJoinedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
     }
 
@@ -80,9 +81,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 
       var visitorMock = new Mock<ITableInfoVisitor>();
       visitorMock
-         .Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = ((ITableInfo) sqlJoinedTable).Accept (visitorMock.Object);
 

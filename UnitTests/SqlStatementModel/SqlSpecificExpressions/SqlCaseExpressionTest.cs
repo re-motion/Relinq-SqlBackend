@@ -139,29 +139,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (_value1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (_value1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (_elseValue)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (_elseValue)
+          .Verifiable();
       
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_caseExpressionWithElse));
     }
 
@@ -171,25 +171,25 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_nullableValue1))
-         .Returns (_nullableValue1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_nullableValue1))
+          .Returns (_nullableValue1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithoutElse, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_caseExpressionWithoutElse));
     }
 
@@ -201,29 +201,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var newPredicate = Expression.Constant (true);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (newPredicate)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (newPredicate)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (_value1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (_value1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (_elseValue)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (_elseValue)
+          .Verifiable();
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_caseExpressionWithElse));
       Assert.That (result.Type, Is.SameAs (_caseExpressionWithElse.Type));
       Assert.That (result.Cases[0].When, Is.SameAs (newPredicate));
@@ -241,29 +241,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var newValue = Expression.Constant (17);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (newValue)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (newValue)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (_elseValue)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (_elseValue)
+          .Verifiable();
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_caseExpressionWithElse));
       Assert.That (result.Type, Is.SameAs (_caseExpressionWithElse.Type));
       Assert.That (result.Cases[0].When, Is.SameAs (_predicate1));
@@ -281,29 +281,29 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var newElseValue = Expression.Constant (17);
 
       visitorMock
-         .Setup (mock => mock.Visit (_predicate1))
-         .Returns (_predicate1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate1))
+          .Returns (_predicate1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_predicate2))
-         .Returns (_predicate2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_predicate2))
+          .Returns (_predicate2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value1))
-         .Returns (_value1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value1))
+          .Returns (_value1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_value2))
-         .Returns (_value2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_value2))
+          .Returns (_value2)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_elseValue))
-         .Returns (newElseValue)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_elseValue))
+          .Returns (newElseValue)
+          .Verifiable();
 
       var result = (SqlCaseExpression) ExtensionExpressionTestHelper.CallVisitChildren (_caseExpressionWithElse, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_caseExpressionWithElse));
       Assert.That (result.Type, Is.SameAs (_caseExpressionWithElse.Type));
       Assert.That (result.Cases[0].When, Is.SameAs (_predicate1));

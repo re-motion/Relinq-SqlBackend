@@ -88,10 +88,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedProjection = GetFakePreparedProjection();
 
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback ((Expression mi, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNewProjection, mi))
-         .Returns (fakePreparedProjection)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback ((Expression expression, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNewProjection, expression))
+          .Returns (fakePreparedProjection)
+          .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
@@ -117,20 +117,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedProjection = GetFakePreparedProjection();
 
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback ((Expression mi, ISqlPreparationContext _) =>
-                      {
-                        var selectProjection = (NewExpression) mi;
-                        var rowNumberExpression = (SqlRowNumberExpression) selectProjection.Arguments[1];
-                        var ordering = rowNumberExpression.Orderings[0];
-                        SqlExpressionTreeComparer.CheckAreEqualTrees (ordering.Expression, Expression.Constant (1));
-                      })
-         .Returns (fakePreparedProjection)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback (
+              (Expression expression, ISqlPreparationContext _) =>
+              {
+                var selectProjection = (NewExpression) expression;
+                var rowNumberExpression = (SqlRowNumberExpression) selectProjection.Arguments[1];
+                var ordering = rowNumberExpression.Orderings[0];
+                SqlExpressionTreeComparer.CheckAreEqualTrees (ordering.Expression, Expression.Constant (1));
+              })
+          .Returns (fakePreparedProjection)
+          .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
     }
 
     [Test]
@@ -292,8 +293,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       var fakePreparedProjection = GetFakePreparedProjection ();
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Returns (fakePreparedProjection);
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Returns (fakePreparedProjection);
     }
 
     private NewExpression GetFakePreparedProjection ()

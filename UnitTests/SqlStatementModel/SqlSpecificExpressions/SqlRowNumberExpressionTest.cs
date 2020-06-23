@@ -52,17 +52,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_orderingExpression1))
-         .Returns (_orderingExpression1)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_orderingExpression1))
+          .Returns (_orderingExpression1)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_orderingExpression2))
-         .Returns (_orderingExpression2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_orderingExpression2))
+          .Returns (_orderingExpression2)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlRowNumberExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_sqlRowNumberExpression));
     }
@@ -74,17 +74,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var fakeResult = Expression.Constant (3);
 
       visitorMock
-         .Setup (mock => mock.Visit (_orderingExpression1))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_orderingExpression1))
+          .Returns (fakeResult)
+          .Verifiable();
       visitorMock
-         .Setup (mock => mock.Visit (_orderingExpression2))
-         .Returns (_orderingExpression2)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_orderingExpression2))
+          .Returns (_orderingExpression2)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlRowNumberExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.Not.SameAs (_sqlRowNumberExpression));
       Assert.That (((SqlRowNumberExpression) result).Orderings[0].Expression, Is.SameAs (fakeResult));

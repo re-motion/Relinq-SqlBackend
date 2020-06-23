@@ -62,24 +62,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedSelectProjection = Expression.Constant (false);
 
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e is SqlExistsExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback (
-             (Expression mi, ISqlPreparationContext _) =>
-             {
-               var selectProjection = mi;
-               Assert.That (selectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
+          .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e is SqlExistsExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback (
+              (Expression selectProjection, ISqlPreparationContext _) =>
+              {
+                Assert.That (selectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
 
-               var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
-               SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
-             })
-         .Returns (fakePreparedSelectProjection);
+                var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
+                SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
+              })
+          .Returns (fakePreparedSelectProjection);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock.Object, _context);
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.SameAs (fakePreparedSelectProjection));
     }

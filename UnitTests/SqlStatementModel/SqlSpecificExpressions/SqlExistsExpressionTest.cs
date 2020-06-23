@@ -47,13 +47,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-         .Setup (mock => mock.Visit (_sqlExistsExpression.Expression))
-         .Returns (_sqlExistsExpression.Expression)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_sqlExistsExpression.Expression))
+          .Returns (_sqlExistsExpression.Expression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlExistsExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_sqlExistsExpression));
     }
@@ -65,13 +65,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var newPrefix = Expression.Constant (3);
 
       visitorMock
-         .Setup (mock => mock.Visit (_sqlExistsExpression.Expression))
-         .Returns (newPrefix)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_sqlExistsExpression.Expression))
+          .Returns (newPrefix)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlExistsExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.Not.SameAs (_sqlExistsExpression));
     }

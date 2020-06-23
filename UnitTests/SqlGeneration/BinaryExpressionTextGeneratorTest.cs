@@ -331,9 +331,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           Expression.AndAlso (Expression.Not (_trueExpression), _falseExpression));
       _expressionVisitorMock
           .Setup (mock => mock.Visit (It.Is<Expression> (expr => expr is BinaryExpression)))
-          .Callback ((Expression mi) =>
+          .Callback ((Expression expression) =>
           {
-            var expr = (BinaryExpression) mi;
+            var expr = (BinaryExpression) expression;
             SqlExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
             _commandBuilder.Append ("XOR SIMULATION");
           })
@@ -357,9 +357,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           Expression.AndAlso (Expression.Not (_nullableTrueExpression), _nullableFalseExpression));
       _expressionVisitorMock
           .Setup (mock => mock.Visit (It.Is<Expression> (expr => expr is BinaryExpression)))
-          .Callback ((Expression mi) =>
+          .Callback ((Expression expression) =>
           {
-            var expr = (BinaryExpression) mi;
+            var expr = (BinaryExpression) expression;
             SqlExpressionTreeComparer.CheckAreEqualTrees (expr, expectedXorSimulation);
             _commandBuilder.Append ("XOR SIMULATION");
           })
@@ -367,7 +367,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      _expressionVisitorMock.Verify ();
+      _expressionVisitorMock.Verify();
 
       var result = _commandBuilder.GetCommandText ();
 

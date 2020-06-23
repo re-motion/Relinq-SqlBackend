@@ -42,13 +42,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var expression = Expression.Constant (3);
 
       visitorMock
-         .Setup (mock => mock.Visit (_sqlIsNullExpression.Expression))
-         .Returns (expression)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_sqlIsNullExpression.Expression))
+          .Returns (expression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_sqlIsNullExpression));
       Assert.That (((SqlIsNullExpression) result).Expression, Is.SameAs (expression));
     }
@@ -59,13 +59,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       
       visitorMock
-         .Setup (mock => mock.Visit (_sqlIsNullExpression.Expression))
-         .Returns (_sqlIsNullExpression.Expression)
-         .Verifiable ();
+          .Setup (mock => mock.Visit (_sqlIsNullExpression.Expression))
+          .Returns (_sqlIsNullExpression.Expression)
+          .Verifiable();
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlIsNullExpression, visitorMock.Object);
 
-      visitorMock.Verify ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_sqlIsNullExpression));
     }

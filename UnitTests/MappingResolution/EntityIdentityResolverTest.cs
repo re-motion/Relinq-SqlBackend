@@ -111,11 +111,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
          .Returns (fakeOptimizedIdentity)
-         .Verifiable ();
+         .Verifiable();
       
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeOptimizedIdentity));
     }
 
@@ -124,8 +124,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       _resolverMock
          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-         .Returns ((Delegate) null) //REVIEW correct?
-         .Verifiable ();
+         .Returns ((Expression) null)
+         .Verifiable();
       
       var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
       _stageMock
@@ -136,9 +136,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                            && e.MemberInfo == _entityRefMemberExpression.MemberInfo
                            && e.Cardinality == JoinCardinality.One),
                      It.Is<IMappingResolutionContext> (param => param == _context)))
-         .Returns (
-              fakeResolvedEntity)
-         .Verifiable ();
+         .Returns (fakeResolvedEntity)
+         .Verifiable();
 
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
@@ -153,11 +152,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
          .Returns (fakeOptimizedIdentity)
-         .Verifiable ();
+         .Verifiable();
 
       var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (_entityRefMemberExpression, typeof (object)));
 
-      _resolverMock.Verify ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeOptimizedIdentity));
     }
 
@@ -167,7 +166,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _resolverMock
          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
          .Returns (_entityRefMemberExpression)
-         .Verifiable ();
+         .Verifiable();
 
       var expression = Expression.Convert (_entityRefMemberExpression, typeof (object));
 

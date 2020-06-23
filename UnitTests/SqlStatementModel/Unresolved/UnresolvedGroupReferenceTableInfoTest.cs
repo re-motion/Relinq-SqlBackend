@@ -56,11 +56,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     public void Accept ()
     {
       var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
-      tableInfoVisitorMock
-         .Setup (mock => mock.VisitUnresolvedGroupReferenceTableInfo (_tableInfo)).Verifiable ();
+      tableInfoVisitorMock.Setup (mock => mock.VisitUnresolvedGroupReferenceTableInfo (_tableInfo)).Verifiable();
 
       _tableInfo.Accept (tableInfoVisitorMock.Object);
-      tableInfoVisitorMock.Verify ();
+      tableInfoVisitorMock.Verify();
     }
 
     [Test]

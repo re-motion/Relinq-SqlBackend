@@ -64,28 +64,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedSelectProjection = Expression.Constant (false);
 
       _stageMock
-         .Setup (mock => mock.PrepareWhereExpression (
-                     It.Is<Expression> (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
-                     It.Is<ISqlPreparationContext> (c=>c==_context)))
-         .Returns (preparedPredicate)
-         .Verifiable ();
+          .Setup (
+              mock => mock.PrepareWhereExpression (
+                  It.Is<Expression> (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)),
+                  It.Is<ISqlPreparationContext> (c=>c==_context)))
+          .Returns (preparedPredicate)
+          .Verifiable();
       _stageMock
-         .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
-         .Callback (
-              (Expression mi, ISqlPreparationContext _) =>
+          .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Callback (
+              (Expression selectProjection, ISqlPreparationContext _) =>
               {
-                var selectProjection = mi;
                 var expectedSubStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = preparedPredicate }.GetSqlStatement();
                 var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
                 var expectedExpression = Expression.Not (expectedExistsExpression);
 
                 SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
               })
-         .Returns (fakePreparedSelectProjection);
+          .Returns (fakePreparedSelectProjection);
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.Verify ();
+      _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));

@@ -94,7 +94,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
 
-    [Test]
+     [Test]
     public new void ToString ()
     {
       var sqlStatement = new SqlStatementBuilder ()

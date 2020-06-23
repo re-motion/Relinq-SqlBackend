@@ -861,9 +861,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
 
       _stageMock
-         .Setup (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
-         .Returns (fakeResult)
-         .Verifiable ();
+          .Setup (mock => mock.ApplySelectionContext (sqlStatement, SqlExpressionContext.ValueRequired, _mappingResolutionContext))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _valueRequiredVisitor.VisitSqlSubStatement (sqlSubStatementExpression);
 

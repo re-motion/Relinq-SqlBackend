@@ -41,9 +41,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var columnID = new ColumnID ("Name", 0);
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
       _readerMock
-         .Setup (mock => mock.GetValue (columnID.Position))
-         .Returns ("Peter")
-         .Verifiable ();
+          .Setup (mock => mock.GetValue (columnID.Position))
+          .Returns ("Peter")
+          .Verifiable();
 
       var value = scalarRowWrapper.GetValue<string> (columnID);
 
@@ -74,9 +74,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var columnID = new ColumnID ("Name", 0);
       _readerMock
-         .Setup (mock => mock.GetValue (columnID.Position))
-         .Returns ("Peter")
-         .Verifiable ();
+          .Setup (mock => mock.GetValue (columnID.Position))
+          .Returns ("Peter")
+          .Verifiable();
 
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
 

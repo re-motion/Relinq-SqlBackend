@@ -47,9 +47,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeTransformer = new ContainsFulltextMethodCallTransformer();
 
       registryMock
-         .Setup (mock => mock.GetTransformer (methodCallExpression))
-         .Returns (fakeTransformer)
-         .Verifiable ();
+          .Setup (mock => mock.GetTransformer (methodCallExpression))
+          .Returns (fakeTransformer)
+          .Verifiable();
 
       var result = methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 

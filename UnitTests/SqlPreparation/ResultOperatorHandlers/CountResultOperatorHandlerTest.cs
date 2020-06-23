@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;

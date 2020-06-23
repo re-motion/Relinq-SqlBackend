@@ -60,7 +60,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     {
       var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
       tableInfoVisitorMock
-         .Setup (mock => mock.VisitJoinedGroupingTableInfo (_tableInfo)).Verifiable ();
+          .Setup (mock => mock.VisitJoinedGroupingTableInfo (_tableInfo))
+          .Verifiable();
 
       _tableInfo.Accept (tableInfoVisitorMock.Object);
 
