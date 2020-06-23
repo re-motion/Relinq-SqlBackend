@@ -50,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     [Test]
     public void VisitChildren_ReturnsThis_WithoutCallingVisitMethods ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 

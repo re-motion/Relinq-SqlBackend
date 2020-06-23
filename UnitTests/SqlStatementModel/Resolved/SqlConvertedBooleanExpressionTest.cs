@@ -69,7 +69,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void VisitChildren_ReturnsSameExpression ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
          .Setup (mock => mock.Visit (_innerExpression))
@@ -86,7 +86,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     public void VisitChildren_ReturnsNewExpression ()
     {
       var newExpression = Expression.Constant (5);
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
          .Setup (mock => mock.Visit (_innerExpression))

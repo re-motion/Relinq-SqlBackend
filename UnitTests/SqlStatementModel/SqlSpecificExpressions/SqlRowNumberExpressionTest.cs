@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameOrderingExpressions ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
          .Setup (mock => mock.Visit (_orderingExpression1))

@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void VisitChildren_VisitsIdentityExpression_Unchanged ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       visitorMock
          .Setup (mock => mock.Visit (_identityExpression)).Returns (_identityExpression).Verifiable ();
 
@@ -55,7 +55,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     public void VisitChildren_VisitsIdentityExpression_Changed ()
     {
       var newPrimaryKeyExpression = Expression.Constant (6);
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       visitorMock
          .Setup (mock => mock.Visit (_identityExpression)).Returns (newPrimaryKeyExpression).Verifiable ();
 

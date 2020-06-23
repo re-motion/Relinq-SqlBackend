@@ -64,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _orderByClause = ExpressionHelper.CreateOrderByClause();
       _queryModel = new QueryModel (_mainFromClause, _selectClause);
 
-      _stageMock = new Mock<ISqlPreparationStage>(MockBehavior.Strict);
+      _stageMock = new Mock<ISqlPreparationStage> (MockBehavior.Strict);
       _visitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock.Object);
       _visitorPartialMock = new Mock<TestableSqlPreparationQueryModelVisitor> (_context, _stageMock.Object);
       _visitorPartialMock.CallBase = true;
@@ -216,7 +216,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void VisitQueryModel_ConstantExpressionCollection_VisitResultOperatorsIsCalled ()
     {
-      var handlerMock = new Mock<IResultOperatorHandler>(MockBehavior.Strict);
+      var handlerMock = new Mock<IResultOperatorHandler> (MockBehavior.Strict);
       var registry = new ResultOperatorHandlerRegistry();
       registry.Register (typeof (TestChoiceResultOperator), handlerMock.Object);
       var queryModelVisitor = new TestableSqlPreparationQueryModelVisitor (_context, _stageMock.Object, _generator, registry);

@@ -38,7 +38,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NewArgs ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var newArgs = new[] { Expression.Constant (1), Expression.Constant (8), Expression.Constant (9) };
       
       visitorMock
@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameSqlFunctionExpression ()
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       
       visitorMock
          .Setup (mock => mock.Visit (_sqlFunctionExpression.Args[0])).Returns (_sqlFunctionExpression.Args[0]).Verifiable ();

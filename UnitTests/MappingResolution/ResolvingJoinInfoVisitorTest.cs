@@ -40,10 +40,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
+      _resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       _unresolvedJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
       _generator = new UniqueIdentifierGenerator();
-      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _mappingResolutionContext = new MappingResolutionContext();
     }
 

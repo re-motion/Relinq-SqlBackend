@@ -63,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var generator = new UniqueIdentifierGenerator();
-      var resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
+      var resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       var mappingResolutionContext = new MappingResolutionContext();
 
       resolverMock

@@ -47,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<ISqlPreparationStage>(MockBehavior.Strict);
+      _stageMock = new Mock<ISqlPreparationStage> (MockBehavior.Strict);
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext ();
       _generator = new UniqueIdentifierGenerator();
       _factory = new SqlPreparationSubStatementTableFactory (_stageMock.Object, _context, _generator);

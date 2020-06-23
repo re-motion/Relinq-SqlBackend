@@ -83,7 +83,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new SqlTableReferenceExpression (_resolvedJoinedGroupingTable),
           AggregationModifier.Count);
 
-      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _context = new MappingResolutionContext();
 
       _groupAggregateSimplifier = new GroupAggregateSimplifier (_stageMock.Object, _context);

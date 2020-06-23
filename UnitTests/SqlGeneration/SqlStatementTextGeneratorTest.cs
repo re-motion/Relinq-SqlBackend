@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     public void SetUp ()
     {
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo();
-      _stageMock = new Mock<ISqlGenerationStage>(MockBehavior.Strict);
+      _stageMock = new Mock<ISqlGenerationStage> (MockBehavior.Strict);
       _generator = new TestableSqlStatementTextGenerator (_stageMock.Object);
       _commandBuilder = new SqlCommandBuilder();
     }

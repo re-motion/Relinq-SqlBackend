@@ -145,7 +145,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
     private static Mock<IQueryResultRetriever> GetRetrieverMockStrict(IEnumerable<DataContextTestClass.Customer> fakeResult)
     {
-      var retrieverMock = new Mock<IQueryResultRetriever>(MockBehavior.Strict);
+      var retrieverMock = new Mock<IQueryResultRetriever> (MockBehavior.Strict);
       retrieverMock
           .Setup (
               stub => stub.GetResults (
@@ -159,7 +159,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
     private static Mock<IQueryResultRetriever> GetRetrieverMockStrictScalar (object fakeResult)
     {
-      var retrieverMock = new Mock<IQueryResultRetriever>(MockBehavior.Strict);
+      var retrieverMock = new Mock<IQueryResultRetriever> (MockBehavior.Strict);
       retrieverMock
           .Setup (
               stub => stub.GetScalar (

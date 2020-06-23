@@ -48,7 +48,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _mappingResolutionContext = new MappingResolutionContext();
       _valueRequiredVisitor = new TestableSqlContextExpressionVisitor (SqlExpressionContext.ValueRequired, _stageMock.Object, _mappingResolutionContext);
       _singleValueRequiredVisitor = new TestableSqlContextExpressionVisitor (

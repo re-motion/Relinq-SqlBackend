@@ -49,15 +49,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
-      _resolverMock = new Mock<IMappingResolver>(MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
+      _resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable_WithResolvedTableInfo (typeof (Cook));
       _mappingResolutionContext = new MappingResolutionContext();
       _generator = new UniqueIdentifierGenerator();
-      _entityIdentityResolverMock = new Mock<IEntityIdentityResolver>(MockBehavior.Strict);
-      _compoundComparisonSplitterMock = new Mock<ICompoundExpressionComparisonSplitter>(MockBehavior.Strict);
-      _namedExpressionCombinerMock = new Mock<INamedExpressionCombiner>(MockBehavior.Strict);
-      _groupAggregateSimplifierMock = new Mock<IGroupAggregateSimplifier>(MockBehavior.Strict);
+      _entityIdentityResolverMock = new Mock<IEntityIdentityResolver> (MockBehavior.Strict);
+      _compoundComparisonSplitterMock = new Mock<ICompoundExpressionComparisonSplitter> (MockBehavior.Strict);
+      _namedExpressionCombinerMock = new Mock<INamedExpressionCombiner> (MockBehavior.Strict);
+      _groupAggregateSimplifierMock = new Mock<IGroupAggregateSimplifier> (MockBehavior.Strict);
 
       _visitor = CreateVisitor (true);
     }

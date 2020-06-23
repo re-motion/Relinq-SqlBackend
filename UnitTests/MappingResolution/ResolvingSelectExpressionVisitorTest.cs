@@ -44,11 +44,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<IMappingResolutionStage>(MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _resolverMock = new Mock<IMappingResolver>();
       _mappingResolutionContext = new MappingResolutionContext();
       _generator = new UniqueIdentifierGenerator();
-      _groupAggregateSimplifier = new Mock<IGroupAggregateSimplifier>(MockBehavior.Strict);
+      _groupAggregateSimplifier = new Mock<IGroupAggregateSimplifier> (MockBehavior.Strict);
     }
 
     [Test]

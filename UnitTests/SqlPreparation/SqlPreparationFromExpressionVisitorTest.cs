@@ -50,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<ISqlPreparationStage>(MockBehavior.Strict);
+      _stageMock = new Mock<ISqlPreparationStage> (MockBehavior.Strict);
       _generator = new UniqueIdentifierGenerator();
       _context = SqlStatementModelObjectMother.CreateSqlPreparationContext();
       _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault();

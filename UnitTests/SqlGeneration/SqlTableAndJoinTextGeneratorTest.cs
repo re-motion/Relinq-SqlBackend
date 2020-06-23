@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<ISqlGenerationStage>(MockBehavior.Strict);
+      _stageMock = new Mock<ISqlGenerationStage> (MockBehavior.Strict);
       _commandBuilder = new SqlCommandBuilder();
       _generator = new TestableSqlTableAndJoinTextGenerator (_commandBuilder, _stageMock.Object);
     }

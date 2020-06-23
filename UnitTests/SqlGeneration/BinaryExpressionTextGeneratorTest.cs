@@ -58,7 +58,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       _commandBuilder = new SqlCommandBuilder();
 
-      _expressionVisitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      _expressionVisitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       _leftIntegerExpression = Expression.Constant (1);
       _expressionVisitorMock
