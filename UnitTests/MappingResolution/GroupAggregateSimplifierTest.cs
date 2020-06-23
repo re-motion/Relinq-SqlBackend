@@ -257,7 +257,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
                     AggregationModifier.Count);
                 SqlExpressionTreeComparer.CheckAreEqualTrees (expectedReplacedAggregate, actualTree);
               })
-          .Verifiable ();
+          .Verifiable();
 
       var result = _groupAggregateSimplifier.SimplifyIfPossible (expression, _simplifiableUnresolvedProjection);
 
