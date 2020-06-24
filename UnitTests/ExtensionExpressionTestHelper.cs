@@ -51,7 +51,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
 
     public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : Expression
     {
-      var visitorMock = new Mock<ExpressionVisitor>(MockBehavior.Strict);
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       var returnedExpression = Expression.Constant (0);
 
