@@ -51,10 +51,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
       visitor
           .Setup (mock => mock.Visit (_expression1))
-          .Returns (_expression1);
+          .Returns (_expression1)
+          .Verifiable();
       visitor
           .Setup (mock => mock.Visit (_expression2))
-          .Returns (_expression2);
+          .Returns (_expression2)
+          .Verifiable();
 
       _sqlCompositeCustomTextGeneratorExpression.Generate (commandBuilder, visitor.Object, new Mock<ISqlGenerationStage>().Object);
 
