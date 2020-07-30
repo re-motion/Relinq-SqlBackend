@@ -78,7 +78,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var fakeResult = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 
       var visitorMock = new Mock<ITableInfoVisitor>();
-      visitorMock.Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable)).Returns (fakeResult).Verifiable();
+      visitorMock
+          .Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = ((ITableInfo) sqlJoinedTable).Accept (visitorMock.Object);
 
