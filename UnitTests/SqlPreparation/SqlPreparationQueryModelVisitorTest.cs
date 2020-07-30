@@ -112,10 +112,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var fakeSelectProjection = Expression.Constant (0);
 
-      _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel));
+      _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel)).Verifiable();
       _visitorPartialMock
           .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
-          .Callback ((SelectClause _0, QueryModel _1) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
+          .Callback ((SelectClause selectClause, QueryModel queryModel) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
           .Verifiable();
 
       _visitorPartialMock.Object.VisitQueryModel (_queryModel);
