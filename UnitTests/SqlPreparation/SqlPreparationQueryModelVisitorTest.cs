@@ -235,7 +235,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                   It.Is<SqlStatementBuilder> (sb => sb == sqlStatementBuilder),
                   It.Is<UniqueIdentifierGenerator> (g => g == _generator),
                   It.Is<ISqlPreparationStage> (s => s == _stageMock.Object),
-                  It.Is<ISqlPreparationContext> (c => c != _context)));
+                  It.Is<ISqlPreparationContext> (c => c != _context)))
+          .Verifiable();
 
       queryModelVisitor.VisitQueryModel (_queryModel);
 
@@ -253,7 +254,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel));
       _visitorPartialMock
           .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
-          .Callback ((SelectClause _0, QueryModel _1) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
+          .Callback ((SelectClause selectClause, QueryModel queryModel) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
           .Verifiable();
 
       _visitorPartialMock.Object.VisitQueryModel (_queryModel);
@@ -594,7 +595,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                   It.Is<SqlStatementBuilder> (sb => sb == sqlStatementBuilder),
                   It.Is<UniqueIdentifierGenerator> (g => g == _generator),
                   It.Is<ISqlPreparationStage> (s => s == _stageMock.Object),
-                  It.Is<ISqlPreparationContext> (c => c != _context)));
+                  It.Is<ISqlPreparationContext> (c => c != _context)))
+          .Verifiable();
 
       queryModelVisitor.VisitResultOperator (resultOperator, _queryModel, 0);
 
@@ -629,7 +631,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                   It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
           .Returns (preparedFromExpressionInfo)
           .Callback (
-              (Expression _0, ISqlPreparationContext _1, Func<ITableInfo, SqlTable> tableCreator, OrderingExtractionPolicy _3) =>
+              (Expression expression, ISqlPreparationContext sqlPreparationContext, Func<ITableInfo, SqlTable> tableCreator, OrderingExtractionPolicy orderingExtractionPolicy) =>
               {
                 var sampleTableInfo = new UnresolvedTableInfo (typeof (Cook));
 
