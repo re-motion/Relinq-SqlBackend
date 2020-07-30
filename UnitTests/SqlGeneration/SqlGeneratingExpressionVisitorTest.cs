@@ -427,11 +427,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       _stageMock
           .Setup (
               mock =>
-              mock.GenerateTextForSqlStatement (
-                  It.Is<ISqlCommandBuilder> (param => param == _commandBuilder), It.IsAny<SqlStatement>()))
+                  mock.GenerateTextForSqlStatement (
+                      It.Is<ISqlCommandBuilder> (param => param == _commandBuilder),
+                      It.IsAny<SqlStatement>()))
           .Callback (
               (ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) =>
-              ((SqlCommandBuilder) sqlCommandBuilder).Append ("test"))
+                  ((SqlCommandBuilder) sqlCommandBuilder).Append ("test"))
           .Verifiable();
 
       SqlGeneratingExpressionVisitor.GenerateSql (

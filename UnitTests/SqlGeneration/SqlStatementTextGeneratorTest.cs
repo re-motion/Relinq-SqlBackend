@@ -454,7 +454,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var setOperationCombinedStatement = SqlStatementModelObjectMother.CreateSetOperationCombinedStatement();
       var sqlStatement = SqlStatementModelObjectMother.CreateMinimalSqlStatement (new SqlStatementBuilder 
-      {
+      { 
         SqlTables = {_sqlTable },
         SetOperationCombinedStatements = { setOperationCombinedStatement }
       });
