@@ -142,14 +142,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var newElementExpression = Expression.Constant ("newElement");
       var visitorMock = new Mock<ExpressionVisitor>();
-      visitorMock
-          .Setup (mock => mock.Visit (_keyExpression))
-          .Returns (_keyExpression)
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_elementExpression))
-          .Returns (newElementExpression)
-          .Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_keyExpression)).Returns (_keyExpression).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_elementExpression)).Returns (newElementExpression).Verifiable();
       visitorMock
           .Setup (mock => mock.Visit (_sqlGroupingSelectExpression.AggregationExpressions[0]))
           .Returns (_sqlGroupingSelectExpression.AggregationExpressions[0])
