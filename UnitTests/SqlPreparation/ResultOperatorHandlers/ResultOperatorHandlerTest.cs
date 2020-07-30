@@ -138,7 +138,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
                   It.IsAny<Func<ITableInfo, SqlTable>>(),
-                  It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                  OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
 
@@ -186,7 +186,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
                   It.IsAny<Func<ITableInfo, SqlTable>>(),
-                  It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                  OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
 
@@ -214,7 +214,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
                   It.IsAny<Func<ITableInfo, SqlTable>>(),
-                  It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                  OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
 
@@ -254,7 +254,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                   It.IsAny<Expression>(),
                   It.IsAny<ISqlPreparationContext>(),
                   It.IsAny<Func<ITableInfo, SqlTable>>(),
-                  It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
+                  OrderingExtractionPolicy.ExtractOrderingsIntoProjection))
           .Returns (fakeFromExpressionInfo)
           .Verifiable();
 
