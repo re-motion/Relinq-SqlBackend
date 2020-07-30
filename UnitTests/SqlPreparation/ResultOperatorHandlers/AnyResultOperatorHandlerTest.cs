@@ -71,7 +71,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
                 var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
                 SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
               })
-          .Returns (fakePreparedSelectProjection);
+          .Returns (fakePreparedSelectProjection)
+          .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock.Object, _context);
 

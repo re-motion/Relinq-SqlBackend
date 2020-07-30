@@ -81,7 +81,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
 
                 SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
               })
-          .Returns (fakePreparedSelectProjection);
+          .Returns (fakePreparedSelectProjection)
+          .Verifiable();
 
       _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
