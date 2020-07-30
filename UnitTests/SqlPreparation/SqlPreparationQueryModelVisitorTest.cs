@@ -134,7 +134,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock
           .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
           .Callback (
-              (SelectClause _0, QueryModel _1) =>
+              (SelectClause selectClause, QueryModel queryModel) =>
               {
                 _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = Expression.Constant (0);
                 _visitorPartialMock.Object.SqlStatementBuilder.DataInfo =
