@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
               mock => mock.PrepareFromExpression (
                   It.IsAny<SqlSubStatementExpression>(),
                   _context,
-                  It.Is<Func<ITableInfo, SqlTable>> (param => param == tableGenerator),
+                  tableGenerator,
                   someOrderingExtractionPolicy))
           .Returns (fakeFromExpressionInfo)
           .Callback (
