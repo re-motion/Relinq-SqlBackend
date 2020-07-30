@@ -633,11 +633,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var sequence = new MockSequence();
       transformerMock
           .InSequence (sequence)
-          .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
+          .Setup (mock => mock.Transform (methodCallExpression))
           .Returns (methodCallExpression);
       transformerMock
           .InSequence (sequence)
-          .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
+          .Setup (mock => mock.Transform (methodCallExpression))
           .Returns ((Expression) null);
 
       var registry = new MethodInfoBasedMethodCallTransformerRegistry();
@@ -656,7 +656,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 
       var transformerMock = new Mock<IMethodCallTransformer>();
       transformerMock
-          .Setup (mock => mock.Transform (It.Is<MethodCallExpression> (param => param == methodCallExpression)))
+          .Setup (mock => mock.Transform (methodCallExpression))
           .Returns (_cookQuerySourceReferenceExpression)
           .Verifiable();
 

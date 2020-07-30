@@ -428,7 +428,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Setup (
               mock =>
                   mock.GenerateTextForSqlStatement (
-                      It.Is<ISqlCommandBuilder> (param => param == _commandBuilder),
+                      _commandBuilder,
                       It.IsAny<SqlStatement>()))
           .Callback (
               (ISqlCommandBuilder sqlCommandBuilder, SqlStatement _) =>

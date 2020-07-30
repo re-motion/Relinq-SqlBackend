@@ -316,7 +316,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (fakeSqlStatement, Is.Not.EqualTo (setOperationCombinedStatement.SqlStatement), "This is important for the test below.");
 
       _stageMock
-          .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+          .Setup (mock => mock.ResolveSelectExpression (constantExpression, It.IsAny<SqlStatementBuilder>(), _mappingResolutionContext))
           .Returns (fakeExpression)
           .Verifiable();
       _stageMock
@@ -380,7 +380,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var sqlStatement = builder.GetSqlStatement();
 
       _stageMock
-          .Setup (mock => mock.ResolveSelectExpression (It.Is<Expression> (param => param == constantExpression), It.IsAny<SqlStatementBuilder>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+          .Setup (mock => mock.ResolveSelectExpression (constantExpression, It.IsAny<SqlStatementBuilder>(), _mappingResolutionContext))
           .Returns (constantExpression)
           .Verifiable();
       _stageMock

@@ -70,9 +70,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Setup (
               mock => mock.PrepareFromExpression (
                   It.IsAny<SqlSubStatementExpression>(),
-                  It.Is<ISqlPreparationContext> (param => param == _context),
+                  _context,
                   It.Is<Func<ITableInfo, SqlTable>> (param => param == tableGenerator),
-                  It.Is<OrderingExtractionPolicy> (param => param == someOrderingExtractionPolicy)))
+                  someOrderingExtractionPolicy))
           .Returns (fakeFromExpressionInfo)
           .Callback (
               (Expression expression, ISqlPreparationContext sqlPreparationContext, Func<ITableInfo, SqlTable> tableGeneratorArg, OrderingExtractionPolicy orderingExtractionPolicy) =>

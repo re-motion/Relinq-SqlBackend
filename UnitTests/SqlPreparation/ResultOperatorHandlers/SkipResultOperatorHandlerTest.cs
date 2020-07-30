@@ -88,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedProjection = GetFakePreparedProjection();
 
       _stageMock
-          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), _context))
           .Callback ((Expression expression, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedNewProjection, expression))
           .Returns (fakePreparedProjection)
           .Verifiable();
@@ -117,7 +117,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedProjection = GetFakePreparedProjection();
 
       _stageMock
-          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), _context))
           .Callback (
               (Expression expression, ISqlPreparationContext _) =>
               {
@@ -293,7 +293,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       var fakePreparedProjection = GetFakePreparedProjection ();
       _stageMock
-          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), _context))
           .Returns (fakePreparedProjection);
     }
 

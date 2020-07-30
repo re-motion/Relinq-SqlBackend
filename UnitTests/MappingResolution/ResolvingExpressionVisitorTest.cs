@@ -783,12 +783,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
           .Setup (
               mock => mock.ResolveEntityRefMemberExpression (
-                  It.Is<SqlEntityRefMemberExpression> (param => param == entityRefMemberExpression),
+                  entityRefMemberExpression,
                   It.Is<UnresolvedJoinInfo> (
                       ji => ji.OriginatingEntity == entityRefMemberExpression.OriginatingEntity
                             && ji.MemberInfo == entityRefMemberExpression.MemberInfo
                             && ji.Cardinality == JoinCardinality.One),
-                  It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+                  _mappingResolutionContext))
          .Returns (fakeResolvedExpression)
          .Verifiable();
 
@@ -831,10 +831,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       _stageMock
           .Setup (
               mock => mock.ResolveEntityRefMemberExpression (
-                  It.Is<SqlEntityRefMemberExpression> (param => param == entityRefMemberExpression),
+                  entityRefMemberExpression,
                   It.Is<UnresolvedJoinInfo> (
                       i => i.OriginatingEntity == entityExpression && i.MemberInfo == memberInfo && i.Cardinality == JoinCardinality.One),
-                  It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+                  _mappingResolutionContext))
          .Returns (fakeResult)
          .Verifiable();
 

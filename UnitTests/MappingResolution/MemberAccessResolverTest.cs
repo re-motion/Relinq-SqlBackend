@@ -90,12 +90,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Setup (
               mock =>
               mock.ResolveEntityRefMemberExpression (
-                  It.Is<SqlEntityRefMemberExpression> (param => param == entityRefMemberExpression),
+                  entityRefMemberExpression,
                   It.Is<UnresolvedJoinInfo> (j =>
                       j.OriginatingEntity == entityRefMemberExpression.OriginatingEntity
                       && j.MemberInfo == entityRefMemberExpression.MemberInfo
                       && j.Cardinality == JoinCardinality.One),
-                  It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+                  _mappingResolutionContext))
          .Returns (fakeEntityExpression)
          .Verifiable();
 

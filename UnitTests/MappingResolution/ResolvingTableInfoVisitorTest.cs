@@ -219,7 +219,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       
       var fakeWhereCondition = Expression.Constant (false);
       _stageMock
-          .Setup (mock => mock.ResolveWhereExpression (It.IsAny<Expression>(), It.Is<IMappingResolutionContext> (param => param == _mappingResolutionContext)))
+          .Setup (mock => mock.ResolveWhereExpression (It.IsAny<Expression>(), _mappingResolutionContext))
           .Callback ((Expression expression, IMappingResolutionContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResultWhereCondition, expression))
           .Returns (fakeWhereCondition);
 

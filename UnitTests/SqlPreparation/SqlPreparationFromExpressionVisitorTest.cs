@@ -331,7 +331,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeWhereExpression = Expression.Constant (true);
 
       _stageMock
-          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), _context))
           .Callback (
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
@@ -375,7 +375,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeWhereExpression = Expression.Constant (true);
 
       _stageMock
-          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), _context))
           .Callback (
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
@@ -437,7 +437,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           .Returns (fakeSelectExpression)
           .Verifiable();
       _stageMock
-          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), _context))
           .Callback (
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
@@ -502,7 +502,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var querySourceReferenceExpression = new QuerySourceReferenceExpression (groupJoinClause);
 
       _stageMock
-         .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), It.Is<ISqlPreparationContext> (param => param == _context)))
+         .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), _context))
          .Callback (
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (

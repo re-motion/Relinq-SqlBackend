@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
           .Returns (preparedPredicate)
           .Verifiable();
       _stageMock
-          .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), It.Is<ISqlPreparationContext> (param => param == _context)))
+          .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), _context))
           .Callback (
               (Expression selectProjection, ISqlPreparationContext _) =>
               {

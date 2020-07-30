@@ -246,7 +246,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new NamedExpression ("element", Expression.Constant ("e")), 
           AggregationModifier.Count);
       _stageMock
-          .Setup (mock => mock.ResolveAggregationExpression(It.IsAny<Expression>(), It.Is<IMappingResolutionContext> (param => param == _context)))
+          .Setup (mock => mock.ResolveAggregationExpression(It.IsAny<Expression>(), _context))
           .Returns (preparedResolvedAggregate)
           .Callback (
               (Expression actualTree, IMappingResolutionContext _) =>

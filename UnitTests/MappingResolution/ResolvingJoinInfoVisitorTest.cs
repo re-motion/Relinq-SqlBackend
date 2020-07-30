@@ -158,7 +158,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Setup (
               mock => mock.ResolveJoinInfo (
                   It.Is<UnresolvedJoinInfo> (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof(Cook)),
-                  It.Is<UniqueIdentifierGenerator> (param => param == _generator)))
+                  _generator))
          .Returns (fakeResolvedJoinInfo)
          .Verifiable();
 
@@ -203,7 +203,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Setup (
               mock => mock.ResolveJoinInfo (
                   It.Is<UnresolvedJoinInfo> (a => a.MemberInfo == memberInfo && a.OriginatingEntity.Type == typeof (Cook)),
-                  It.Is<UniqueIdentifierGenerator> (param => param == _generator)))
+                  _generator))
          .Returns (fakeResolvedJoinInfo)
          .Verifiable();
 
