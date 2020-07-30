@@ -208,7 +208,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               It.IsAny<Expression>(),
               It.Is<ISqlPreparationContext> (param => param == _context)))
           .Callback ((Expression expression, ISqlPreparationContext _) => SqlExpressionTreeComparer.CheckAreEqualTrees (expectedSelectProjection, expression))
-          .Returns (fakeSelectProjection);
+          .Returns (fakeSelectProjection)
+          .Verifiable();
 
       _factory.CreateSqlTableForStatement (
           _statementWithOrderings,
