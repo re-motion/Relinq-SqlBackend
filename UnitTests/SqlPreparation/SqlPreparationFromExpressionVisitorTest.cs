@@ -507,7 +507,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
                       Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
-         .Returns (fakeWhereExpression);
+         .Returns (fakeWhereExpression)
+         .Verifiable();
 
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.DoNotExtractOrderings);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
