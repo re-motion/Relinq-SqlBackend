@@ -108,9 +108,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeSqlStatement = fakeSqlStatementBuilder.GetSqlStatement();
 
       _stageMock
-         .Setup (mock => mock.PrepareSqlStatement (querModel, _context))
-         .Returns (fakeSqlStatement)
-         .Verifiable();
+          .Setup (mock => mock.PrepareSqlStatement (querModel, _context))
+          .Returns (fakeSqlStatement)
+          .Verifiable();
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (expression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
