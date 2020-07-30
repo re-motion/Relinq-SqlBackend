@@ -113,8 +113,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
           Is.SameAs (typeof (IQueryable<KeyValuePair<Cook, KeyValuePair<string, string>>>)));
 
       var expectedSubStatementBuilder = new SqlStatementBuilder (_statementWithOrderings) 
-          {
-            SelectProjection = fakeSelectProjection,
+          { 
+            SelectProjection = fakeSelectProjection, 
             DataInfo = subStatement.DataInfo
           };
       expectedSubStatementBuilder.Orderings.Clear();
@@ -194,7 +194,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               _statementWithOrderings.SelectProjection,
               Expression.New (
                   middleTupleCtor,
-                  new[] {
+                  new[] { 
                       _statementWithOrderings.Orderings[0].Expression,
                       _statementWithOrderings.Orderings[1].Expression},
                   _middleTupleKeyGetter,
