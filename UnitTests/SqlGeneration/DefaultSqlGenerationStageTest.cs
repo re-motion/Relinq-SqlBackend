@@ -236,7 +236,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GenerateTextForGroupByExpression () //TODO this
+    public void GenerateTextForGroupByExpression ()
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
 
