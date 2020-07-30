@@ -336,7 +336,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
                       Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
-          .Returns (fakeWhereExpression);
+          .Returns (fakeWhereExpression)
+          .Verifiable();
 
       var visitor = CreateTestableVisitor(_someOrderingExtractionPolicy);
       var result = visitor.VisitQuerySourceReference (querySourceReferenceExpression);
@@ -379,7 +380,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
                       Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
-          .Returns (fakeWhereExpression);
+          .Returns (fakeWhereExpression)
+          .Verifiable();
 
       var visitor = CreateTestableVisitor(_someOrderingExtractionPolicy);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
@@ -440,7 +442,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
               (Expression expression, ISqlPreparationContext _1) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
                       Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
-          .Returns (fakeWhereExpression);
+          .Returns (fakeWhereExpression)
+          .Verifiable();
 
       var visitor = CreateTestableVisitor(OrderingExtractionPolicy.ExtractOrderingsIntoProjection);
       visitor.VisitQuerySourceReference (querySourceReferenceExpression);
