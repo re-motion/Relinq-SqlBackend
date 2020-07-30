@@ -86,14 +86,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void VisitChildren_NoExpressionChanged ()
     {
       var visitorMock = new Mock<ExpressionVisitor>();
-      visitorMock
-          .Setup (mock => mock.Visit (_keyExpression))
-          .Returns (_keyExpression)
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_elementExpression))
-          .Returns (_elementExpression)
-          .Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_keyExpression)).Returns (_keyExpression).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_elementExpression)).Returns (_elementExpression).Verifiable();
       visitorMock
           .Setup (mock => mock.Visit (_sqlGroupingSelectExpression.AggregationExpressions[0]))
           .Returns (_sqlGroupingSelectExpression.AggregationExpressions[0])
@@ -111,18 +105,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var newAggregationExpression = Expression.Constant ("newAgg");
 
       var visitorMock = new Mock<ExpressionVisitor>();
-      visitorMock
-          .Setup (mock => mock.Visit (_keyExpression))
-          .Returns (_keyExpression)
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_elementExpression))
-          .Returns (_elementExpression)
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_sqlGroupingSelectExpression.AggregationExpressions[0]))
-          .Returns (newAggregationExpression)
-          .Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_keyExpression)).Returns (_keyExpression).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_elementExpression)).Returns (_elementExpression).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_sqlGroupingSelectExpression.AggregationExpressions[0])).Returns (newAggregationExpression).Verifiable();
 
       var expression = ExtensionExpressionTestHelper.CallVisitChildren (_sqlGroupingSelectExpression, visitorMock.Object);
 
@@ -137,14 +122,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     {
       var newKeyExpression = Expression.Constant ("newKey");
       var visitorMock = new Mock<ExpressionVisitor>();
-      visitorMock
-          .Setup (mock => mock.Visit (_keyExpression))
-          .Returns (newKeyExpression)
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_elementExpression))
-          .Returns (_elementExpression)
-          .Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_keyExpression)).Returns (newKeyExpression).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_elementExpression)).Returns (_elementExpression).Verifiable();
       visitorMock
           .Setup (mock => mock.Visit (_sqlGroupingSelectExpression.AggregationExpressions[0]))
           .Returns (_sqlGroupingSelectExpression.AggregationExpressions[0])

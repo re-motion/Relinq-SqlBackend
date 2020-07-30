@@ -226,7 +226,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var stageMock = new Mock<DefaultSqlGenerationStage>();
       stageMock.CallBase = true;
       SetupGenerateTextForNonSelectExpression (stageMock, expression)
-          .Callback ((ISqlCommandBuilder _0, Expression _1) => _commandBuilder.Append ("test"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression expressionArg) => _commandBuilder.Append ("test"))
           .Verifiable();
 
       stageMock.Object.GenerateTextForJoinCondition (_commandBuilder, expression);

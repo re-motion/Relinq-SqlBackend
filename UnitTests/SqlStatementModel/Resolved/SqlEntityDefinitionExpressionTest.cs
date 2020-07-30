@@ -76,18 +76,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     public void VisitChildren_NoColumnChanged ()
     {
       var visitorMock = new Mock<ExpressionVisitor>();
-      visitorMock
-          .Setup (mock => mock.Visit (_originalColumnsReadonly[0]))
-          .Returns (_originalColumnsReadonly[0])
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_originalColumnsReadonly[1]))
-          .Returns (_originalColumnsReadonly[1])
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_originalColumnsReadonly[2]))
-          .Returns (_originalColumnsReadonly[2])
-          .Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_originalColumnsReadonly[0])).Returns (_originalColumnsReadonly[0]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_originalColumnsReadonly[1])).Returns (_originalColumnsReadonly[1]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_originalColumnsReadonly[2])).Returns (_originalColumnsReadonly[2]).Verifiable();
 
       var expression = ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock.Object);
 
@@ -103,18 +94,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var visitorMock = new Mock<ExpressionVisitor>();
       var expectedColumns = new[] { _columnExpression1, newColumnExpression, _columnExpression3 };
 
-      visitorMock
-          .Setup (mock => mock.Visit (_originalColumnsReadonly[0]))
-          .Returns (expectedColumns[0])
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_originalColumnsReadonly[1]))
-          .Returns (expectedColumns[1])
-          .Verifiable();
-      visitorMock
-          .Setup (mock => mock.Visit (_originalColumnsReadonly[2]))
-          .Returns (expectedColumns[2])
-          .Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_originalColumnsReadonly[0])).Returns (expectedColumns[0]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_originalColumnsReadonly[1])).Returns (expectedColumns[1]).Verifiable();
+      visitorMock.Setup (mock => mock.Visit (_originalColumnsReadonly[2])).Returns (expectedColumns[2]).Verifiable();
 
       var expression = (SqlEntityExpression) ExtensionExpressionTestHelper.CallVisitChildren (_entityExpression, visitorMock.Object);
 
