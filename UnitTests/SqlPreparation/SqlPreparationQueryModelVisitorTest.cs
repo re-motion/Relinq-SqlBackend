@@ -231,9 +231,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       handlerMock.Setup (
           mock =>
               mock.HandleResultOperator (
-                  It.Is<ResultOperatorBase> (o => o == resultOperator),
-                  It.Is<SqlStatementBuilder> (sb => sb == sqlStatementBuilder),
-                  It.Is<UniqueIdentifierGenerator> (g => g == _generator),
+                  resultOperator,
+                  sqlStatementBuilder,
+                  _generator,
                   It.Is<ISqlPreparationStage> (s => s == _stageMock.Object),
                   It.Is<ISqlPreparationContext> (c => c != _context)))
           .Verifiable();
@@ -310,7 +310,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
           .Setup (
               mock => mock.PrepareFromExpression (
-                  It.Is<Expression> (e => e == constantExpression),
+                  constantExpression,
                   It.Is<ISqlPreparationContext> (c => c != _context),
                   It.IsAny<Func<ITableInfo, SqlTable>>(),
                   It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
@@ -404,14 +404,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
           .Setup (
               mock => mock.PrepareWhereExpression (
-                  It.Is<Expression> (e => e == predicate1),
+                  predicate1,
                   It.Is<ISqlPreparationContext> (c => c != _context)))
           .Returns (preparedExpression1)
           .Verifiable();
       _stageMock
           .Setup (
               mock => mock.PrepareWhereExpression (
-                  It.Is<Expression> (e => e == predicate2),
+                  predicate2,
                   It.Is<ISqlPreparationContext> (c => c != _context)))
           .Returns (preparedExpression2)
           .Verifiable();
@@ -591,9 +591,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       handlerMock.Setup (
           mock =>
               mock.HandleResultOperator (
-                  It.Is<ResultOperatorBase> (o => o == resultOperator),
-                  It.Is<SqlStatementBuilder> (sb => sb == sqlStatementBuilder),
-                  It.Is<UniqueIdentifierGenerator> (g => g == _generator),
+                  resultOperator,
+                  sqlStatementBuilder,
+                  _generator,
                   It.Is<ISqlPreparationStage> (s => s == _stageMock.Object),
                   It.Is<ISqlPreparationContext> (c => c != _context)))
           .Verifiable();

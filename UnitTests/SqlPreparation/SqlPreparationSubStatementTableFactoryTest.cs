@@ -231,7 +231,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       var fakeSelectProjection = Expression.Constant (new KeyValuePair<Cook, string> ());
 
       _stageMock
-          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), It.Is<ISqlPreparationContext> (c => c == _context)))
+          .Setup (mock => mock.PrepareSelectExpression (It.IsAny<Expression>(), _context))
           .Returns (fakeSelectProjection)
           .Verifiable();
 
