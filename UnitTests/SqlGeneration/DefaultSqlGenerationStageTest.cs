@@ -127,7 +127,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var stageMock = new Mock<DefaultSqlGenerationStage>();
       stageMock.CallBase = true;
       SetupGenerateTextForNonSelectExpression (stageMock, sqlStatement.TopExpression)
-          .Callback ((ISqlCommandBuilder _0, Expression _1) => _commandBuilder.Append ("test"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression expression) => _commandBuilder.Append ("test"))
           .Verifiable();
 
       stageMock.Object.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression);
@@ -144,7 +144,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var stageMock = new Mock<DefaultSqlGenerationStage>();
       stageMock.CallBase = true;
       SetupGenerateTextForNonSelectExpression (stageMock, whereCondition)
-          .Callback ((ISqlCommandBuilder _0, Expression _1) => _commandBuilder.Append ("test"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression expression) => _commandBuilder.Append ("test"))
           .Verifiable();
 
       stageMock.Object.GenerateTextForWhereExpression (_commandBuilder, whereCondition);
@@ -161,7 +161,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var stageMock = new Mock<DefaultSqlGenerationStage>();
       stageMock.CallBase = true;
       SetupGenerateTextForNonSelectExpression (stageMock, expression)
-          .Callback ((ISqlCommandBuilder _0, Expression _1) => _commandBuilder.Append ("test"))
+          .Callback ((ISqlCommandBuilder sqlCommandBuilder, Expression expressionArg) => _commandBuilder.Append ("test"))
           .Verifiable();
 
       stageMock.Object.GenerateTextForOrderByExpression (_commandBuilder, expression);
