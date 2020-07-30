@@ -758,8 +758,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
                   It.Is<ISqlPreparationContext> (c => c != _context),
                   It.IsAny<Func<ITableInfo, SqlTable>>(),
                   It.Is<OrderingExtractionPolicy> (param => param == OrderingExtractionPolicy.ExtractOrderingsIntoProjection)))
-          .Returns (
-              preparedFromExpressionInfo)
+          .Returns (preparedFromExpressionInfo)
           .Verifiable();
       _stageMock
           .Setup (
