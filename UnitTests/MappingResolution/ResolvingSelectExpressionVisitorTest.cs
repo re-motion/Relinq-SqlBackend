@@ -117,7 +117,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Setup (
               mock => mock.SimplifyIfPossible (
                   It.Is<SqlSubStatementExpression> (e => e.SqlStatement == fakeResolvedSqlStatement),
-                  It.Is<Expression> (param => param == sqlStatement.SelectProjection)))
+                  sqlStatement.SelectProjection))
          .Returns ((SqlSubStatementExpression param1, Expression _) => param1)
          .Verifiable();
       _stageMock
