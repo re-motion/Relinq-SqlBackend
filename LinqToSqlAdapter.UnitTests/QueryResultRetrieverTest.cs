@@ -164,7 +164,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var dataParameterCollectionMock = new Mock<IDataParameterCollection> (MockBehavior.Strict);
       dataParameterCollectionMock
-          .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals(_dataParameter.Object))))
+          .Setup (mock => mock.Add (It.Is<IDbDataParameter> (d => d.Equals (_dataParameter.Object))))
           .Returns (0);
 
       _commandMock.SetupGet (stub => stub.Parameters).Returns (dataParameterCollectionMock.Object);
