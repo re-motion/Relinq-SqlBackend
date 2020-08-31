@@ -170,7 +170,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Setup (mock => mock.ResolveJoinInfo (join3.JoinInfo, _mappingResolutionContext))
           .Returns (fakeResolvedJoinInfo3);
 
-        _visitor.ResolveSqlTable (_sqlTable);
+      _visitor.ResolveSqlTable (_sqlTable);
 
       _stageMock.Verify();
       Assert.That (join1.JoinInfo, Is.SameAs (fakeResolvedJoinInfo1));
