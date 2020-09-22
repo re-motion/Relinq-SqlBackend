@@ -243,7 +243,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var stageMock = new Mock<DefaultSqlGenerationStage>();
       stageMock.CallBase = true;
       SetupGenerateTextForNonSelectExpression (stageMock, expression)
-          .Callback ((ISqlCommandBuilder _0, Expression _1) => _commandBuilder.Append ("GROUP BY keyExpression"))
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expressionArg) => _commandBuilder.Append ("GROUP BY keyExpression"))
           .Verifiable();
 
       stageMock.Object.GenerateTextForGroupByExpression (_commandBuilder, expression);
