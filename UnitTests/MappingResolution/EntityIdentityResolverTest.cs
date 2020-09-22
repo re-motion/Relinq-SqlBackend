@@ -109,9 +109,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var fakeOptimizedIdentity = ExpressionHelper.CreateExpression();
       _resolverMock
-         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-         .Returns (fakeOptimizedIdentity)
-         .Verifiable();
+          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+          .Returns (fakeOptimizedIdentity)
+          .Verifiable();
       
       var result = _entityIdentityResolver.ResolvePotentialEntity (_entityRefMemberExpression);
 
@@ -123,9 +123,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void ResolvePotentialEntity_EntityRefMember_NonOptimizable_ResolvesToJoinAndIdentity ()
     {
       _resolverMock
-         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-         .Returns ((Expression) null)
-         .Verifiable();
+          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+          .Returns ((Expression) null)
+          .Verifiable();
       
       var fakeResolvedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression ();
       _stageMock
@@ -150,9 +150,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     {
       var fakeOptimizedIdentity = ExpressionHelper.CreateExpression ();
       _resolverMock
-         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-         .Returns (fakeOptimizedIdentity)
-         .Verifiable();
+          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+          .Returns (fakeOptimizedIdentity)
+          .Verifiable();
 
       var result = _entityIdentityResolver.ResolvePotentialEntity (Expression.Convert (_entityRefMemberExpression, typeof (object)));
 
@@ -164,9 +164,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     public void ResolvePotentialEntity_EntityRefMemeber_WithResolverReturningSameExpression_IsLeftUnchanged ()
     {
       _resolverMock
-         .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
-         .Returns (_entityRefMemberExpression)
-         .Verifiable();
+          .Setup (mock => mock.TryResolveOptimizedIdentity (_entityRefMemberExpression))
+          .Returns (_entityRefMemberExpression)
+          .Verifiable();
 
       var expression = Expression.Convert (_entityRefMemberExpression, typeof (object));
 

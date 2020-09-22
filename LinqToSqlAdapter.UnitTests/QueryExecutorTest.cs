@@ -150,7 +150,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
           .Setup (
               stub => stub.GetResults (
                   It.IsAny<Func<IDatabaseResultRow, DataContextTestClass.Customer>>(),
-                  It.Is<string> (p => p == "SELECT NULL AS [value] FROM [CustomerTable] AS [t0]"),
+                  "SELECT NULL AS [value] FROM [CustomerTable] AS [t0]",
                   It.Is<CommandParameter[]> (p => p.Length == 0)))
           .Returns (fakeResult)
           .Verifiable();
@@ -164,7 +164,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
           .Setup (
               stub => stub.GetScalar (
                   It.IsAny<Func<IDatabaseResultRow, object>>(),
-                  It.Is<string> (p => p == "SELECT COUNT(*) AS [value] FROM [CustomerTable] AS [t0]"),
+                  "SELECT COUNT(*) AS [value] FROM [CustomerTable] AS [t0]",
                   It.Is<CommandParameter[]> (p => p.Length == 0)))
           .Returns (fakeResult)
           .Verifiable();

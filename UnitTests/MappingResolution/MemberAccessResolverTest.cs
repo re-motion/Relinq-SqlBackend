@@ -200,9 +200,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant ("empty");
 
       _resolverMock
-         .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
-         .Returns (fakeResult)
-         .Verifiable();
+          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = MemberAccessResolver.ResolveMemberAccess (outerMostConvertExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
