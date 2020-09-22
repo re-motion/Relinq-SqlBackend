@@ -341,8 +341,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
 
-      _expressionVisitorMock.Verify();
-
       var result = _commandBuilder.GetCommandText ();
 
       Assert.That (result, Is.EqualTo ("XOR SIMULATION"));
@@ -366,8 +364,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           .Returns ((Expression) null);
 
       _generator.GenerateSqlForBinaryExpression (binaryExpression);
-
-      _expressionVisitorMock.Verify();
 
       var result = _commandBuilder.GetCommandText ();
 
