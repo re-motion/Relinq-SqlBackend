@@ -333,7 +333,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _stageMock
           .Setup (mock => mock.PrepareWhereExpression (It.Is<Expression> (e => e is BinaryExpression), _context))
           .Callback (
-              (Expression expression, ISqlPreparationContext _, string _) =>
+              (Expression expression, ISqlPreparationContext _) =>
                   SqlExpressionTreeComparer.CheckAreEqualTrees (
                       Expression.Equal (groupJoinClause.JoinClause.OuterKeySelector, groupJoinClause.JoinClause.InnerKeySelector), expression))
           .Returns (fakeWhereExpression)
