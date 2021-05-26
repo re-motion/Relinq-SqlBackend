@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development", "Development\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToSqlAdapter.UnitTests", "LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj", "{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests.MediumTrust", "IntegrationTests.MediumTrust\IntegrationTests.MediumTrust.csproj", "{E03F65A8-219A-4C81-87C9-5C36B950CBCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,14 @@ Global
 		{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}.Release|x86.ActiveCfg = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|x86.Build.0 = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|x86.ActiveCfg = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
