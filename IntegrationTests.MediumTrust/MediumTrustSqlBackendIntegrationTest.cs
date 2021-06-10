@@ -19,9 +19,10 @@ using System;
 using System.Linq;
 using System.Security.Permissions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting.Sandboxing;
+using Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing;
+using Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests;
 
-namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
+namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust
 {
   [TestFixture]
   public class MediumTrustSqlBackendIntegrationTest
@@ -35,8 +36,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           .ToArray();
 
       var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
-                   where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 
-                       && t != typeof (MediumTrustSqlBackendIntegrationTest)
+                   where (t.Namespace?.StartsWith (typeof (AdditionalFromClausesSqlBackendIntegrationTest).Namespace) ?? false)
                        && !t.IsAbstract && t.IsDefined(typeof(TestFixtureAttribute), false)
                    select t).ToArray();
 

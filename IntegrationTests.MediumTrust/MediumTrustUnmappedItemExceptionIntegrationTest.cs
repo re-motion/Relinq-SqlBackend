@@ -20,9 +20,10 @@ using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using NUnit.Framework;
-using Remotion.Linq.Development.UnitTesting.Sandboxing;
+using Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing;
+using Remotion.Linq.SqlBackend.UnitTests;
 
-namespace Remotion.Linq.SqlBackend.UnitTests
+namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust
 {
   [TestFixture]
   [Ignore ("Serialization using ISafeSerializationData should actually work without the SerializationFormatter permission.")]

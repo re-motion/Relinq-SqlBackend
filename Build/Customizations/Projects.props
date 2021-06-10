@@ -64,6 +64,10 @@
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
 
+    <UnitTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.MediumTrust\IntegrationTests.MediumTrust.csproj">
+      <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
+    </UnitTestProjectFiles>
+
     <UnitTestProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
