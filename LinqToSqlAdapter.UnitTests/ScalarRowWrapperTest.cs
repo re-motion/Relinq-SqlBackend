@@ -1,4 +1,4 @@
-﻿// This file is part of the re-linq project (relinq.codeplex.com)
+// This file is part of the re-linq project (relinq.codeplex.com)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // re-linq is free software; you can redistribute it and/or modify it under 
@@ -51,21 +51,21 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
     public void GetValue_ShouldThrowException ()
     {
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
-
-      scalarRowWrapper.GetValue<string> (new ColumnID ("Name", 1));
+      Assert.That (
+          () => scalarRowWrapper.GetValue<string> (new ColumnID ("Name", 1)),
+          Throws.ArgumentException);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
     public void GetEntity_ShouldThrowException ()
     {
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
-
-      scalarRowWrapper.GetEntity<PersonTestClass> (null);
+      Assert.That (
+          () => scalarRowWrapper.GetEntity<PersonTestClass> (null),
+          Throws.ArgumentException);
     }
 
     [Test]
@@ -83,7 +83,6 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
     public void GetEntity_WithMultipleColumns ()
     {
       var columnIDs = new[]
@@ -93,8 +92,9 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
                       };
 
       var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
-
-      scalarRowWrapper.GetEntity<PersonTestClass> (columnIDs);
+      Assert.That (
+          () => scalarRowWrapper.GetEntity<PersonTestClass> (columnIDs),
+          Throws.ArgumentException);
     }
   }
 }

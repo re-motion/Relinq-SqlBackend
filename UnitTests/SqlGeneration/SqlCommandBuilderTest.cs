@@ -84,26 +84,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Command text must be appended before a command can be created.")]
     public void GetCommand_NoTextSet ()
     {
       _sqlCommandBuilder.CreateParameter ("value");
 
       var body = Expression.Constant (0);
       _sqlCommandBuilder.SetInMemoryProjectionBody (body);
-
-      _sqlCommandBuilder.GetCommand ();
+      Assert.That (
+          () => _sqlCommandBuilder.GetCommand (),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "Command text must be appended before a command can be created."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "An in-memory projection body must be appended before a command can be created.")]
     public void GetCommand_NoProjectionSet ()
     {
       _sqlCommandBuilder.Append ("Test");
       _sqlCommandBuilder.CreateParameter ("value");
-
-      _sqlCommandBuilder.GetCommand ();
+      Assert.That (
+          () => _sqlCommandBuilder.GetCommand (),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("An in-memory projection body must be appended before a command can be created."));
     }
 
     [Test]

@@ -57,7 +57,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     private string GetReferenceResult (MethodBase executingMethod)
     {
-      var resultFileName = _resourceNameGenerator (executingMethod);
+      var resultFileName = Path.Combine (TestContext.CurrentContext.TestDirectory, _resourceNameGenerator (executingMethod));
 
       try
       {

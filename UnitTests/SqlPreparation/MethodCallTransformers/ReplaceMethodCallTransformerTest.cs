@@ -50,14 +50,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void Transform_InvalidArgumentCount ()
     {
       var method = typeof (string).GetMethod ("ToUpper", new Type[] { });
       var objectExpression = Expression.Constant ("Test");
       var expression = Expression.Call (objectExpression, method);
       var transformer = new ReplaceMethodCallTransformer();
-      transformer.Transform (expression);
+      Assert.That (
+          () => transformer.Transform (expression),
+          Throws.InstanceOf<NotSupportedException>());
     }
   }
 }

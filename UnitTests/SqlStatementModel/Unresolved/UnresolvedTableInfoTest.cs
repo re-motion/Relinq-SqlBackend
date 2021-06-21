@@ -47,11 +47,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")
-    ]
     public void GetResolvedTableInfo_Throws ()
     {
-      _tableInfo.GetResolvedTableInfo();
+      Assert.That (
+          () => _tableInfo.GetResolvedTableInfo(),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "This table has not yet been resolved; call the resolution step first."));
     }
 
     [Test]

@@ -147,13 +147,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed. Expression: '[t0]'")]
     public void Collection_ThrowsNotSupportedException ()
     {
-      CheckQuery (
-          from c in Cooks select c.Assistants,
-          "");
+      Assert.That (
+          () => CheckQuery (
+              from c in Cooks select c.Assistants,
+              ""),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The member 'Cook.Assistants' describes a collection and can only be used in places where collections are allowed. Expression: '[t0]'"));
     }
 
     [Test]
@@ -371,18 +373,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The member 'TypeForNewExpression.A' cannot be translated to SQL. "
-        + "Expression: 'new TypeForNewExpression([t0].[ID] AS m0, [t0].[RoomNumber] AS m1)'")]
     public void NestedSelectProjection_MemberAccess_ToANewExpression_WithoutMembers ()
     {
-      CheckQuery (from k in Kitchens select new TypeForNewExpression (k.ID, k.RoomNumber).A, "");
+      Assert.That (
+          () => CheckQuery (from k in Kitchens select new TypeForNewExpression (k.ID, k.RoomNumber).A, ""),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The member 'TypeForNewExpression.A' cannot be translated to SQL. "
+                  + "Expression: 'new TypeForNewExpression([t0].[ID] AS m0, [t0].[RoomNumber] AS m1)'"));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "The member 'TypeForNewExpression.C' cannot be translated to SQL. "
-        + "Expression: 'new TypeForNewExpression(A = [t0].[ID] AS A, B = [t0].[RoomNumber] AS B)'")]
     public void NestedSelectProjection_MemberAccess_ToANewExpression_WithMemberNotInitialized ()
     {
       var mainFromClause = new MainFromClause ("k", typeof (Kitchen), Expression.Constant (Kitchens));
@@ -396,8 +397,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           new MemberInfo[] { typeof (TypeForNewExpression).GetProperty ("A"), typeof (TypeForNewExpression).GetProperty ("B") });
       var selectClause = new SelectClause (MemberExpression.MakeMemberAccess (newExpression, typeof (TypeForNewExpression).GetField ("C")));
       var queryModel = new QueryModel (mainFromClause, selectClause);
-
-      CheckQuery (queryModel, "");
+      Assert.That (
+          () => CheckQuery (queryModel, ""),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "The member 'TypeForNewExpression.C' cannot be translated to SQL. "
+                  + "Expression: 'new TypeForNewExpression(A = [t0].[ID] AS A, B = [t0].[RoomNumber] AS B)'"));
     }
 
     [Test]

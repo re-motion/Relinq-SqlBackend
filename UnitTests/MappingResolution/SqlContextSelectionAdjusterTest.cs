@@ -142,12 +142,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A SqlStatement cannot be used as a predicate.")]
     public void VisitSqlStatement_PrdicateRequired_ThrowsException ()
     {
       var sqlStatement = SqlStatementModelObjectMother.CreateSqlStatementWithCook();
-
-      SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext);
+      Assert.That (
+          () => SqlContextSelectionAdjuster.ApplyContext (sqlStatement, SqlExpressionContext.PredicateRequired, _stageMock, _mappingResolutionContext),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "A SqlStatement cannot be used as a predicate."));
     }
   }
 }
