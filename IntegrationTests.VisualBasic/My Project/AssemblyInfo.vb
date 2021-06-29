@@ -9,8 +9,6 @@ Imports System.Security
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Visual Basic integration tests for the Remotion Data Linq library")> 
-<Assembly: AssemblyDescription("Contains integration tests for re-linq written in Visual Basic.")> 
 <Assembly: AssemblyCulture("")> 
 <Assembly: CLSCompliant(True)> 
 <Assembly: ComVisible(False)> 

@@ -1,0 +1,63 @@
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)Build\Customizations\Properties.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Build\Customizations\Version.props" Condition="'$(Version)' == ''" />
+
+  <PropertyGroup>
+    <Product>$(ProductName)</Product>
+    <Company>$(CompanyName)</Company>
+    <Copyright>$(Copyright)</Copyright>
+    <Authors>$(Company)</Authors>
+    <PackageLicenseExpression>$(PackageLicenseExpression)</PackageLicenseExpression>
+    <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
+    <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+    <RepositoryType>$(RepositoryType)</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>7.2</LangVersion>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)remotion.snk</AssemblyOriginatorKeyFile>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder Condition="'$(IncludeSymbols)' != 'True'">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PackageTags>re-motion LINQ SQL SqlGeneration</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ProjectType)' == 'Library'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591</NoWarn>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <IsPackable>True</IsPackable>
+    <TargetFrameworks>net45</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ProjectType)' == 'Test'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <IsPackable>False</IsPackable>
+    <TargetFrameworks>net45</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)LGPL.licenseheader" Link="LGPL.licenseheader" />
+    <None Include="$(MSBuildThisFileDirectory)remotion.snk" Link="remotion.snk" />
+    <None Include="**\*.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(ProjectType)' == 'Library'" >
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(ProjectType)' == 'Test'">
+    <PackageReference Include="RhinoMocks" Version="3.6" />
+    <PackageReference Include="NUNit" Version="3.12.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <_version>$(Version.Split('-')[0])</_version>
+    <AssemblyVersion>$(_version).0</AssemblyVersion>
+    <FileVersion>$(_version).24009</FileVersion>
+    <InformationalVersion>$(_version)-x.9+$(Configuration)</InformationalVersion>
+    <PackageVersion>$(_version)-x.9</PackageVersion>
+  </PropertyGroup>
+
+</Project>
