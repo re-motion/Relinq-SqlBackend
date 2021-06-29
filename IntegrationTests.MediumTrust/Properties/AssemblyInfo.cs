@@ -23,6 +23,5 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle("Medium Trust Integration Tests for Remotion Linq Library SQL Backend")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
