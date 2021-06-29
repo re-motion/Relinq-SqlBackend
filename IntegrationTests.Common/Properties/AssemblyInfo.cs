@@ -23,7 +23,5 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("Common functionality for integration tests for the Remotion Data Linq library")]
-[assembly: AssemblyDescription ("Contains the common database and utility classes used by integration tests for re-linq.")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]

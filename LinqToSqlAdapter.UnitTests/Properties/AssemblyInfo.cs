@@ -24,6 +24,5 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("Unit Tests for Remotion Linq Library's LinqToSqlAdapter")]
 [assembly: AssemblyCulture ("")]
 [assembly: CLSCompliant (true)]

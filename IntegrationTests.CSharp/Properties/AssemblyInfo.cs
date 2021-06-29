@@ -23,7 +23,5 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("C# integration tests for the Remotion Data Linq library")]
-[assembly: AssemblyDescription ("Contains integration tests for re-linq written in C#.")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
