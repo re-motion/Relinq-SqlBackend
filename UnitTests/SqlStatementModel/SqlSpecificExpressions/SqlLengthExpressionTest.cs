@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
@@ -65,9 +66,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
       Assert.That (
           () => new SqlLengthExpression (intExpression),
           Throws.ArgumentException
-              .With.Message.EqualTo (
+              .With.ArgumentExceptionMessageEqualTo (
                   "SqlLengthExpression can only be used on values of type 'System.String' or 'System.Char', not on 'System.Int32'. (Add a conversion if you need "
-                  + "to get the string length of a non-string value.)\r\nParameter name: expression"));
+                  + "to get the string length of a non-string value.)", "expression"));
     }
 
     [Test]

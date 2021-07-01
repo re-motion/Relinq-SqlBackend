@@ -20,6 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
@@ -51,8 +52,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
       Assert.That (
           () => new UnresolvedGroupReferenceTableInfo (invalidGroupSource),
           Throws.ArgumentException
-              .With.Message.EqualTo (
-                  "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: referencedGroupSource"));
+              .With.ArgumentExceptionMessageEqualTo (
+                  "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.", "referencedGroupSource"));
     }
 
     [Test]

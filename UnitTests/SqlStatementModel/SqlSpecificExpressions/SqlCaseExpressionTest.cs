@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
@@ -78,8 +79,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       Assert.That (
           () => new SqlCaseExpression (typeof (int), _caseExpressionWithElse.Cases, null),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "When no ELSE case is given, the expression's result type must be nullable.\r\nParameter name: type"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo (
+              "When no ELSE case is given, the expression's result type must be nullable.", "type"));
 
       Assert.That (() => new SqlCaseExpression (typeof (int?), _caseExpressionWithoutElse.Cases, null), Throws.Nothing);
       Assert.That (
@@ -92,16 +93,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     {
       Assert.That (
           () => new SqlCaseExpression.CaseWhenPair (_value1, _value1),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The WHEN expression's type must be boolean.\r\nParameter name: when"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo (
+              "The WHEN expression's type must be boolean.", "when"));
       Assert.That (
           () => new SqlCaseExpression (typeof (int), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, Expression.Constant ("x")) }, _elseValue),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The THEN expressions' types must match the expression type.\r\nParameter name: cases"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo (
+              "The THEN expressions' types must match the expression type.", "cases"));
       Assert.That (
           () => new SqlCaseExpression (typeof (int), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _value1) }, Expression.Constant ("a")),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The ELSE expression's type must match the expression type.\r\nParameter name: elseCase"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo (
+              "The ELSE expression's type must match the expression type.", "elseCase"));
 
       Assert.That (
           () => new SqlCaseExpression (typeof (int?), new[] { new SqlCaseExpression.CaseWhenPair (_predicate1, _value1) }, _elseValue), Throws.Nothing);

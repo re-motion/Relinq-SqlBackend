@@ -25,6 +25,7 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Rhino.Mocks;
 
@@ -302,8 +303,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (
           () => _groupAggregateSimplifier.SimplifyIfPossible (expression, nonSimplifiableProjection),
           Throws.ArgumentException
-              .With.Message.EqualTo (
-                  "The unresolved projection doesn't match the resolved statement: it has no aggregation.\r\nParameter name: unresolvedSelectProjection"));
+              .With.ArgumentExceptionMessageEqualTo (
+                  "The unresolved projection doesn't match the resolved statement: it has no aggregation.", "unresolvedSelectProjection"));
     }
 
     [Test]
