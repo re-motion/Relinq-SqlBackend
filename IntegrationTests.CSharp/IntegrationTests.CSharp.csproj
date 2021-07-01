@@ -771,6 +771,9 @@
     <Content Include="SystemTests\Resources\SubQueryTests.SubQueryWithNonConstantFromExpression.result">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="SystemTests\Resources\MultiFromTests.QueryWithIntoEquivalent.result">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="LinqSamples101\Resources\AdvancedTests.LinqToSqlAdvanced01.result">
