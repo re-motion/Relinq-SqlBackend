@@ -39,7 +39,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         : base (message, innerException)
     {
       _state = new UnmappedItemExceptionState();
+#if NETFRAMEWORK 
       SerializeObjectState += (exception, eventArgs) => eventArgs.AddSerializedState (_state);
+#endif
+    }
+
+    public UnmappedItemException (SerializationInfo info, StreamingContext context)
+            : base(info, context)
+    {
     }
 
     [Serializable]

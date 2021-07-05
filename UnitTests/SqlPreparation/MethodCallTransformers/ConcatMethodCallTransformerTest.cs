@@ -47,6 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
       var concatMethods =
           typeof (string).GetMethods()
                          .Where (mi => mi.Name == "Concat" && mi.CallingConvention != CallingConventions.VarArgs)
+                         .Where (mi => mi.GetParameters().All(e => !e.ParameterType.IsValueType)) // Ignore the ReadOnlySpan<char> overloads since they are not supported
                          .ToArray();
       Assert.That (ConcatMethodCallTransformer.SupportedMethods, Is.EquivalentTo (concatMethods));
     }

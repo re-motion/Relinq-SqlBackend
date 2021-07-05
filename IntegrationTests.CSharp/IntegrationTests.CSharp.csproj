@@ -13,6 +13,8 @@
     <Description>Contains integration tests for re-linq written in C#.</Description>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <!-- TODO RMLNQSQL-151: Use .NET 5 in test projects -->
+    <TargetFrameworks>net45</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

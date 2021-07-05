@@ -15,6 +15,9 @@
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DefineConstants></DefineConstants>
+    <!-- TODO RMLNQSQL-151: Use .NET 5 in test projects -->
+    <TargetFrameworks>net45</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>

@@ -12,6 +12,8 @@
     <AssemblyName>Remotion.Linq.LinqToSqlAdapter</AssemblyName>
     <Description>Provides an adapter between re-linq and LinqToSql.</Description>
     <RootNamespace>$(AssemblyName)</RootNamespace>
+    <!-- TODO RMLNQSQL-151: Use .NET 5 in test projects -->
+    <TargetFrameworks>net45</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Remotion.Linq" Version="2.0.0" />
+    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>

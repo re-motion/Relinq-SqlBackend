@@ -23,20 +23,26 @@
     <PackageTags>re-motion TypePipe</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <BinaryFormatterSerializationObsoleteWarning>SYSLIB0011</BinaryFormatterSerializationObsoleteWarning>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(ProjectType)' == 'Library'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>True</IsPackable>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net5.0;net45</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(ProjectType)' == 'Test'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>0067;0649;0169</NoWarn>
+    <NoWarn>0067;0649;0169;$(BinaryFormatterSerializationObsoleteWarning)</NoWarn>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net5.0;net45</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,7 +56,9 @@
 
   <ItemGroup Condition="'$(ProjectType)' == 'Test'">
     <PackageReference Include="CoreRhinoMocks" Version="3.6.1.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="NUNit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
