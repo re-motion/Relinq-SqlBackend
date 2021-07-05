@@ -13,6 +13,8 @@
     <AssemblyName>Remotion.Linq.SqlBackend.Development</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <PackageTags>$(PackageTags) UnitTesting</PackageTags>
+    <!-- TODO RMLNQSQL-150: Use .NETStandard compatible version of Remotion.Linq.Developement  -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

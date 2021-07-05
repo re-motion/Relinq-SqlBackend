@@ -19,7 +19,7 @@
     <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
 
@@ -32,7 +32,7 @@
       <Link>MSPL.licenseheader</Link>
     </None>
   </ItemGroup>
- 
+
   <ItemGroup>
     <Content Include="License.txt" />
     <Content Include="LinqSamples101\Resources\*.result">

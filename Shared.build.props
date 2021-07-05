@@ -23,19 +23,26 @@
     <PackageTags>re-motion LINQ SQL SqlGeneration</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <BinaryFormatterSerializationObsoleteWarning>SYSLIB0011</BinaryFormatterSerializationObsoleteWarning>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(ProjectType)' == 'Library'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>True</IsPackable>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net5.0;net45</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(ProjectType)' == 'Test'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>$(BinaryFormatterSerializationObsoleteWarning)</NoWarn>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net5.0;net45</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -61,5 +68,21 @@
     <InformationalVersion>$(_version)-x.9+$(Configuration)</InformationalVersion>
     <PackageVersion>$(_version)-x.9</PackageVersion>
   </PropertyGroup>
+
+  <Target Name="CopyTestHostAppConfigs"
+      AfterTargets="_CopyAppConfigFile"
+      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' == 'net5.0'">
+    <Message Text="CopyTestHostAppConfigs: $(PrepareForRunDependsOn)" Importance="High"/>
+    <ItemGroup>
+      <_testHostAppConfig Include="$(OutDir)\testhost.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\testhost.x86.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner32.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner64.dll.config" />
+    </ItemGroup>
+    <Copy SourceFiles="$(OutDir)\$(AssemblyName).dll.config" DestinationFiles="%(_testHostAppConfig.Identity)" />
+    <ItemGroup>
+      <FileWrites Include="@(_testHostAppConfig)" />
+    </ItemGroup>
+  </Target>
 
 </Project>

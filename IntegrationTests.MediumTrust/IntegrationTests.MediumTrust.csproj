@@ -11,6 +11,7 @@
     <AssemblyTitle>Medium Trust Integration Tests for Remotion Linq Library SQL Backend</AssemblyTitle>
     <AssemblyName>Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
+    <TargetFrameworks>net45</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

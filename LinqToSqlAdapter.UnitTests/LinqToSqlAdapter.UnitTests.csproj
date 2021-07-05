@@ -19,7 +19,7 @@
     <ProjectReference Include="..\LinqToSqlAdapter\LinqToSqlAdapter.csproj" />
   </ItemGroup>
  
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
 
