@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
 
@@ -42,9 +43,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
       Assert.That (
           () => new UnresolvedJoinInfo (_entityExpression, typeof (Cook).GetProperty ("Substitution"), JoinCardinality.Many),
           Throws.ArgumentException
-              .With.Message.EqualTo (
-                  "Expected a closed generic type implementing IEnumerable<T>, but found 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook'."
-                  + "\r\nParameter name: memberInfo"));
+              .With.ArgumentExceptionMessageEqualTo (
+                  "Expected a closed generic type implementing IEnumerable<T>, but found 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook'.",
+                  "memberInfo"));
     }
 
     [Test]

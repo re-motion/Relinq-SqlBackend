@@ -22,6 +22,7 @@ using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransformers
@@ -301,8 +302,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
 
       Assert.That (
           () => _transformer.Transform (expression),
-          Throws.TypeOf<ArgumentException>().With.Message.EqualTo (
-              "The method 'System.DateTime.ToString' is not a supported method.\r\nParameter name: methodCallExpression"));
+          Throws.TypeOf<ArgumentException>().With.ArgumentExceptionMessageEqualTo (
+              "The method 'System.DateTime.ToString' is not a supported method.", "methodCallExpression"));
     }
   }
 }

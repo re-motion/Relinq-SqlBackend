@@ -25,6 +25,7 @@ using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Development.UnitTesting.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
@@ -49,8 +50,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
               null,
               new SetOperationCombinedStatement[0]),
           Throws.ArgumentException
-              .With.Message.EqualTo (
-                  "Parameter 'whereCondition' has type 'System.Int32' when type 'System.Boolean' was expected.\r\nParameter name: whereCondition"));
+              .With.ArgumentExceptionMessageEqualTo (
+                  "Parameter 'whereCondition' has type 'System.Int32' when type 'System.Boolean' was expected." ,"whereCondition"));
     }
 
     [Test]

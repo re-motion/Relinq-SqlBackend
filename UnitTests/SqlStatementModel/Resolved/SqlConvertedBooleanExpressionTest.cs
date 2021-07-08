@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
@@ -63,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       Assert.That (
           () => new SqlConvertedBooleanExpression (innerExpression),
           Throws.ArgumentException
-              .With.Message.EqualTo ("The inner expression must be an expression of type Int32 or Nullable<Int32>.\r\nParameter name: expression"));
+              .With.ArgumentExceptionMessageEqualTo ("The inner expression must be an expression of type Int32 or Nullable<Int32>.", "expression"));
     }
 
     [Test]

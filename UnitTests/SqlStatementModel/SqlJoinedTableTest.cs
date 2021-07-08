@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Rhino.Mocks;
 
@@ -51,10 +52,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       Assert.That (
           () => sqlJoinedTable.JoinInfo = newJoinInfo,
           Throws.ArgumentException
-              .With.Message.EqualTo (
+              .With.ArgumentExceptionMessageEqualTo (
                   "Parameter 'value' has type 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Restaurant' "
-                  + "when type 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook' was expected."
-                  + "\r\nParameter name: value"));
+                  + "when type 'Remotion.Linq.SqlBackend.UnitTests.TestDomain.Cook' was expected.",
+                  "value"));
     }
 
     [Test]

@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.Utilities
@@ -44,8 +45,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.Utilities
     {
       Assert.That (
           () => ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (typeof (ArrayList), "x"),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Collections.ArrayList'.\r\nParameter name: x"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo (
+              "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Collections.ArrayList'.", "x"));
     }
 
     [Test]
@@ -53,8 +54,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.Utilities
     {
       Assert.That (
           () => ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (typeof (int), "x"),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: x"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo (
+              "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.", "x"));
     }
 
     [Test]
@@ -91,7 +92,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.Utilities
 
       Assert.That (
           () => ReflectionUtility.GetMemberReturnType (memberInfo),
-          Throws.ArgumentException.With.Message.EqualTo ("Argument must be FieldInfo, PropertyInfo, or MethodInfo.\r\nParameter name: member"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo ("Argument must be FieldInfo, PropertyInfo, or MethodInfo.", "member"));
     }
   }
 }
