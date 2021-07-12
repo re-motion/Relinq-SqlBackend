@@ -16,15 +16,13 @@
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <DefineConstants></DefineConstants>
-    <!-- TODO RMLNQSQL-151: Use .NET 5 in test projects -->
-    <TargetFrameworks>net45</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\IntegrationTests.Common\IntegrationTests.Common.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
 
@@ -48,5 +46,19 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <Target Name="CopyTestHostAppConfigs" AfterTargets="_CopyAppConfigFile" Condition="'$(TargetFramework)' == 'net5.0'">
+    <ItemGroup>
+      <_testHostAppConfig Include="$(OutDir)\testhost.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\testhost.x86.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner32.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner64.dll.config" />
+    </ItemGroup>
+    <!-- We copy from the output directory because linked app configs are not located in the project directory -->
+    <Copy SourceFiles="$(OutDir)\$(AssemblyName).dll.config" DestinationFiles="%(_testHostAppConfig.Identity)" />
+    <ItemGroup>
+      <FileWrites Include="@(_testHostAppConfig)" />
+    </ItemGroup>
+  </Target>
 
 </Project>

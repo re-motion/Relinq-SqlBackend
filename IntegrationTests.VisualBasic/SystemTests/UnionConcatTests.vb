@@ -40,7 +40,7 @@ Namespace SystemTests
     Inherits TestBase
     <Test> _
     Public Sub UnionQuery()
-      Dim query = DB.Customers.Where(Function(c) c.City = "London").Union(DB.Customers.Where(Function(c) c.City = "Berlin")).Union(DB.Customers.Where(Function(c) c.City = "Madrid"))
+      Dim query = DB.Customers.Where(Function(c) c.City = "London").Union(DB.Customers.Where(Function(c) c.City = "Berlin")).Union(DB.Customers.Where(Function(c) c.City = "Madrid")).OrderBy(Function(c) c.CustomerID)
 
       TestExecutor.Execute(query, MethodBase.GetCurrentMethod())
     End Sub

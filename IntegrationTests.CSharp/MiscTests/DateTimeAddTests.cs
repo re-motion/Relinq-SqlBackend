@@ -197,7 +197,7 @@ namespace Remotion.Linq.IntegrationTests.CSharp.MiscTests
             Seven = o.OrderDate.Value.Add (TimeSpan.FromDays (0.0001)),
             Eight = o.OrderDate.Value.Add (TimeSpan.FromDays (-0.0001)),
             Nine = o.OrderDate.Value.Add (TimeSpan.FromMilliseconds (1.5)),
-            Ten = o.OrderDate.Value.Add (TimeSpan.FromMilliseconds (-1.5)),
+            Ten = o.OrderDate.Value.Add (TimeSpan.FromMilliseconds (-2)),
             Eleven = o.OrderDate.Value.Add (TimeSpan.FromMilliseconds (1500.76)),
             Twelve = o.OrderDate.Value.Add (TimeSpan.FromMilliseconds (-1500.76)),
             Thirteen = o.OrderDate.Value.Add (TimeSpan.FromMilliseconds (54987987987987.7)),

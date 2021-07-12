@@ -13,8 +13,6 @@
     <AssemblyTitle>Unit Tests for Remotion Linq Library's LinqToSqlAdapter</AssemblyTitle>
     <AssemblyName>Remotion.Linq.LinqToSqlAdapter.UnitTests</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
-    <!-- TODO RMLNQSQL-151: Use .NET 5 in test projects -->
-    <TargetFrameworks>net45</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +21,7 @@
     <ProjectReference Include="..\LinqToSqlAdapter\LinqToSqlAdapter.csproj" />
   </ItemGroup>
  
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
 

@@ -12,15 +12,17 @@
     <AssemblyName>Remotion.Linq.LinqToSqlAdapter</AssemblyName>
     <Description>Provides an adapter between re-linq and LinqToSql.</Description>
     <RootNamespace>$(AssemblyName)</RootNamespace>
-    <!-- TODO RMLNQSQL-151: Use .NET 5 in test projects -->
-    <TargetFrameworks>net45</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Core.Data.Linq" Version="4.0.0-alpha.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
   </ItemGroup>
 
