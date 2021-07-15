@@ -35,6 +35,8 @@
     <None Include="..\.BuildProject">
       <Link>.BuildProject</Link>
     </None>
+    <None Include="Customizations\Configuration.props" />
+    <None Include="Customizations\Local\Configuration.props" />
     <None Include="Customizations\Local\Configuration.targets" />
     <None Include="Customizations\Local\Defaults.props" />
     <None Include="Customizations\Properties.props" />
