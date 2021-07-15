@@ -16,6 +16,8 @@
       <DatabaseSystems Condition="'$(DatabaseSystems)' == ''">NoDB+SqlServer2005+SqlServer2008+SqlServer2008R2+SqlServer2012+SqlServer2014+SqlServer2016+SqlServer2017+SqlServer2019</DatabaseSystems>
       <ExecutionRuntimes Condition="'$(ExecutionRuntimes)' == ''">Win_NET48+Win_NET472+Win_NET462</ExecutionRuntimes>
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48+NET472+NET462</TargetRuntimes>
+      <!-- Disable Documentation until RMSRCBUILD-173 is fixed. -->
+      <SkipDocumentation Condition="'$(SkipDocumentation)' == ''">True</SkipDocumentation>
     </PropertyGroup>
   </Target>
   <Target Name="After_FullBuild_Configuration" AfterTargets="FullBuild_Configuration">
