@@ -6,6 +6,7 @@
     <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
     <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
     <ProductName>re-motion Framework: re-linq (www.re-motion.org)</ProductName>
+    <DocumentationFileName>Remotion.TypePipe</DocumentationFileName>
     <DocumentationRootPage>$(SolutionDirectory)Core\Doc\include\GettingStarted.aml</DocumentationRootPage>
     <DocumentationNamespaceSummaryFiles>$(SolutionDirectory)**\Doc\include\NamespaceDoc.xml</DocumentationNamespaceSummaryFiles>
     <DependDBProjectName>re-motion Relinq-SqlBackend</DependDBProjectName>
@@ -15,5 +16,6 @@
     <DependDBProjectImportNotificationMailAddress/>
     <DependDBTrackedReferences>Remotion.*</DependDBTrackedReferences>
     <DependDBNuGetSources>$(SolutionDirectory)packages</DependDBNuGetSources>
+    <DependDBTargetFramework>net45</DependDBTargetFramework>
   </PropertyGroup>
 </Project>
