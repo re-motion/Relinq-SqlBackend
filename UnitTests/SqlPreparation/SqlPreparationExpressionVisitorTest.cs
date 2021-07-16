@@ -619,6 +619,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
+    [Ignore ("RMLNSQSQL-152: IMethodCallTransformer.Transform can cause infinite loop when returning the same object")]
     public void VisitMethodCallExpression_ExpressionPropertiesVisitedBeforeTransformation ()
     {
       var method = MethodCallTransformerUtility.GetInstanceMethod (typeof (object), "ToString");
