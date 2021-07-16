@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="NOP" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="Current" DefaultTargets="NOP" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Build</RootNamespace>
     <AssemblyName>Build</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>d167f1ec</NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +35,8 @@
     <None Include="..\.BuildProject">
       <Link>.BuildProject</Link>
     </None>
+    <None Include="Customizations\Configuration.props" />
+    <None Include="Customizations\Local\Configuration.props" />
     <None Include="Customizations\Local\Configuration.targets" />
     <None Include="Customizations\Local\Defaults.props" />
     <None Include="Customizations\Properties.props" />
@@ -49,21 +52,23 @@
     <None Include="Remotion.Local.build" />
     <None Include="Remotion.Server.build" />
     <None Include="TestSetupForDatabase.build" />
+    <None Include="teamcity.properties" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Remotion.BuildScript, Version=2.0.0-alpha022, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Remotion.BuildScript.2.0.0-alpha022\lib\net45\Remotion.BuildScript.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.Annotations, Version=2019.1.3.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.2019.1.3\lib\net20\JetBrains.Annotations.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Remotion.ReleaseProcessScript, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Remotion.ReleaseProcessScript.2.0.0-alpha017\lib\net45\Remotion.ReleaseProcessScript.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Remotion.BuildScript, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.BuildScript.3.0.0-alpha.2\lib\net461\Remotion.BuildScript.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.ReleaseProcessScript, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.ReleaseProcessScript.3.0.0-alpha.2\lib\net461\Remotion.ReleaseProcessScript.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.ReleaseProcessScript.3.0.0-alpha.2\lib\net461\RestSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

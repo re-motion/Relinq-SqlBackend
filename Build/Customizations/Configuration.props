@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <SupportedDatabaseSystems Remove="@(SupportedDatabaseSystems)"/>
+    <SupportedDatabaseSystems Include="SqlServerDefault;SqlServer2005;SqlServer2008;SqlServer2008R2;SqlServer2012;SqlServer2014;SqlServer2016;SqlServer2017;SqlServer2019"/>
+
+    <SupportedExecutionRuntimes Remove="@(SupportedExecutionRuntimes)"/>
+    <SupportedExecutionRuntimes Include="Win_NET462=$(DockerImageDotNetFrameworkRuntime4_6);Win_NET472=$(DockerImageDotNetFrameworkRuntime4_7);Win_NET48=$(DockerImageDotNetFrameworkRuntime4_8)"/>
+
+    <SupportedTargetRuntimes Remove="@(SupportedTargetRuntimes)"/>
+    <SupportedTargetRuntimes Include="NET462;NET472;NET48;"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <NUnitExtensionsPaths Include="$(PackagesDirectory)NUnit.Extension.NUnitV2Driver.3.8.0\"/>
+  </ItemGroup>
+
+</Project>
