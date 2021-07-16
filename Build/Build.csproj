@@ -44,7 +44,6 @@
     <None Include="Customizations\Server\Configuration.targets" />
     <None Include="Customizations\Extensions.targets" />
     <None Include="Customizations\Server\Defaults.props" />
-    <None Include="NuSpec\TemplateShared.nuspec" />
     <None Include="Customizations\Projects.props" />
     <None Include="Customizations\Version.props" />
     <None Include="packages.config" />
