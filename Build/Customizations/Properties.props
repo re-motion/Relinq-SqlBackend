@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/re-motion/Relinq-SqlBackend/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/re-motion/Relinq-SqlBackend/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <DocumentationFileName>Remotion.TypePipe</DocumentationFileName>
+    <DocumentationFileName>Remotion.Linq.SqlBackend</DocumentationFileName>
     <DocumentationRootPage>$(SolutionDirectory)Core\Doc\include\GettingStarted.aml</DocumentationRootPage>
     <DocumentationNamespaceSummaryFiles>$(SolutionDirectory)**\Doc\include\NamespaceDoc.xml</DocumentationNamespaceSummaryFiles>
     <DependDBProjectName>re-motion Relinq-SqlBackend</DependDBProjectName>
