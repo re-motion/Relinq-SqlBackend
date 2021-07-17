@@ -1,175 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="Current" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1246CA5E-FF19-4810-B92A-263F1F5E72A6}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Linq.IntegrationTests.Common</RootNamespace>
+    <ProjectType>Test</ProjectType>
+  </PropertyGroup>
+
+  <Import Project="..\Shared.build.props" />
+
+  <PropertyGroup>
+    <AssemblyTitle>Common functionality for integration tests for the Remotion Data Linq library</AssemblyTitle>
+    <Description>Contains the common database and utility classes used by integration tests for re-linq.</Description>
     <AssemblyName>Remotion.Linq.IntegrationTests.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\remotion.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
-      <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Remotion.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Remotion.Linq.2.0.0\lib\net45\Remotion.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\LinqToSqlAdapter\LinqToSqlAdapter.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Remotion.Linq" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\AssemblyInfoShared.cs">
-      <Link>Properties\AssemblyInfoShared.cs</Link>
-    </Compile>
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\BaseTypeRequiredAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\CanBeNullAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\CannotApplyEqualityOperatorAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ContractAnnotationAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ImplicitUseKindFlags.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ImplicitUseTargetFlags.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\InstantHandleAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\InvokerParameterNameAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\LinqTunnelAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\LocalizationRequiredAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\MeansImplicitUseAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NoEnumerationAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NotifyPropertyChangedInvocatorAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NotNullAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PathReferenceAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PublicAPIAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PureAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\StringFormatMethodAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\TerminatesProgramAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
-    <Compile Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.15.23.0\ArgumentUtility.cs" />
-    <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
-    <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
-    <Compile Include="Database\DatabaseConfiguration.cs" />
-    <Compile Include="Database\NorthwindSetup.cs" />
-    <None Include="..\LGPL.licenseheader">
-      <Link>LGPL.licenseheader</Link>
-    </None>
-    <None Include="..\remotion.snk">
-      <Link>remotion.snk</Link>
-    </None>
-    <Compile Include="TestDomain\Northwind\CustomTransformers\DateDiffDayMethodCallTransformer.cs" />
-    <Compile Include="TestDomain\Northwind\CustomTransformers\UserDefinedFunctionTransformer.cs" />
-    <Compile Include="TestDomain\Northwind\SystemTestDataContextExtension.cs" />
-    <Compile Include="TestMode.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AbstractTestBase.cs" />
-    <Compile Include="TestDomain\Northwind\INorthwindDataProvider.cs" />
-    <Compile Include="TestDomain\Northwind\LinqToSqlNorthwindDataProvider.cs" />
-    <Compile Include="TestDomain\Northwind\NorthwindDataContext.cs" />
-    <Compile Include="TestDomain\Northwind\NorthwindConnectionManager.cs" />
-    <Compile Include="TestDomain\Northwind\RelinqNorthwindDataProvider.cs" />
-    <Compile Include="UnitTests\Utilities\ComparisonResultTest.cs" />
-    <Compile Include="Utilities\BatchCommand.cs" />
-    <Compile Include="Utilities\CheckingTestExecutor.cs" />
-    <Compile Include="Utilities\DatabaseAgent.cs" />
-    <Compile Include="Utilities\SavingTestExecutor.cs" />
-    <Compile Include="TestDomain\SerializerTestClassWithFields.cs" />
-    <Compile Include="TestDomain\SerializerTestClassWithProperties.cs" />
-    <Compile Include="TestDomain\SerializerTestClassWithReferenceTypes.cs" />
-    <Compile Include="UnitTests\Utilities\TestResultSerializerTest.cs" />
-    <Compile Include="Utilities\ComparisonResult.cs" />
-    <Compile Include="Utilities\ITestExecutor.cs" />
-    <Compile Include="Utilities\SqlBatchCommandException.cs" />
-    <Compile Include="Utilities\TestResultSerializer.cs" />
-    <None Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
-    <None Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
+
   <ItemGroup>
     <Content Include="Database\Northwnd License.txt" />
     <Content Include="Database\Northwnd.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LinqToSqlAdapter\LinqToSqlAdapter.csproj">
-      <Project>{6A28082C-F2B7-40A3-9E32-0AB28E7DA46E}</Project>
-      <Name>LinqToSqlAdapter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  
-  <Target Name="DispatchToInnerBuilds" DependsOnTargets="Build" />
-  <Target Name="Pack" />
+
 </Project>

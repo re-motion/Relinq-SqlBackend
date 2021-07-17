@@ -24,8 +24,6 @@ using System.Reflection;
 //
 using System.Security;
 
-[assembly: AssemblyTitle ("Remotion Linq LinqToSql Adapter")]
-[assembly: AssemblyDescription ("Provides an adapter between re-linq and LinqToSql.")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 [assembly: SecurityTransparent] // required to allow assembly to be linked from assemblies having the AllowPartiallyTrustedCallersAttribute applied
