@@ -46,6 +46,9 @@
   <ItemGroup>
     <PackageReference Remove="NUnit" />
     <PackageReference Include="NUNit" Version="2.6.3" />
+
+    <PackageReference Remove="NUnit3TestAdapter" />
+    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" />
   </ItemGroup>
 
 </Project>
