@@ -13,6 +13,8 @@
     <AssemblyName>Remotion.Linq.LinqToSqlAdapter</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <IsPackable>False</IsPackable>
+    <!-- TODO RMLNQSQL-150: Use .NETStandard compatible version of Remotion.Linq.Developement  -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,8 +25,12 @@
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.Data.Linq" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Core.Data.Linq" Version="4.0.0-alpha.1" />
   </ItemGroup>
 
 </Project>

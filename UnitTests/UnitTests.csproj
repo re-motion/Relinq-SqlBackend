@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
-  </ItemGroup>
- 
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+  </ItemGroup>  
+
   <ItemGroup>
     <Compile Include="..\Core\Utilities\ReflectionUtility.cs">
       <Link>Utilities\ReflectionUtility.cs</Link>

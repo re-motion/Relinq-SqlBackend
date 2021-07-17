@@ -47,7 +47,8 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
       var query =
           DB.Customers.Where (c => c.City == "London")
               .Union (DB.Customers.Where (c => c.City == "Berlin"))
-              .Union (DB.Customers.Where (c => c.City == "Madrid"));
+              .Union (DB.Customers.Where (c => c.City == "Madrid"))
+              .OrderBy (e => e.CustomerID);
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
