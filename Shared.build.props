@@ -48,10 +48,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(ProjectType)' == 'Test'">
+    <PackageReference Include="CoreRhinoMocks" Version="3.6.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="NUNit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
-    <PackageReference Include="RhinoMocks" Version="3.6" />
   </ItemGroup>
 
   <PropertyGroup>
