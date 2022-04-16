@@ -4,62 +4,6 @@
     <PropertyGroup>
       <BuildProperties>
         $(BuildProperties);
-        DatabaseNamePrefix=$(DatabaseNamePrefix);
-      </BuildProperties>
-
-      <BuildProperties>
-        $(BuildProperties);
-        DataSourceMsSql2005=$(DataSourceMsSql2005);
-        DataSourceMsSql2008=$(DataSourceMsSql2008);
-        DataSourceMsSql2008R2=$(DataSourceMsSql2008R2);
-        DataSourceMsSql2012=$(DataSourceMsSql2012);
-        DataSourceMsSql2014=$(DataSourceMsSql2014);
-        DataSourceMsSql2016=$(DataSourceMsSql2016);
-        DataSourceMsSql2017=$(DataSourceMsSql2017);
-      </BuildProperties>
-
-      <BuildProperties>
-        $(BuildProperties);
-        DatabaseDirectoryMsSql2005=$(DatabaseDirectoryMsSql2005);
-        DatabaseDirectoryMsSql2008=$(DatabaseDirectoryMsSql2008);
-        DatabaseDirectoryMsSql2008R2=$(DatabaseDirectoryMsSql2008R2);
-        DatabaseDirectoryMsSql2012=$(DatabaseDirectoryMsSql2012);
-        DatabaseDirectoryMsSql2014=$(DatabaseDirectoryMsSql2014);
-        DatabaseDirectoryMsSql2016=$(DatabaseDirectoryMsSql2016);
-        DatabaseDirectoryMsSql2017=$(DatabaseDirectoryMsSql2017);
-      </BuildProperties>
-
-      <BuildProperties>
-        $(BuildProperties);
-        IntegratedSecurityMsSql2005=$(IntegratedSecurityMsSql2005);
-        IntegratedSecurityMsSql2008=$(IntegratedSecurityMsSql2008);
-        IntegratedSecurityMsSql2008R2=$(IntegratedSecurityMsSql2008R2);
-        IntegratedSecurityMsSql2012=$(IntegratedSecurityMsSql2012);
-        IntegratedSecurityMsSql2014=$(IntegratedSecurityMsSql2014);
-        IntegratedSecurityMsSql2016=$(IntegratedSecurityMsSql2016);
-        IntegratedSecurityMsSql2017=$(IntegratedSecurityMsSql2017);
-      </BuildProperties>
-
-      <BuildProperties>
-        $(BuildProperties);
-        UsernameMsSql2005=$(UsernameMsSql2005);
-        UsernameMsSql2008=$(UsernameMsSql2008);
-        UsernameMsSql2008R2=$(UsernameMsSql2008R2);
-        UsernameMsSql2012=$(UsernameMsSql2012);
-        UsernameMsSql2014=$(UsernameMsSql2014);
-        UsernameMsSql2016=$(UsernameMsSql2016);
-        UsernameMsSql2017=$(UsernameMsSql2017);
-      </BuildProperties>
-
-      <BuildProperties>
-        $(BuildProperties);
-        PasswordMsSql2005=$(PasswordMsSql2005);
-        PasswordMsSql2008=$(PasswordMsSql2008);
-        PasswordMsSql2008R2=$(PasswordMsSql2008R2);
-        PasswordMsSql2012=$(PasswordMsSql2012);
-        PasswordMsSql2014=$(PasswordMsSql2014);
-        PasswordMsSql2016=$(PasswordMsSql2016);
-        PasswordMsSql2017=$(PasswordMsSql2017);
       </BuildProperties>
     </PropertyGroup>
 
@@ -67,17 +11,5 @@
   </Target>
 
   <Target Name="After_CreateTestConfigurations" AfterTargets="CreateTestConfigurations">
-    <ItemGroup>
-      <AllDatabaseSystems Remove="@(AllDatabaseSystems)" />
-
-      <AllDatabaseSystems Include="SqlServerDefault" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServerDefault'"/>
-      <AllDatabaseSystems Include="SqlServer2005" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2005'"/>
-      <AllDatabaseSystems Include="SqlServer2008" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2008'"/>
-      <AllDatabaseSystems Include="SqlServer2008R2" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2008R2'"/>
-      <AllDatabaseSystems Include="SqlServer2012" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2012'"/>
-      <AllDatabaseSystems Include="SqlServer2014" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2014'"/>
-      <AllDatabaseSystems Include="SqlServer2016" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2016'"/>
-      <AllDatabaseSystems Include="SqlServer2017" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2017'"/>
-    </ItemGroup>
   </Target>
 </Project>
