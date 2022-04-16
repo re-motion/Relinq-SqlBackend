@@ -27,9 +27,6 @@
   <PropertyGroup>
     <CreateDatabaseProperties>
       CreateSqlServerDefault;
-      CreateSqlServer2005;
-      CreateSqlServer2008;
-      CreateSqlServer2008R2;
       CreateSqlServer2012;
       CreateSqlServer2014;
       CreateSqlServer2016;
@@ -110,63 +107,6 @@
       <IntegratedSecurity>true</IntegratedSecurity>
       <Username></Username>
       <Password></Password>
-    </PropertyGroup>    
-  </Target>
-
-  <Target Name="CreateSqlServer2005" Condition="'$(DatabaseSystem)' == 'SqlServer2005'">
-    <Error Text="The property 'DataSourceMsSql2005' is not set." Condition="'$(DataSourceMsSql2005)' == ''" />
-    <Error Text="The property 'DatabaseDirectoryMsSql2005' is not set." Condition="'$(DatabaseDirectoryMsSql2005)' == ''" />
-    <Error Text="The property 'IntegratedSecurityMsSql2005' is not set." Condition="'$(IntegratedSecurityMsSql2005)' == ''" />
-    <Error Text="The property 'UsernameMsSql2005' is not set." Condition="'$(IntegratedSecurityMsSql2005)' == 'false' and '$(UsernameMsSql2005)' == ''" />
-    <Error Text="The property 'PasswordMsSql2005' is not set." Condition="'$(IntegratedSecurityMsSql2005)' == 'false' and '$(PasswordMsSql2005)' == ''" />
-    
-    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
-
-    <PropertyGroup>
-      <DataSource>$(DataSourceMsSql2005)</DataSource>
-      <DatabaseDirectory>$(DatabaseDirectoryMsSql2005)</DatabaseDirectory>
-      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
-      <IntegratedSecurity>$(IntegratedSecurityMsSql2005)</IntegratedSecurity>
-      <Username>$(UsernameMsSql2005)</Username>
-      <Password>$(PasswordMsSql2005)</Password>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="CreateSqlServer2008" Condition="'$(DatabaseSystem)' == 'SqlServer2008'">
-    <Error Text="The property 'DataSourceMsSql2008' is not set." Condition="'$(DataSourceMsSql2008)' == ''" />
-    <Error Text="The property 'DatabaseDirectoryMsSql2008' is not set." Condition="'$(DatabaseDirectoryMsSql2008)' == ''" />
-    <Error Text="The property 'IntegratedSecurityMsSql2008' is not set." Condition="'$(IntegratedSecurityMsSql2008)' == ''" />
-    <Error Text="The property 'UsernameMsSql2008' is not set." Condition="'$(IntegratedSecurityMsSql2008)' == 'false' and '$(UsernameMsSql2008)' == ''" />
-    <Error Text="The property 'PasswordMsSql2008' is not set." Condition="'$(IntegratedSecurityMsSql2008)' == 'false' and '$(PasswordMsSql2008)' == ''" />
-
-    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
-
-    <PropertyGroup>
-      <DataSource>$(DataSourceMsSql2008)</DataSource>
-      <DatabaseDirectory>$(DatabaseDirectoryMsSql2008)</DatabaseDirectory>
-      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
-      <IntegratedSecurity>$(IntegratedSecurityMsSql2008)</IntegratedSecurity>
-      <Username>$(UsernameMsSql2008)</Username>
-      <Password>$(PasswordMsSql2008)</Password>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="CreateSqlServer2008R2" Condition="'$(DatabaseSystem)' == 'SqlServer2008R2'">
-    <Error Text="The property 'DataSourceMsSql2008R2' is not set." Condition="'$(DataSourceMsSql2008R2)' == ''" />
-    <Error Text="The property 'DatabaseDirectoryMsSql2008R2' is not set." Condition="'$(DatabaseDirectoryMsSql2008R2)' == ''" />
-    <Error Text="The property 'IntegratedSecurityMsSql2008R2' is not set." Condition="'$(IntegratedSecurityMsSql2008R2)' == ''" />
-    <Error Text="The property 'UsernameMsSql2008R2' is not set." Condition="'$(IntegratedSecurityMsSql2008R2)' == 'false' and '$(UsernameMsSql2008R2)' == ''" />
-    <Error Text="The property 'PasswordMsSql2008R2' is not set." Condition="'$(IntegratedSecurityMsSql2008R2)' == 'false' and '$(PasswordMsSql2008R2)' == ''" />
-
-    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
-
-    <PropertyGroup>
-      <DataSource>$(DataSourceMsSql2008R2)</DataSource>
-      <DatabaseDirectory>$(DatabaseDirectoryMsSql2008R2)</DatabaseDirectory>
-      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
-      <IntegratedSecurity>$(IntegratedSecurityMsSql2008R2)</IntegratedSecurity>
-      <Username>$(UsernameMsSql2008R2)</Username>
-      <Password>$(PasswordMsSql2008R2)</Password>
     </PropertyGroup>
   </Target>
 

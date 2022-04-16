@@ -23,9 +23,7 @@
       Win_NET48 + NET462 + NoBrowser + SqlServer2017 + Release + x64;
       Win_NET472 + NET472 + NoBrowser + SqlServer2016 + Release + x64;
       Win_NET472 + NET462 + NoBrowser + SqlServer2014 + Release + x64;
-      Win_NET462 + NET462 + NoBrowser + SqlServer2008R2 + Release + x64;
-      Win_NET462 + NET462 + NoBrowser + SqlServer2008 + Release + x64;
-      Win_NET462 + NET462 + NoBrowser + SqlServer2005 + Release + x64;
+      Win_NET462 + NET462 + NoBrowser + SqlServer2012 + Release + x64;
     </DatabaseTestConfiguration>
     <NormalTestConfiguration Condition="'$(NormalTestConfiguration)' == ''">
       Win_NET48 + NET48 + NoBrowser + NoDB + Debug + x86;
