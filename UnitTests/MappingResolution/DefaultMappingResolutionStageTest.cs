@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
@@ -28,14 +29,13 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 {
   [TestFixture]
   public class DefaultMappingResolutionStageTest
   {
-    private IMappingResolver _resolverMock;
+    private Mock<IMappingResolver> _resolverMock;
     private UniqueIdentifierGenerator _uniqueIdentifierGenerator;
     private UnresolvedTableInfo _unresolvedTableInfo;
     private SqlTable _sqlTable;
@@ -46,14 +46,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _resolverMock = MockRepository.GenerateMock<IMappingResolver>();
+      _resolverMock = new Mock<IMappingResolver>();
       _uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
 
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
       _sqlTable = SqlStatementModelObjectMother.CreateSqlTable (_unresolvedTableInfo);
       _fakeResolvedSimpleTableInfo = SqlStatementModelObjectMother.CreateResolvedTableInfo (typeof (Cook));
 
-      _stage = new DefaultMappingResolutionStage (_resolverMock, _uniqueIdentifierGenerator);
+      _stage = new DefaultMappingResolutionStage (_resolverMock.Object, _uniqueIdentifierGenerator);
 
       _mappingResolutionContext = new MappingResolutionContext();
     }
@@ -66,16 +66,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
      
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) result).Value, Is.EqualTo (0));
@@ -89,13 +90,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var sqlStatementBuilder = new SqlStatementBuilder ();
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (((ConstantExpression) sqlStatement.SelectProjection)))
-          .Return (sqlStatement.SelectProjection);
-      _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveConstantExpression (((ConstantExpression) sqlStatement.SelectProjection)))
+          .Returns (sqlStatement.SelectProjection)
+          .Verifiable();
 
       var result = _stage.ResolveSelectExpression (expression, sqlStatementBuilder, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
       var expectedDataInfo = new StreamedSequenceInfo (typeof (IEnumerable<>).MakeGenericType (sqlStatement.DataInfo.DataType), sqlStatement.SelectProjection);
       var expectedSqlStatement = new SqlStatementBuilder (sqlStatement) { DataInfo = expectedDataInfo }.GetSqlStatement ();
 
@@ -111,16 +112,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = new SqlConvertedBooleanExpression (Expression.Constant (0));
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeResult.Expression))
-          .Return (fakeResult.Expression);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveConstantExpression ((ConstantExpression) fakeResult.Expression))
+          .Returns (fakeResult.Expression)
+          .Verifiable();
 
       var result = _stage.ResolveWhereExpression (expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (((BinaryExpression) result).Left, Is.SameAs (fakeResult.Expression));
       Assert.That (((SqlLiteralExpression) ((BinaryExpression) result).Right).Value, Is.EqualTo (1));
@@ -133,16 +135,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveGroupByExpression (expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeResult));
     }
@@ -154,13 +157,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression();
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeEntityExpression);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeEntityExpression)
+          .Verifiable();
 
       var result = _stage.ResolveGroupByExpression (expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeEntityExpression));
     }
@@ -172,16 +175,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveOrderingExpression (expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) result).Value, Is.EqualTo (0));
@@ -194,16 +198,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveTopExpression (expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) result).Value, Is.EqualTo (0));
@@ -216,16 +221,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
-      _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveAggregationExpression(expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) result).Value, Is.EqualTo (0));
@@ -238,13 +244,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedSubStatementTableInfo = new ResolvedSubStatementTableInfo ("c", sqlStatement);
 
       _resolverMock
-          .Expect (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
-          .Return (fakeResolvedSubStatementTableInfo);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveTableInfo (_unresolvedTableInfo, _uniqueIdentifierGenerator))
+          .Returns (fakeResolvedSubStatementTableInfo)
+          .Verifiable();
 
       var result = _stage.ResolveTableInfo (_sqlTable.TableInfo, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResolvedSubStatementTableInfo));
     }
 
@@ -256,13 +262,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedJoinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo (typeof (Cook));
 
       _resolverMock
-          .Expect (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
-          .Return (fakeResolvedJoinInfo);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveJoinInfo (joinInfo, _uniqueIdentifierGenerator))
+          .Returns (fakeResolvedJoinInfo)
+          .Verifiable();
 
       var result = _stage.ResolveJoinInfo (joinInfo, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResolvedJoinInfo));
     }
 
@@ -273,15 +279,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (false);
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (fakeResult))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveConstantExpression (fakeResult))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveJoinCondition (expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
 
       var expected = Expression.Equal (Expression.Constant (0), new SqlLiteralExpression (1));
       SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
@@ -296,16 +304,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
-          .Expect (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))
-          .Return (_fakeResolvedSimpleTableInfo);
+          .Setup (mock => mock.ResolveTableInfo ((UnresolvedTableInfo) ((SqlTable) sqlStatement.SqlTables[0]).TableInfo, _uniqueIdentifierGenerator))
+          .Returns (_fakeResolvedSimpleTableInfo)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
-          .Return (fakeEntityExpression);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
+          .Returns (fakeEntityExpression)
+          .Verifiable();
 
       var newSqlStatment = _stage.ResolveSqlStatement (sqlStatement, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
       Assert.That (((SqlTable) newSqlStatment.SqlTables[0]).TableInfo, Is.SameAs (_fakeResolvedSimpleTableInfo));
       Assert.That (newSqlStatment.SelectProjection, Is.SameAs (fakeEntityExpression));
     }
@@ -317,8 +326,9 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
-          .Expect (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveSimpleTableInfo (expression.SqlTable.GetResolvedTableInfo(), _uniqueIdentifierGenerator))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveTableReferenceExpression (expression, _mappingResolutionContext);
 
@@ -334,16 +344,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (constantExpression))
-          .Return (sqlColumnExpression);
+          .Setup (mock => mock.ResolveConstantExpression (constantExpression))
+          .Returns (sqlColumnExpression)
+          .Verifiable();
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (sqlColumnExpression, expression.Member))
-          .Return (fakeResult);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveMemberExpression (sqlColumnExpression, expression.Member))
+          .Returns (fakeResult)
+          .Verifiable();
 
       var result = _stage.ResolveCollectionSourceExpression (expression, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeResult));
     }
@@ -361,23 +372,18 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       _resolverMock
-          .Expect (
-              mock =>
-              mock.ResolveJoinInfo (
-                  Arg<UnresolvedJoinInfo>.Matches (joinInfo => joinInfo.MemberInfo == kitchenCookMember), Arg<UniqueIdentifierGenerator>.Is.Anything))
-          .Return (fakeJoinInfo);
+          .Setup (mock => mock.ResolveJoinInfo (It.Is<UnresolvedJoinInfo> (joinInfo => joinInfo.MemberInfo == kitchenCookMember), It.IsAny<UniqueIdentifierGenerator>()))
+          .Returns (fakeJoinInfo)
+          .Verifiable();
 
       _resolverMock
-          .Expect (
-              mock =>
-              mock.ResolveSimpleTableInfo (
-                  Arg<IResolvedTableInfo>.Is.Anything,
-                  Arg<UniqueIdentifierGenerator>.Is.Anything))
-          .Return (fakeEntityExpression);
+          .Setup (mock => mock.ResolveSimpleTableInfo (It.IsAny<IResolvedTableInfo>(), It.IsAny<UniqueIdentifierGenerator>()))
+          .Returns (fakeEntityExpression)
+          .Verifiable();
 
       var result = _stage.ResolveEntityRefMemberExpression (entityRefMemberExpression, unresolvedJoinInfo, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
 
       Assert.That (result, Is.SameAs (fakeEntityExpression));
       var sqlTable = _mappingResolutionContext.GetSqlTableForEntityExpression (entityRefMemberExpression.OriginatingEntity);
@@ -393,13 +399,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResolvedExpression = new SqlLiteralExpression ("Hugo");
 
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (sourceExpression, memberInfo))
-          .Return (fakeResolvedExpression);
-      _resolverMock.Replay();
+          .Setup (mock => mock.ResolveMemberExpression (sourceExpression, memberInfo))
+          .Returns (fakeResolvedExpression)
+          .Verifiable();
 
-      var result = _stage.ResolveMemberAccess (sourceExpression, memberInfo, _resolverMock, _mappingResolutionContext);
+      var result = _stage.ResolveMemberAccess (sourceExpression, memberInfo, _resolverMock.Object, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }
     

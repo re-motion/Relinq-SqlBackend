@@ -17,11 +17,11 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.NUnit;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -74,16 +74,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var expression = Expression.Constant ("test2");
 
       visitorMock
-          .Expect (mock => mock.Visit (_innerExpression))
-          .Return (expression);
+          .Setup (mock => mock.Visit (_innerExpression))
+          .Returns (expression)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_lengthExpression));
       Assert.That (((SqlLengthExpression) result).Expression, Is.SameAs (expression));
     }
@@ -91,15 +92,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_ReturnsSame ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_innerExpression))
-          .Return (_lengthExpression.Expression);
+          .Setup (mock => mock.Visit (_innerExpression))
+          .Returns (_lengthExpression.Expression)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_lengthExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_lengthExpression));
     }

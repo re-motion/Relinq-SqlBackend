@@ -16,12 +16,12 @@
 // 
 
 using System;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 {
@@ -70,13 +70,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      var visitorMock = MockRepository.GenerateMock<ISqlTableBaseVisitor>();
-      visitorMock.Expect (mock => mock.VisitSqlTable (_sqlTable));
-      visitorMock.Replay();
+      var visitorMock = new Mock<ISqlTableBaseVisitor>();
+      visitorMock.Setup (mock => mock.VisitSqlTable (_sqlTable)).Verifiable();
 
-      _sqlTable.Accept (visitorMock);
+      _sqlTable.Accept (visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
     }
 
     [Test]

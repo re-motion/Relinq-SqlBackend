@@ -16,12 +16,12 @@
 // 
 
 using System;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 {
@@ -41,19 +41,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void GetTransformer ()
     {
-      var registryMock = MockRepository.GenerateStrictMock<IMethodCallTransformerProvider>();
-      var methodCallTransformerRegistry = new CompoundMethodCallTransformerProvider (registryMock);
+      var registryMock = new Mock<IMethodCallTransformerProvider> (MockBehavior.Strict);
+      var methodCallTransformerRegistry = new CompoundMethodCallTransformerProvider (registryMock.Object);
       var methodCallExpression = ExpressionHelper.CreateMethodCallExpression<Cook>();
       var fakeTransformer = new ContainsFulltextMethodCallTransformer();
 
       registryMock
-          .Expect (mock => mock.GetTransformer (methodCallExpression))
-          .Return (fakeTransformer);
-      registryMock.Replay();
+          .Setup (mock => mock.GetTransformer (methodCallExpression))
+          .Returns (fakeTransformer)
+          .Verifiable();
 
       var result = methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 
-      registryMock.VerifyAllExpectations();
+      registryMock.Verify();
       Assert.That (result, Is.SameAs (fakeTransformer));
     }
   }

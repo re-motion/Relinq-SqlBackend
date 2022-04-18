@@ -17,9 +17,10 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
+using Moq.Protected;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
@@ -27,40 +28,42 @@ namespace Remotion.Linq.SqlBackend.UnitTests
   {
     public static void CheckAcceptForVisitorSupportingType<TExpression, TVisitorInterface> (
         TExpression expression,
-        Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : Expression
+        Expression<Func<TVisitorInterface, Expression>> visitMethodCall)
+        where TExpression : Expression
+        where TVisitorInterface : class
     {
-      var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (TVisitorInterface));
+      var baseMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
+      var visitorMock = baseMock.As<TVisitorInterface>();
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-          .Expect (mock => visitMethodCall ((TVisitorInterface) (object) mock))
-          .Return (returnedExpression);
-      visitorMock.Replay ();
+          .Setup (visitMethodCall)
+          .Returns (returnedExpression)
+          .Verifiable();
 
-      var result = CallAccept (expression, visitorMock);
+      var result = CallAccept (expression, baseMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }
 
     public static void CheckAcceptForVisitorNotSupportingType<TExpression> (TExpression expression) where TExpression : Expression
     {
-      var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       var returnedExpression = Expression.Constant (0);
 
       visitorMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "VisitExtension", expression))
-          .Return (returnedExpression);
-      visitorMock.Replay ();
+          .Protected()
+          .Setup<Expression> ("VisitExtension", ItExpr.Is<Expression> (_ => _ == expression))
+          .Returns (returnedExpression)
+          .Verifiable();
 
-      var result = CallAccept (expression, visitorMock);
+      var result = CallAccept (expression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (returnedExpression));
     }

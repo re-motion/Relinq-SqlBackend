@@ -16,13 +16,13 @@
 // 
 
 using System;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
 {
@@ -68,13 +68,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     {
       var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
 
-      var joinInfoVisitorMock = MockRepository.GenerateMock<IJoinInfoVisitor>();
-      joinInfoVisitorMock.Expect (mock => mock.VisitUnresolvedJoinInfo (joinInfo));
+      var joinInfoVisitorMock = new Mock<IJoinInfoVisitor>();
+      joinInfoVisitorMock.Setup (mock => mock.VisitUnresolvedJoinInfo (joinInfo)).Verifiable();
 
-      joinInfoVisitorMock.Replay();
-
-      joinInfo.Accept (joinInfoVisitorMock);
-      joinInfoVisitorMock.VerifyAllExpectations();
+      joinInfo.Accept (joinInfoVisitorMock.Object);
+      joinInfoVisitorMock.Verify();
     }
 
     [Test]

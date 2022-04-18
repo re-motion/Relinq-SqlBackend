@@ -17,10 +17,10 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 {
@@ -46,16 +46,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     [Test]
     public void VisitChildren_ReturnsSameExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_wrappedExpression))
-          .Return (_wrappedExpression);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_wrappedExpression))
+          .Returns (_wrappedExpression)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_aggregationEpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_aggregationEpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_aggregationEpression));
     }
 
@@ -63,16 +63,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
     public void VisitChildren_ReturnsNewExpression ()
     {
       var newExpression = Expression.Constant (5);
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_wrappedExpression))
-          .Return (newExpression);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_wrappedExpression))
+          .Returns (newExpression)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_aggregationEpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_aggregationEpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_aggregationEpression));
       Assert.That (((AggregationExpression) result).Expression, Is.SameAs (newExpression));
       Assert.That (((AggregationExpression) result).AggregationModifier, Is.EqualTo (AggregationModifier.Max));

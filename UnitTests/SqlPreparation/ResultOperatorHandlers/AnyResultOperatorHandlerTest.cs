@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
@@ -27,14 +28,13 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
   public class AnyResultOperatorHandlerTest
   {
-    private ISqlPreparationStage _stageMock;
+    private Mock<ISqlPreparationStage> _stageMock;
     private UniqueIdentifierGenerator _generator;
     private AnyResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
@@ -43,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _generator = new UniqueIdentifierGenerator();
       _handler = new AnyResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
@@ -62,24 +62,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedSelectProjection = Expression.Constant (false);
 
       _stageMock
-         .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Matches (e => e is SqlExistsExpression), Arg.Is (_context)))
-         .WhenCalled (
-             mi =>
+         .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e is SqlExistsExpression), _context))
+         .Callback (
+             (Expression expression, ISqlPreparationContext context) =>
              {
-               var selectProjection = (Expression) mi.Arguments[0];
-               Assert.That (selectProjection, Is.TypeOf (typeof (SqlExistsExpression)));
+               Assert.That (expression, Is.TypeOf (typeof (SqlExistsExpression)));
 
                var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (sqlStatement));
-               SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, selectProjection);
+               SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExistsExpression, expression);
              })
-         .Return (fakePreparedSelectProjection);
+         .Returns (fakePreparedSelectProjection)
+         .Verifiable();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock.Object, _context);
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.SelectProjection, Is.SameAs (fakePreparedSelectProjection));
     }

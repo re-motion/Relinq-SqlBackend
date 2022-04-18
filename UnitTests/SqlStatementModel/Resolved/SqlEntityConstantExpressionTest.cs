@@ -17,11 +17,11 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 {
@@ -41,13 +41,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void VisitChildren_VisitsIdentityExpression_Unchanged ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor>();
-      visitorMock.Expect (mock => mock.Visit (_identityExpression)).Return (_identityExpression);
-      visitorMock.Replay();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
+      visitorMock.Setup (mock => mock.Visit (_identityExpression)).Returns (_identityExpression).Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_expression));
     }
 
@@ -55,13 +54,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     public void VisitChildren_VisitsIdentityExpression_Changed ()
     {
       var newPrimaryKeyExpression = Expression.Constant (6);
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
-      visitorMock.Expect (mock => mock.Visit (_identityExpression)).Return (newPrimaryKeyExpression);
-      visitorMock.Replay ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
+      visitorMock.Setup (mock => mock.Visit (_identityExpression)).Returns (newPrimaryKeyExpression).Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_expression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_expression));
       Assert.That (result, Is.TypeOf<SqlEntityConstantExpression> ());
 
