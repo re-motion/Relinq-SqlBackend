@@ -17,6 +17,9 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
+using Moq.Language.Flow;
+using Moq.Protected;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq.Clauses;
@@ -26,7 +29,6 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
@@ -122,15 +124,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
           { DataInfo = new TestStreamedValueInfo (typeof (int)), SelectProjection = _entityExpression, TopExpression = Expression.Constant (5) }.
               GetSqlStatement();
 
-      var stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
-      stageMock
-          .Expect (mock => CallGenerateTextForNonSelectExpression (mock, sqlStatement.TopExpression))
-          .WhenCalled (c => _commandBuilder.Append ("test"));
-      stageMock.Replay();
+      var stageMock = new Mock<DefaultSqlGenerationStage>() { CallBase = true };
+      SetupGenerateTextForNonSelectExpression (stageMock, sqlStatement.TopExpression)
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => _commandBuilder.Append ("test"))
+          .Verifiable();
 
-      stageMock.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression);
+      stageMock.Object.GenerateTextForTopExpression (_commandBuilder, sqlStatement.TopExpression);
 
-      stageMock.VerifyAllExpectations();
+      stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));
     }
 
@@ -139,32 +140,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       var whereCondition = Expression.AndAlso (Expression.Constant (true), Expression.Constant (true));
 
-      var stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
-      stageMock
-          .Expect (mock => CallGenerateTextForNonSelectExpression (mock, whereCondition))
-          .WhenCalled (c => _commandBuilder.Append ("test"));
-      stageMock.Replay();
+      var stageMock = new Mock<DefaultSqlGenerationStage>() { CallBase = true };
+      SetupGenerateTextForNonSelectExpression (stageMock, whereCondition)
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => _commandBuilder.Append ("test"))
+          .Verifiable();
 
-      stageMock.GenerateTextForWhereExpression (_commandBuilder, whereCondition);
+      stageMock.Object.GenerateTextForWhereExpression (_commandBuilder, whereCondition);
 
-      stageMock.VerifyAllExpectations();
+      stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));
     }
 
     [Test]
     public void GenerateTextForOrderByExpression_ConstantExpression ()
     {
-      var expression = Expression.Constant (1);
+      var constantExpression = Expression.Constant (1);
 
-      var stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
-      stageMock
-          .Expect (mock => CallGenerateTextForNonSelectExpression (mock, expression))
-          .WhenCalled (c => _commandBuilder.Append ("test"));
-      stageMock.Replay();
+      var stageMock = new Mock<DefaultSqlGenerationStage>() { CallBase = true };
+      SetupGenerateTextForNonSelectExpression (stageMock, constantExpression)
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => _commandBuilder.Append ("test"))
+          .Verifiable();
 
-      stageMock.GenerateTextForOrderByExpression (_commandBuilder, expression);
+      stageMock.Object.GenerateTextForOrderByExpression (_commandBuilder, constantExpression);
 
-      stageMock.VerifyAllExpectations();
+      stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));
     }
 
@@ -219,40 +218,38 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void GenerateTextForJoinKeyExpression ()
     {
-      var expression = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
+      var sqlColumnDefinitionExpression = new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false);
 
-      var stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
-      stageMock
-          .Expect (mock => CallGenerateTextForNonSelectExpression (mock, expression))
-          .WhenCalled (c => _commandBuilder.Append ("test"));
-      stageMock.Replay();
+      var stageMock = new Mock<DefaultSqlGenerationStage>() { CallBase = true };
+      SetupGenerateTextForNonSelectExpression (stageMock, sqlColumnDefinitionExpression)
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => _commandBuilder.Append ("test"))
+          .Verifiable();
 
-      stageMock.GenerateTextForJoinCondition (_commandBuilder, expression);
+      stageMock.Object.GenerateTextForJoinCondition (_commandBuilder, sqlColumnDefinitionExpression);
 
-      stageMock.VerifyAllExpectations();
+      stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("test"));
     }
 
     [Test]
     public void GenerateTextForGroupByExpression ()
     {
-      var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
+      var sqlGroupingSelectExpression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
 
-      var stageMock = MockRepository.GeneratePartialMock<DefaultSqlGenerationStage>();
-      stageMock
-          .Expect (mock => CallGenerateTextForNonSelectExpression (mock, expression))
-          .WhenCalled (c => _commandBuilder.Append ("GROUP BY keyExpression"));
-      stageMock.Replay();
+      var stageMock = new Mock<DefaultSqlGenerationStage>() { CallBase = true };
+      SetupGenerateTextForNonSelectExpression (stageMock, sqlGroupingSelectExpression)
+          .Callback ((ISqlCommandBuilder commandBuilder, Expression expression) => _commandBuilder.Append ("GROUP BY keyExpression"))
+          .Verifiable();
 
-      stageMock.GenerateTextForGroupByExpression (_commandBuilder, expression);
+      stageMock.Object.GenerateTextForGroupByExpression (_commandBuilder, sqlGroupingSelectExpression);
 
-      stageMock.VerifyAllExpectations();
+      stageMock.Verify();
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("GROUP BY keyExpression"));
     }
 
-    private void CallGenerateTextForNonSelectExpression (DefaultSqlGenerationStage mock, Expression expression)
+    private ISetup<DefaultSqlGenerationStage> SetupGenerateTextForNonSelectExpression (Mock<DefaultSqlGenerationStage> mock, Expression expression)
     {
-      PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateTextForNonSelectExpression", _commandBuilder, expression);
+      return mock.Protected().Setup ("GenerateTextForNonSelectExpression", _commandBuilder, ItExpr.Is<Expression> (_ => _ == expression));
     }
   }
 }

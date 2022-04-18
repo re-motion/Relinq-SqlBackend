@@ -17,10 +17,10 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
@@ -30,19 +30,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     [Test]
     public void Accept ()
     {
-      var mockRepository = new MockRepository ();
-      var visitorMock = mockRepository.StrictMultiMock<ExpressionVisitor> (typeof (ISqlCustomTextGeneratorExpressionVisitor));
+      var baseMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
+      var visitorMock = baseMock
+          .As<ISqlCustomTextGeneratorExpressionVisitor>();
 
       var customTextGeneratorExpression = new TestableSqlCustomTextGeneratorExpression (typeof (Cook));
 
       visitorMock
-          .Expect (mock => ((ISqlCustomTextGeneratorExpressionVisitor)mock).VisitSqlCustomTextGenerator (customTextGeneratorExpression))
-          .Return (customTextGeneratorExpression);
-      visitorMock.Replay();
+          .Setup (mock => mock.VisitSqlCustomTextGenerator (customTextGeneratorExpression))
+          .Returns (customTextGeneratorExpression)
+          .Verifiable();
 
-      ExtensionExpressionTestHelper.CallAccept (customTextGeneratorExpression, visitorMock);
+      ExtensionExpressionTestHelper.CallAccept (customTextGeneratorExpression, baseMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
     }
   }
 }

@@ -16,13 +16,13 @@
 // 
 
 using System;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
 {
@@ -64,13 +64,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var oldJoinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
 
-      var visitorMock = MockRepository.GenerateMock<ISqlTableBaseVisitor> ();
-      visitorMock.Expect (mock => mock.VisitSqlJoinedTable (sqlJoinedTable));
-      visitorMock.Replay ();
+      var visitorMock = new Mock<ISqlTableBaseVisitor>();
+      visitorMock.Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable)).Verifiable();
 
-      sqlJoinedTable.Accept (visitorMock);
+      sqlJoinedTable.Accept (visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (sqlJoinedTable.JoinSemantics, Is.EqualTo (JoinSemantics.Left));
     }
 
@@ -81,14 +80,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       var sqlJoinedTable = new SqlJoinedTable (oldJoinInfo, JoinSemantics.Left);
       var fakeResult = new ResolvedSimpleTableInfo (typeof (Cook), "CookTable", "c");
 
-      var visitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
+      var visitorMock = new Mock<ITableInfoVisitor>();
       visitorMock
-          .Expect (mock => mock.VisitSqlJoinedTable (sqlJoinedTable))
-          .Return (fakeResult);
+          .Setup (mock => mock.VisitSqlJoinedTable (sqlJoinedTable))
+          .Returns (fakeResult)
+          .Verifiable();
 
-      var result = ((ITableInfo) sqlJoinedTable).Accept (visitorMock);
+      var result = ((ITableInfo) sqlJoinedTable).Accept (visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 

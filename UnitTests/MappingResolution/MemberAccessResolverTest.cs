@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -27,22 +28,21 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 {
   [TestFixture]
   public class MemberAccessResolverTest
   {
-    private IMappingResolutionStage _stageMock;
-    private IMappingResolver _resolverMock;
+    private Mock<IMappingResolutionStage> _stageMock;
+    private Mock<IMappingResolver> _resolverMock;
     private MappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateStrictMock<IMappingResolutionStage> ();
-      _resolverMock = MockRepository.GenerateMock<IMappingResolver> ();
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
+      _resolverMock = new Mock<IMappingResolver>();
       _mappingResolutionContext = new MappingResolutionContext ();
     }
 
@@ -54,13 +54,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo))
-          .Return (fakeResult);
-     _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveMemberExpression (sqlEntityExpression, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
-     var result = MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+     var result = MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var memberInfo = typeof (Cook).GetProperty ("Courses");
       var sqlEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null, "c");
       Assert.That (
-          () => MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          () => MemberAccessResolver.ResolveMemberAccess (sqlEntityExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "The member 'Cook.Courses' describes a collection and can only be used in places where collections are allowed. Expression: '[c]'"));
@@ -83,31 +83,32 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var entityRefMemberExpression = SqlStatementModelObjectMother.CreateSqlEntityRefMemberExpression ();
 
       _resolverMock
-          .Stub (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
-          .Return (null);
+          .Setup (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
+          .Returns ((Expression) null);
 
       var fakeEntityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
       _stageMock
-          .Expect (
-              mock =>
-              mock.ResolveEntityRefMemberExpression (
-                  Arg.Is (entityRefMemberExpression),
-                  Arg<UnresolvedJoinInfo>.Matches (j => 
-                      j.OriginatingEntity == entityRefMemberExpression.OriginatingEntity 
-                      && j.MemberInfo == entityRefMemberExpression.MemberInfo
-                      && j.Cardinality == JoinCardinality.One),
-                  Arg.Is (_mappingResolutionContext)))
-          .Return (fakeEntityExpression);
+          .Setup (
+              mock => mock.ResolveEntityRefMemberExpression (
+                  entityRefMemberExpression,
+                  It.Is<UnresolvedJoinInfo> (
+                      j => j.OriginatingEntity == entityRefMemberExpression.OriginatingEntity
+                           && j.MemberInfo == entityRefMemberExpression.MemberInfo
+                           && j.Cardinality == JoinCardinality.One),
+                  _mappingResolutionContext))
+          .Returns (fakeEntityExpression)
+          .Verifiable();
 
       var fakeResult = Expression.Constant (0);
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (fakeEntityExpression, memberInfo))
-          .Return (fakeResult);
+          .Setup (mock => mock.ResolveMemberExpression (fakeEntityExpression, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
-      var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _stageMock.VerifyAllExpectations ();
-      _resolverMock.VerifyAllExpectations ();
+      _stageMock.Verify();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -119,15 +120,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var fakeResolvedExpression = ExpressionHelper.CreateExpression ();
       _resolverMock
-          .Expect (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
-          .Return (fakeResolvedExpression);
+          .Setup (mock => mock.TryResolveOptimizedMemberExpression (entityRefMemberExpression, memberInfo))
+          .Returns (fakeResolvedExpression)
+          .Verifiable();
 
-      var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (entityRefMemberExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
-      _stageMock.AssertWasNotCalled (
+      _resolverMock.Verify();
+      _stageMock.Verify (
           mock => mock.ResolveEntityRefMemberExpression (
-              Arg<SqlEntityRefMemberExpression>.Is.Anything, Arg<IJoinInfo>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything));
+              It.IsAny<SqlEntityRefMemberExpression>(),
+              It.IsAny<IJoinInfo>(),
+              It.IsAny<IMappingResolutionContext>()),
+          Times.Never());
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }
 
@@ -141,13 +146,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (operand, memberInfo))
-          .Return (fakeResult);
-      _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
       
-      var result = MemberAccessResolver.ResolveMemberAccess(convertExpression, memberInfo,  _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess(convertExpression, memberInfo,  _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -158,7 +163,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var convertExpression = Expression.Negate (operand);
       var memberInfo = typeof (Chef).GetProperty ("LetterOfRecommendation");
       Assert.That (
-          () => MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          () => MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "Cannot resolve member 'LetterOfRecommendation' applied to expression '-[c].[ID]'; the expression type 'UnaryExpression' is not supported in "
@@ -175,13 +180,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (operand, memberInfo))
-          .Return (fakeResult);
-      _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
-      var result = MemberAccessResolver.ResolveMemberAccess (namedExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (namedExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -199,13 +204,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant ("empty");
 
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (operand, memberInfo))
-          .Return (fakeResult);
-      _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveMemberExpression (operand, memberInfo))
+          .Returns (fakeResult)
+          .Verifiable();
 
-      var result = MemberAccessResolver.ResolveMemberAccess (outerMostConvertExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (outerMostConvertExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
@@ -217,11 +222,11 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var fakeResult = Expression.Constant (0);
 
       _resolverMock
-          .Expect (mock => mock.ResolveConstantExpression (expression))
-          .Return (fakeResult);
-      _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveConstantExpression (expression))
+          .Returns (fakeResult)
+          .Verifiable();
       Assert.That (
-          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>());
     }
 
@@ -233,13 +238,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false);
 
       _resolverMock
-          .Expect (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
-          .Return (constantExpression);
-      _resolverMock.Replay ();
+          .Setup (mock => mock.ResolveMemberExpression (columnExpression, memberInfo))
+          .Returns (constantExpression)
+          .Verifiable();
 
-      var result = MemberAccessResolver.ResolveMemberAccess (columnExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (columnExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
-      _resolverMock.VerifyAllExpectations ();
+      _resolverMock.Verify();
       Assert.That (result, Is.SameAs (constantExpression));
     }
 
@@ -249,7 +254,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression();
       var memberInfo = typeof (IGrouping<string, string>).GetProperty ("Key");
 
-      var result = MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
       Assert.That (result, Is.SameAs (expression.KeyExpression));
     }
@@ -262,7 +267,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           new NamedExpression ("e", Expression.Constant ("element")));
       var memberInfo = typeof (IGrouping<string, string>).GetProperty ("Key");
 
-      var result = MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext);
+      var result = MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext);
 
       Assert.That (result, Is.SameAs (((NamedExpression) expression.KeyExpression).Expression));
     }
@@ -279,8 +284,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = MemberAccessResolver.ResolveMemberAccess (
           newExpression, 
           typeof (TypeForNewExpression).GetProperty ("B"), 
-          _resolverMock, 
-          _stageMock,
+          _resolverMock.Object, 
+          _stageMock.Object,
           _mappingResolutionContext);
 
       Assert.That (result, Is.SameAs (((NamedExpression) newExpression.Arguments[1]).Expression));
@@ -298,8 +303,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var result = MemberAccessResolver.ResolveMemberAccess (
           newExpression,
           typeof (TypeForNewExpression).GetField ("C"),
-          _resolverMock,
-          _stageMock,
+          _resolverMock.Object,
+          _stageMock.Object,
           _mappingResolutionContext);
 
       Assert.That (result, Is.SameAs (((NamedExpression) newExpression.Arguments[0]).Expression));
@@ -316,8 +321,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           () => MemberAccessResolver.ResolveMemberAccess (
               newExpression,
               typeof (TypeForNewExpression).GetField ("C"),
-              _resolverMock,
-              _stageMock,
+              _resolverMock.Object,
+              _stageMock.Object,
               _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
@@ -332,7 +337,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var convertExpression = Expression.And (operand, operand);
       var memberInfo = typeof (Chef).GetProperty ("LetterOfRecommendation");
       Assert.That (
-          () => MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          () => MemberAccessResolver.ResolveMemberAccess (convertExpression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "Cannot resolve member 'LetterOfRecommendation' applied to expression '([c].[ID] & [c].[ID])'; the expression type 'SimpleBinaryExpression' is not "
@@ -345,7 +350,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable (typeof (Cook)));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
       Assert.That (
-          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "Cannot resolve member 'FirstName' applied to expression 'TABLE-REF(UnresolvedTableInfo(Cook))'; "
@@ -358,7 +363,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       var expression = new SqlEntityConstantExpression (typeof (Cook), new Cook(), Expression.Constant (14));
       var memberInfo = typeof (Cook).GetProperty ("FirstName");
       Assert.That (
-          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock, _stageMock, _mappingResolutionContext),
+          () => MemberAccessResolver.ResolveMemberAccess (expression, memberInfo, _resolverMock.Object, _stageMock.Object, _mappingResolutionContext),
           Throws.InstanceOf<NotSupportedException>()
               .With.Message.EqualTo (
                   "Cannot resolve member 'FirstName' applied to expression 'ENTITY(14)'; the expression type 'SqlEntityConstantExpression' is not supported in "

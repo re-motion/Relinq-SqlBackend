@@ -17,12 +17,12 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.NUnit;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 {
@@ -70,16 +70,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void VisitChildren_ReturnsSameExpression ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_innerExpression))
-          .Return (_innerExpression);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_innerExpression))
+          .Returns (_innerExpression)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlConvertedBooleanExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlConvertedBooleanExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (result, Is.SameAs (_sqlConvertedBooleanExpression));
     }
 
@@ -87,16 +87,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     public void VisitChildren_ReturnsNewExpression ()
     {
       var newExpression = Expression.Constant (5);
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_innerExpression))
-          .Return (newExpression);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_innerExpression))
+          .Returns (newExpression)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlConvertedBooleanExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlConvertedBooleanExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
       Assert.That (result, Is.Not.SameAs (_sqlConvertedBooleanExpression));
       Assert.That (((SqlConvertedBooleanExpression) result).Expression, Is.SameAs (newExpression));
     }
