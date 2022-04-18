@@ -17,8 +17,8 @@
 
 using System;
 using System.Data.Linq.Mapping;
+using Moq;
 using NUnit.Framework;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
@@ -30,15 +30,15 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       const string name = "equal";
 
-      var metaDataMember1 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember1.Stub (dataMember => dataMember.MappedName).Return (name);
+      var metaDataMember1 = new Mock<MetaDataMember>();
+      metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
 
-      var metaDataMember2 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember2.Stub (dataMember => dataMember.MappedName).Return (name);
+      var metaDataMember2 = new Mock<MetaDataMember>();
+      metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (name);
 
       var comparer = new MetaDataMemberComparer();
 
-      Assert.That (comparer.Equals (metaDataMember1, metaDataMember2), Is.True);
+      Assert.That (comparer.Equals (metaDataMember1.Object, metaDataMember2.Object), Is.True);
     }
 
     [Test]
@@ -47,15 +47,15 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       const string name = "equal";
       const string otherName = "notequal";
 
-      var metaDataMember1 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember1.Stub (dataMember => dataMember.MappedName).Return (name);
+      var metaDataMember1 = new Mock<MetaDataMember>();
+      metaDataMember1.Setup (dataMember => dataMember.MappedName).Returns (name);
 
-      var metaDataMember2 = MockRepository.GenerateStub<MetaDataMember>();
-      metaDataMember2.Stub (dataMember => dataMember.MappedName).Return (otherName);
+      var metaDataMember2 = new Mock<MetaDataMember>();
+      metaDataMember2.Setup (dataMember => dataMember.MappedName).Returns (otherName);
 
       var comparer = new MetaDataMemberComparer();
 
-      Assert.That (comparer.Equals (metaDataMember1, metaDataMember2), Is.False);
+      Assert.That (comparer.Equals (metaDataMember1.Object, metaDataMember2.Object), Is.False);
     }
   }
 }

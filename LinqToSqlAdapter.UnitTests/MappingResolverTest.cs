@@ -20,6 +20,7 @@ using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
@@ -27,7 +28,6 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
@@ -288,12 +288,12 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
-      var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
+      var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
-          .Stub (stub => stub.DeclaringType)
-          .Return (_unmappedType);
+          .Setup (stub => stub.DeclaringType)
+          .Returns (_unmappedType);
       Assert.That (
-          () => _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub),
+          () => _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object),
           Throws.InstanceOf<UnmappedItemException>()
               .With.Message.EqualTo (
                   "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type"));
@@ -304,15 +304,15 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
-      var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
+      var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
-          .Stub (stub => stub.DeclaringType)
-          .Return (typeof (PersonTestClass));
+          .Setup (stub => stub.DeclaringType)
+          .Returns (typeof (PersonTestClass));
       memberInfoStub
-          .Stub (stub => stub.Name)
-          .Return ("stub");
+          .Setup (stub => stub.Name)
+          .Returns ("stub");
       Assert.That (
-          () => _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub),
+          () => _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object),
           Throws.InstanceOf<UnmappedItemException>()
               .With.Message.EqualTo (
                   "Cannot resolve member: Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.PersonTestClass.stub is not a mapped member"));
