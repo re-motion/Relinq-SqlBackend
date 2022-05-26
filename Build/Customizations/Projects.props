@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <PropertyGroup>
     <TestSetupBuildFileForDatabase>$(SolutionDirectory)Build\TestSetupForDatabase.build</TestSetupBuildFileForDatabase>
   </PropertyGroup>
-
   <PropertyGroup>
     <DatabaseTestConfiguration Condition="'$(DatabaseTestConfiguration)' == ''">
       Win_NET48 + NET48 + NoBrowser + SqlServer2012 + Debug + x86;
@@ -46,43 +44,33 @@
     </NormalTestConfiguration>
   </PropertyGroup>
   <ItemGroup>
-
     <ReleaseProjectFiles Include="$(SolutionDirectory)Core\Core.csproj">
       <CreateNuGetPackageWithSymbolServerSupport>True</CreateNuGetPackageWithSymbolServerSupport>
       <CreateDocumentationFile>True</CreateDocumentationFile>
     </ReleaseProjectFiles>
-
     <ReleaseProjectFiles Include="$(SolutionDirectory)Development\Development.csproj">
       <CreateNuGetPackageWithSymbolServerSupport>True</CreateNuGetPackageWithSymbolServerSupport>
     </ReleaseProjectFiles>
-
-    <ReleaseProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter\LinqToSqlAdapter.csproj"/>
-
+    <ReleaseProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter\LinqToSqlAdapter.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)UnitTests\UnitTests.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
-
     <UnitTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.MediumTrust\IntegrationTests.MediumTrust.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
-
     <UnitTestProjectFiles Include="$(SolutionDirectory)LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
-
     <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.Common\IntegrationTests.Common.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </IntegrationTestProjectFiles>
-
     <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.CSharp\IntegrationTests.CSharp.csproj">
       <TestConfiguration>$(DatabaseTestConfiguration)</TestConfiguration>
       <TestSetupBuildFile>$(TestSetupBuildFileForDatabase)</TestSetupBuildFile>
     </IntegrationTestProjectFiles>
-    
     <IntegrationTestProjectFiles Include="$(SolutionDirectory)IntegrationTests.VisualBasic\IntegrationTests.VisualBasic.vbproj">
       <TestConfiguration>$(DatabaseTestConfiguration)</TestConfiguration>
       <TestSetupBuildFile>$(TestSetupBuildFileForDatabase)</TestSetupBuildFile>
     </IntegrationTestProjectFiles>
-
   </ItemGroup>
 </Project>

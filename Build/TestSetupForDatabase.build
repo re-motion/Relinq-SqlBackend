@@ -19,10 +19,7 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="SetupTestConfiguration">
 
-  <PropertyGroup>
-    <ExtensionTasksPath>$(MSBuildExtensionPackPath)</ExtensionTasksPath>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.tasks" />
+  <UsingTask AssemblyFile="$(RemotionBuildScriptTasksPath)Remotion.BuildScript.dll" TaskName="MSBuild.ExtensionPack.Xml.XmlFile"/>
 
   <PropertyGroup>
     <CreateDatabaseProperties>

@@ -17,7 +17,7 @@
     <DependDBRetentionTime>10</DependDBRetentionTime>
     <DependDBProjectBranch>Main</DependDBProjectBranch>
     <!-- Required, but can be supplied via commandline parameter in server build and uses a fallback in local build -->
-    <DependDBProjectImportNotificationMailAddress/>
+    <DependDBProjectImportNotificationMailAddress />
     <DependDBTrackedReferences>Remotion.*</DependDBTrackedReferences>
     <DependDBNuGetSources>$(SolutionDirectory)packages</DependDBNuGetSources>
     <DependDBTargetFramework>net45</DependDBTargetFramework>
