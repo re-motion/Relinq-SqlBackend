@@ -32,7 +32,7 @@
     <NoWarn>1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>True</IsPackable>
-    <TargetFrameworks>net5.0;net45</TargetFrameworks>
+    <TargetFrameworks>net6.0;net45</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
@@ -41,7 +41,7 @@
     <NoWarn>$(BinaryFormatterSerializationObsoleteWarning)</NoWarn>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <TargetFrameworks>net5.0;net45</TargetFrameworks>
+    <TargetFrameworks>net6.0;net45</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
@@ -71,7 +71,7 @@
 
   <Target Name="CopyTestHostAppConfigs"
       AfterTargets="_CopyAppConfigFile"
-      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' == 'net5.0'">
+      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' == 'net6.0'">
     <Message Text="CopyTestHostAppConfigs: $(PrepareForRunDependsOn)" Importance="High"/>
     <ItemGroup>
       <_testHostAppConfig Include="$(OutDir)\testhost.dll.config" />
