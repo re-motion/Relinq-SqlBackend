@@ -20,6 +20,7 @@ using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
@@ -27,7 +28,6 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
@@ -65,10 +65,13 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve table: " + _unmappedTypeMsg + " is not a mapped table")]
     public void ResolveTableInfo_ShouldThrowUnmappedException ()
     {
-      _mappingResolver.ResolveTableInfo (new UnresolvedTableInfo (_unmappedType), _generator);
+      Assert.That (
+          () => _mappingResolver.ResolveTableInfo (new UnresolvedTableInfo (_unmappedType), _generator),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve table: " + _unmappedTypeMsg + " is not a mapped table"));
     }
     
     [Test]
@@ -136,7 +139,6 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
     public void ResolveJoinInfo_ShouldThrowUnmappedExceptionForType ()
     {
       var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
@@ -144,12 +146,14 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var customerDefinition = new SqlEntityDefinitionExpression (_unmappedType, customerTableInfo.TableAlias, null, e => e);
       PropertyInfo customerOrders = customerTableInfo.ItemType.GetProperty ("Orders");
       var joinInfo = new UnresolvedJoinInfo (customerDefinition, customerOrders, JoinCardinality.One);
-
-      _mappingResolver.ResolveJoinInfo (joinInfo, _generator);
+      Assert.That (
+          () => _mappingResolver.ResolveJoinInfo (joinInfo, _generator),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type"));
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve member: " + _unmappedInfoMsg + " is not a mapped member")]
     public void ResolveJoinInfo_ShouldThrowUnmappedExceptionForMember ()
     {
       var customerTableInfo = new ResolvedSimpleTableInfo (typeof (DataContextTestClass.Customer), "dbo.Customers", "t1");
@@ -157,8 +161,11 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
       var customerDefinition = new SqlEntityDefinitionExpression (customerTableInfo.ItemType, customerTableInfo.TableAlias, null, e => e);
 
       var joinInfo = new UnresolvedJoinInfo (customerDefinition, _unmappedInfo, JoinCardinality.One);
-
-      _mappingResolver.ResolveJoinInfo (joinInfo, _generator);
+      Assert.That (
+          () => _mappingResolver.ResolveJoinInfo (joinInfo, _generator),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve member: " + _unmappedInfoMsg + " is not a mapped member"));
     }
 
     [Test]
@@ -215,12 +222,14 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
     public void ResolveSimpleTableInfo_ShouldThrowUnmappedException ()
     {
       var simpleTableInfo = new ResolvedSimpleTableInfo (_unmappedType, "dbo.Region", "t0");
-
-      _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+      Assert.That (
+          () => _mappingResolver.ResolveSimpleTableInfo (simpleTableInfo, _generator),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type"));
     }
 
 
@@ -275,50 +284,51 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type")]
     public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForType()
     {
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
-      var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
+      var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
-          .Stub (stub => stub.DeclaringType)
-          .Return (_unmappedType);
-
-      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
+          .Setup (stub => stub.DeclaringType)
+          .Returns (_unmappedType);
+      Assert.That (
+          () => _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve type: " + _unmappedTypeMsg + " is not a mapped type"));
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "Cannot resolve member: Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.PersonTestClass.stub is not a mapped member")]
     public void ResolveMemberExpression_ShouldThrowUnmappedExceptionForMember()
     {
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (PersonTestClass), "p", null, e => e);
 
-      var memberInfoStub = MockRepository.GenerateStub<MemberInfo>();
+      var memberInfoStub = new Mock<MemberInfo>();
       memberInfoStub
-          .Stub (stub => stub.DeclaringType)
-          .Return (typeof (PersonTestClass));
+          .Setup (stub => stub.DeclaringType)
+          .Returns (typeof (PersonTestClass));
       memberInfoStub
-          .Stub (stub => stub.Name)
-          .Return ("stub");
-
-      _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub);
+          .Setup (stub => stub.Name)
+          .Returns ("stub");
+      Assert.That (
+          () => _mappingResolver.ResolveMemberExpression (sqlEntityExpression, memberInfoStub.Object),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve member: Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.PersonTestClass.stub is not a mapped member"));
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
-        "Cannot resolve members appplied to expressions representing columns. (Member: CustomerID, Column: [c].[CustomerID])")]
     public void ResolveMemberExpression_WithSqlColumnExpression ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "c", "CustomerID", true);
 
       var memberInfo = typeof (DataContextTestClass.Customer).GetProperty ("CustomerID");
-      var result = _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo);
-
-      var expectedExpression = columnExpression;
-
-      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
+      Assert.That (
+          () => _mappingResolver.ResolveMemberExpression (columnExpression, memberInfo),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot resolve members appplied to expressions representing columns. (Member: CustomerID, Column: [c].[CustomerID])"));
     }
 
     [Test]
@@ -370,15 +380,16 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Entities without identity members are not supported by re-linq. "
-        + "(Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.DataContextTestClass+FakeClassWithoutPrimaryKey)")]
     public void ResolveConstantExpression_NoPrimaryKey ()
     {
       var customer = new DataContextTestClass.FakeClassWithoutPrimaryKey { Name = "abc" };
       var constantExpr = Expression.Constant (customer);
-
-      _mappingResolver.ResolveConstantExpression (constantExpr);
+      Assert.That (
+          () => _mappingResolver.ResolveConstantExpression (constantExpr),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo (
+                  "Entities without identity members are not supported by re-linq. "
+                  + "(Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.DataContextTestClass+FakeClassWithoutPrimaryKey)"));
     }
 
     [Test]
@@ -406,16 +417,17 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
-        "Cannot perform a type check for type "
-        + "Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.DataContextTestClass+FakeClassWithoutInheritanceCode - there is no inheritance "
-        + "code for this type.")]
     public void ResolveTypeCheck_ShouldThrowUnmappedItemException_WhenNoInheritanceCode()
     {
       Expression contactExpression = Expression.Constant (new DataContextTestClass.FakeClassWithoutInheritanceCodeBase());
       Type desiredType = typeof (DataContextTestClass.FakeClassWithoutInheritanceCode);
-
-      _mappingResolver.ResolveTypeCheck (contactExpression, desiredType);
+      Assert.That (
+          () => _mappingResolver.ResolveTypeCheck (contactExpression, desiredType),
+          Throws.InstanceOf<UnmappedItemException>()
+              .With.Message.EqualTo (
+                  "Cannot perform a type check for type "
+                  + "Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain.DataContextTestClass+FakeClassWithoutInheritanceCode - there is no inheritance "
+                  + "code for this type."));
     }
 
     [Test]

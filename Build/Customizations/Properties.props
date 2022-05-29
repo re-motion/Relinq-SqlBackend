@@ -6,14 +6,20 @@
     <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
     <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
     <ProductName>re-motion Framework: re-linq (www.re-motion.org)</ProductName>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/re-motion/Relinq-SqlBackend/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/re-motion/Relinq-SqlBackend/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <DocumentationFileName>Remotion.Linq.SqlBackend</DocumentationFileName>
     <DocumentationRootPage>$(SolutionDirectory)Core\Doc\include\GettingStarted.aml</DocumentationRootPage>
     <DocumentationNamespaceSummaryFiles>$(SolutionDirectory)**\Doc\include\NamespaceDoc.xml</DocumentationNamespaceSummaryFiles>
     <DependDBProjectName>re-motion Relinq-SqlBackend</DependDBProjectName>
     <DependDBRetentionTime>10</DependDBRetentionTime>
     <DependDBProjectBranch>Main</DependDBProjectBranch>
     <!-- Required, but can be supplied via commandline parameter in server build and uses a fallback in local build -->
-    <DependDBProjectImportNotificationMailAddress/>
+    <DependDBProjectImportNotificationMailAddress />
     <DependDBTrackedReferences>Remotion.*</DependDBTrackedReferences>
     <DependDBNuGetSources>$(SolutionDirectory)packages</DependDBNuGetSources>
+    <DependDBTargetFramework>net45</DependDBTargetFramework>
   </PropertyGroup>
 </Project>

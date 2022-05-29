@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="ContainsMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.Contains"/> method.
+  /// <see cref="ContainsMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the <see cref="string.Contains(string)"/> method.
   /// </summary>
   public class ContainsMethodCallTransformer : IMethodCallTransformer
   {

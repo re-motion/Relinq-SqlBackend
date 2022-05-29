@@ -17,13 +17,13 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 {
@@ -58,13 +58,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void Accept ()
     {
-      var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
-      tableInfoVisitorMock.Expect (mock => mock.VisitJoinedGroupingTableInfo (_tableInfo));
+      var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
+      tableInfoVisitorMock.Setup (mock => mock.VisitJoinedGroupingTableInfo (_tableInfo)).Verifiable();
 
-      tableInfoVisitorMock.Replay();
-      _tableInfo.Accept (tableInfoVisitorMock);
+      _tableInfo.Accept (tableInfoVisitorMock.Object);
 
-      tableInfoVisitorMock.VerifyAllExpectations();
+      tableInfoVisitorMock.Verify();
     }
 
     [Test]
@@ -81,12 +80,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
       
       var generator = new UniqueIdentifierGenerator ();
-      var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver> ();
+      var resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       var mappingResolutionContext = new MappingResolutionContext ();
 
-      resolverMock.Replay ();
-
-      var result = _tableInfo.ResolveReference (sqlTable, resolverMock, mappingResolutionContext, generator);
+      var result = _tableInfo.ResolveReference (sqlTable, resolverMock.Object, mappingResolutionContext, generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
       Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));

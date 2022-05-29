@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
@@ -30,14 +31,13 @@ using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
   public class GroupResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
-    private ISqlPreparationStage _stageMock;
+    private Mock<ISqlPreparationStage> _stageMock;
     private GroupResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
@@ -46,7 +46,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       base.SetUp();
 
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _handler = new GroupResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement())
                              {
@@ -64,16 +64,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var resultOperator = new GroupResultOperator ("itemName", keySelector, elementSelector);
 
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
-          .Return (keySelector);
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
+          .Returns (keySelector)
+          .Verifiable();
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
-          .Return (elementSelector);
-      _stageMock.Replay();
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
+          .Returns (elementSelector)
+          .Verifiable();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.VerifyAllExpectations();
+      _stageMock.Verify();
       Assert.That (_sqlStatementBuilder.GroupByExpression, Is.SameAs (keySelector));
       
       var expectedSelectProjection = new SqlGroupingSelectExpression (
@@ -163,17 +164,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var preparedSubStatementKeySelector = new SqlSubStatementExpression (sqlStatement);
       
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
-          .Return (preparedSubStatementKeySelector);
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
+          .Returns (preparedSubStatementKeySelector)
+          .Verifiable();
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
-          .Return (elementSelector);
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
+          .Returns (elementSelector)
+          .Verifiable();
 
-      _stageMock.Replay ();
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
-
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (2));
       Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof(SqlTable)));
@@ -202,16 +203,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var preparedConstantKeySelector = Expression.Constant ("test");
 
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
-          .Return (preparedConstantKeySelector);
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (keySelector, _context))
+          .Returns (preparedConstantKeySelector)
+          .Verifiable();
       _stageMock
-          .Expect (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
-          .Return (elementSelector);
-      _stageMock.Replay ();
+          .Setup (mock => mock.PrepareResultOperatorItemExpression (elementSelector, _context))
+          .Returns (elementSelector)
+          .Verifiable();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.Verify();
       Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (2));
       Assert.That (_sqlStatementBuilder.SqlTables[1], Is.TypeOf (typeof (SqlTable)));
       Assert.That (_sqlStatementBuilder.SqlTables[1].TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));

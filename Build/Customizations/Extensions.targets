@@ -4,29 +4,6 @@
     <PropertyGroup>
       <BuildProperties>
         $(BuildProperties);
-        DatabaseNamePrefix=$(DatabaseNamePrefix);
-      </BuildProperties>
-
-      <BuildProperties>
-        $(BuildProperties);
-        DataSourceMsSql2005=$(DataSourceMsSql2005);
-        DataSourceMsSql2008=$(DataSourceMsSql2008);
-        DataSourceMsSql2008R2=$(DataSourceMsSql2008R2);
-        DataSourceMsSql2012=$(DataSourceMsSql2012);
-        DataSourceMsSql2014=$(DataSourceMsSql2014);
-        DataSourceMsSql2016=$(DataSourceMsSql2016);
-        DataSourceMsSql2017=$(DataSourceMsSql2017);
-      </BuildProperties>
-
-      <BuildProperties>
-        $(BuildProperties);
-        DatabaseDirectoryMsSql2005=$(DatabaseDirectoryMsSql2005);
-        DatabaseDirectoryMsSql2008=$(DatabaseDirectoryMsSql2008);
-        DatabaseDirectoryMsSql2008R2=$(DatabaseDirectoryMsSql2008R2);
-        DatabaseDirectoryMsSql2012=$(DatabaseDirectoryMsSql2012);
-        DatabaseDirectoryMsSql2014=$(DatabaseDirectoryMsSql2014);
-        DatabaseDirectoryMsSql2016=$(DatabaseDirectoryMsSql2016);
-        DatabaseDirectoryMsSql2017=$(DatabaseDirectoryMsSql2017);
       </BuildProperties>
     </PropertyGroup>
 
@@ -34,17 +11,5 @@
   </Target>
 
   <Target Name="After_CreateTestConfigurations" AfterTargets="CreateTestConfigurations">
-    <ItemGroup>
-      <AllDatabaseSystems Remove="@(AllDatabaseSystems)" />
-
-      <AllDatabaseSystems Include="SqlServerDefault" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServerDefault'"/>
-      <AllDatabaseSystems Include="SqlServer2005" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2005'"/>
-      <AllDatabaseSystems Include="SqlServer2008" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2008'"/>
-      <AllDatabaseSystems Include="SqlServer2008R2" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2008R2'"/>
-      <AllDatabaseSystems Include="SqlServer2012" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2012'"/>
-      <AllDatabaseSystems Include="SqlServer2014" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2014'"/>
-      <AllDatabaseSystems Include="SqlServer2016" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2016'"/>
-      <AllDatabaseSystems Include="SqlServer2017" Condition="'%(DatabaseSystemsList.Identity)' == 'SqlServer2017'"/>
-    </ItemGroup>
   </Target>
 </Project>

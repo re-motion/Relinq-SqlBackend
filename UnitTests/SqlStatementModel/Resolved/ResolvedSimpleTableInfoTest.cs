@@ -16,12 +16,12 @@
 // 
 
 using System;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 {
@@ -39,13 +39,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void Accept ()
     {
-      var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
-      tableInfoVisitorMock.Expect (mock => mock.VisitSimpleTableInfo (_tableInfo));
+      var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
+      tableInfoVisitorMock.Setup (mock => mock.VisitSimpleTableInfo (_tableInfo)).Verifiable();
 
-      tableInfoVisitorMock.Replay();
-      _tableInfo.Accept (tableInfoVisitorMock);
+      _tableInfo.Accept (tableInfoVisitorMock.Object);
 
-      tableInfoVisitorMock.VerifyAllExpectations();
+      tableInfoVisitorMock.Verify();
     }
 
     [Test]
@@ -63,17 +62,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var fakeResult = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
 
       var generator = new UniqueIdentifierGenerator();
-      var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver>();
+      var resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       var mappingResolutionContext = new MappingResolutionContext();
 
       resolverMock
-          .Expect (mock => mock.ResolveSimpleTableInfo (_tableInfo, generator))
-          .Return (fakeResult);
-      resolverMock.Replay ();
+          .Setup (mock => mock.ResolveSimpleTableInfo (_tableInfo, generator))
+          .Returns (fakeResult)
+          .Verifiable();
 
-      var result = _tableInfo.ResolveReference (sqlTable, resolverMock, mappingResolutionContext, generator);
+      var result = _tableInfo.ResolveReference (sqlTable, resolverMock.Object, mappingResolutionContext, generator);
 
-      resolverMock.VerifyAllExpectations ();
+      resolverMock.Verify();
       Assert.That (result, Is.SameAs (fakeResult));
       Assert.That (mappingResolutionContext.GetSqlTableForEntityExpression ((SqlEntityExpression) result), Is.SameAs (sqlTable));
     }

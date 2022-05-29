@@ -27,8 +27,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   [Serializable]
   public sealed class UnmappedItemException : Exception
   {
+#if NETFRAMEWORK 
     [NonSerialized]
     private UnmappedItemExceptionState _state;
+#endif
 
     public UnmappedItemException (string message)
         : this (message, null)
@@ -38,10 +40,18 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public UnmappedItemException (string message, Exception innerException)
         : base (message, innerException)
     {
+#if NETFRAMEWORK 
       _state = new UnmappedItemExceptionState();
       SerializeObjectState += (exception, eventArgs) => eventArgs.AddSerializedState (_state);
+#endif
     }
 
+    private UnmappedItemException (SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+    }
+
+#if NETFRAMEWORK 
     [Serializable]
     private struct UnmappedItemExceptionState : ISafeSerializationData
     {
@@ -52,5 +62,6 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         exception._state = this;
       }
     }
+#endif
   }
 }

@@ -1,0 +1,88 @@
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)Build\Customizations\Properties.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Build\Customizations\Version.props" Condition="'$(Version)' == ''" />
+
+  <PropertyGroup>
+    <Product>$(ProductName)</Product>
+    <Company>$(CompanyName)</Company>
+    <Copyright>$(Copyright)</Copyright>
+    <Authors>$(Company)</Authors>
+    <PackageLicenseExpression>$(PackageLicenseExpression)</PackageLicenseExpression>
+    <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
+    <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+    <RepositoryType>$(RepositoryType)</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>7.2</LangVersion>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)remotion.snk</AssemblyOriginatorKeyFile>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder Condition="'$(IncludeSymbols)' != 'True'">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PackageTags>re-motion LINQ SQL SqlGeneration</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BinaryFormatterSerializationObsoleteWarning>SYSLIB0011</BinaryFormatterSerializationObsoleteWarning>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ProjectType)' == 'Library'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591</NoWarn>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <IsPackable>True</IsPackable>
+    <TargetFrameworks>net6.0;net45</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ProjectType)' == 'Test'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>$(BinaryFormatterSerializationObsoleteWarning)</NoWarn>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <IsPackable>False</IsPackable>
+    <TargetFrameworks>net6.0;net45</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)LGPL.licenseheader" Link="LGPL.licenseheader" />
+    <None Include="$(MSBuildThisFileDirectory)remotion.snk" Link="remotion.snk" />
+    <None Include="**\*.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(ProjectType)' == 'Library'" >
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(ProjectType)' == 'Test'">
+    <PackageReference Include="Moq" Version="4.16.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
+    <PackageReference Include="NUNit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <_version>$(Version.Split('-')[0])</_version>
+    <AssemblyVersion>$(_version).0</AssemblyVersion>
+    <FileVersion>$(_version).24009</FileVersion>
+    <InformationalVersion>$(_version)-x.9+$(Configuration)</InformationalVersion>
+    <PackageVersion>$(_version)-x.9</PackageVersion>
+  </PropertyGroup>
+
+  <Target Name="CopyTestHostAppConfigs"
+      AfterTargets="_CopyAppConfigFile"
+      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' == 'net6.0'">
+    <Message Text="CopyTestHostAppConfigs: $(PrepareForRunDependsOn)" Importance="High"/>
+    <ItemGroup>
+      <_testHostAppConfig Include="$(OutDir)\testhost.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\testhost.x86.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner32.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner64.dll.config" />
+    </ItemGroup>
+    <Copy SourceFiles="$(OutDir)\$(AssemblyName).dll.config" DestinationFiles="%(_testHostAppConfig.Identity)" />
+    <ItemGroup>
+      <FileWrites Include="@(_testHostAppConfig)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

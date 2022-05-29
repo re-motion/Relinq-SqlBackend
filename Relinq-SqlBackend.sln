@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{EBA04D26-8D5B-4EF5-9898-C2D90373149C}"
 EndProject
@@ -17,20 +17,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		How to build re-linq.txt = How to build re-linq.txt
 		How to Contribute.txt = How to Contribute.txt
+		Shared.build.props = Shared.build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{0543C43E-D949-478B-AD85-583F3AE2A301}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{43BF1CA2-F1CA-42E2-B949-7F379CE928E3}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{4F156040-84BC-4FEA-97ED-BEE23B63BEDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development", "Development\Development.csproj", "{E61B546E-29F2-4855-BD4D-45556E812FDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToSqlAdapter.UnitTests", "LinqToSqlAdapter.UnitTests\LinqToSqlAdapter.UnitTests.csproj", "{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests.MediumTrust", "IntegrationTests.MediumTrust\IntegrationTests.MediumTrust.csproj", "{E03F65A8-219A-4C81-87C9-5C36B950CBCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,8 +94,19 @@ Global
 		{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FB170CE-CDCA-462E-ABAF-3F952FF667E7}.Release|x86.ActiveCfg = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Debug|x86.Build.0 = Debug|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|x86.ActiveCfg = Release|Any CPU
+		{E03F65A8-219A-4C81-87C9-5C36B950CBCD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AB66C2F2-EDB5-4D02-BAA7-ED56D8DA0285}
 	EndGlobalSection
 EndGlobal

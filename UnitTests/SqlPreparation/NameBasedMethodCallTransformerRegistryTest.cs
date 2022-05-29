@@ -19,9 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
 {
@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     private string _methodName;
     private MethodInfo _methodInfo;
     private NameBasedMethodCallTransformerRegistry _methodCallTransformerRegistry;
-    private IMethodCallTransformer _transformerStub;
+    private Mock<IMethodCallTransformer> _transformerStub;
 
     [SetUp]
     public void SetUp ()
@@ -39,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _methodName = "Concat";
       _methodInfo = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
       _methodCallTransformerRegistry = new NameBasedMethodCallTransformerRegistry ();
-      _transformerStub = MockRepository.GenerateStub<IMethodCallTransformer> ();
+      _transformerStub = new Mock<IMethodCallTransformer>();
     }
 
     [Test]
@@ -54,24 +54,24 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void Register_NewMethod ()
     {
-      _methodCallTransformerRegistry.Register (_methodName, _transformerStub);
+      _methodCallTransformerRegistry.Register (_methodName, _transformerStub.Object);
 
       var expectedTransformer = _methodCallTransformerRegistry.GetItem (_methodName);
-      Assert.That (_transformerStub, Is.SameAs (expectedTransformer));
+      Assert.That (_transformerStub.Object, Is.SameAs (expectedTransformer));
     }
 
     [Test]
     public void Register_MethodTwice ()
     {
-      _methodCallTransformerRegistry.Register (_methodName, _transformerStub);
+      _methodCallTransformerRegistry.Register (_methodName, _transformerStub.Object);
 
-      var transformerStub = MockRepository.GenerateStub<IMethodCallTransformer> ();
-      _methodCallTransformerRegistry.Register (_methodName, transformerStub);
+      var transformerStub = new Mock<IMethodCallTransformer>();
+      _methodCallTransformerRegistry.Register (_methodName, transformerStub.Object);
 
       var actualTransformer = _methodCallTransformerRegistry.GetItem (_methodName);
       
-      Assert.That (actualTransformer, Is.Not.SameAs (_transformerStub));
-      Assert.That (actualTransformer, Is.SameAs (transformerStub));
+      Assert.That (actualTransformer, Is.Not.SameAs (_transformerStub.Object));
+      Assert.That (actualTransformer, Is.SameAs (transformerStub.Object));
     }
 
     [Test]
@@ -79,13 +79,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     {
       var methodName = "EndsWith";
       var methodInfos = new List<string> { _methodName, methodName };
-      _methodCallTransformerRegistry.Register (methodInfos, _transformerStub);
+      _methodCallTransformerRegistry.Register (methodInfos, _transformerStub.Object);
 
       var expectedGenerator = _methodCallTransformerRegistry.GetItem (_methodName);
-      Assert.That (_transformerStub, Is.SameAs (expectedGenerator));
+      Assert.That (_transformerStub.Object, Is.SameAs (expectedGenerator));
 
       var expectedGenerator2 = _methodCallTransformerRegistry.GetItem (methodName);
-      Assert.That (_transformerStub, Is.SameAs (expectedGenerator2));
+      Assert.That (_transformerStub.Object, Is.SameAs (expectedGenerator2));
     }
 
     [Test]
@@ -99,22 +99,22 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     [Test]
     public void GetItem ()
     {
-      _methodCallTransformerRegistry.Register (_methodName, _transformerStub);
+      _methodCallTransformerRegistry.Register (_methodName, _transformerStub.Object);
 
       var result = _methodCallTransformerRegistry.GetItem (_methodName);
 
-      Assert.That (result, Is.SameAs (_transformerStub));
+      Assert.That (result, Is.SameAs (_transformerStub.Object));
     }
 
     [Test]
     public void GetTransformer ()
     {
-      _methodCallTransformerRegistry.Register (_methodName, _transformerStub);
+      _methodCallTransformerRegistry.Register (_methodName, _transformerStub.Object);
       var methodCallExpression = Expression.Call (_methodInfo, Expression.Constant ("a"), Expression.Constant ("b"));
 
       var result = _methodCallTransformerRegistry.GetTransformer (methodCallExpression);
 
-      Assert.That (result, Is.SameAs (_transformerStub));
+      Assert.That (result, Is.SameAs (_transformerStub.Object));
     }
 
     private void AssertAllMethodsRegistered (NameBasedMethodCallTransformerRegistry registry, Type type)

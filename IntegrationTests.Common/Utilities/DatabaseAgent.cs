@@ -58,7 +58,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
       _fileName = sqlFileName;
       if (!Path.IsPathRooted (sqlFileName))
       {
-        string assemblyUrl = typeof (DatabaseAgent).Assembly.CodeBase;
+        string assemblyUrl = typeof (DatabaseAgent).Assembly.Location;
         Uri uri = new Uri (assemblyUrl);
         sqlFileName = Path.Combine (Path.GetDirectoryName (uri.LocalPath), sqlFileName);
       }

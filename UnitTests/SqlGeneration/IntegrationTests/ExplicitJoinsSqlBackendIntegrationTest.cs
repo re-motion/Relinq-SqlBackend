@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
 {
@@ -229,10 +230,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
           select kc.Name,
           "SELECT [q1].[Name] AS [value] FROM [KitchenTable] AS [t2] LEFT OUTER JOIN [CookTable] AS [t4] ON ([t2].[ID] = [t4].[KitchenID]) "
           + "CROSS APPLY (SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],"
-          + "[q0].[KitchenID],[q0].[KnifeID],[q0].[KnifeClassID] " 
+          + "[q0].[KitchenID],[q0].[KnifeID],[q0].[KnifeClassID],[q0].[CookRating] " 
           + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY "
           + "(SELECT [t3].[ID],[t3].[FirstName],[t3].[Name],[t3].[IsStarredCook],[t3].[IsFullTimeCook],[t3].[SubstitutedID],[t3].[KitchenID],"
-          + "[t3].[KnifeID],[t3].[KnifeClassID] "
+          + "[t3].[KnifeID],[t3].[KnifeClassID],[t3].[CookRating] "
           + "FROM [CookTable] AS [t3] WHERE ([t4].[ID] = [t3].[ID])) AS [q0]) AS [q1]");
     }
 
@@ -252,19 +253,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression.")]
     public void ExplicitJoinWithInto_PropagatedFromSubStatement ()
     {
       // To enable this test, see RM-3037
-      CheckQuery (
-          from cooks in (from k in Kitchens join c in Cooks on k.Name equals c.FirstName into cooks select cooks).Take(2)
-          from c in cooks
-          select c.Name,
-          "SELECT [t2].[Name] AS [value] "
-          + "FROM (SELECT [k].[Name] AS [key] FROM [KitchenTable] AS [t0]) AS [q1] "
-          + "CROSS JOIN [CookTable] AS [t2] WHERE ([t0].[Name] = [q1].[FirstName])"
-          );
+      Assert.That (
+          () => CheckQuery (
+              from cooks in (from k in Kitchens join c in Cooks on k.Name equals c.FirstName into cooks select cooks).Take (2)
+              from c in cooks
+              select c.Name,
+              "SELECT [t2].[Name] AS [value] "
+              + "FROM (SELECT [k].[Name] AS [key] FROM [KitchenTable] AS [t0]) AS [q1] "
+              + "CROSS JOIN [CookTable] AS [t2] WHERE ([t0].[Name] = [q1].[FirstName])"
+              ),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("The results of a GroupJoin ('cooks') can only be used as a query source, for example, in a from expression."));
     }
 
   }

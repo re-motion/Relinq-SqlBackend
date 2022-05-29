@@ -32,10 +32,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           Cooks.DefaultIfEmpty (),
           "SELECT [q0].[ID],[q0].[FirstName],[q0].[Name],[q0].[IsStarredCook],[q0].[IsFullTimeCook],[q0].[SubstitutedID],[q0].[KitchenID],"
-          + "[q0].[KnifeID],[q0].[KnifeClassID] " 
+          + "[q0].[KnifeID],[q0].[KnifeClassID],[q0].[CookRating] " 
           + "FROM (SELECT NULL AS [Empty]) AS [Empty] OUTER APPLY (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],"
           + "[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
-          + "[t1].[KnifeID],[t1].[KnifeClassID] FROM [CookTable] AS [t1]) AS [q0]",
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating] FROM [CookTable] AS [t1]) AS [q0]",
            row => (object) row.GetEntity<Cook> (
               new ColumnID ("ID", 0),
               new ColumnID ("FirstName", 1),
@@ -45,7 +45,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
               new ColumnID ("SubstitutedID", 5),
               new ColumnID ("KitchenID", 6),
               new ColumnID ("KnifeID", 7),
-              new ColumnID ("KnifeClassID", 8)));
+              new ColumnID ("KnifeClassID", 8),
+              new ColumnID ("CookRating", 9)));
     }
 
     [Test]

@@ -17,10 +17,11 @@
 
 using System;
 using System.Linq;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Rhino.Mocks;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
 {
@@ -44,23 +45,25 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.\r\nParameter name: referencedGroupSource")]
     public void Initialization_ThrowsWhenNoSequenceType ()
     {
       var invalidGroupSource = SqlStatementModelObjectMother.CreateSqlTable (typeof (int));
-      new UnresolvedGroupReferenceTableInfo (invalidGroupSource);
+
+      Assert.That (
+          () => new UnresolvedGroupReferenceTableInfo (invalidGroupSource),
+          Throws.ArgumentException
+              .With.ArgumentExceptionMessageEqualTo (
+                  "Expected a closed generic type implementing IEnumerable<T>, but found 'System.Int32'.", "referencedGroupSource"));
     }
 
     [Test]
     public void Accept ()
     {
-      var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor> ();
-      tableInfoVisitorMock.Expect (mock => mock.VisitUnresolvedGroupReferenceTableInfo (_tableInfo));
+      var tableInfoVisitorMock = new Mock<ITableInfoVisitor>();
+      tableInfoVisitorMock.Setup (mock => mock.VisitUnresolvedGroupReferenceTableInfo (_tableInfo)).Verifiable();
 
-      tableInfoVisitorMock.Replay ();
-      _tableInfo.Accept (tableInfoVisitorMock);
-      tableInfoVisitorMock.VerifyAllExpectations ();
+      _tableInfo.Accept (tableInfoVisitorMock.Object);
+      tableInfoVisitorMock.Verify();
     }
 
     [Test]
@@ -70,10 +73,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Unresolved
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")]
     public void GetResolvedTableInfo ()
     {
-      _tableInfo.GetResolvedTableInfo();
+      Assert.That (
+          () => _tableInfo.GetResolvedTableInfo(),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "This table has not yet been resolved; call the resolution step first."));
     }
 
     [Test]

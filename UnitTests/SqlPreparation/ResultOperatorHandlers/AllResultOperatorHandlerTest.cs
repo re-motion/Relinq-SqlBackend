@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
@@ -24,18 +25,16 @@ using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
   public class AllResultOperatorHandlerTest : ResultOperatorHandlerTestBase
   {
-    private ISqlPreparationStage _stageMock;
+    private Mock<ISqlPreparationStage> _stageMock;
     private AllResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
     private ISqlPreparationContext _context;
@@ -44,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
     {
       base.SetUp();
 
-      _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
+      _stageMock = new Mock<ISqlPreparationStage>();
       _handler = new AllResultOperatorHandler ();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
@@ -64,28 +63,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.ResultOperatorHandle
       var fakePreparedSelectProjection = Expression.Constant (false);
 
       _stageMock
-          .Expect (mock => mock.PrepareWhereExpression (
-              Arg<Expression>.Matches(e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
-              Arg<ISqlPreparationContext>.Matches(c=>c==_context)))
-          .Return (preparedPredicate);
+          .Setup (mock => mock.PrepareWhereExpression (
+              It.Is<Expression> (e => e.NodeType == ExpressionType.Not && (((UnaryExpression) e).Operand == predicate)), 
+              It.Is<ISqlPreparationContext> (c=>c==_context)))
+          .Returns (preparedPredicate)
+          .Verifiable();
       _stageMock
-          .Expect (mock => mock.PrepareSelectExpression (Arg<Expression>.Matches (e => e.NodeType == ExpressionType.Not), Arg.Is (_context)))
-          .WhenCalled (
-              mi =>
+          .Setup (mock => mock.PrepareSelectExpression (It.Is<Expression> (e => e.NodeType == ExpressionType.Not), _context))
+          .Callback (
+              (Expression expression, ISqlPreparationContext context) =>
               {
-                var selectProjection = (Expression) mi.Arguments[0];
                 var expectedSubStatement = new SqlStatementBuilder (sqlStatement) { WhereCondition = preparedPredicate }.GetSqlStatement();
                 var expectedExistsExpression = new SqlExistsExpression (new SqlSubStatementExpression (expectedSubStatement));
                 var expectedExpression = Expression.Not (expectedExistsExpression);
 
-                SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, selectProjection);
+                SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, expression);
               })
-          .Return (fakePreparedSelectProjection);
-      _stageMock.Replay();
+          .Returns (fakePreparedSelectProjection)
+          .Verifiable();
 
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock, _context);
+      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, UniqueIdentifierGenerator, _stageMock.Object, _context);
 
-      _stageMock.VerifyAllExpectations ();
+      _stageMock.Verify();
 
       Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
       Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (Boolean)));

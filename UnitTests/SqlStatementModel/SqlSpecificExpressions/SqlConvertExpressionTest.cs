@@ -17,11 +17,11 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -74,12 +74,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "Cannot obtain a SQL type for type 'Cook'. Expression being converted: '\"1\"'")]
     public void GetSqlTypeName_KeyNotFound_ThrowsException ()
     {
       var convertExpression = new SqlConvertExpression (typeof (Cook), Expression.Constant ("1"));
-      convertExpression.GetSqlTypeName ();
+
+      Assert.That (
+          () => convertExpression.GetSqlTypeName (),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("Cannot obtain a SQL type for type 'Cook'. Expression being converted: '\"1\"'"));
     }
 
     [Test]
@@ -100,17 +102,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NewSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var newPrefix = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.Visit (_convertExpresion.Source))
-          .Return (newPrefix);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_convertExpresion.Source))
+          .Returns (newPrefix)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.Not.SameAs (_convertExpresion));
     }
@@ -118,16 +120,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_convertExpresion.Source))
-          .Return (_convertExpresion.Source);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_convertExpresion.Source))
+          .Returns (_convertExpresion.Source)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_convertExpresion, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_convertExpresion));
     }

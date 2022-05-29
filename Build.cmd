@@ -1,10 +1,18 @@
 @echo off
 pushd %~dp0
-set msbuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
+ 
+set program-path=%ProgramFiles%
+set program-pathX86=%ProgramFiles(x86)%
+if not exist "%program-pathX86%" set program-pathX86=%program-path%
+set msbuild="%program-pathX86%\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+if not exist %msbuild% set msbuild="%program-path%\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
+if not exist %msbuild% set msbuild="%program-path%\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
+if not exist %msbuild% set msbuild="%program-path%\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
+
 set log-dir=build\BuildOutput\log
 set nuget-bin=build\BuildOutput\temp\nuget-bin
 set nuget=%nuget-bin%\nuget.exe
-set nuget-download=powershell.exe -NoProfile -Command "& {(New-Object System.Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe','%nuget%')}"
+set nuget-download=powershell.exe -NoProfile -Command "& {(New-Object System.Net.WebClient).DownloadFile('https://dist.nuget.org/win-x86-commandline/latest/nuget.exe','%nuget%')}"
 set solutionFile=Relinq-SqlBackend.sln
 
 if not exist remotion.snk goto nosnk
@@ -13,13 +21,15 @@ if not [%1]==[] goto %1
 	
 echo Welcome to the re-motion build tool!
 echo.
+echo Using %msbuild%
+echo.
 echo Choose your desired build:
 echo [1] ... Test build ^(x86-debug^)
 echo [2] ... Full build ^(x86-debug/release, x64-debug/release^)
 rem echo [3] ... Quick build ^(x86-debug, no tests are run^)
 echo [4] ... Docs build ^(x86-debug if not present, docs^)
 echo           Requires Sandcastle Help File Builder to be installed!
-echo [5] ... Package ^(create zip package from pre-existent build^)
+echo [5] ... Package ^(create NuGet package from pre-existent build^)
 echo [6] ... Run DependDB
 echo [7] ... Oops, nothing please - exit.
 echo.

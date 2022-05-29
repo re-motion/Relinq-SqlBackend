@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Copyright (c) rubicon IT GmbH, www.rubicon.eu
+ !
+ ! See the NOTICE file distributed with this work for additional information
+ ! regarding copyright ownership.  rubicon licenses this file to you under 
+ ! the Apache License, Version 2.0 (the "License"); you may not use this 
+ ! file except in compliance with the License.  You may obtain a copy of the 
+ ! License at
+ !
+ !   http://www.apache.org/licenses/LICENSE-2.0
+ !
+ ! Unless required by applicable law or agreed to in writing, software 
+ ! distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+ ! WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
+ ! License for the specific language governing permissions and limitations
+ ! under the License.
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="SetupTestConfiguration">
+
+  <UsingTask AssemblyFile="$(RemotionBuildScriptTasksPath)Remotion.BuildScript.dll" TaskName="MSBuild.ExtensionPack.Xml.XmlFile"/>
+
+  <PropertyGroup>
+    <CreateDatabaseProperties>
+      CreateSqlServerDefault;
+      CreateSqlServer2012;
+      CreateSqlServer2014;
+      CreateSqlServer2016;
+      CreateSqlServer2017;
+      CreateSqlServer2019
+    </CreateDatabaseProperties>
+  </PropertyGroup>
+
+  <Target Name="SetupTestConfiguration" DependsOnTargets="$(CreateDatabaseProperties)">
+    <Message Text="Setting up test configuration." Importance="High"/>
+
+    <Error Text="The property 'AppConfigFile' is not set." Condition="'$(AppConfigFile)' == ''" />
+
+    <Error Text="The property 'DataSource' is not set." Condition="'$(DataSource)' == ''" />
+    <Error Text="The property 'DatabaseDirectory' is not set." Condition="'$(DatabaseDirectory)' == ''" />
+    <Error Text="The property 'IntegratedSecurity' is not set." Condition="'$(IntegratedSecurity)' == ''" />
+
+    <Error Text="The property 'Username' is not set." Condition="'$(IntegratedSecurity)' == 'false' and '$(Username)' == ''" />
+    <Error Text="The property 'Password' is not set." Condition="'$(IntegratedSecurity)' == 'false' and '$(Password)' == ''" />
+
+    <Error Text="The property 'DatabaseSystem' is not set." Condition="'$(DatabaseSystem)' == ''" />
+
+    <Error Text="The DatabaseSystem '$(DatabaseSystem)' is not supported by the build script. Supported values for DatabaseSystem are: @(AllDatabaseSystems)" 
+        Condition="'$(DataSource)' == ''" />
+
+    <Message Text="Selected DatabaseSystem: '$(DatabaseSystem)'" />
+    <Message Text="Selected DataSource: '$(DataSource)'" />
+    <Message Text="Selected DatabaseDirectory: '$(DatabaseDirectory)'" />
+    <Message Text="Selected DatabaseNamePrefix: '$(DatabaseNamePrefix)'" />
+    <Message Text="Selected IntegratedSecurity: '$(IntegratedSecurity)'" />
+    <Message Text="Selected Username: '$(Username)'" />
+    <Message Text="Selected Password: '$(Password)'" />
+
+    <ItemGroup>
+      <_appConfigAttributes Remove="@(_appConfigAttributes)"/>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='DataSource']">
+        <Key>value</Key>
+        <Value>$(DataSource)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='DatabaseDirectory']">
+        <Key>value</Key>
+        <Value>$(DatabaseDirectory)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='DatabaseNamePrefix']">
+        <Key>value</Key>
+        <Value>$(DatabaseNamePrefix)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='IntegratedSecurity']">
+        <Key>value</Key>
+        <Value>$(IntegratedSecurity)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='Username']">
+        <Key>value</Key>
+        <Value>$(Username)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/appSettings/add[@key='Password']">
+        <Key>value</Key>
+        <Value>$(Password)</Value>
+      </_appConfigAttributes>
+    </ItemGroup>
+
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
+                                       File="$(AppConfigFile)"
+                                       XPath="%(_appConfigAttributes.Identity)"
+                                       Key="%(_appConfigAttributes.Key)"
+                                       Value="%(_appConfigAttributes.Value)"/>
+
+    <Message Text="Finished setting up test configuration." Importance="High"/>
+  </Target>
+
+  <Target Name="CreateSqlServerDefault" Condition="'$(DatabaseSystem)' == 'SqlServerDefault'">
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>    
+      <DataSource>localhost</DataSource>
+      <DatabaseDirectory>C:\Databases\</DatabaseDirectory>
+      <DatabaseNamePrefix></DatabaseNamePrefix>
+      <IntegratedSecurity>true</IntegratedSecurity>
+      <Username></Username>
+      <Password></Password>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSqlServer2012" Condition="'$(DatabaseSystem)' == 'SqlServer2012'">
+    <Error Text="The property 'DataSourceMsSql2012' is not set." Condition="'$(DataSourceMsSql2012)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2012' is not set." Condition="'$(DatabaseDirectoryMsSql2012)' == ''" />
+    <Error Text="The property 'IntegratedSecurityMsSql2012' is not set." Condition="'$(IntegratedSecurityMsSql2012)' == ''" />
+    <Error Text="The property 'UsernameMsSql2012' is not set." Condition="'$(IntegratedSecurityMsSql2012)' == 'false' and '$(UsernameMsSql2012)' == ''" />
+    <Error Text="The property 'PasswordMsSql2012' is not set." Condition="'$(IntegratedSecurityMsSql2012)' == 'false' and '$(PasswordMsSql2012)' == ''" />
+
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>
+      <DataSource>$(DataSourceMsSql2012)</DataSource>
+      <DatabaseDirectory>$(DatabaseDirectoryMsSql2012)</DatabaseDirectory>
+      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      <IntegratedSecurity>$(IntegratedSecurityMsSql2012)</IntegratedSecurity>
+      <Username>$(UsernameMsSql2012)</Username>
+      <Password>$(PasswordMsSql2012)</Password>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSqlServer2014" Condition="'$(DatabaseSystem)' == 'SqlServer2014'">
+    <Error Text="The property 'DataSourceMsSql2014' is not set." Condition="'$(DataSourceMsSql2014)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2014' is not set." Condition="'$(DatabaseDirectoryMsSql2014)' == ''" />
+    <Error Text="The property 'IntegratedSecurityMsSql2014' is not set." Condition="'$(IntegratedSecurityMsSql2014)' == ''" />
+    <Error Text="The property 'UsernameMsSql2014' is not set." Condition="'$(IntegratedSecurityMsSql2014)' == 'false' and '$(UsernameMsSql2014)' == ''" />
+    <Error Text="The property 'PasswordMsSql2014' is not set." Condition="'$(IntegratedSecurityMsSql2014)' == 'false' and '$(PasswordMsSql2014)' == ''" />
+
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>
+      <DataSource>$(DataSourceMsSql2014)</DataSource>
+      <DatabaseDirectory>$(DatabaseDirectoryMsSql2014)</DatabaseDirectory>
+      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      <IntegratedSecurity>$(IntegratedSecurityMsSql2014)</IntegratedSecurity>
+      <Username>$(UsernameMsSql2014)</Username>
+      <Password>$(PasswordMsSql2014)</Password>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSqlServer2016" Condition="'$(DatabaseSystem)' == 'SqlServer2016'">
+    <Error Text="The property 'DataSourceMsSql2016' is not set." Condition="'$(DataSourceMsSql2016)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2016' is not set." Condition="'$(DatabaseDirectoryMsSql2016)' == ''" />
+    <Error Text="The property 'IntegratedSecurityMsSql2016' is not set." Condition="'$(IntegratedSecurityMsSql2016)' == ''" />
+    <Error Text="The property 'UsernameMsSql2016' is not set." Condition="'$(IntegratedSecurityMsSql2016)' == 'false' and '$(UsernameMsSql2016)' == ''" />
+    <Error Text="The property 'PasswordMsSql2016' is not set." Condition="'$(IntegratedSecurityMsSql2016)' == 'false' and '$(PasswordMsSql2016)' == ''" />
+
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>
+      <DataSource>$(DataSourceMsSql2016)</DataSource>
+      <DatabaseDirectory>$(DatabaseDirectoryMsSql2016)</DatabaseDirectory>
+      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      <IntegratedSecurity>$(IntegratedSecurityMsSql2016)</IntegratedSecurity>
+      <Username>$(UsernameMsSql2016)</Username>
+      <Password>$(PasswordMsSql2016)</Password>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSqlServer2017" Condition="'$(DatabaseSystem)' == 'SqlServer2017'">
+    <Error Text="The property 'DataSourceMsSql2017' is not set." Condition="'$(DataSourceMsSql2017)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2017' is not set." Condition="'$(DatabaseDirectoryMsSql2017)' == ''" />
+    <Error Text="The property 'IntegratedSecurityMsSql2017' is not set." Condition="'$(IntegratedSecurityMsSql2017)' == ''" />
+    <Error Text="The property 'UsernameMsSql2017' is not set." Condition="'$(IntegratedSecurityMsSql2017)' == 'false' and '$(UsernameMsSql2017)' == ''" />
+    <Error Text="The property 'PasswordMsSql2017' is not set." Condition="'$(IntegratedSecurityMsSql2017)' == 'false' and '$(PasswordMsSql2017)' == ''" />
+
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>
+      <DataSource>$(DataSourceMsSql2017)</DataSource>
+      <DatabaseDirectory>$(DatabaseDirectoryMsSql2017)</DatabaseDirectory>
+      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      <IntegratedSecurity>$(IntegratedSecurityMsSql2017)</IntegratedSecurity>
+      <Username>$(UsernameMsSql2017)</Username>
+      <Password>$(PasswordMsSql2017)</Password>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSqlServer2019" Condition="'$(DatabaseSystem)' == 'SqlServer2019'">
+    <Error Text="The property 'DataSourceMsSql2019' is not set." Condition="'$(DataSourceMsSql2019)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2019' is not set." Condition="'$(DatabaseDirectoryMsSql2019)' == ''" />
+    <Error Text="The property 'IntegratedSecurityMsSql2019' is not set." Condition="'$(IntegratedSecurityMsSql2019)' == ''" />
+    <Error Text="The property 'UsernameMsSql2019' is not set." Condition="'$(IntegratedSecurityMsSql2019)' == 'false' and '$(UsernameMsSql2019)' == ''" />
+    <Error Text="The property 'PasswordMsSql2019' is not set." Condition="'$(IntegratedSecurityMsSql2019)' == 'false' and '$(PasswordMsSql2019)' == ''" />
+
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>
+      <DataSource>$(DataSourceMsSql2019)</DataSource>
+      <DatabaseDirectory>$(DatabaseDirectoryMsSql2019)</DatabaseDirectory>
+      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      <IntegratedSecurity>$(IntegratedSecurityMsSql2019)</IntegratedSecurity>
+      <Username>$(UsernameMsSql2019)</Username>
+      <Password>$(PasswordMsSql2019)</Password>
+    </PropertyGroup>
+  </Target>
+</Project>

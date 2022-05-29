@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.UnitTests.NUnit;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
@@ -59,8 +60,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 
       Assert.That (
           () => new ResolvedJoinInfo (foreignTableInfo, joinCondition),
-          Throws.ArgumentException.With.Message.EqualTo (
-            "The join condition must have boolean (or nullable boolean) type.\r\nParameter name: joinCondition"));
+          Throws.ArgumentException.With.ArgumentExceptionMessageEqualTo (
+            "The join condition must have boolean (or nullable boolean) type.", "joinCondition"));
     }
 
     [Test]

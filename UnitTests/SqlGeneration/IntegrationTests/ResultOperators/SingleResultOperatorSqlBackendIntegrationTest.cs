@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.ResultOperators
 {
@@ -49,6 +50,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
           () => (from c in Cooks select c.FirstName).SingleOrDefault (fn => fn != null),
           "SELECT TOP (2) [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] IS NOT NULL)",
           row => (object) row.GetValue<string> (new ColumnID ("value", 0)));
+    }
+
+    [Test]
+    public void Single_WithEntityExpression_RMLNQSQL_133 ()
+    {
+      CheckQuery (
+          Cooks.Where (c => c.Assistants.Single().CookRating == CookRating.Regular),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
+          + "FROM [CookTable] AS [t0] "
+          + "WHERE ((SELECT TOP (2) [t1].[CookRating] AS [value] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])) = @1)",
+          new CommandParameter ("@1", 0));
+      CheckQuery (
+          Cooks.Where (c => c.Assistants.SingleOrDefault ().CookRating == CookRating.Regular),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
+          + "FROM [CookTable] AS [t0] "
+          + "WHERE ((SELECT TOP (2) [t1].[CookRating] AS [value] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[AssistedID])) = @1)",
+          new CommandParameter ("@1", 0));
     }
   }
 }

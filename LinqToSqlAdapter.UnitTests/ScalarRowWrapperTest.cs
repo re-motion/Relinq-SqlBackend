@@ -1,4 +1,4 @@
-﻿// This file is part of the re-linq project (relinq.codeplex.com)
+// This file is part of the re-linq project (relinq.codeplex.com)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // re-linq is free software; you can redistribute it and/or modify it under 
@@ -17,55 +17,56 @@
 
 using System;
 using System.Data;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.SqlGeneration;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 {
   [TestFixture]
   public class ScalarRowWrapperTest
   {
-    private IDataReader _readerMock;
+    private Mock<IDataReader> _readerMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _readerMock = MockRepository.GenerateMock<IDataReader>();
+      _readerMock = new Mock<IDataReader>();
     }
 
     [Test]
     public void GetValue_ShouldReturnValue ()
     {
       var columnID = new ColumnID ("Name", 0);
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
       _readerMock
-          .Expect (mock => mock.GetValue (columnID.Position))
-          .Return ("Peter");
+          .Setup (mock => mock.GetValue (columnID.Position))
+          .Returns ("Peter")
+          .Verifiable();
 
       var value = scalarRowWrapper.GetValue<string> (columnID);
 
-      _readerMock.VerifyAllExpectations();
+      _readerMock.Verify();
       Assert.That ("Peter", Is.EqualTo (value));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
     public void GetValue_ShouldThrowException ()
     {
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
-
-      scalarRowWrapper.GetValue<string> (new ColumnID ("Name", 1));
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
+      Assert.That (
+          () => scalarRowWrapper.GetValue<string> (new ColumnID ("Name", 1)),
+          Throws.ArgumentException);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
     public void GetEntity_ShouldThrowException ()
     {
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
-
-      scalarRowWrapper.GetEntity<PersonTestClass> (null);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
+      Assert.That (
+          () => scalarRowWrapper.GetEntity<PersonTestClass> (null),
+          Throws.ArgumentException);
     }
 
     [Test]
@@ -73,17 +74,17 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     {
       var columnID = new ColumnID ("Name", 0);
       _readerMock
-          .Expect (mock => mock.GetValue (columnID.Position))
-          .Return ("Peter");
+          .Setup (mock => mock.GetValue (columnID.Position))
+          .Returns ("Peter")
+          .Verifiable();
 
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
 
       var value = scalarRowWrapper.GetEntity<string> (columnID);
       Assert.That ("Peter", Is.EqualTo (value));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException))]
     public void GetEntity_WithMultipleColumns ()
     {
       var columnIDs = new[]
@@ -92,9 +93,10 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
                           new ColumnID ("Age", 2)
                       };
 
-      var scalarRowWrapper = new ScalarRowWrapper (_readerMock);
-
-      scalarRowWrapper.GetEntity<PersonTestClass> (columnIDs);
+      var scalarRowWrapper = new ScalarRowWrapper (_readerMock.Object);
+      Assert.That (
+          () => scalarRowWrapper.GetEntity<PersonTestClass> (columnIDs),
+          Throws.ArgumentException);
     }
   }
 }

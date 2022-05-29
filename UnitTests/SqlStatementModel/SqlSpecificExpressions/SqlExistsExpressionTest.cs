@@ -17,10 +17,10 @@
 
 using System;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpressions
 {
@@ -44,16 +44,16 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_SameSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
 
       visitorMock
-          .Expect (mock => mock.Visit (_sqlExistsExpression.Expression))
-          .Return (_sqlExistsExpression.Expression);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_sqlExistsExpression.Expression))
+          .Returns (_sqlExistsExpression.Expression)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlExistsExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlExistsExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.SameAs (_sqlExistsExpression));
     }
@@ -61,17 +61,17 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.SqlSpecificExpres
     [Test]
     public void VisitChildren_NewSource ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<ExpressionVisitor> ();
+      var visitorMock = new Mock<ExpressionVisitor> (MockBehavior.Strict);
       var newPrefix = Expression.Constant (3);
 
       visitorMock
-          .Expect (mock => mock.Visit (_sqlExistsExpression.Expression))
-          .Return (newPrefix);
-      visitorMock.Replay ();
+          .Setup (mock => mock.Visit (_sqlExistsExpression.Expression))
+          .Returns (newPrefix)
+          .Verifiable();
 
-      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlExistsExpression, visitorMock);
+      var result = ExtensionExpressionTestHelper.CallVisitChildren (_sqlExistsExpression, visitorMock.Object);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.Verify();
 
       Assert.That (result, Is.Not.SameAs (_sqlExistsExpression));
     }

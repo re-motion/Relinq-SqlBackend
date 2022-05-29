@@ -18,13 +18,13 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
 {
@@ -65,7 +65,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     }
 
     [Test]
-    [ExpectedException(typeof(ArgumentException))]
     public void Initialization_NoSequenceData_ThrowsExeption ()
     {
       var sqlStatement = new SqlStatementBuilder ()
@@ -73,8 +72,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
         SelectProjection = Expression.Constant (new Cook ()),
         DataInfo = new StreamedScalarValueInfo(typeof(Cook))
       }.GetSqlStatement ();
-      
-      new ResolvedSubStatementTableInfo ("c", sqlStatement);
+
+      Assert.That (
+          () => new ResolvedSubStatementTableInfo ("c", sqlStatement),
+          Throws.ArgumentException);
     }
 
     [Test]
@@ -83,12 +84,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
       var sqlTable = new SqlTable (_tableInfo, JoinSemantics.Inner);
 
       var generator = new UniqueIdentifierGenerator ();
-      var resolverMock = MockRepository.GenerateStrictMock<IMappingResolver> ();
+      var resolverMock = new Mock<IMappingResolver> (MockBehavior.Strict);
       var mappingResolutionContext = new MappingResolutionContext ();
 
-      resolverMock.Replay ();
-
-      var result = _tableInfo.ResolveReference (sqlTable, resolverMock, mappingResolutionContext, generator);
+      var result = _tableInfo.ResolveReference (sqlTable, resolverMock.Object, mappingResolutionContext, generator);
 
       Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
       Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("test"));

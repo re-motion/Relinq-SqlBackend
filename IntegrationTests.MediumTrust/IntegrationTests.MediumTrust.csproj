@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ProjectType>Test</ProjectType>
+  </PropertyGroup>
+
+  <Import Project="..\Shared.build.props" />
+
+  <PropertyGroup>
+    <AssemblyTitle>Medium Trust Integration Tests for Remotion Linq Library SQL Backend</AssemblyTitle>
+    <AssemblyName>Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+    <TargetFrameworks>net45</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Development\Development.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\UnitTests\SqlGeneration\IntegrationTests\**\*.cs">
+      <Link>SqlGeneration\IntegrationTests\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\TestDomain\**\*.cs">
+      <Link>TestDomain\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\MappingResolverStub.cs">
+      <Link>MappingResolverStub.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\TypeForNewExpression.cs">
+      <Link>TypeForNewExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\UnmappedItemExceptionTest.cs">
+      <Link>UnmappedItemExceptionTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Core\Utilities\ReflectionUtility.cs">
+      <Link>Utilities\ReflectionUtility.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Remove="NUnit" />
+    <PackageReference Include="NUNit" Version="2.6.3" />
+
+    <PackageReference Remove="NUnit3TestAdapter" />
+    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" />
+  </ItemGroup>
+
+</Project>

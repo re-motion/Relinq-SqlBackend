@@ -17,6 +17,7 @@
 using System;
 using System.Configuration;
 using System.IO;
+using NUnit.Framework;
 using Remotion.Linq.IntegrationTests.Common.Utilities;
 
 namespace Remotion.Linq.IntegrationTests.Common.Database
@@ -35,7 +36,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Database
       var connectionString = DatabaseConfiguration.ReplaceDataSource( connectionSettings.ConnectionString);
       var databaseAgent = new DatabaseAgent (connectionString);
 
-      var commandBatch = File.ReadAllText ("Database/Northwnd.sql");
+      var commandBatch = File.ReadAllText (Path.Combine (TestContext.CurrentContext.TestDirectory, "Database/Northwnd.sql"));
       commandBatch = commandBatch.Replace (DatabaseConfiguration.DefaultDatabaseDirectory, DatabaseConfiguration.DatabaseDirectory);
       commandBatch = commandBatch.Replace (DatabaseConfiguration.DefaultDatabaseNamePrefix, DatabaseConfiguration.DatabaseNamePrefix);
 

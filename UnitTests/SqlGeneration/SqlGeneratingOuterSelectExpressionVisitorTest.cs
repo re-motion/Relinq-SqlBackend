@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Moq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -28,7 +29,6 @@ using Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 using Remotion.Linq.SqlBackend.UnitTests.Utilities;
 using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
@@ -39,14 +39,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     private SqlEntityDefinitionExpression _entityExpression;
     private SetOperationsMode _someSetOperationsMode;
     private TestableSqlGeneratingOuterSelectExpressionVisitor _visitor;
-    private ISqlGenerationStage _stageMock;
+    private Mock<ISqlGenerationStage> _stageMock;
     private SqlCommandBuilder _commandBuilder;
     private NamedExpression _namedNameColumnExpression;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
+      _stageMock = new Mock<ISqlGenerationStage> (MockBehavior.Strict);
       _commandBuilder = new SqlCommandBuilder ();
       _someSetOperationsMode = Some.Item (SetOperationsMode.StatementIsSetCombined, SetOperationsMode.StatementIsNotSetCombined);
       _visitor = CreateVisitor (_someSetOperationsMode);
@@ -66,19 +66,19 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Queries selecting collections are not supported because SQL is not well-suited to returning collections.",
-        MatchType = MessageMatch.Contains)]
     public void GenerateSql_Collection ()
     {
       var expression = Expression.Constant (new Cook[] { });
-      SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, _someSetOperationsMode);
+      Assert.That (
+          () => SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock.Object, _someSetOperationsMode),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.Contains ("Queries selecting collections are not supported because SQL is not well-suited to returning collections."));
     }
 
     [Test]
     public void GenerateSql_CreatesFullInMemoryProjectionLambda ()
     {
-       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedIntExpression, _commandBuilder, _stageMock, _someSetOperationsMode);
+       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (_namedIntExpression, _commandBuilder, _stageMock.Object, _someSetOperationsMode);
 
       var expectedRowParameter = _commandBuilder.InMemoryProjectionRowParameter;
       var expectedFullProjection = GetExpectedProjectionForNamedExpression (expectedRowParameter, "test", 0, typeof (int));
@@ -403,7 +403,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
       var methodCallExpression = Expression.Call (MemberInfoFromExpressionUtility.GetMethod (() => StaticMethodWithoutArguments()));
       Assert.That (
           () => visitor.VisitMethodCall (methodCallExpression),
-          Throws.TypeOf<NotSupportedException>().With.Message.StringContaining (
+          Throws.TypeOf<NotSupportedException>().With.Message.Contains (
               "In-memory method calls are not supported when a set operation (such as Union or Concat) is used. Rewrite "
               + "the query to perform the in-memory operation after the set operation has been performed."));
     }
@@ -459,19 +459,21 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
-         + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
-         + "from clause, or perform an aggregation on the groupings.", MatchType = MessageMatch.Contains)]
     public void VisitSqlGroupingSelectExpression ()
     {
       var expression = SqlStatementModelObjectMother.CreateSqlGroupingSelectExpression ();
-      _visitor.VisitSqlGroupingSelect (expression);
+      Assert.That (
+          () => _visitor.VisitSqlGroupingSelect (expression),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.Contains (
+                  "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
+                  + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
+                  + "from clause, or perform an aggregation on the groupings."));
     }
 
     private TestableSqlGeneratingOuterSelectExpressionVisitor CreateVisitor (SetOperationsMode setOperationsMode)
     {
-      return new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock, setOperationsMode);
+      return new TestableSqlGeneratingOuterSelectExpressionVisitor (_commandBuilder, _stageMock.Object, setOperationsMode);
     }
 
     private MethodCallExpression GetExpectedProjectionForEntityExpression (ParameterExpression expectedRowParameter, int columnPositionStart)
