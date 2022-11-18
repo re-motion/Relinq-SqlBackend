@@ -13,7 +13,7 @@
   </Target>
   <Target Name="Before_FullBuild_Configuration" BeforeTargets="FullBuild_Configuration">
     <PropertyGroup>
-      <DatabaseSystems Condition="'$(DatabaseSystems)' == ''">NoDB+SqlServer2012+SqlServer2014+SqlServer2016+SqlServer2017+SqlServer2019</DatabaseSystems>
+      <DatabaseSystems Condition="'$(DatabaseSystems)' == ''">NoDB+SqlServer2012+SqlServer2014+SqlServer2016+SqlServer2017+SqlServer2019+SqlServer2022</DatabaseSystems>
       <ExecutionRuntimes Condition="'$(ExecutionRuntimes)' == ''">Win_NET48+Win_NET472+Win_NET462</ExecutionRuntimes>
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48+NET472+NET462</TargetRuntimes>
       <!-- Disable Documentation until RMSRCBUILD-173 is fixed. -->
