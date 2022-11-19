@@ -28,7 +28,8 @@
       CreateSqlServer2014;
       CreateSqlServer2016;
       CreateSqlServer2017;
-      CreateSqlServer2019
+      CreateSqlServer2019;
+      CreateSqlServer2022
     </CreateDatabaseProperties>
   </PropertyGroup>
 
@@ -199,6 +200,25 @@
       <IntegratedSecurity>$(IntegratedSecurityMsSql2019)</IntegratedSecurity>
       <Username>$(UsernameMsSql2019)</Username>
       <Password>$(PasswordMsSql2019)</Password>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSqlServer2022" Condition="'$(DatabaseSystem)' == 'SqlServer2022'">
+    <Error Text="The property 'DataSourceMsSql2022' is not set." Condition="'$(DataSourceMsSql2022)' == ''" />
+    <Error Text="The property 'DatabaseDirectoryMsSql2022' is not set." Condition="'$(DatabaseDirectoryMsSql2022)' == ''" />
+    <Error Text="The property 'IntegratedSecurityMsSql2022' is not set." Condition="'$(IntegratedSecurityMsSql2022)' == ''" />
+    <Error Text="The property 'UsernameMsSql2022' is not set." Condition="'$(IntegratedSecurityMsSql2022)' == 'false' and '$(UsernameMsSql2022)' == ''" />
+    <Error Text="The property 'PasswordMsSql2022' is not set." Condition="'$(IntegratedSecurityMsSql2022)' == 'false' and '$(PasswordMsSql2022)' == ''" />
+
+    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
+
+    <PropertyGroup>
+      <DataSource>$(DataSourceMsSql2022)</DataSource>
+      <DatabaseDirectory>$(DatabaseDirectoryMsSql2022)</DatabaseDirectory>
+      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
+      <IntegratedSecurity>$(IntegratedSecurityMsSql2022)</IntegratedSecurity>
+      <Username>$(UsernameMsSql2022)</Username>
+      <Password>$(PasswordMsSql2022)</Password>
     </PropertyGroup>
   </Target>
 </Project>
