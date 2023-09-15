@@ -46,10 +46,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 #endif
     }
 
+#pragma warning disable SYSLIB0051
     private UnmappedItemException (SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
     }
+#pragma warning restore
 
 #if NETFRAMEWORK 
     [Serializable]

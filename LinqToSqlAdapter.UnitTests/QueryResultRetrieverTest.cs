@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Moq;
@@ -61,18 +62,32 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [Test]
     public void GetResults_CreatesCommandAndReadsData ()
     {
-      var sequence = new MockSequence();
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.Read()).Returns (true);
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.GetValue (0)).Returns ("testColumnValue1");
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.Read()).Returns (true);
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.GetValue (0)).Returns ("testColumnValue2");
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.Read()).Returns (false);
+      var readResults = new Queue<bool>();
+      var getValueResults = new Queue<string>();
+      var sequence = new VerifiableSequence();
+
+      readResults.Enqueue (true);
+      _dataReaderMock.InVerifiableSequence (sequence).Setup (stub => stub.Read()).Returns (() => readResults.Dequeue());
+      
+      getValueResults.Enqueue ("testColumnValue1");
+      _dataReaderMock.InVerifiableSequence (sequence).Setup (stub => stub.GetValue (0)).Returns (() => getValueResults.Dequeue());
+
+      readResults.Enqueue (true);
+      _dataReaderMock.InVerifiableSequence (sequence).Setup (stub => stub.Read()).Returns (() => readResults.Dequeue());
+
+      getValueResults.Enqueue ("testColumnValue2");
+      _dataReaderMock.InVerifiableSequence (sequence).Setup (stub => stub.GetValue (0)).Returns (() => getValueResults.Dequeue());
+
+      readResults.Enqueue (false);
+      _dataReaderMock.InVerifiableSequence (sequence).Setup (stub => stub.Read()).Returns (() => readResults.Dequeue());
 
       var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
 
       var result = retriever.GetResults (_projection, "Text", new CommandParameter[0]).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { "testColumnValue1", "testColumnValue2" }));
+
+      sequence.Verify();
     }
 
     [Test]
@@ -117,19 +132,29 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
     [Test]
     public void GetResults_UsesProjection ()
     {
-      var sequence = new MockSequence();
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.Read()).Returns (true);
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.GetValue (0)).Returns ("testColumnValue1");
-      _dataReaderMock.InSequence (sequence).Setup (stub => stub.Read()).Returns (false);
+      var readResults = new Queue<bool>();
+      var sequence = new VerifiableSequence();
 
-      var projectionMock = new Mock<Func<IDatabaseResultRow, string>>();
+      readResults.Enqueue (true);
+      _dataReaderMock.InVerifiableSequence (sequence).Setup (stub => stub.Read()).Returns (() => readResults.Dequeue());
+
+      readResults.Enqueue (false);
+      _dataReaderMock.InVerifiableSequence (sequence).Setup (stub => stub.Read()).Returns (() => readResults.Dequeue());
+
+      var projectionInvocationCount = 0;
+      var projection = new Func<IDatabaseResultRow, string> (
+          resultRow =>
+          {
+            var returnValue = "result_" + projectionInvocationCount;
+            projectionInvocationCount++;
+            return returnValue;
+          });
 
       var retriever = new QueryResultRetriever (_connectionManagerStub.Object, _resolverStub.Object);
-      var result = retriever.GetResults (projectionMock.Object, "Text", new CommandParameter[0]).ToArray();
+      var result = retriever.GetResults (projection, "Text", new CommandParameter[0]).ToArray();
 
-      Assert.That (result[0], Is.Null);
-      projectionMock.Verify (p => p.Invoke (It.IsAny<IDatabaseResultRow>()), Times.AtLeastOnce());
-      projectionMock.Verify();
+      Assert.That (result, Is.EqualTo (new[] { "result_0" }));
+      sequence.Verify();
     }
 
     [Test]

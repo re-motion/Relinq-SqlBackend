@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		How to build re-linq.txt = How to build re-linq.txt
 		How to Contribute.txt = How to Contribute.txt
 		Shared.build.props = Shared.build.props
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{0543C43E-D949-478B-AD85-583F3AE2A301}"
