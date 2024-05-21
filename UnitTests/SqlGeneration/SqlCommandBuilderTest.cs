@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 {
@@ -36,20 +37,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void GetCommandText ()
+    public void GetCommandText_ReturnsAccumulatedText ()
     {
       _sqlCommandBuilder.Append ("Test");
+      _sqlCommandBuilder.Append ("123");
 
-      Assert.That (_sqlCommandBuilder.GetCommandText(), Is.EqualTo ("Test"));
+      Assert.That (_sqlCommandBuilder.GetCommandText(), Is.EqualTo ("Test123"));
     }
 
     [Test]
-    public void GetCommandParameters ()
+    public void GetCommandParameters_ReturnsCreatedParameters ()
     {
       _sqlCommandBuilder.CreateParameter ("value");
+      _sqlCommandBuilder.CreateParameter ("otherValue");
 
-      var expectedCommandParameter = new CommandParameter ("@1", "value");
-      Assert.That (_sqlCommandBuilder.GetCommandParameters (), Is.EqualTo (new[] { expectedCommandParameter }));
+      var expectedCommandParameter1 = new CommandParameter ("@1", "value");
+      var expectedCommandParameter2 = new CommandParameter ("@2", "otherValue");
+      Assert.That (_sqlCommandBuilder.GetCommandParameters (), Is.EqualTo (new[] { expectedCommandParameter1, expectedCommandParameter2 }));
     }
 
     [Test]
@@ -172,6 +176,38 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     {
       _sqlCommandBuilder.AppendSeparated (",", new List<string> { "Hugo", "Sepp" },(cb, value) => cb.Append(value));
       Assert.That (_sqlCommandBuilder.GetCommandText (), Is.EqualTo ("Hugo,Sepp"));
+    }
+
+    [Test]
+    public void AppendCollection ()
+    {
+      var collection = new[] { 4, 2 };
+
+      var collectionExpression  = new ConstantCollectionExpression(collection);
+      _sqlCommandBuilder.AppendCollection(collectionExpression);
+
+      Assert.That(_sqlCommandBuilder.GetCommandText(), Is.EqualTo("@1, @2"));
+
+      var commandParameters = _sqlCommandBuilder.GetCommandParameters();
+      Assert.That(commandParameters.Length, Is.EqualTo(2));
+      Assert.That(commandParameters[0].Value, Is.EqualTo(4));
+      Assert.That(commandParameters[0].Name, Is.EqualTo("@1"));
+      Assert.That(commandParameters[1].Value, Is.EqualTo(2));
+      Assert.That(commandParameters[1].Name, Is.EqualTo("@2"));
+    }
+
+    [Test]
+    public void AppendCollection_EmptyCollection ()
+    {
+      var collection = new string[0];
+
+      var collectionExpression  = new ConstantCollectionExpression(collection);
+      _sqlCommandBuilder.AppendCollection(collectionExpression);
+
+      Assert.That(_sqlCommandBuilder.GetCommandText(), Is.EqualTo("SELECT NULL WHERE 1 = 0"));
+
+      var commandParameters = _sqlCommandBuilder.GetCommandParameters();
+      Assert.That(commandParameters, Is.Empty);
     }
   }
 }
