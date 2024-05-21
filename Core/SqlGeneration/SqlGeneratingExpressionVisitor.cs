@@ -39,7 +39,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
-        ISqlCollectionExpressionVisitor,
         IConstantCollectionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
@@ -388,21 +387,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
-    public virtual Expression VisitSqlCollection (SqlCollectionExpression expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-
-      _commandBuilder.Append ("(");
-
-      if (expression.Items.Count == 0)
-        _commandBuilder.Append ("SELECT NULL WHERE 1 = 0");
-
-      _commandBuilder.AppendSeparated (", ", expression.Items, (cb, item) => Visit (item));
-      _commandBuilder.Append (")");
-
-      return expression;
-    }
-  
     public virtual Expression VisitConstantCollection (ConstantCollectionExpression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

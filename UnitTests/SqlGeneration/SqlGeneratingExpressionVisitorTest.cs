@@ -720,29 +720,6 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlCollectionExpression ()
-    {
-      var items = new Expression[] { Expression.Constant (7), new SqlLiteralExpression ("Hello"), new SqlLiteralExpression (12) };
-      var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
-
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock.Object);
-
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1, 'Hello', 12)"));
-      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { new CommandParameter ("@1", 7) }));
-    }
-
-    [Test]
-    public void VisitSqlCollectionExpression_Empty ()
-     {
-       var items = new Expression[0];
-       var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
-
-       SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock.Object);
-
-       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(SELECT NULL WHERE 1 = 0)"));
-    }
-
-    [Test]
     public void VisitConstantCollectionExpression ()
     {
       var items = new object[] { 4, "Hello", 42 };
