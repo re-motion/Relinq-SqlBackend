@@ -139,7 +139,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
               .With.Message.EqualTo (
                   "The SQL 'IN' operator (originally probably a call to a 'Contains' method) requires a single value, so the following expression cannot be "
                   + "translated to SQL: 'new MetaID(Value = [t0].[KnifeID] AS Value, ClassID = [t0].[KnifeClassID] AS ClassID) "
-                  + "IN (value(Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID),value(Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID))'."));
+                  + "IN [Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID, Remotion.Linq.SqlBackend.UnitTests.TestDomain.MetaID]'."));
     }
 
     [Test]

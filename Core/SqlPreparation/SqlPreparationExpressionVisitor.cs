@@ -25,6 +25,7 @@ using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using Remotion.Linq.SqlBackend.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlPreparation
@@ -266,11 +267,33 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
-      var collection = expression.Value as ICollection;
-      if (collection != null)
-        return new SqlCollectionExpression (expression.Type, collection.Cast<object>().Select (Expression.Constant).Cast<Expression>());
+      if (IsSingleValue(expression.Value))
+        return base.VisitConstant (expression);
 
-      return base.VisitConstant (expression);
+      if (expression.Value is ICollection || IsGenericCollection(expression.Value))
+      {
+        return new ConstantCollectionExpression ((IEnumerable)expression.Value);
+      }
+
+      // expression.Value is an unevaluated IEnumerable
+      throw new NotSupportedException (
+          "Only collection can be used as a parameter. "
+          + "Use an object that implements the ICollection, ICollection<T>, or IReadOnlyCollection<T> interface "
+          + "instead of a sequence based on IEnumerable.");
+
+      bool IsSingleValue (object value)
+      {
+        return value is not IEnumerable || value is string or char[] or byte[];
+      }
+
+      bool IsGenericCollection (object value)
+      {
+        return value
+            .GetType()
+            .GetInterfaces()
+            .Select (i => i.IsGenericType ? i.GetGenericTypeDefinition() : null)
+            .Any (t => t == typeof (IReadOnlyCollection<>) || t == typeof (ICollection<>));
+      }
     }
 
     private bool IsNullConstant (Expression expression)

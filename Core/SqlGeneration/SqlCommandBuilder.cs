@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
@@ -101,6 +103,25 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);
 
       _stringBuilder.AppendFormat (stringToAppend, parameters);
+    }
+
+    public void AppendCollection (ConstantCollectionExpression collectionExpression)
+    {
+      ArgumentUtility.CheckNotNull ("collectionExpression", collectionExpression);
+
+      if (collectionExpression.IsEmptyCollection)
+      {
+        Append ("SELECT NULL WHERE 1 = 0");
+      }
+      else
+      {
+        AppendNonEmptyCollection(collectionExpression);
+      }
+    }
+
+    protected virtual void AppendNonEmptyCollection (ConstantCollectionExpression collectionExpression)
+    {
+      AppendSeparated (", ", collectionExpression.GetItems(), (builder, item) => builder.AppendParameter (item));
     }
 
     public CommandParameter AppendParameter (object value)

@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -714,25 +716,70 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
-    [Test]
-    public void VisitConstantExpression_WithNoCollection_LeavesExpressionUnchanged ()
+    private static IEnumerable<IEnumerable> GetNonCollectionEnumerableTestCases ()
     {
-      var constantExpression = Expression.Constant ("string");
+      yield return Mock.Of<IEnumerable>();
+      yield return Mock.Of<IEnumerable<object>>();
+    } 
+    
+    [Test]
+    [TestCaseSource(nameof(GetNonCollectionEnumerableTestCases))]
+    public void VisitConstantExpression_WithNonCollectionEnumerable_ThrowsNotSupportedException (IEnumerable value)
+    {
+      var constantExpression = Expression.Constant (value);
+
+      Assert.That (
+          () =>
+          {
+            SqlPreparationExpressionVisitor.TranslateExpression (
+                constantExpression,
+                _context,
+                _stageMock.Object,
+                _methodCallTransformerProvider);
+          },
+          Throws.InstanceOf<NotSupportedException>().With.Message.EqualTo (
+              "Only collection can be used as a parameter. "
+              + "Use an object that implements the ICollection, ICollection<T>, or IReadOnlyCollection<T> interface "
+              + "instead of a sequence based on IEnumerable."));
+    }
+
+    [CLSCompliant(false)]
+    [Test]
+    [TestCase (null)]
+    [TestCase (42)]
+    [TestCase ("a string")]
+    [TestCase (new[] { 't', 'e', 's', 't' })]
+    [TestCase (new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
+    public void VisitConstantExpression_WithNoEnumerable_LeavesExpressionUnchanged (object value)
+    {
+      var constantExpression = Expression.Constant (value);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (constantExpression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
       Assert.That (result, Is.SameAs (constantExpression));
     }
 
-    [Test]
-    public void VisitConstantExpression_WithCollection_ReturnsSqlCollectionExpression ()
+    private static IEnumerable<Mock> GetRealCollectionTestCases ()
     {
-      var constantExpression = Expression.Constant (new[] { 1, 2, 3 });
+      yield return new Mock<ICollection>();
+      yield return new Mock<ICollection<int>>();
+      yield return new Mock<ICollection<string>>();
+      yield return new Mock<ICollection<byte[]>>();
+      yield return new Mock<ICollection<char[]>>();
+      yield return new Mock<IReadOnlyCollection<int>>();
+      yield return new Mock<IReadOnlyCollection<string>>();
+    }
+
+    [Test]
+    [TestCaseSource(nameof(GetRealCollectionTestCases))]
+    public void VisitConstantExpression_WithCollection_ReturnsConstantCollectionExpression (Mock mock)
+    {
+      mock.As<IEnumerable>().Setup (_ => _.GetEnumerator()).Returns (Mock.Of<IEnumerator>());
+      var constantExpression = Expression.Constant (mock.Object);
 
       var result = SqlPreparationExpressionVisitor.TranslateExpression (constantExpression, _context, _stageMock.Object, _methodCallTransformerProvider);
 
-      var expectedExpression = new SqlCollectionExpression (
-          typeof (int[]), new[] { Expression.Constant (1), Expression.Constant (2), Expression.Constant (3) });
+      var expectedExpression = new ConstantCollectionExpression ((IEnumerable)mock.Object);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
