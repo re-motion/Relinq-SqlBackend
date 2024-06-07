@@ -16,9 +16,12 @@
 // 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
 using NUnit.Framework;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
@@ -83,19 +86,56 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void Contains_WithConstantCollection ()
+    public void Contains_WithCollection ()
     {
-      var cookNames = new[] { "hugo", "hans", "heinz" };
+      var values = new[] { "hugo", "hans", "heinz" };
+      var cookNamesStub = new Mock<IEnumerable<string>>(); 
+      // ReSharper disable GenericEnumeratorNotDisposed
+      cookNamesStub.As<ICollection>().Setup (_ => _.GetEnumerator()).Returns (values.GetEnumerator());
+      cookNamesStub.Setup (_ => _.GetEnumerator()).Returns (((IEnumerable<string>)values).GetEnumerator());
+      // ReSharper restore GenericEnumeratorNotDisposed
+
+      var cookNames = cookNamesStub.Object;
       CheckQuery (
           from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
           new CommandParameter ("@1", "hugo"),
           new CommandParameter ("@2", "hans"),
           new CommandParameter ("@3", "heinz"));
+    }
 
-      IEnumerable<string> cookNamesAsEnumerable = new[] { "hugo", "hans", "heinz" };
+    [Test]
+    public void Contains_WithCollectionOfT ()
+    {
+      var values = new[] { "hugo", "hans", "heinz" };
+      var cookNamesStub = new Mock<ICollection<string>>(); 
+      // ReSharper disable GenericEnumeratorNotDisposed
+      cookNamesStub.As<IEnumerable>().Setup (_ => _.GetEnumerator()).Returns (values.GetEnumerator());
+      cookNamesStub.Setup (_ => _.GetEnumerator()).Returns (((IEnumerable<string>)values).GetEnumerator());
+      // ReSharper restore GenericEnumeratorNotDisposed
+
+      var cookNames = cookNamesStub.Object;
       CheckQuery (
-          from c in Cooks where cookNamesAsEnumerable.Contains (c.FirstName) select c.FirstName,
+          from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
+          new CommandParameter ("@1", "hugo"),
+          new CommandParameter ("@2", "hans"),
+          new CommandParameter ("@3", "heinz"));
+    }
+
+    [Test]
+    public void Contains_WithReadOnlyCollectionOfT ()
+    {
+      var values = new[] { "hugo", "hans", "heinz" };
+      var cookNamesStub = new Mock<IReadOnlyCollection<string>>(); 
+      // ReSharper disable GenericEnumeratorNotDisposed
+      cookNamesStub.As<IEnumerable>().Setup (_ => _.GetEnumerator()).Returns (values.GetEnumerator());
+      cookNamesStub.Setup (_ => _.GetEnumerator()).Returns (((IEnumerable<string>)values).GetEnumerator());
+      // ReSharper restore GenericEnumeratorNotDisposed
+
+      var cookNames = cookNamesStub.Object;
+      CheckQuery (
+          from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
           new CommandParameter ("@1", "hugo"),
           new CommandParameter ("@2", "hans"),
@@ -109,6 +149,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (SELECT NULL WHERE 1 = 0)");
+    }
+
+    [Test]
+    public void Contains_WithNonCollectionEnumerable ()
+    {
+      var cookNames = new[] { "hugo", "hans", "heinz" }.Where (s => s.StartsWith ("h"));
+      var query = from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName;
+      var queryModel = ExpressionHelper.ParseQuery (query);
+      Assert.That (
+          () => GenerateSql (queryModel),
+          Throws.InstanceOf<NotSupportedException>().With.Message.EqualTo (
+              "Only collection can be used as a parameter. "
+              + "Use an object that implements the ICollection, ICollection<T>, or IReadOnlyCollection<T> interface "
+              + "instead of a sequence based on IEnumerable."));
     }
   }
 }
