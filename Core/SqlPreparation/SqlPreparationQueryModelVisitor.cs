@@ -242,13 +242,16 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
       SqlStatementBuilder.SqlTables.Add (fromExpressionInfo.SqlTable);
     }
 
-    private ICollection GetConstantCollectionValue (QueryModel queryModel)
+    private IEnumerable GetConstantCollectionValue (QueryModel queryModel)
     {
-      var fromExpressionAsConstant = (queryModel.MainFromClause.FromExpression) as ConstantExpression;
+      var fromExpressionAsConstant = queryModel.MainFromClause.FromExpression as ConstantExpression;
       if (queryModel.IsIdentityQuery () && fromExpressionAsConstant != null)
       {
-        if (fromExpressionAsConstant.Value is ICollection)
-          return (ICollection) fromExpressionAsConstant.Value;
+        if (fromExpressionAsConstant.Value is string or char[] or byte[])
+          return null;
+
+        if (fromExpressionAsConstant.Value is IEnumerable enumerable and not IQueryable)
+          return enumerable;
         
         if (fromExpressionAsConstant.Value == null)
           throw new NotSupportedException ("Data sources cannot be null.");

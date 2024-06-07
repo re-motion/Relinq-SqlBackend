@@ -166,6 +166,30 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     }
 
     [Test]
+    public void QueryWithContains_Collection_ConstantValue ()
+    {
+      var cities = new[] { "Berlin", "München", "Graz" };
+      var query =
+          from c in DB.Customers
+          where cities.Contains (c.City)
+          select c;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void QueryWithContains_Collection_NonConstantValue ()
+    {
+      var cities = from customer in DB.Customers where customer.Country == "Germany" select customer.City;
+      var query =
+          from c in DB.Customers
+          where cities.Contains (c.City)
+          select c;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
     public void QueryWithWhere_OuterObject ()
     {
       Customer customer = DB.Customers.First();
