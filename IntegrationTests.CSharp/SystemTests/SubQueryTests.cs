@@ -37,7 +37,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Linq.IntegrationTests.Common;
 using Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind;
 
 namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
@@ -52,6 +51,17 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
           from o in DB.Orders
           where (from c in DB.Customers select c).Contains (o.Customer)
           select o;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void QueryWithSubQuery_BooleanResult_InWhere ()
+    {
+      var query =
+            from od in DB.OrderDetails
+            where (from p in DB.Products where od.Product == p select p.Discontinued).FirstOrDefault() != true
+            select od;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
     }
