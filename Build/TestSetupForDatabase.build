@@ -24,7 +24,6 @@
   <PropertyGroup>
     <CreateDatabaseProperties>
       CreateSqlServerDefault;
-      CreateSqlServer2012;
       CreateSqlServer2014;
       CreateSqlServer2016;
       CreateSqlServer2017;
@@ -105,25 +104,6 @@
       <IntegratedSecurity>true</IntegratedSecurity>
       <Username></Username>
       <Password></Password>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="CreateSqlServer2012" Condition="'$(DatabaseSystem)' == 'SqlServer2012'">
-    <Error Text="The property 'DataSourceMsSql2012' is not set." Condition="'$(DataSourceMsSql2012)' == ''" />
-    <Error Text="The property 'DatabaseDirectoryMsSql2012' is not set." Condition="'$(DatabaseDirectoryMsSql2012)' == ''" />
-    <Error Text="The property 'IntegratedSecurityMsSql2012' is not set." Condition="'$(IntegratedSecurityMsSql2012)' == ''" />
-    <Error Text="The property 'UsernameMsSql2012' is not set." Condition="'$(IntegratedSecurityMsSql2012)' == 'false' and '$(UsernameMsSql2012)' == ''" />
-    <Error Text="The property 'PasswordMsSql2012' is not set." Condition="'$(IntegratedSecurityMsSql2012)' == 'false' and '$(PasswordMsSql2012)' == ''" />
-
-    <Error Text="The property 'DataSource' was already set." Condition="'$(DataSource)' != ''" />
-
-    <PropertyGroup>
-      <DataSource>$(DataSourceMsSql2012)</DataSource>
-      <DatabaseDirectory>$(DatabaseDirectoryMsSql2012)</DatabaseDirectory>
-      <DatabaseNamePrefix>$(DatabaseNamePrefix)</DatabaseNamePrefix>
-      <IntegratedSecurity>$(IntegratedSecurityMsSql2012)</IntegratedSecurity>
-      <Username>$(UsernameMsSql2012)</Username>
-      <Password>$(PasswordMsSql2012)</Password>
     </PropertyGroup>
   </Target>
 
