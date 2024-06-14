@@ -6,21 +6,23 @@
     </key>
     <value>
       <string>&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfGitExtLinkDef xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+&lt;ArrayOfGitExtLinkDef&gt;
   &lt;GitExtLinkDef&gt;
+    &lt;Enabled&gt;true&lt;/Enabled&gt;
+    &lt;LinkFormats&gt;
+      &lt;GitExtLinkFormat&gt;
+        &lt;Caption&gt;JIRA {0}&lt;/Caption&gt;
+        &lt;Format&gt;https://re-motion.atlassian.net/browse/{0}&lt;/Format&gt;
+      &lt;/GitExtLinkFormat&gt;
+    &lt;/LinkFormats&gt;
+    &lt;Name&gt;JIRA&lt;/Name&gt;
+    &lt;RemoteSearchInParts /&gt;
     &lt;SearchInParts&gt;
       &lt;RevisionPart&gt;Message&lt;/RevisionPart&gt;
       &lt;RevisionPart&gt;LocalBranches&lt;/RevisionPart&gt;
     &lt;/SearchInParts&gt;
-    &lt;LinkFormats&gt;
-      &lt;GitExtLinkFormat&gt;
-        &lt;Caption&gt;JIRA {0}&lt;/Caption&gt;
-        &lt;Format&gt;https://www.re-motion.org/jira/browse/{0}&lt;/Format&gt;
-      &lt;/GitExtLinkFormat&gt;
-    &lt;/LinkFormats&gt;
-    &lt;Name&gt;JIRA&lt;/Name&gt;
     &lt;SearchPattern&gt;(?:^|\s|\(|#|feature/|bugfix/|hotfix/)(RM[A-Z]{0,8}-\d{1,6})(?:\-|\)|\s|$)&lt;/SearchPattern&gt;
-    &lt;Enabled&gt;true&lt;/Enabled&gt;
+    &lt;UseOnlyFirstRemote&gt;false&lt;/UseOnlyFirstRemote&gt;
   &lt;/GitExtLinkDef&gt;
 &lt;/ArrayOfGitExtLinkDef&gt;</string>
     </value>
