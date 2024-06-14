@@ -374,5 +374,23 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests
          new CommandParameter ("@1", 0),
          new CommandParameter ("@2", 1));
     }
+    
+    [Test]
+    public void Bool_FirstOrDefaultFromSubQuery()
+    {
+      CheckQuery (
+          from r in Restaurants where (from r2 in r.Cooks select r2.IsFullTimeCook).FirstOrDefault() == true select r,
+          "SELECT [t0].[ID],[t0].[CompanyID] FROM [RestaurantTable] AS [t0] WHERE ((SELECT TOP (1) [t1].[IsFullTimeCook] AS [value] FROM [CookTable] AS [t1] WHERE ([t0].[ID] = [t1].[RestaurantID])) = @1)",
+          new CommandParameter("@1", 1));
+    }
+    
+    [Test]
+    public void NullableBool_FirstOrDefaultFromSubQuery()
+    {
+      CheckQuery(
+          from r in Restaurants where (from r2 in Kitchens where r == r2.Restaurant select r2.PassedLastInspection).FirstOrDefault() == true select r,
+          "SELECT [t0].[ID],[t0].[CompanyID] FROM [RestaurantTable] AS [t0] WHERE ((SELECT TOP (1) [t1].[PassedLastInspection] AS [value] FROM [KitchenTable] AS [t1] WHERE ([t0].[ID] = [t1].[RestaurantID])) = @1)",
+          new CommandParameter("@1", 1));
+    }
   }
 }

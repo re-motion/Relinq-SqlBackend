@@ -468,6 +468,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     private Expression HandleValueSemantics (Expression expression)
     {
       var newExpression = base.Visit (expression);
+      
+      // An SqlConvertedBooleanExpression is already a converted value (boolean to integer), so we don't need to convert again.
       if (newExpression is SqlConvertedBooleanExpression)
         return newExpression;
 
@@ -475,15 +477,18 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (newExpression is MethodCallExpression)
         return newExpression;
 
+      // A sub-select already returns a correct value; case in point: a boolean sub-select returns an integer, so we don't need to convert.
+      if (newExpression is SqlSubStatementExpression)
+        return newExpression;
+
+      // We cannot use boolean expressions directly, because we always compare to integer -> convert boolean to integer using CASE WHEN clauses
       if (BooleanUtility.IsBooleanType (newExpression.Type))
       {
         var convertedExpression = CreateValueExpressionForPredicate (newExpression);
         return new SqlConvertedBooleanExpression (convertedExpression);
       }
-      else
-      {
-        return newExpression;
-      }
+
+      return newExpression;
     }
 
     private Expression HandlePredicateSemantics (Expression expression)
