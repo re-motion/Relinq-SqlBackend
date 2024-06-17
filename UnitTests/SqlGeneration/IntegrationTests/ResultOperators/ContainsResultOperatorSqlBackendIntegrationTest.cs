@@ -16,9 +16,11 @@
 // 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
@@ -83,19 +85,41 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    public void Contains_WithConstantCollection ()
+    public void Contains_WithCollection ()
     {
-      var cookNames = new[] { "hugo", "hans", "heinz" };
+      var values = new[] { "hugo", "hans", "heinz" };
+      var cookNames = new CollectionAndEnumerableOfTStub<string>(values);
+      
+      CheckQuery (
+          from c in Cooks where ((IEnumerable<string>)cookNames).Contains (c.FirstName) select c.FirstName,
+          "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
+          new CommandParameter ("@1", "hugo"),
+          new CommandParameter ("@2", "hans"),
+          new CommandParameter ("@3", "heinz"));
+    }
+
+    [Test]
+    public void Contains_WithCollectionOfT ()
+    {
+      var values = new[] { "hugo", "hans", "heinz" };
+      var cookNames = new CollectionStub<string>(values);
+    
       CheckQuery (
           from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
           new CommandParameter ("@1", "hugo"),
           new CommandParameter ("@2", "hans"),
           new CommandParameter ("@3", "heinz"));
-
-      IEnumerable<string> cookNamesAsEnumerable = new[] { "hugo", "hans", "heinz" };
+    }
+    
+    [Test]
+    public void Contains_WithReadOnlyCollectionOfT ()
+    {
+      var values = new[] { "hugo", "hans", "heinz" };
+      var cookNames = new ReadOnlyCollectionStub<string>(values);
+      
       CheckQuery (
-          from c in Cooks where cookNamesAsEnumerable.Contains (c.FirstName) select c.FirstName,
+          from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (@1, @2, @3)",
           new CommandParameter ("@1", "hugo"),
           new CommandParameter ("@2", "hans"),
@@ -109,6 +133,120 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
       CheckQuery (
           from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName,
           "SELECT [t0].[FirstName] AS [value] FROM [CookTable] AS [t0] WHERE [t0].[FirstName] IN (SELECT NULL WHERE 1 = 0)");
+    }
+
+    [Test]
+    public void Contains_WithNonCollectionEnumerable ()
+    {
+      var cookNames = new[] { "hugo", "hans", "heinz" }.Where (s => s.StartsWith ("h"));
+      var query = from c in Cooks where cookNames.Contains (c.FirstName) select c.FirstName;
+      var queryModel = ExpressionHelper.ParseQuery (query);
+      Assert.That (
+          () => GenerateSql (queryModel),
+          Throws.InstanceOf<NotSupportedException>().With.Message.EqualTo (
+              "Only collection can be used as a parameter. "
+              + "Use an object that implements the ICollection, ICollection<T>, or IReadOnlyCollection<T> interface "
+              + "instead of a sequence based on IEnumerable."));
+    }
+
+    private class CollectionAndEnumerableOfTStub<T> : ICollection, IEnumerable<T>
+    {
+      private readonly T[] _innerCollection;
+
+      public CollectionAndEnumerableOfTStub (IEnumerable<T> values)
+      {
+        _innerCollection = values.ToArray();
+      }
+
+      public IEnumerator GetEnumerator ()
+      {
+        return _innerCollection.GetEnumerator();
+      }
+
+      IEnumerator<T> IEnumerable<T>.GetEnumerator ()
+      {
+        return ((IEnumerable<T>)_innerCollection).GetEnumerator();
+      }
+
+      public void CopyTo (Array array, int index)
+      {
+        ((ICollection)_innerCollection).CopyTo (array, index);
+      }
+
+      public int Count => _innerCollection.Length;
+      public object SyncRoot => ((ICollection)_innerCollection).SyncRoot;
+      public bool IsSynchronized => ((ICollection)_innerCollection).IsSynchronized;
+    }
+
+    private class CollectionStub<T> : ICollection<T>
+    {
+      private readonly ICollection<T> _innerCollection;
+
+      public CollectionStub (IEnumerable<T> values)
+      {
+        _innerCollection = values.ToArray();
+      }
+
+      public IEnumerator<T> GetEnumerator ()
+      {
+        return _innerCollection.GetEnumerator();
+      }
+
+      IEnumerator IEnumerable.GetEnumerator ()
+      {
+        return GetEnumerator();
+      }
+
+      public void Add (T item)
+      {
+        _innerCollection.Add (item);
+      }
+
+      public void Clear ()
+      {
+        _innerCollection.Clear();
+      }
+
+      public bool Contains (T item)
+      {
+        return _innerCollection.Contains (item);
+      }
+
+      public void CopyTo (T[] array, int arrayIndex)
+      {
+        _innerCollection.CopyTo (array, arrayIndex);
+      }
+
+      public bool Remove (T item)
+      {
+        return _innerCollection.Remove (item);
+      }
+
+      public int Count => _innerCollection.Count;
+
+      public bool IsReadOnly => _innerCollection.IsReadOnly;
+    }
+
+    private class ReadOnlyCollectionStub<T> : IReadOnlyCollection<T>
+    {
+      private readonly IReadOnlyCollection<T> _innerCollection;
+
+      public ReadOnlyCollectionStub (IEnumerable<T> values)
+      {
+        _innerCollection = values.ToArray();
+      }
+
+      public IEnumerator<T> GetEnumerator ()
+      {
+        return _innerCollection.GetEnumerator();
+      }
+
+      IEnumerator IEnumerable.GetEnumerator ()
+      {
+        return GetEnumerator();
+      }
+
+      public int Count => _innerCollection.Count;
     }
   }
 }

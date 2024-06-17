@@ -1,0 +1,134 @@
+Enumerable {
+  Customer
+    Address: 'Walserweg 21'
+    City: 'Aachen'
+    CompanyName: 'Drachenblut Delikatessen'
+    ContactName: 'Sven Ottlieb'
+    ContactTitle: 'Order Administrator'
+    Country: 'Germany'
+    CustomerID: 'DRACD'
+    Fax: '0241-059428'
+    Phone: '0241-039123'
+    PostalCode: '52066'
+    Region: null
+  Customer
+    Address: 'Obere Str. 57'
+    City: 'Berlin'
+    CompanyName: 'Alfreds Futterkiste'
+    ContactName: 'Maria Anders'
+    ContactTitle: 'Sales Representative'
+    Country: 'Germany'
+    CustomerID: 'ALFKI'
+    Fax: '030-0076545'
+    Phone: '030-0074321'
+    PostalCode: '12209'
+    Region: null
+  Customer
+    Address: 'Maubelstr. 90'
+    City: 'Brandenburg'
+    CompanyName: 'Königlich Essen'
+    ContactName: 'Philip Cramer'
+    ContactTitle: 'Sales Associate'
+    Country: 'Germany'
+    CustomerID: 'KOENE'
+    Fax: null
+    Phone: '0555-09876'
+    PostalCode: '14776'
+    Region: null
+  Customer
+    Address: 'Taucherstraße 10'
+    City: 'Cunewalde'
+    CompanyName: 'QUICK-Stop'
+    ContactName: 'Horst Kloss'
+    ContactTitle: 'Accounting Manager'
+    Country: 'Germany'
+    CustomerID: 'QUICK'
+    Fax: null
+    Phone: '0372-035188'
+    PostalCode: '01307'
+    Region: null
+  Customer
+    Address: 'Magazinweg 7'
+    City: 'Frankfurt a.M.'
+    CompanyName: 'Lehmanns Marktstand'
+    ContactName: 'Renate Messner'
+    ContactTitle: 'Sales Representative'
+    Country: 'Germany'
+    CustomerID: 'LEHMS'
+    Fax: '069-0245874'
+    Phone: '069-0245984'
+    PostalCode: '60528'
+    Region: null
+  Customer
+    Address: 'Mehrheimerstr. 369'
+    City: 'Köln'
+    CompanyName: 'Ottilies Käseladen'
+    ContactName: 'Henriette Pfalzheim'
+    ContactTitle: 'Owner'
+    Country: 'Germany'
+    CustomerID: 'OTTIK'
+    Fax: '0221-0765721'
+    Phone: '0221-0644327'
+    PostalCode: '50739'
+    Region: null
+  Customer
+    Address: 'Heerstr. 22'
+    City: 'Leipzig'
+    CompanyName: 'Morgenstern Gesundkost'
+    ContactName: 'Alexander Feuer'
+    ContactTitle: 'Marketing Assistant'
+    Country: 'Germany'
+    CustomerID: 'MORGK'
+    Fax: null
+    Phone: '0342-023176'
+    PostalCode: '04179'
+    Region: null
+  Customer
+    Address: 'Forsterstr. 57'
+    City: 'Mannheim'
+    CompanyName: 'Blauer See Delikatessen'
+    ContactName: 'Hanna Moos'
+    ContactTitle: 'Sales Representative'
+    Country: 'Germany'
+    CustomerID: 'BLAUS'
+    Fax: '0621-08924'
+    Phone: '0621-08460'
+    PostalCode: '68306'
+    Region: null
+  Customer
+    Address: 'Berliner Platz 43'
+    City: 'München'
+    CompanyName: 'Frankenversand'
+    ContactName: 'Peter Franken'
+    ContactTitle: 'Marketing Manager'
+    Country: 'Germany'
+    CustomerID: 'FRANK'
+    Fax: '089-0877451'
+    Phone: '089-0877310'
+    PostalCode: '80805'
+    Region: null
+  Customer
+    Address: 'Luisenstr. 48'
+    City: 'Münster'
+    CompanyName: 'Toms Spezialitäten'
+    ContactName: 'Karin Josephs'
+    ContactTitle: 'Marketing Manager'
+    Country: 'Germany'
+    CustomerID: 'TOMSP'
+    Fax: '0251-035695'
+    Phone: '0251-031259'
+    PostalCode: '44087'
+    Region: null
+  Customer
+    Address: 'Adenauerallee 900'
+    City: 'Stuttgart'
+    CompanyName: 'Die Wandernde Kuh'
+    ContactName: 'Rita Müller'
+    ContactTitle: 'Sales Representative'
+    Country: 'Germany'
+    CustomerID: 'WANDK'
+    Fax: '0711-035428'
+    Phone: '0711-020361'
+    PostalCode: '70563'
+    Region: null
+}

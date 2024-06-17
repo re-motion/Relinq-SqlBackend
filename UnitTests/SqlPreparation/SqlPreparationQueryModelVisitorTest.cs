@@ -16,7 +16,9 @@
 // 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
@@ -201,6 +203,44 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
+    public void VisitQueryModel_ConstantExpression_Collection_TypeIsEnumerable_AndValueIsEnumerable ()
+    {
+      var constantExpression = Expression.Constant (new[] { "t1", "t2" }.Where (_ => true), typeof (IEnumerable<string>));
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
+      _visitor.VisitQueryModel (_queryModel);
+
+      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.TypeOf (typeof (ConstantExpression)));
+
+      var constantExpressionInSelectProjection = ((ConstantExpression) ((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression);
+      Assert.That (constantExpressionInSelectProjection.Value, Is.EqualTo (constantExpression.Value));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
+
+      var expectedDataInfo = _queryModel.SelectClause.GetOutputDataInfo ();
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs (expectedDataInfo.ItemExpression));
+    }
+
+    [Test]
+    public void VisitQueryModel_ConstantExpression_Collection_TypeIsNonGenericEnumerable_AndValueIsEnumerable ()
+    {
+      var constantExpression = Expression.Constant (new object[] { "t1", "t2" }.Where (_ => true), typeof (IEnumerable));
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
+      _visitor.VisitQueryModel (_queryModel);
+
+      Assert.That (_visitor.SqlStatementBuilder.SelectProjection, Is.TypeOf (typeof (NamedExpression)));
+      Assert.That (((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression, Is.TypeOf (typeof (ConstantExpression)));
+
+      var constantExpressionInSelectProjection = ((ConstantExpression) ((NamedExpression) _visitor.SqlStatementBuilder.SelectProjection).Expression);
+      Assert.That (constantExpressionInSelectProjection.Value, Is.EqualTo (constantExpression.Value));
+      Assert.That (_visitor.SqlStatementBuilder.SqlTables.Count, Is.EqualTo (0));
+
+      var expectedDataInfo = _queryModel.SelectClause.GetOutputDataInfo ();
+      Assert.That (((StreamedSequenceInfo) _visitor.SqlStatementBuilder.DataInfo).ItemExpression, Is.SameAs (expectedDataInfo.ItemExpression));
+    }
+
+    [Test]
     public void VisitQueryModel_ConstantExpression_Collection_AdjustsDataInfo_IfRequired ()
     {
       var constantExpression = Expression.Constant (new[] { "t1", "t2" });
@@ -245,9 +285,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
     }
 
     [Test]
-    public void VisitQueryModel_ConstantExpression_NoCollection ()
+    [TestCase ("String")]
+    [TestCase (new[] { 'c', 'h', 'a', 'r', 's' })]
+    [TestCase (new byte[] { 1, 1, 2, 3, 5, 8, 13, 21 })]
+    [TestCase (42)]
+    [CLSCompliant (false)]
+    public void VisitQueryModel_ConstantExpression_NoCollection_ValueIsScalar (object value)
     {
-      var constantExpression = Expression.Constant ("test");
+      var constantExpression = Expression.Constant (value);
       _queryModel.MainFromClause.FromExpression = constantExpression;
 
       var fakeSelectProjection = Expression.Constant (0);
@@ -255,8 +300,27 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation
       _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel)).Verifiable();
       _visitorPartialMock
           .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
-          .Callback ((SelectClause selectClause, QueryModel queryModel) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection)
-          .Verifiable();
+          .Callback ((SelectClause selectClause, QueryModel queryModel) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection);
+
+      _visitorPartialMock.Object.VisitQueryModel (_queryModel);
+
+      _visitorPartialMock.Verify();
+
+      Assert.That (((NamedExpression) _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection).Expression, Is.SameAs (fakeSelectProjection));
+    }
+
+    [Test]
+    public void VisitQueryModel_ConstantExpression_NoCollection_ValueIsQueryable ()
+    {
+      var constantExpression = Expression.Constant (Mock.Of<IQueryable<Kitchen>>(), typeof(IQueryable<Kitchen>));
+      _queryModel.MainFromClause.FromExpression = constantExpression;
+
+      var fakeSelectProjection = Expression.Constant (0);
+
+      _visitorPartialMock.Setup (mock => mock.VisitMainFromClause (_queryModel.MainFromClause, _queryModel)).Verifiable();
+      _visitorPartialMock
+          .Setup (mock => mock.VisitSelectClause (_queryModel.SelectClause, _queryModel))
+          .Callback ((SelectClause selectClause, QueryModel queryModel) => _visitorPartialMock.Object.SqlStatementBuilder.SelectProjection = fakeSelectProjection);
 
       _visitorPartialMock.Object.VisitQueryModel (_queryModel);
 
