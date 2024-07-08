@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Remotion.Linq.Development" Version="2.2.0" />
+    <PackageReference Include="Remotion.Linq" />
+    <PackageReference Include="Remotion.Linq.Development" />
   </ItemGroup>
 
 </Project>
