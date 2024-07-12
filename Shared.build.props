@@ -23,10 +23,6 @@
     <PackageTags>re-motion LINQ SQL SqlGeneration</PackageTags>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <BinaryFormatterSerializationObsoleteWarning>SYSLIB0011</BinaryFormatterSerializationObsoleteWarning>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(ProjectType)' == 'Library'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
@@ -38,7 +34,6 @@
 
   <PropertyGroup Condition="'$(ProjectType)' == 'Test'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>$(BinaryFormatterSerializationObsoleteWarning)</NoWarn>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
     <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net45</TargetFrameworks>
