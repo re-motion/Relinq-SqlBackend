@@ -32,7 +32,7 @@
     <NoWarn>1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>True</IsPackable>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net45</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net45</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
@@ -41,7 +41,7 @@
     <NoWarn>$(BinaryFormatterSerializationObsoleteWarning)</NoWarn>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net45</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net45</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
