@@ -22,6 +22,7 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
+#if NETFRAMEWORK
   [TestFixture]
   public class UnmappedItemExceptionTest
   {
@@ -37,4 +38,5 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       Assert.That (deserializedException.InnerException.Message, Is.EqualTo ("inner"));
     }
   }
+#endif
 }

@@ -24,7 +24,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// The <see cref="UnmappedItemException"/> is thrown if the <see cref="IMappingResolver"/> implementation 
   /// is unable to associate an part of the query model with the mapping.
   /// </summary>
+#if NETFRAMEWORK
   [Serializable]
+#endif
   public sealed class UnmappedItemException : Exception
   {
 #if NETFRAMEWORK 
@@ -46,14 +48,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 #endif
     }
 
-#pragma warning disable SYSLIB0051
+#if NETFRAMEWORK
     private UnmappedItemException (SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
     }
-#pragma warning restore
 
-#if NETFRAMEWORK 
     [Serializable]
     private struct UnmappedItemExceptionState : ISafeSerializationData
     {

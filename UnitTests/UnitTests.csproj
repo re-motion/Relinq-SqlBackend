@@ -11,7 +11,6 @@
     <AssemblyTitle>Unit Tests for Remotion Linq Library SQL Backend</AssemblyTitle>
     <AssemblyName>Remotion.Linq.SqlBackend.UnitTests</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>
