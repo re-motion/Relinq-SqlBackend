@@ -38,6 +38,11 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" VersionOverride="8.0.0-preview.*" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="Core.Data.Linq" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" VersionOverride="9.0.0-preview.6.24327.7" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data.Linq" />
