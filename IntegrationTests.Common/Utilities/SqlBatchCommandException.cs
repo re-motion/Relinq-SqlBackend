@@ -18,7 +18,9 @@ using System;
 
 namespace Remotion.Linq.IntegrationTests.Common.Utilities
 {
+#if NETFRAMEWORK
   [Serializable]
+#endif
   public class SqlBatchCommandException : Exception
   {
     /// <summary>
