@@ -25,11 +25,11 @@
     <PackageReference Include="Remotion.Linq" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' != 'net462'">
     <PackageReference Include="Core.Data.Linq" />
   </ItemGroup>
 

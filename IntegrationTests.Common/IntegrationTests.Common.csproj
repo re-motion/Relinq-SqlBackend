@@ -43,7 +43,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" VersionOverride="9.0.0-preview.6.24327.7" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data.Linq" />
   </ItemGroup>

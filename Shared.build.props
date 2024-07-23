@@ -28,16 +28,16 @@
     <NoWarn>1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>True</IsPackable>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net45</TargetFrameworks>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
+    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net462</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net462'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(ProjectType)' == 'Test'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net45</TargetFrameworks>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
+    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net462</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net462'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -67,7 +67,7 @@
 
   <Target Name="CopyTestHostAppConfigs"
       AfterTargets="_CopyAppConfigFile"
-      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' != 'net45'">
+      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' != 'net462'">
     <Message Text="CopyTestHostAppConfigs: $(PrepareForRunDependsOn)" Importance="High"/>
     <ItemGroup>
       <_testHostAppConfig Include="$(OutDir)\testhost.dll.config" />
