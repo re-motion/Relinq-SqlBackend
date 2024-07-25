@@ -134,12 +134,11 @@ LOG ON (
       var matchingProperty = propertiesWithColumnName.FirstOrDefault (d => d.ColumnNameAndValue.Key == columnName);
       // Assert.That (matchingProperties, Has.Length.LessThanOrEqualTo (1), entity.GetType().Name + ": " + string.Join (",", matchingProperties));
 
-      Assert.IsNotNull (
+      Assert.That (
           matchingProperty,
-          "No member found for column '{0}' on entity type '{1}'.\r\n(Found: {2})",
-          columnName,
-          entity.GetType().Name,
-          string.Join (",", propertiesWithColumnName.Select (p=> p.ToString())));
+          Is.Not.Null,
+          $"No member found for column '{columnName}' on entity type '{entity.GetType().Name}'.\r\n(Found: "
+          + $"{string.Join (",", propertiesWithColumnName.Select (p=> p.ToString()))})");
       return matchingProperty.ColumnNameAndValue.Value;
     }
 
