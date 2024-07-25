@@ -39,6 +39,7 @@
     <None Include="Customizations\Configuration.props" />
     <None Include="Customizations\Local\Configuration.props" />
     <None Include="Customizations\Local\Configuration.targets" />
+    <None Include="Customizations\Overrides.targets" />
     <None Include="Customizations\Properties.props" />
     <None Include="Customizations\releaseProcessScript.config" />
     <None Include="Customizations\Server\Configuration.targets" />
