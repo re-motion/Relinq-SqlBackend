@@ -10,7 +10,7 @@
     <PackageVersion Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageVersion Include="Moq" Version="4.16.1" />
     <PackageVersion Include="Moq.VerifiableSequence" Version="4.16.1.2" />
-    <PackageVersion Include="NUnit" Version="3.12.0" />
+    <PackageVersion Include="NUnit" Version="4.1.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageVersion Include="NUnitTestAdapter" Version="2.3.0" />
     <PackageVersion Include="Remotion.Linq" Version="2.2.0" />
