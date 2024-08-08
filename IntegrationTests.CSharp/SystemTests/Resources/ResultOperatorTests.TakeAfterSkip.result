@@ -3,14 +3,14 @@ Enumerable {
     CustomerID: 'VICTE'
     EmployeeID: 3
     Freight: 41.3400
-    OrderDate: 07/08/1996 00:00:00
+    OrderDate: 07/08/1996
     OrderID: 10251
-    RequiredDate: 08/05/1996 00:00:00
+    RequiredDate: 08/05/1996
     ShipAddress: '2, rue du Commerce'
     ShipCity: 'Lyon'
     ShipCountry: 'France'
     ShipName: 'Victuailles en stock'
-    ShippedDate: 07/15/1996 00:00:00
+    ShippedDate: 07/15/1996
     ShipPostalCode: '69004'
     ShipRegion: null
     ShipVia: 1
@@ -18,14 +18,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2

@@ -3,14 +3,14 @@ Enumerable {
     CustomerID: 'ANTON'
     EmployeeID: 3
     Freight: 22.0000
-    OrderDate: 11/27/1996 00:00:00
+    OrderDate: 11/27/1996
     OrderID: 10365
-    RequiredDate: 12/25/1996 00:00:00
+    RequiredDate: 12/25/1996
     ShipAddress: 'Mataderos  2312'
     ShipCity: 'México D.F.'
     ShipCountry: 'Mexico'
     ShipName: 'Antonio Moreno Taquería'
-    ShippedDate: 12/02/1996 00:00:00
+    ShippedDate: 12/02/1996
     ShipPostalCode: '05023'
     ShipRegion: null
     ShipVia: 2
@@ -18,14 +18,14 @@ Enumerable {
     CustomerID: 'LAZYK'
     EmployeeID: 8
     Freight: 11.9200
-    OrderDate: 05/22/1997 00:00:00
+    OrderDate: 05/22/1997
     OrderID: 10545
-    RequiredDate: 06/19/1997 00:00:00
+    RequiredDate: 06/19/1997
     ShipAddress: '12 Orchestra Terrace'
     ShipCity: 'Walla Walla'
     ShipCountry: 'USA'
     ShipName: 'Lazy K Kountry Store'
-    ShippedDate: 06/26/1997 00:00:00
+    ShippedDate: 06/26/1997
     ShipPostalCode: '99362'
     ShipRegion: 'WA'
     ShipVia: 2
@@ -33,14 +33,14 @@ Enumerable {
     CustomerID: 'HANAR'
     EmployeeID: 8
     Freight: 5.3200
-    OrderDate: 12/09/1997 00:00:00
+    OrderDate: 12/09/1997
     OrderID: 10770
-    RequiredDate: 01/06/1998 00:00:00
+    RequiredDate: 01/06/1998
     ShipAddress: 'Rua do Paço, 67'
     ShipCity: 'Rio de Janeiro'
     ShipCountry: 'Brazil'
     ShipName: 'Hanari Carnes'
-    ShippedDate: 12/17/1997 00:00:00
+    ShippedDate: 12/17/1997
     ShipPostalCode: '05454-876'
     ShipRegion: 'RJ'
     ShipVia: 3
@@ -48,14 +48,14 @@ Enumerable {
     CustomerID: 'DRACD'
     EmployeeID: 7
     Freight: 33.3500
-    OrderDate: 12/25/1997 00:00:00
+    OrderDate: 12/25/1997
     OrderID: 10797
-    RequiredDate: 01/22/1998 00:00:00
+    RequiredDate: 01/22/1998
     ShipAddress: 'Walserweg 21'
     ShipCity: 'Aachen'
     ShipCountry: 'Germany'
     ShipName: 'Drachenblut Delikatessen'
-    ShippedDate: 01/05/1998 00:00:00
+    ShippedDate: 01/05/1998
     ShipPostalCode: '52066'
     ShipRegion: null
     ShipVia: 2
@@ -63,14 +63,14 @@ Enumerable {
     CustomerID: 'SPECD'
     EmployeeID: 5
     Freight: 8.8000
-    OrderDate: 04/22/1998 00:00:00
+    OrderDate: 04/22/1998
     OrderID: 11043
-    RequiredDate: 05/20/1998 00:00:00
+    RequiredDate: 05/20/1998
     ShipAddress: '25, rue Lauriston'
     ShipCity: 'Paris'
     ShipCountry: 'France'
     ShipName: 'Spécialités du monde'
-    ShippedDate: 04/29/1998 00:00:00
+    ShippedDate: 04/29/1998
     ShipPostalCode: '75016'
     ShipRegion: null
     ShipVia: 2

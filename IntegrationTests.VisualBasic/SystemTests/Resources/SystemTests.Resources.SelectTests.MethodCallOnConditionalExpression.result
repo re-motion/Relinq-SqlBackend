@@ -3,14 +3,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 4
     Freight: 41.7600
-    OrderDate: 09/26/1996 00:00:00
+    OrderDate: 09/26/1996
     OrderID: 10315
-    RequiredDate: 10/24/1996 00:00:00
+    RequiredDate: 10/24/1996
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 10/03/1996 00:00:00
+    ShippedDate: 10/03/1996
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 2
@@ -18,14 +18,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 8
     Freight: 4.7300
-    OrderDate: 10/01/1996 00:00:00
+    OrderDate: 10/01/1996
     OrderID: 10318
-    RequiredDate: 10/29/1996 00:00:00
+    RequiredDate: 10/29/1996
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 10/04/1996 00:00:00
+    ShippedDate: 10/04/1996
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 2
@@ -33,14 +33,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 3
     Freight: 3.4300
-    OrderDate: 10/03/1996 00:00:00
+    OrderDate: 10/03/1996
     OrderID: 10321
-    RequiredDate: 10/31/1996 00:00:00
+    RequiredDate: 10/31/1996
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 10/11/1996 00:00:00
+    ShippedDate: 10/11/1996
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 2
@@ -48,14 +48,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 1
     Freight: 16.3700
-    OrderDate: 03/13/1997 00:00:00
+    OrderDate: 03/13/1997
     OrderID: 10473
-    RequiredDate: 03/27/1997 00:00:00
+    RequiredDate: 03/27/1997
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 03/21/1997 00:00:00
+    ShippedDate: 03/21/1997
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 3
@@ -63,14 +63,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 4
     Freight: 23.7300
-    OrderDate: 08/05/1997 00:00:00
+    OrderDate: 08/05/1997
     OrderID: 10621
-    RequiredDate: 09/02/1997 00:00:00
+    RequiredDate: 09/02/1997
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 08/11/1997 00:00:00
+    ShippedDate: 08/11/1997
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 2
@@ -78,14 +78,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 4
     Freight: 0.9000
-    OrderDate: 09/18/1997 00:00:00
+    OrderDate: 09/18/1997
     OrderID: 10674
-    RequiredDate: 10/16/1997 00:00:00
+    RequiredDate: 10/16/1997
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 09/30/1997 00:00:00
+    ShippedDate: 09/30/1997
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 2
@@ -93,14 +93,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 4
     Freight: 61.5300
-    OrderDate: 11/20/1997 00:00:00
+    OrderDate: 11/20/1997
     OrderID: 10749
-    RequiredDate: 12/18/1997 00:00:00
+    RequiredDate: 12/18/1997
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 12/19/1997 00:00:00
+    ShippedDate: 12/19/1997
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 2
@@ -108,14 +108,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 2
     Freight: 2.3300
-    OrderDate: 12/26/1997 00:00:00
+    OrderDate: 12/26/1997
     OrderID: 10798
-    RequiredDate: 01/23/1998 00:00:00
+    RequiredDate: 01/23/1998
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 01/05/1998 00:00:00
+    ShippedDate: 01/05/1998
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 1
@@ -123,14 +123,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 9
     Freight: 154.7200
-    OrderDate: 01/13/1998 00:00:00
+    OrderDate: 01/13/1998
     OrderID: 10829
-    RequiredDate: 02/10/1998 00:00:00
+    RequiredDate: 02/10/1998
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 1
@@ -138,14 +138,14 @@ Enumerable {
     CustomerID: 'ISLAT'
     EmployeeID: 6
     Freight: 54.1500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10933
-    RequiredDate: 04/03/1998 00:00:00
+    RequiredDate: 04/03/1998
     ShipAddress: 'Garden House Crowther Way'
     ShipCity: 'Cowes'
     ShipCountry: 'UK'
     ShipName: 'Island Trading'
-    ShippedDate: 03/16/1998 00:00:00
+    ShippedDate: 03/16/1998
     ShipPostalCode: 'PO31 7PJ'
     ShipRegion: 'Isle of Wight'
     ShipVia: 3

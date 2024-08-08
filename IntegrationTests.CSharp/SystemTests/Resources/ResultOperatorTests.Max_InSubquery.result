@@ -3,9 +3,9 @@ Enumerable {
     CustomerID: 'RATTC'
     EmployeeID: 1
     Freight: 8.5300
-    OrderDate: 05/06/1998 00:00:00
+    OrderDate: 05/06/1998
     OrderID: 11077
-    RequiredDate: 06/03/1998 00:00:00
+    RequiredDate: 06/03/1998
     ShipAddress: '2817 Milton Dr.'
     ShipCity: 'Albuquerque'
     ShipCountry: 'USA'

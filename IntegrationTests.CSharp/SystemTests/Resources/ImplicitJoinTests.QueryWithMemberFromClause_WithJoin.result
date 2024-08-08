@@ -3,14 +3,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -18,14 +18,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -33,14 +33,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -48,14 +48,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -63,14 +63,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -78,14 +78,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -93,14 +93,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -108,14 +108,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -123,14 +123,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -138,14 +138,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -153,14 +153,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -168,14 +168,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 51.3000
-    OrderDate: 07/09/1996 00:00:00
+    OrderDate: 07/09/1996
     OrderID: 10252
-    RequiredDate: 08/06/1996 00:00:00
+    RequiredDate: 08/06/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 07/11/1996 00:00:00
+    ShippedDate: 07/11/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -183,14 +183,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -198,14 +198,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -213,14 +213,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -228,14 +228,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -243,14 +243,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -258,14 +258,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -273,14 +273,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -288,14 +288,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -303,14 +303,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -318,14 +318,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -333,14 +333,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -348,14 +348,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 6.2700
-    OrderDate: 09/10/1996 00:00:00
+    OrderDate: 09/10/1996
     OrderID: 10302
-    RequiredDate: 10/08/1996 00:00:00
+    RequiredDate: 10/08/1996
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 10/09/1996 00:00:00
+    ShippedDate: 10/09/1996
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -363,14 +363,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -378,14 +378,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -393,14 +393,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -408,14 +408,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -423,14 +423,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -438,14 +438,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -453,14 +453,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -468,14 +468,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -483,14 +483,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -498,14 +498,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -513,14 +513,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -528,14 +528,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 7
     Freight: 147.0600
-    OrderDate: 02/26/1997 00:00:00
+    OrderDate: 02/26/1997
     OrderID: 10458
-    RequiredDate: 03/26/1997 00:00:00
+    RequiredDate: 03/26/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/04/1997 00:00:00
+    ShippedDate: 03/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -543,14 +543,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -558,14 +558,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -573,14 +573,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -588,14 +588,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -603,14 +603,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -618,14 +618,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -633,14 +633,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -648,14 +648,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -663,14 +663,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -678,14 +678,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -693,14 +693,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -708,14 +708,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 14.7800
-    OrderDate: 03/04/1997 00:00:00
+    OrderDate: 03/04/1997
     OrderID: 10463
-    RequiredDate: 04/01/1997 00:00:00
+    RequiredDate: 04/01/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/06/1997 00:00:00
+    ShippedDate: 03/06/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -723,14 +723,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -738,14 +738,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -753,14 +753,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -768,14 +768,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -783,14 +783,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -798,14 +798,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -813,14 +813,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -828,14 +828,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -843,14 +843,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -858,14 +858,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -873,14 +873,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -888,14 +888,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 9
     Freight: 68.5200
-    OrderDate: 03/14/1997 00:00:00
+    OrderDate: 03/14/1997
     OrderID: 10475
-    RequiredDate: 04/11/1997 00:00:00
+    RequiredDate: 04/11/1997
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/04/1997 00:00:00
+    ShippedDate: 04/04/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 1
@@ -903,14 +903,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -918,14 +918,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -933,14 +933,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -948,14 +948,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -963,14 +963,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -978,14 +978,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -993,14 +993,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1008,14 +1008,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1023,14 +1023,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1038,14 +1038,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1053,14 +1053,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1068,14 +1068,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 1.5900
-    OrderDate: 12/05/1997 00:00:00
+    OrderDate: 12/05/1997
     OrderID: 10767
-    RequiredDate: 01/02/1998 00:00:00
+    RequiredDate: 01/02/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 12/15/1997 00:00:00
+    ShippedDate: 12/15/1997
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1083,14 +1083,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1098,14 +1098,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1113,14 +1113,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1128,14 +1128,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1143,14 +1143,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1158,14 +1158,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1173,14 +1173,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1188,14 +1188,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1203,14 +1203,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1218,14 +1218,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1233,14 +1233,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1248,14 +1248,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 5
     Freight: 424.3000
-    OrderDate: 01/20/1998 00:00:00
+    OrderDate: 01/20/1998
     OrderID: 10841
-    RequiredDate: 02/17/1998 00:00:00
+    RequiredDate: 02/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/29/1998 00:00:00
+    ShippedDate: 01/29/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1263,14 +1263,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1278,14 +1278,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1293,14 +1293,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1308,14 +1308,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1323,14 +1323,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1338,14 +1338,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1353,14 +1353,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1368,14 +1368,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1383,14 +1383,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1398,14 +1398,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1413,14 +1413,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1428,14 +1428,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 56.4600
-    OrderDate: 01/22/1998 00:00:00
+    OrderDate: 01/22/1998
     OrderID: 10846
-    RequiredDate: 03/05/1998 00:00:00
+    RequiredDate: 03/05/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 01/23/1998 00:00:00
+    ShippedDate: 01/23/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1443,14 +1443,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1458,14 +1458,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1473,14 +1473,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1488,14 +1488,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1503,14 +1503,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1518,14 +1518,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1533,14 +1533,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1548,14 +1548,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1563,14 +1563,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1578,14 +1578,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1593,14 +1593,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1608,14 +1608,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 6
     Freight: 5.6400
-    OrderDate: 02/12/1998 00:00:00
+    OrderDate: 02/12/1998
     OrderID: 10885
-    RequiredDate: 03/12/1998 00:00:00
+    RequiredDate: 03/12/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 02/18/1998 00:00:00
+    ShippedDate: 02/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1623,14 +1623,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1638,14 +1638,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1653,14 +1653,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1668,14 +1668,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1683,14 +1683,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1698,14 +1698,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1713,14 +1713,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1728,14 +1728,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1743,14 +1743,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1758,14 +1758,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1773,14 +1773,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1788,14 +1788,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 4
     Freight: 15.5500
-    OrderDate: 03/06/1998 00:00:00
+    OrderDate: 03/06/1998
     OrderID: 10930
-    RequiredDate: 04/17/1998 00:00:00
+    RequiredDate: 04/17/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 03/18/1998 00:00:00
+    ShippedDate: 03/18/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 3
@@ -1803,14 +1803,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1818,14 +1818,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1833,14 +1833,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1848,14 +1848,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1863,14 +1863,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1878,14 +1878,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1893,14 +1893,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1908,14 +1908,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1923,14 +1923,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1938,14 +1938,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1953,14 +1953,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1968,14 +1968,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 2
     Freight: 0.1700
-    OrderDate: 04/20/1998 00:00:00
+    OrderDate: 04/20/1998
     OrderID: 11035
-    RequiredDate: 05/18/1998 00:00:00
+    RequiredDate: 05/18/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/24/1998 00:00:00
+    ShippedDate: 04/24/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1983,14 +1983,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -1998,14 +1998,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2013,14 +2013,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2028,14 +2028,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2043,14 +2043,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2058,14 +2058,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2073,14 +2073,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2088,14 +2088,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2103,14 +2103,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2118,14 +2118,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2133,14 +2133,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2
@@ -2148,14 +2148,14 @@ Enumerable {
     CustomerID: 'SUPRD'
     EmployeeID: 1
     Freight: 29.5900
-    OrderDate: 04/21/1998 00:00:00
+    OrderDate: 04/21/1998
     OrderID: 11038
-    RequiredDate: 05/19/1998 00:00:00
+    RequiredDate: 05/19/1998
     ShipAddress: 'Boulevard Tirou, 255'
     ShipCity: 'Charleroi'
     ShipCountry: 'Belgium'
     ShipName: 'Suprêmes délices'
-    ShippedDate: 04/30/1998 00:00:00
+    ShippedDate: 04/30/1998
     ShipPostalCode: 'B-6000'
     ShipRegion: null
     ShipVia: 2

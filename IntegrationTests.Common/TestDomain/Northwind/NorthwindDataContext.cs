@@ -35,6 +35,12 @@ using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
 
+#if NET6_0_OR_GREATER
+using LocalDateOnly = System.DateOnly;
+#else
+using LocalDateOnly = System.DateTime;
+#endif
+
 namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 {
   [Database (Name = "NORTHWND")]
@@ -3955,7 +3961,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     private System.Nullable<System.DateTime> _OrderDate;
 
-    private System.Nullable<System.DateTime> _RequiredDate;
+    private System.Nullable<LocalDateOnly> _RequiredDate;
 
     private System.Nullable<System.DateTime> _ShippedDate;
 
@@ -4236,7 +4242,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
     }
 
     [Column (Storage = "_RequiredDate", DbType = "DateTime")]
-    public System.Nullable<System.DateTime> RequiredDate
+    public System.Nullable<LocalDateOnly> RequiredDate
     {
       get
       {
@@ -4830,7 +4836,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     private System.Nullable<System.DateTime> _OrderDate;
 
-    private System.Nullable<System.DateTime> _RequiredDate;
+    private System.Nullable<LocalDateOnly> _RequiredDate;
 
     private System.Nullable<System.DateTime> _ShippedDate;
 
@@ -4870,7 +4876,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
     partial void OnEmployeeIDChanged ();
     partial void OnOrderDateChanging (System.Nullable<System.DateTime> value);
     partial void OnOrderDateChanged ();
-    partial void OnRequiredDateChanging (System.Nullable<System.DateTime> value);
+    partial void OnRequiredDateChanging (System.Nullable<LocalDateOnly> value);
     partial void OnRequiredDateChanged ();
     partial void OnShippedDateChanging (System.Nullable<System.DateTime> value);
     partial void OnShippedDateChanged ();
@@ -4990,7 +4996,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
     }
 
     [Column (Storage = "_RequiredDate", DbType = "DateTime")]
-    public System.Nullable<System.DateTime> RequiredDate
+    public System.Nullable<LocalDateOnly> RequiredDate
     {
       get
       {
@@ -5355,7 +5361,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     private System.Nullable<System.DateTime> _OrderDate;
 
-    private System.Nullable<System.DateTime> _RequiredDate;
+    private System.Nullable<LocalDateOnly> _RequiredDate;
 
     private System.Nullable<System.DateTime> _ShippedDate;
 
@@ -5456,7 +5462,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
     }
 
     [Column (Storage = "_RequiredDate", DbType = "DateTime")]
-    public System.Nullable<System.DateTime> RequiredDate
+    public System.Nullable<LocalDateOnly> RequiredDate
     {
       get
       {
@@ -7700,7 +7706,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     private System.Nullable<System.DateTime> _OrderDate;
 
-    private System.Nullable<System.DateTime> _RequiredDate;
+    private System.Nullable<LocalDateOnly> _RequiredDate;
 
     private System.Nullable<System.DateTime> _ShippedDate;
 
@@ -7741,7 +7747,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
     }
 
     [Column (Storage = "_RequiredDate", DbType = "DateTime")]
-    public System.Nullable<System.DateTime> RequiredDate
+    public System.Nullable<LocalDateOnly> RequiredDate
     {
       get
       {
@@ -8106,7 +8112,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
 
     private System.Nullable<System.DateTime> _OrderDate;
 
-    private System.Nullable<System.DateTime> _RequiredDate;
+    private System.Nullable<LocalDateOnly> _RequiredDate;
 
     private System.Nullable<System.DateTime> _ShippedDate;
 
@@ -8195,7 +8201,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
     }
 
     [Column (Storage = "_RequiredDate", DbType = "DateTime")]
-    public System.Nullable<System.DateTime> RequiredDate
+    public System.Nullable<LocalDateOnly> RequiredDate
     {
       get
       {
