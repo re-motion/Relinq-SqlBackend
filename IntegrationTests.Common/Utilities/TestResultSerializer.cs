@@ -112,6 +112,10 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
     {
       if (value == null)
         _textWriter.WriteLine ("null");
+      // DateOnly and DateTime are in the same fields in Net Framework/.NET, to enable tests we need to standardize the results of serialization
+      // of all cases where time is irrelevant for the dateTime property
+      else if (value is DateTime dateTime && dateTime.ToLongTimeString() == "00:00:00")
+        SerializeDateTimeWithNoTime(dateTime);
       else if (value is string)
         SerializeString ((string) value);
       else if (value is IEnumerable)
@@ -120,6 +124,11 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
         _textWriter.WriteLine (value);
       else
         SerializeComplexValue (value);
+    }
+
+    private void SerializeDateTimeWithNoTime (DateTime dateTime)
+    {
+      _textWriter.WriteLine(dateTime.ToShortDateString());
     }
 
     private void SerializeString (string value)
