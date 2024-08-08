@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Core.Data.Linq" Version="4.0.0-alpha.1" />
+    <PackageVersion Include="Core.Data.Linq" Version="4.0.0-alpha.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
     <PackageVersion Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageVersion Include="Moq" Version="4.16.1" />
