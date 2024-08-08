@@ -74,6 +74,7 @@
       <_testHostAppConfig Include="$(OutDir)\testhost.x86.dll.config" />
       <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner32.dll.config" />
       <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner64.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner.dll.config" />
     </ItemGroup>
     <Copy SourceFiles="$(OutDir)\$(AssemblyName).dll.config" DestinationFiles="%(_testHostAppConfig.Identity)" />
     <ItemGroup>
