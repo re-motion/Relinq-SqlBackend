@@ -166,6 +166,30 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     }
 
     [Test]
+    public void QueryWithContains_Collection_ConstantValue ()
+    {
+      var cities = new[] { "Berlin", "München", "Graz" };
+      var query =
+          from c in DB.Customers
+          where cities.Contains (c.City)
+          select c;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
+    public void QueryWithContains_Collection_NonConstantValue ()
+    {
+      var cities = from customer in DB.Customers where customer.Country == "Germany" select customer.City;
+      var query =
+          from c in DB.Customers
+          where cities.Contains (c.City)
+          select c;
+
+      TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
+    }
+
+    [Test]
     public void QueryWithWhere_OuterObject ()
     {
       Customer customer = DB.Customers.First();
@@ -348,7 +372,9 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
 
       var query =
           from o in DB.Orders
+#pragma warning disable CS0162 // Unreachable code detected
           where o.OrderID == (true ? firstOrder.OrderID : o.OrderID)
+#pragma warning restore CS0162 // Unreachable code detected
           select o;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());
@@ -359,7 +385,9 @@ namespace Remotion.Linq.IntegrationTests.CSharp.SystemTests
     {
       var query =
           from o1 in DB.Orders
+#pragma warning disable CS0162 // Unreachable code detected
           where o1.OrderID == (false ? 1 : o1.OrderID)
+#pragma warning restore CS0162 // Unreachable code detected
           select o1;
 
       TestExecutor.Execute (query, MethodBase.GetCurrentMethod());

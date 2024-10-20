@@ -44,6 +44,14 @@ namespace Remotion.Linq.LinqToSqlAdapter
       if (_dataReader.IsDBNull (id.Position))
         return default (T);
 
+#if NET6_0_OR_GREATER
+      if (typeof (T) == typeof (DateOnly) || typeof (T) == typeof (DateOnly?))
+      {
+        var dateTimeValue = (DateTime) _dataReader.GetValue (id.Position);
+        return (T) (object) DateOnly.FromDateTime (dateTimeValue);
+      }
+#endif
+
       return (T) _dataReader.GetValue (id.Position);
     }
 
@@ -81,6 +89,14 @@ namespace Remotion.Linq.LinqToSqlAdapter
           if (member.Member.Type == typeof (Binary))
             value = new Binary ((byte[]) value);
         }
+
+#if NET6_0_OR_GREATER
+        if (value is DateTime)
+        {
+          if (member.Member.Type == typeof (DateOnly) || member.Member.Type == typeof (DateOnly?))
+            value = DateOnly.FromDateTime ((DateTime) value);
+        }
+#endif
 
         if (value != null)
           member.Member.MemberAccessor.SetBoxedValue (ref instance, value);

@@ -113,7 +113,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       _readerMock.Verify();
       _reverseMappingResolverMock.Verify();
-      Assert.IsInstanceOf (typeof (ContactWithInheritanceHierarchy.CustomerContact), customer);
+      Assert.That (customer, Is.InstanceOf(typeof(ContactWithInheritanceHierarchy.CustomerContact)));
     }
 
     [Test]
@@ -140,7 +140,7 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
 
       _readerMock.Verify();
       _reverseMappingResolverMock.Verify();
-      Assert.IsInstanceOf (typeof (ContactWithInheritanceHierarchy), contact);
+      Assert.That (contact, Is.InstanceOf(typeof (ContactWithInheritanceHierarchy)));
     }
 
     [Test]

@@ -11,7 +11,7 @@
     <AssemblyTitle>Medium Trust Integration Tests for Remotion Linq Library SQL Backend</AssemblyTitle>
     <AssemblyName>Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net462</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,10 +46,10 @@
 
   <ItemGroup>
     <PackageReference Remove="NUnit" />
-    <PackageReference Include="NUNit" Version="2.6.3" />
+    <PackageReference Include="NUNit" VersionOverride="2.6.3" />
 
     <PackageReference Remove="NUnit3TestAdapter" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" />
+    <PackageReference Include="NUnitTestAdapter" />
   </ItemGroup>
 
 </Project>

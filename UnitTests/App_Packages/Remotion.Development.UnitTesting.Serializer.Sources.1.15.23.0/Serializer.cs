@@ -22,6 +22,7 @@ using Remotion.Utilities;
 // ReSharper disable once CheckNamespace
 namespace Remotion.Development.UnitTesting
 {
+#if NETFRAMEWORK
   /// <summary>
   /// Provides quick serialization and deserialization functionality for unit tests.
   /// </summary>
@@ -61,4 +62,5 @@ namespace Remotion.Development.UnitTesting
       }
     }
   }
+#endif
 }

@@ -3,14 +3,14 @@ Enumerable {
     CustomerID: 'WHITC'
     EmployeeID: 5
     Freight: 4,5600
-    OrderDate: 31.07.1996 00:00:00
+    OrderDate: 31.07.1996
     OrderID: 10269
-    RequiredDate: 14.08.1996 00:00:00
+    RequiredDate: 14.08.1996
     ShipAddress: '1029 - 12th Ave. S.'
     ShipCity: 'Seattle'
     ShipCountry: 'USA'
     ShipName: 'White Clover Markets'
-    ShippedDate: 09.08.1996 00:00:00
+    ShippedDate: 09.08.1996
     ShipPostalCode: '98124'
     ShipRegion: 'WA'
     ShipVia: 1
@@ -18,14 +18,14 @@ Enumerable {
     CustomerID: 'LEHMS'
     EmployeeID: 4
     Freight: 110,3700
-    OrderDate: 31.10.1996 00:00:00
+    OrderDate: 31.10.1996
     OrderID: 10343
-    RequiredDate: 28.11.1996 00:00:00
+    RequiredDate: 28.11.1996
     ShipAddress: 'Magazinweg 7'
     ShipCity: 'Frankfurt a.M.'
     ShipCountry: 'Germany'
     ShipName: 'Lehmanns Marktstand'
-    ShippedDate: 06.11.1996 00:00:00
+    ShippedDate: 06.11.1996
     ShipPostalCode: '60528'
     ShipRegion: null
     ShipVia: 1
@@ -33,14 +33,14 @@ Enumerable {
     CustomerID: 'VAFFE'
     EmployeeID: 8
     Freight: 27,3600
-    OrderDate: 31.12.1996 00:00:00
+    OrderDate: 31.12.1996
     OrderID: 10399
-    RequiredDate: 14.01.1997 00:00:00
+    RequiredDate: 14.01.1997
     ShipAddress: 'Smagsloget 45'
     ShipCity: 'Århus'
     ShipCountry: 'Denmark'
     ShipName: 'Vaffeljernet'
-    ShippedDate: 08.01.1997 00:00:00
+    ShippedDate: 08.01.1997
     ShipPostalCode: '8200'
     ShipRegion: null
     ShipVia: 3
@@ -48,14 +48,14 @@ Enumerable {
     CustomerID: 'SPLIR'
     EmployeeID: 3
     Freight: 4,3400
-    OrderDate: 31.01.1997 00:00:00
+    OrderDate: 31.01.1997
     OrderID: 10432
-    RequiredDate: 14.02.1997 00:00:00
+    RequiredDate: 14.02.1997
     ShipAddress: 'P.O. Box 555'
     ShipCity: 'Lander'
     ShipCountry: 'USA'
     ShipName: 'Split Rail Beer & Ale'
-    ShippedDate: 07.02.1997 00:00:00
+    ShippedDate: 07.02.1997
     ShipPostalCode: '82520'
     ShipRegion: 'WY'
     ShipVia: 2
@@ -63,14 +63,14 @@ Enumerable {
     CustomerID: 'HILAA'
     EmployeeID: 7
     Freight: 210,1900
-    OrderDate: 31.03.1997 00:00:00
+    OrderDate: 31.03.1997
     OrderID: 10490
-    RequiredDate: 28.04.1997 00:00:00
+    RequiredDate: 28.04.1997
     ShipAddress: 'Carrera 22 con Ave. Carlos Soublette #8-35'
     ShipCity: 'San Cristóbal'
     ShipCountry: 'Venezuela'
     ShipName: 'HILARION-Abastos'
-    ShippedDate: 03.04.1997 00:00:00
+    ShippedDate: 03.04.1997
     ShipPostalCode: '5022'
     ShipRegion: 'Táchira'
     ShipVia: 2
@@ -78,14 +78,14 @@ Enumerable {
     CustomerID: 'FURIB'
     EmployeeID: 8
     Freight: 16,9600
-    OrderDate: 31.03.1997 00:00:00
+    OrderDate: 31.03.1997
     OrderID: 10491
-    RequiredDate: 28.04.1997 00:00:00
+    RequiredDate: 28.04.1997
     ShipAddress: 'Jardim das rosas n. 32'
     ShipCity: 'Lisboa'
     ShipCountry: 'Portugal'
     ShipName: 'Furia Bacalhau e Frutos do Mar'
-    ShippedDate: 08.04.1997 00:00:00
+    ShippedDate: 08.04.1997
     ShipPostalCode: '1675'
     ShipRegion: null
     ShipVia: 3
@@ -93,14 +93,14 @@ Enumerable {
     CustomerID: 'GREAL'
     EmployeeID: 1
     Freight: 116,5300
-    OrderDate: 31.07.1997 00:00:00
+    OrderDate: 31.07.1997
     OrderID: 10616
-    RequiredDate: 28.08.1997 00:00:00
+    RequiredDate: 28.08.1997
     ShipAddress: '2732 Baker Blvd.'
     ShipCity: 'Eugene'
     ShipCountry: 'USA'
     ShipName: 'Great Lakes Food Market'
-    ShippedDate: 05.08.1997 00:00:00
+    ShippedDate: 05.08.1997
     ShipPostalCode: '97403'
     ShipRegion: 'OR'
     ShipVia: 2
@@ -108,14 +108,14 @@ Enumerable {
     CustomerID: 'GREAL'
     EmployeeID: 4
     Freight: 18,5300
-    OrderDate: 31.07.1997 00:00:00
+    OrderDate: 31.07.1997
     OrderID: 10617
-    RequiredDate: 28.08.1997 00:00:00
+    RequiredDate: 28.08.1997
     ShipAddress: '2732 Baker Blvd.'
     ShipCity: 'Eugene'
     ShipCountry: 'USA'
     ShipName: 'Great Lakes Food Market'
-    ShippedDate: 04.08.1997 00:00:00
+    ShippedDate: 04.08.1997
     ShipPostalCode: '97403'
     ShipRegion: 'OR'
     ShipVia: 2
@@ -123,14 +123,14 @@ Enumerable {
     CustomerID: 'FAMIA'
     EmployeeID: 4
     Freight: 10,8300
-    OrderDate: 31.10.1997 00:00:00
+    OrderDate: 31.10.1997
     OrderID: 10725
-    RequiredDate: 28.11.1997 00:00:00
+    RequiredDate: 28.11.1997
     ShipAddress: 'Rua Orós, 92'
     ShipCity: 'Sao Paulo'
     ShipCountry: 'Brazil'
     ShipName: 'Familia Arquibaldo'
-    ShippedDate: 05.11.1997 00:00:00
+    ShippedDate: 05.11.1997
     ShipPostalCode: '05442-030'
     ShipRegion: 'SP'
     ShipVia: 3
@@ -138,14 +138,14 @@ Enumerable {
     CustomerID: 'VICTE'
     EmployeeID: 3
     Freight: 22,1100
-    OrderDate: 31.12.1997 00:00:00
+    OrderDate: 31.12.1997
     OrderID: 10806
-    RequiredDate: 28.01.1998 00:00:00
+    RequiredDate: 28.01.1998
     ShipAddress: '2, rue du Commerce'
     ShipCity: 'Lyon'
     ShipCountry: 'France'
     ShipName: 'Victuailles en stock'
-    ShippedDate: 05.01.1998 00:00:00
+    ShippedDate: 05.01.1998
     ShipPostalCode: '69004'
     ShipRegion: null
     ShipVia: 2
@@ -153,14 +153,14 @@ Enumerable {
     CustomerID: 'FRANS'
     EmployeeID: 4
     Freight: 1,3600
-    OrderDate: 31.12.1997 00:00:00
+    OrderDate: 31.12.1997
     OrderID: 10807
-    RequiredDate: 28.01.1998 00:00:00
+    RequiredDate: 28.01.1998
     ShipAddress: 'Via Monte Bianco 34'
     ShipCity: 'Torino'
     ShipCountry: 'Italy'
     ShipName: 'Franchi S.p.A.'
-    ShippedDate: 30.01.1998 00:00:00
+    ShippedDate: 30.01.1998
     ShipPostalCode: '10100'
     ShipRegion: null
     ShipVia: 1
@@ -168,14 +168,14 @@ Enumerable {
     CustomerID: 'EASTC'
     EmployeeID: 8
     Freight: 185,4800
-    OrderDate: 31.03.1998 00:00:00
+    OrderDate: 31.03.1998
     OrderID: 10987
-    RequiredDate: 28.04.1998 00:00:00
+    RequiredDate: 28.04.1998
     ShipAddress: '35 King George'
     ShipCity: 'London'
     ShipCountry: 'UK'
     ShipName: 'Eastern Connection'
-    ShippedDate: 06.04.1998 00:00:00
+    ShippedDate: 06.04.1998
     ShipPostalCode: 'WX3 6FW'
     ShipRegion: null
     ShipVia: 1
@@ -183,14 +183,14 @@ Enumerable {
     CustomerID: 'RATTC'
     EmployeeID: 3
     Freight: 61,1400
-    OrderDate: 31.03.1998 00:00:00
+    OrderDate: 31.03.1998
     OrderID: 10988
-    RequiredDate: 28.04.1998 00:00:00
+    RequiredDate: 28.04.1998
     ShipAddress: '2817 Milton Dr.'
     ShipCity: 'Albuquerque'
     ShipCountry: 'USA'
     ShipName: 'Rattlesnake Canyon Grocery'
-    ShippedDate: 10.04.1998 00:00:00
+    ShippedDate: 10.04.1998
     ShipPostalCode: '87110'
     ShipRegion: 'NM'
     ShipVia: 2
@@ -198,14 +198,14 @@ Enumerable {
     CustomerID: 'QUEDE'
     EmployeeID: 2
     Freight: 34,7600
-    OrderDate: 31.03.1998 00:00:00
+    OrderDate: 31.03.1998
     OrderID: 10989
-    RequiredDate: 28.04.1998 00:00:00
+    RequiredDate: 28.04.1998
     ShipAddress: 'Rua da Panificadora, 12'
     ShipCity: 'Rio de Janeiro'
     ShipCountry: 'Brazil'
     ShipName: 'Que Delícia'
-    ShippedDate: 02.04.1998 00:00:00
+    ShippedDate: 02.04.1998
     ShipPostalCode: '02389-673'
     ShipRegion: 'RJ'
     ShipVia: 1

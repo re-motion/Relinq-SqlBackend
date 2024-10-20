@@ -720,26 +720,32 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
-    public void VisitSqlCollectionExpression ()
+    public void VisitConstantCollectionExpression ()
     {
-      var items = new Expression[] { Expression.Constant (7), new SqlLiteralExpression ("Hello"), new SqlLiteralExpression (12) };
-      var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
+      var items = new object[] { 4, "Hello", 42 };
+      var collectionExpression = new ConstantCollectionExpression (items);
 
-      SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock.Object);
+      SqlGeneratingExpressionVisitor.GenerateSql (collectionExpression, _commandBuilder, _stageMock.Object);
 
-      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1, 'Hello', 12)"));
-      Assert.That (_commandBuilder.GetCommandParameters(), Is.EqualTo (new[] { new CommandParameter ("@1", 7) }));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(@1, @2, @3)"));
+      Assert.That (
+          _commandBuilder.GetCommandParameters(), Is.EqualTo (new[]
+                                                              {
+                                                                  new CommandParameter ("@1", 4), 
+                                                                  new CommandParameter ("@2", "Hello"), 
+                                                                  new CommandParameter ("@3", 42)
+                                                              }));
     }
 
     [Test]
-    public void VisitSqlCollectionExpression_Empty ()
-     {
-       var items = new Expression[0];
-       var sqlCollectionExpression = new SqlCollectionExpression (typeof (List<object>), items);
+    public void VisitConstantCollectionExpression_Empty ()
+    {
+      var items = new string[0];
+      var collectionExpression = new ConstantCollectionExpression (items);
 
-       SqlGeneratingExpressionVisitor.GenerateSql (sqlCollectionExpression, _commandBuilder, _stageMock.Object);
+      SqlGeneratingExpressionVisitor.GenerateSql (collectionExpression, _commandBuilder, _stageMock.Object);
 
-       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(SELECT NULL WHERE 1 = 0)"));
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("(SELECT NULL WHERE 1 = 0)"));
     }
   }
 }

@@ -1,4 +1,4 @@
-﻿// This file is part of the re-linq project (relinq.codeplex.com)
+// This file is part of the re-linq project (relinq.codeplex.com)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // re-linq is free software; you can redistribute it and/or modify it under 
@@ -14,18 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Parsing;
 
-namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
+namespace Remotion.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// Implemented by <see cref="ExpressionVisitor"/> subclasses handling <see cref="SqlCollectionExpression"/> instances.
+  /// Implemented by subclasses of <see cref="ExpressionVisitor"/> that handle <see cref="ConstantCollectionExpression"/> instances.
   /// </summary>
-  public interface ISqlCollectionExpressionVisitor
+  public interface IConstantCollectionExpressionVisitor
   {
-    Expression VisitSqlCollection (SqlCollectionExpression expression);
+    Expression VisitConstantCollection (ConstantCollectionExpression expression);
   }
 }

@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>9</LangVersion>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)remotion.snk</AssemblyOriginatorKeyFile>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -23,26 +23,21 @@
     <PackageTags>re-motion LINQ SQL SqlGeneration</PackageTags>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <BinaryFormatterSerializationObsoleteWarning>SYSLIB0011</BinaryFormatterSerializationObsoleteWarning>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(ProjectType)' == 'Library'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>True</IsPackable>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net45</TargetFrameworks>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
+    <TargetFrameworks>net8.0;net9.0;net462</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net462'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(ProjectType)' == 'Test'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>$(BinaryFormatterSerializationObsoleteWarning)</NoWarn>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net45</TargetFrameworks>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net45'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
+    <TargetFrameworks>net8.0;net9.0;net462</TargetFrameworks>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net462'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,11 +50,11 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(ProjectType)' == 'Test'">
-    <PackageReference Include="Moq" Version="4.16.1" PrivateAssets="all" />
-    <PackageReference Include="Moq.VerifiableSequence" Version="4.16.1.2" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
-    <PackageReference Include="NUNit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+    <PackageReference Include="Moq" PrivateAssets="all" />
+    <PackageReference Include="Moq.VerifiableSequence" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUNit" />
+    <PackageReference Include="NUnit3TestAdapter" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -72,13 +67,14 @@
 
   <Target Name="CopyTestHostAppConfigs"
       AfterTargets="_CopyAppConfigFile"
-      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' != 'net45'">
+      Condition="'$(ProjectType)' == 'Test' AND '@(AppConfigWithTargetPath)' != '' AND '$(TargetFramework)' != 'net462'">
     <Message Text="CopyTestHostAppConfigs: $(PrepareForRunDependsOn)" Importance="High"/>
     <ItemGroup>
       <_testHostAppConfig Include="$(OutDir)\testhost.dll.config" />
       <_testHostAppConfig Include="$(OutDir)\testhost.x86.dll.config" />
       <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner32.dll.config" />
       <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner64.dll.config" />
+      <_testHostAppConfig Include="$(OutDir)\ReSharperTestRunner.dll.config" />
     </ItemGroup>
     <Copy SourceFiles="$(OutDir)\$(AssemblyName).dll.config" DestinationFiles="%(_testHostAppConfig.Identity)" />
     <ItemGroup>

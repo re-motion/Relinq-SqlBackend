@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Linq.SqlBackend.SqlGeneration
 {
@@ -36,6 +37,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     void AppendIdentifier (string identifier);
     void AppendStringLiteral (string value);
     void AppendFormat (string stringToAppend, params object[] parameters);
+    void AppendCollection (ConstantCollectionExpression collectionExpression);
     CommandParameter AppendParameter (object value);
 
     void SetInMemoryProjectionBody (Expression body);

@@ -20,6 +20,6 @@
     <DependDBProjectImportNotificationMailAddress />
     <DependDBTrackedReferences>Remotion.*</DependDBTrackedReferences>
     <DependDBNuGetSources>$(SolutionDirectory)packages</DependDBNuGetSources>
-    <DependDBTargetFramework>net45</DependDBTargetFramework>
+    <DependDBTargetFramework>net462</DependDBTargetFramework>
   </PropertyGroup>
 </Project>
