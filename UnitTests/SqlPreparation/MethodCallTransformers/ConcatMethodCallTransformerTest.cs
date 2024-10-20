@@ -48,9 +48,15 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlPreparation.MethodCallTransforme
                          .Where (mi => mi.Name == "Concat")
                          // Exclude the Concat (object, object, object, object, __arglist) overload.
                          .Where (mi => mi.CallingConvention != CallingConventions.VarArgs)
-#if !NETFRAMEWORK
+#if NET6_0_OR_GREATER
                          // Exclude the Concat (ReadOnlySpan<char>, ...) overloads.
                          .Where (mi => mi.GetParameters().All (e => e.ParameterType != typeof (ReadOnlySpan<char>)))
+#endif
+#if NET9_0_OR_GREATER
+                         // Exclude the Concat (ReadOnlySpan<object>, ...) overloads.
+                         .Where (mi => mi.GetParameters().All (e => e.ParameterType != typeof (ReadOnlySpan<object>)))
+                         // Exclude the Concat (ReadOnlySpan<string>, ...) overloads.
+                         .Where (mi => mi.GetParameters().All (e => e.ParameterType != typeof (ReadOnlySpan<string>)))
 #endif
                          .ToArray();
       Assert.That (ConcatMethodCallTransformer.SupportedMethods, Is.EquivalentTo (concatMethods));
