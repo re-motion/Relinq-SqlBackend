@@ -1,5 +1,6 @@
 {
   "$schema": "./build.schema.json",
+  "Solution": "Relinq-SqlBackend.sln",
   "DependDBProjectName": "re-motion Framework: re-linq (www.re-motion.org)",
   "DependDBRetentionTime": "10",
   "DependDBProjectBranch": "Main",
