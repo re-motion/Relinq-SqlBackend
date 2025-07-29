@@ -136,7 +136,7 @@ class Build : RemotionBuild, IDependDB, ITest
     supportedTestDimensions.AddOperatingSystemsDimension();
 
     supportedTestDimensions.AddSupportedDimension<ExecutionRuntimes>(
-        LocalMachine, Docker_Win_NET48, Docker_Win_NET472, Docker_Win_NET462);
+        LocalMachine, EnforcedLocalMachine, Docker_Win_NET48, Docker_Win_NET472, Docker_Win_NET462);
     supportedTestDimensions.AddSupportedDimension<TargetFrameworks>(NET48, NET472, NET462);
     supportedTestDimensions.AddSupportedDimension<Configurations>(Debug, Release);
     supportedTestDimensions.AddSupportedDimension<Platforms>(x64, x86);
