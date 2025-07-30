@@ -230,8 +230,7 @@
             "type": "string",
             "enum": [
               "NET462",
-              "NET472",
-              "NET48"
+              "NET472"
             ]
           }
         },
