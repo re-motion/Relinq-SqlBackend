@@ -35,8 +35,8 @@ namespace Remotion.Linq.SqlBackend
         bool isLiftedToNull, 
         MethodInfo methodInfo)
     {
-      ArgumentUtility.CheckNotNull ("left", left);
-      ArgumentUtility.CheckNotNull ("right", right);
+      ArgumentUtility.CheckNotNull (nameof(left), left);
+      ArgumentUtility.CheckNotNull (nameof(right), right);
 
       if (NeedsConversion (expressionType, left, right))
       {

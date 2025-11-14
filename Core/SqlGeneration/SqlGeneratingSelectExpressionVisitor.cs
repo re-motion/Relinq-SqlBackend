@@ -34,9 +34,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   {
     public static new void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       EnsureNoCollectionExpression (expression);
 
@@ -46,7 +46,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected static void EnsureNoCollectionExpression (Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (expression.Type != typeof (string) && !(expression is SqlGroupingSelectExpression) && typeof (IEnumerable).IsAssignableFrom (expression.Type))
       {
@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public override Expression VisitNamed (NamedExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       Visit (expression.Expression);
       CommandBuilder.Append (" AS ");
@@ -84,7 +84,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var groupExpressions = new[] { expression.KeyExpression }.Concat (expression.AggregationExpressions);
 

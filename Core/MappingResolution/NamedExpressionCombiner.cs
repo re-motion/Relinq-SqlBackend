@@ -37,13 +37,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public NamedExpressionCombiner (IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
       _mappingResolutionContext = mappingResolutionContext;
     }
 
     public Expression ProcessNames (NamedExpression outerExpression)
     {
-      ArgumentUtility.CheckNotNull ("outerExpression", outerExpression);
+      ArgumentUtility.CheckNotNull (nameof(outerExpression), outerExpression);
 
       // We cannot implement this as an expression visitor because expression visitors have no fallback case, i.e., there is no good possibility
       // to catch all cases not explicitly handled by a visitor. We need that catch-all case, however, and don't want to automatically visit the

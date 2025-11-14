@@ -49,7 +49,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public SqlStatementBuilder (SqlStatement sqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
 
       DataInfo = sqlStatement.DataInfo;
       SelectProjection = sqlStatement.SelectProjection;

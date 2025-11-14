@@ -17,6 +17,7 @@
 
 using System;
 using System.Data;
+using System.Data.Common;
 
 namespace Remotion.Linq.LinqToSqlAdapter
 {
@@ -25,6 +26,6 @@ namespace Remotion.Linq.LinqToSqlAdapter
   /// </summary>
   public interface IConnectionManager
   {
-    IDbConnection Open ();
+    DbConnection Open ();
   }
 }

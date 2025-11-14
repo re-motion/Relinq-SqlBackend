@@ -31,8 +31,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public AggregationExpression (Type type, Expression expression, AggregationModifier aggregationModifier)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _type = type;
       _expression = expression;
@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var newExpression = visitor.Visit (_expression);
       if (newExpression != _expression)
@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as IAggregationExpressionVisitor;
       if (specificVisitor != null)

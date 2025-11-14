@@ -28,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
 
     public CustomCompositeExpression (Type type, Expression child)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
 
       _type = type;
       _child = child;

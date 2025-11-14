@@ -33,8 +33,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public BinaryExpressionTextGenerator (ISqlCommandBuilder commandBuilder, ExpressionVisitor expressionVisitor)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expressionVisitor", expressionVisitor);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expressionVisitor), expressionVisitor);
 
       _commandBuilder = commandBuilder;
       _expressionVisitor = expressionVisitor;

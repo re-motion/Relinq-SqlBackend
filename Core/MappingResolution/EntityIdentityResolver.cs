@@ -43,7 +43,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression ResolvePotentialEntity (Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var strippedExpression = StripConversions (expression);
 
@@ -94,7 +94,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public BinaryExpression ResolvePotentialEntityComparison (BinaryExpression binaryExpression)
     {
-      ArgumentUtility.CheckNotNull ("binaryExpression", binaryExpression);
+      ArgumentUtility.CheckNotNull (nameof(binaryExpression), binaryExpression);
 
       var newLeft = ResolvePotentialEntity (binaryExpression.Left);
       var newRight = ResolvePotentialEntity (binaryExpression.Right);
@@ -115,7 +115,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public SqlInExpression ResolvePotentialEntityComparison (SqlInExpression inExpression)
     {
-      ArgumentUtility.CheckNotNull ("inExpression", inExpression);
+      ArgumentUtility.CheckNotNull (nameof(inExpression), inExpression);
 
       var newLeft = ResolvePotentialEntity (inExpression.LeftExpression);
       var newRight = ResolvePotentialEntity (inExpression.RightExpression);

@@ -37,7 +37,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression SplitPotentialCompoundComparison (BinaryExpression potentialCompoundComparison)
     {
-      ArgumentUtility.CheckNotNull ("potentialCompoundComparison", potentialCompoundComparison);
+      ArgumentUtility.CheckNotNull (nameof(potentialCompoundComparison), potentialCompoundComparison);
 
       var left = potentialCompoundComparison.Left;
       var right = potentialCompoundComparison.Right;
@@ -67,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression SplitPotentialCompoundComparison (SqlIsNullExpression potentialCompoundComparison)
     {
-      ArgumentUtility.CheckNotNull ("potentialCompoundComparison", potentialCompoundComparison);
+      ArgumentUtility.CheckNotNull (nameof(potentialCompoundComparison), potentialCompoundComparison);
 
       var innerExpressionAsNewExpression = potentialCompoundComparison.Expression as NewExpression;
       if (innerExpressionAsNewExpression != null)
@@ -85,7 +85,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression SplitPotentialCompoundComparison (SqlIsNotNullExpression potentialCompoundComparison)
     {
-      ArgumentUtility.CheckNotNull ("potentialCompoundComparison", potentialCompoundComparison);
+      ArgumentUtility.CheckNotNull (nameof(potentialCompoundComparison), potentialCompoundComparison);
 
       var innerExpressionAsNewExpression = potentialCompoundComparison.Expression as NewExpression;
       if (innerExpressionAsNewExpression != null)

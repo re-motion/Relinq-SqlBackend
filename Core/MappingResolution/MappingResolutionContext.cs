@@ -39,23 +39,23 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public void AddSqlEntityMapping (SqlEntityExpression entityExpression, SqlTableBase sqlTable)
     {
-      ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(entityExpression), entityExpression);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
 
       _entityMapping[entityExpression] = sqlTable;
     }
 
     public void AddGroupReferenceMapping (SqlGroupingSelectExpression groupingSelectExpression, SqlTableBase sqlTable)
     {
-      ArgumentUtility.CheckNotNull ("groupingSelectExpression", groupingSelectExpression);
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(groupingSelectExpression), groupingSelectExpression);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
 
       _groupReferenceMapping[groupingSelectExpression] = sqlTable;
     }
 
     public SqlTableBase GetSqlTableForEntityExpression (SqlEntityExpression entityExpression)
     {
-      ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
+      ArgumentUtility.CheckNotNull (nameof(entityExpression), entityExpression);
 
       SqlTableBase result;
       if (_entityMapping.TryGetValue (entityExpression, out result))
@@ -67,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public SqlTableBase GetReferencedGroupSource (SqlGroupingSelectExpression groupingSelectExpression)
     {
-      ArgumentUtility.CheckNotNull ("groupingSelectExpression", groupingSelectExpression);
+      ArgumentUtility.CheckNotNull (nameof(groupingSelectExpression), groupingSelectExpression);
       SqlTableBase result;
       if (_groupReferenceMapping.TryGetValue (groupingSelectExpression, out result))
         return result;
@@ -78,9 +78,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public SqlEntityExpression UpdateEntityAndAddMapping (SqlEntityExpression entityExpression, Type itemType, string tableAlias, string newName)
     {
-      ArgumentUtility.CheckNotNull ("entityExpression", entityExpression);
-      ArgumentUtility.CheckNotNull ("itemType", itemType);
-      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+      ArgumentUtility.CheckNotNull (nameof(entityExpression), entityExpression);
+      ArgumentUtility.CheckNotNull (nameof(itemType), itemType);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(tableAlias), tableAlias);
 
       var newEntityExpression = entityExpression.Update (itemType, tableAlias, newName);
       var tableForEntityExpression = GetSqlTableForEntityExpression (entityExpression);
@@ -91,10 +91,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public SqlGroupingSelectExpression UpdateGroupingSelectAndAddMapping (
         SqlGroupingSelectExpression expression, Expression newKey, Expression newElement, IEnumerable<Expression> aggregations)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("newKey", newKey);
-      ArgumentUtility.CheckNotNull ("newElement", newElement);
-      ArgumentUtility.CheckNotNull ("aggregations", aggregations);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(newKey), newKey);
+      ArgumentUtility.CheckNotNull (nameof(newElement), newElement);
+      ArgumentUtility.CheckNotNull (nameof(aggregations), aggregations);
 
       var newSqlGroupingSelectExpression = expression.Update (newKey, newElement, aggregations);
       SqlTableBase tableForGroupingSelectExpression; 
@@ -105,15 +105,15 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public void AddSqlTable (SqlTable sqlTable, SqlStatementBuilder sqlStatementBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
 
       sqlStatementBuilder.SqlTables.Add (sqlTable);
     }
 
     public Expression RemoveNamesAndUpdateMapping (Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       while (expression is NamedExpression)
         expression = ((NamedExpression) expression).Expression;

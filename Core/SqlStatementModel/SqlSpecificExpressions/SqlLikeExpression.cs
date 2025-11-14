@@ -42,8 +42,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public static string Escape (string text, string escapeSequence)
     {
-      ArgumentUtility.CheckNotNull ("text", text);
-      ArgumentUtility.CheckNotNull ("escapeSequence", escapeSequence);
+      ArgumentUtility.CheckNotNull (nameof(text), text);
+      ArgumentUtility.CheckNotNull (nameof(escapeSequence), escapeSequence);
 
       var escapedString = new StringBuilder (text);
       escapedString.Replace (escapeSequence, escapeSequence + escapeSequence);
@@ -55,8 +55,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public static Expression Escape (Expression expression, string escapeSequence)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("escapeSequence", escapeSequence);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(escapeSequence), escapeSequence);
 
       SqlFunctionExpression result = Escape (expression, escapeSequence, escapeSequence);
       result = Escape (result, "%", escapeSequence);
@@ -109,9 +109,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public SqlLikeExpression (Expression left, Expression right, Expression escapeExpression)
     {
-      ArgumentUtility.CheckNotNull ("left", left);
-      ArgumentUtility.CheckNotNull ("right", right);
-      ArgumentUtility.CheckNotNull ("escapeExpression", escapeExpression);
+      ArgumentUtility.CheckNotNull (nameof(left), left);
+      ArgumentUtility.CheckNotNull (nameof(right), right);
+      ArgumentUtility.CheckNotNull (nameof(escapeExpression), escapeExpression);
 
       _left = left;
       _right = right;

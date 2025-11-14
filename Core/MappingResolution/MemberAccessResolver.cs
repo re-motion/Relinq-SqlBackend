@@ -53,11 +53,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         IMappingResolutionStage mappingResolutionStage,
         IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("resolvedSourceExpression", resolvedSourceExpression);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
-      ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(resolvedSourceExpression), resolvedSourceExpression);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolver), mappingResolver);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionStage), mappingResolutionStage);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       var resolver = new MemberAccessResolver (memberInfo, mappingResolver, mappingResolutionStage, mappingResolutionContext);
       return resolver.Visit (resolvedSourceExpression);
@@ -66,10 +66,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     protected MemberAccessResolver (
         MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolver), mappingResolver);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       _memberInfo = memberInfo;
       _mappingResolver = mappingResolver;
@@ -79,8 +79,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Exception CreateUnhandledItemException<T> (T unhandledItem, string visitMethod)
     {
-      ArgumentUtility.CheckNotNull ("unhandledItem", unhandledItem);
-      ArgumentUtility.CheckNotNull ("visitMethod", visitMethod);
+      ArgumentUtility.CheckNotNull (nameof(unhandledItem), unhandledItem);
+      ArgumentUtility.CheckNotNull (nameof(visitMethod), visitMethod);
 
       throw new NotSupportedException (
           string.Format (
@@ -92,7 +92,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitUnary (UnaryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (expression.NodeType == ExpressionType.Convert)
       {
@@ -109,7 +109,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // Scenario: entityRef.Member
 
@@ -125,7 +125,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitNamed (NamedExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // Scenario: (expr AS "Value")).Member
       // Just strip the name; we're resolving the Member and don't care about the name of the expression to which the member is applied.
@@ -134,7 +134,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitNew (NewExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // This ReSharper warning is wrong, expression.Members can be null.
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -168,7 +168,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // Scenario: entity.Member
       // Member must not be a collection, since we don't support in-line usage of collection members for now (e.g., select c.Assistants)
@@ -191,7 +191,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlColumn (SqlColumnExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // Scenario: column.Member (probably originally entity.ColumnMember.Member)
       // Handled by the _mappingResolver
@@ -201,7 +201,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // Scenario: grouping.Key
       Assertion.DebugAssert (_memberInfo.Equals (expression.Type.GetProperty ("Key")));
@@ -213,7 +213,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
       // Not supported, required by IUnresolvedSqlExpressionVisitor.
       return VisitExtension (expression);
     }

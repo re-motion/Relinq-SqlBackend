@@ -36,7 +36,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     
     protected SqlTableBase (Type itemType, JoinSemantics joinSemantics)
     {
-      ArgumentUtility.CheckNotNull ("itemType", itemType);
+      ArgumentUtility.CheckNotNull (nameof(itemType), itemType);
 
       _itemType = itemType;
       _joinSemantics = joinSemantics;
@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public SqlJoinedTable GetOrAddLeftJoin (IJoinInfo joinInfo, MemberInfo memberInfo)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull (nameof(joinInfo), joinInfo);
 
       if (!_joinedTables.ContainsKey (memberInfo))
         _joinedTables.Add (memberInfo, new SqlJoinedTable (joinInfo, JoinSemantics.Left));
@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public SqlJoinedTable GetJoin (MemberInfo relationMember)
     {
-      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
+      ArgumentUtility.CheckNotNull (nameof(relationMember), relationMember);
 
       return _joinedTables[relationMember];
     }

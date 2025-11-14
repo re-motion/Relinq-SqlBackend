@@ -30,8 +30,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
   {
     public static SqlGroupingSelectExpression CreateWithNames (Expression unnamedKeySelector, Expression unnamedElementSelector)
     {
-      ArgumentUtility.CheckNotNull ("unnamedKeySelector", unnamedKeySelector);
-      ArgumentUtility.CheckNotNull ("unnamedElementSelector", unnamedElementSelector);
+      ArgumentUtility.CheckNotNull (nameof(unnamedKeySelector), unnamedKeySelector);
+      ArgumentUtility.CheckNotNull (nameof(unnamedElementSelector), unnamedElementSelector);
 
       return new SqlGroupingSelectExpression (
           new NamedExpression ("key", unnamedKeySelector),
@@ -50,9 +50,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public SqlGroupingSelectExpression (Expression keyExpression, Expression elementExpression, IEnumerable<Expression> aggregationExpressions)
     {
-      ArgumentUtility.CheckNotNull ("keyExpression", keyExpression);
-      ArgumentUtility.CheckNotNull ("elementExpression", elementExpression);
-      ArgumentUtility.CheckNotNull ("aggregationExpressions", aggregationExpressions);
+      ArgumentUtility.CheckNotNull (nameof(keyExpression), keyExpression);
+      ArgumentUtility.CheckNotNull (nameof(elementExpression), elementExpression);
+      ArgumentUtility.CheckNotNull (nameof(aggregationExpressions), aggregationExpressions);
 
       _type = typeof (IGrouping<,>).MakeGenericType (keyExpression.Type,elementExpression.Type);
       _keyExpression = keyExpression;
@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public string AddAggregationExpressionWithName (Expression unnamedExpression)
     {
-      ArgumentUtility.CheckNotNull ("unnamedExpression", unnamedExpression);
+      ArgumentUtility.CheckNotNull (nameof(unnamedExpression), unnamedExpression);
 
       var name = "a" + _aggregationExpressions.Count;
       _aggregationExpressions.Add (new NamedExpression (name, unnamedExpression));
@@ -101,7 +101,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var newKeyExpression = visitor.Visit (KeyExpression);
       var newElementExpression = visitor.Visit (ElementExpression);

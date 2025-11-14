@@ -31,13 +31,13 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     public CheckingTestExecutor (Func<MethodBase, string> resourceNameGenerator)
     {
-      ArgumentUtility.CheckNotNull ("resourceNameGenerator", resourceNameGenerator);
+      ArgumentUtility.CheckNotNull (nameof(resourceNameGenerator), resourceNameGenerator);
       _resourceNameGenerator = resourceNameGenerator;
     }
 
     public void Execute (object queryResult, MethodBase executingMethod)
     {
-      ArgumentUtility.CheckNotNull ("executingMethod", executingMethod);
+      ArgumentUtility.CheckNotNull (nameof(executingMethod), executingMethod);
 
       var referenceResult = GetReferenceResult (executingMethod);
       var actualResult = GetActualResult (queryResult);

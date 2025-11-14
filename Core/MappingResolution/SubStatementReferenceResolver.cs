@@ -38,9 +38,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         SqlTableBase containingSqlTable,
         IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("referencedExpression", referencedExpression);
-      ArgumentUtility.CheckNotNull ("containingSubStatementTableInfo", containingSubStatementTableInfo);
-      ArgumentUtility.CheckNotNull ("containingSqlTable", containingSqlTable);
+      ArgumentUtility.CheckNotNull (nameof(referencedExpression), referencedExpression);
+      ArgumentUtility.CheckNotNull (nameof(containingSubStatementTableInfo), containingSubStatementTableInfo);
+      ArgumentUtility.CheckNotNull (nameof(containingSqlTable), containingSqlTable);
       
       var visitor = new SubStatementReferenceResolver (containingSubStatementTableInfo, containingSqlTable, context);
       var result = visitor.Visit (referencedExpression);
@@ -54,9 +54,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected SubStatementReferenceResolver (ResolvedSubStatementTableInfo tableInfo, SqlTableBase sqlTable, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       _tableInfo = tableInfo;
       _sqlTable = sqlTable;
@@ -65,7 +65,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     
     public Expression VisitSqlEntity (SqlEntityExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var reference = expression.CreateReference (_tableInfo.TableAlias, expression.Type);
       _context.AddSqlEntityMapping (reference, _sqlTable);
@@ -74,7 +74,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitNamed (NamedExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       return new SqlColumnDefinitionExpression (
           expression.Type,
@@ -87,7 +87,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     // argument reference, otherwise all of them would be called "value"...
     protected override Expression VisitNew (NewExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var resolvedArguments = expression.Arguments.Select (expr => ResolveChildExpression (expr));
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, resolvedArguments);
@@ -95,7 +95,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlGroupingSelect (SqlGroupingSelectExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var referenceToKeyExpression = ResolveChildExpression (expression.KeyExpression);
       var referenceToElementExpression = ResolveChildExpression (expression.ElementExpression);

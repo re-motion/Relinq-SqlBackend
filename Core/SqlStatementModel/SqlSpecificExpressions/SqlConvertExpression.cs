@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public static string GetSqlTypeName (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
 
       if (s_sqlTypeMapping.ContainsKey (type))
         return s_sqlTypeMapping[type];
@@ -59,8 +59,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public SqlConvertExpression (Type targetType, Expression source)
     {
-      ArgumentUtility.CheckNotNull ("targetType", targetType);
-      ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull (nameof(targetType), targetType);
+      ArgumentUtility.CheckNotNull (nameof(source), source);
 
       _targetType = targetType;
       _source = source;

@@ -37,10 +37,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         UniqueIdentifierGenerator generator,
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(resultOperatorHandlerRegistry), resultOperatorHandlerRegistry);
 
       var visitor = new SqlPreparationQueryModelVisitor (parentPreparationContext, stage, generator, resultOperatorHandlerRegistry);
       queryModel.Accept (visitor);
@@ -61,9 +61,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         UniqueIdentifierGenerator generator,
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(resultOperatorHandlerRegistry), resultOperatorHandlerRegistry);
 
       _stage = stage;
       _generator = generator;
@@ -124,24 +124,24 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
     {
-      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(fromClause), fromClause);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       AddQuerySource (fromClause, fromClause.FromExpression);
     }
 
     public override void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index)
     {
-      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(fromClause), fromClause);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       AddQuerySource (fromClause, fromClause.FromExpression);
     }
 
     public override void VisitWhereClause (WhereClause whereClause, QueryModel queryModel, int index)
     {
-      ArgumentUtility.CheckNotNull ("whereClause", whereClause);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(whereClause), whereClause);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       var translatedExpression = _stage.PrepareWhereExpression (whereClause.Predicate, _context);
       SqlStatementBuilder.AddWhereCondition (translatedExpression);
@@ -149,8 +149,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public override void VisitSelectClause (SelectClause selectClause, QueryModel queryModel)
     {
-      ArgumentUtility.CheckNotNull ("selectClause", selectClause);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(selectClause), selectClause);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       var preparedExpression = _stage.PrepareSelectExpression (selectClause.Selector, _context);
 
@@ -160,8 +160,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index)
     {
-      ArgumentUtility.CheckNotNull ("orderByClause", orderByClause);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(orderByClause), orderByClause);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       var orderings = from ordering in orderByClause.Orderings
                       let orderByExpression = _stage.PrepareOrderByExpression (ordering.Expression, _context)
@@ -171,15 +171,15 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public override void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, int index)
     {
-      ArgumentUtility.CheckNotNull ("joinClause", joinClause);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(joinClause), joinClause);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       AddJoinClause (joinClause);
     }
 
     public SqlTableBase AddJoinClause (JoinClause joinClause)
     {
-      ArgumentUtility.CheckNotNull ("joinClause", joinClause);
+      ArgumentUtility.CheckNotNull (nameof(joinClause), joinClause);
 
       var table = AddQuerySource (joinClause, joinClause.InnerSequence);
 
@@ -196,8 +196,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
     {
-      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(resultOperator), resultOperator);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       var operatorType = resultOperator.GetType();
       
@@ -215,8 +215,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public SqlTableBase AddQuerySource (IQuerySource source, Expression fromExpression)
     {
-      ArgumentUtility.CheckNotNull ("source", source);
-      ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
+      ArgumentUtility.CheckNotNull (nameof(source), source);
+      ArgumentUtility.CheckNotNull (nameof(fromExpression), fromExpression);
 
       var fromExpressionInfo = _stage.PrepareFromExpression (
           fromExpression,
@@ -231,7 +231,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public void AddPreparedFromExpression (FromExpressionInfo fromExpressionInfo)
     {
-      ArgumentUtility.CheckNotNull ("fromExpressionInfo", fromExpressionInfo);
+      ArgumentUtility.CheckNotNull (nameof(fromExpressionInfo), fromExpressionInfo);
 
       if (fromExpressionInfo.WhereCondition != null)
         SqlStatementBuilder.AddWhereCondition (fromExpressionInfo.WhereCondition);

@@ -29,7 +29,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected SqlCustomTextGeneratorExpressionBase (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
 
       _type = type;
     }

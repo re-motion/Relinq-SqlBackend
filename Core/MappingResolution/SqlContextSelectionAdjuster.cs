@@ -31,9 +31,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public static SqlStatement ApplyContext (SqlStatement sqlStatement, SqlExpressionContext expressionContext, IMappingResolutionStage stage, IMappingResolutionContext mappingresolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("mappingresolutionContext", mappingresolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(mappingresolutionContext), mappingresolutionContext);
 
       var visitor = new SqlContextSelectionAdjuster (stage, mappingresolutionContext);
       return visitor.VisitSqlStatement (sqlStatement, expressionContext);
@@ -41,8 +41,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private SqlContextSelectionAdjuster (IMappingResolutionStage stage, IMappingResolutionContext mappingresolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("mappingresolutionContext", mappingresolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(mappingresolutionContext), mappingresolutionContext);
 
       _stage = stage;
       _mappingResolutionContext = mappingresolutionContext;
@@ -50,7 +50,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     
     public SqlStatement VisitSqlStatement (SqlStatement sqlStatement, SqlExpressionContext expressionContext)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
 
       if (expressionContext == SqlExpressionContext.PredicateRequired)
         throw new InvalidOperationException ("A SqlStatement cannot be used as a predicate.");

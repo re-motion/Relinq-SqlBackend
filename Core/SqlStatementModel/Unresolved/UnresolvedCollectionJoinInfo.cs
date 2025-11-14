@@ -34,8 +34,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public UnresolvedCollectionJoinInfo (Expression sourceExpression, MemberInfo memberInfo)
     {
-      ArgumentUtility.CheckNotNull ("sourceExpression", sourceExpression);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull (nameof(sourceExpression), sourceExpression);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo);
 
       _memberInfo = memberInfo;
       _sourceExpression = sourceExpression;
@@ -61,7 +61,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public IJoinInfo Accept (IJoinInfoVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
       return visitor.VisitUnresolvedCollectionJoinInfo (this);
     }
 

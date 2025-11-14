@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Utilities;
 
@@ -32,8 +33,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public QueryResultRetriever (IConnectionManager connectionManager, IReverseMappingResolver resolver)
     {
-      ArgumentUtility.CheckNotNull ("connectionManager", connectionManager);
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
+      ArgumentUtility.CheckNotNull (nameof(connectionManager), connectionManager);
+      ArgumentUtility.CheckNotNull (nameof(resolver), resolver);
 
       _connectionManager = connectionManager;
       _resolver = resolver;
@@ -41,9 +42,9 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public IEnumerable<T> GetResults<T> (Func<IDatabaseResultRow, T> projection, string commandText, CommandParameter[] parameters)
     {
-      ArgumentUtility.CheckNotNull ("projection", projection);
-      ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
-      ArgumentUtility.CheckNotNull ("parameters", parameters);
+      ArgumentUtility.CheckNotNull (nameof(projection), projection);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(commandText), commandText);
+      ArgumentUtility.CheckNotNull (nameof(parameters), parameters);
 
       using (var connection = _connectionManager.Open())
       {
@@ -82,7 +83,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return default (T);
     }
 
-    private static void AddParametersToCommand (IDbCommand command, IEnumerable<CommandParameter> parameters)
+    private static void AddParametersToCommand (DbCommand command, IEnumerable<CommandParameter> parameters)
     {
       foreach (var commandParameter in parameters)
       {

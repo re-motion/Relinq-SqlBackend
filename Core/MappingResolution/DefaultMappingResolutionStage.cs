@@ -35,8 +35,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public DefaultMappingResolutionStage (IMappingResolver resolver, UniqueIdentifierGenerator uniqueIdentifierGenerator)
     {
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("uniqueIdentifierGenerator", uniqueIdentifierGenerator);
+      ArgumentUtility.CheckNotNull (nameof(resolver), resolver);
+      ArgumentUtility.CheckNotNull (nameof(uniqueIdentifierGenerator), uniqueIdentifierGenerator);
       
       _uniqueIdentifierGenerator = uniqueIdentifierGenerator;
       _resolver = resolver;
@@ -54,9 +54,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual Expression ResolveSelectExpression (Expression expression, SqlStatementBuilder sqlStatementBuilder, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedExpression = ResolvingSelectExpressionVisitor.ResolveExpression (expression, _resolver, this, context, _uniqueIdentifierGenerator, sqlStatementBuilder);
       return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
@@ -64,8 +64,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual Expression ResolveWhereExpression (Expression expression,  IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedExpression = ResolveExpression (expression, context);
       return ApplyContext (resolvedExpression, SqlExpressionContext.PredicateRequired, context);
@@ -73,8 +73,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression ResolveGroupByExpression (Expression expression, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedExpression = ResolveExpression (expression, context);
       return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
@@ -82,8 +82,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual Expression ResolveOrderingExpression (Expression expression, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedExpression = ResolveExpression (expression, context);
       return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired, context);
@@ -91,8 +91,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual Expression ResolveTopExpression (Expression expression, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedExpression = ResolveExpression (expression, context);
       return ApplyContext (resolvedExpression, SqlExpressionContext.SingleValueRequired, context);
@@ -100,8 +100,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression ResolveAggregationExpression (Expression expression, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedExpression = ResolveExpression (expression, context);
       return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
@@ -109,8 +109,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedTableInfo = ResolvingTableInfoVisitor.ResolveTableInfo (tableInfo, _resolver, _uniqueIdentifierGenerator, this, context);
       return (IResolvedTableInfo) ApplyContext (resolvedTableInfo, SqlExpressionContext.ValueRequired, context);
@@ -118,8 +118,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual ResolvedJoinInfo ResolveJoinInfo (IJoinInfo joinInfo, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(joinInfo), joinInfo);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedJoinInfo = ResolvingJoinInfoVisitor.ResolveJoinInfo (joinInfo, _resolver, _uniqueIdentifierGenerator, this, context);
       return (ResolvedJoinInfo) ApplyContext (resolvedJoinInfo, SqlExpressionContext.ValueRequired, context);
@@ -127,8 +127,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression ResolveJoinCondition (Expression joinCondition, IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(joinCondition), joinCondition);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       var resolvedJoinCondition = ResolveExpression (joinCondition, mappingResolutionContext);
       return ApplyContext (resolvedJoinCondition, SqlExpressionContext.PredicateRequired, mappingResolutionContext);
@@ -136,16 +136,16 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
       
       return SqlStatementResolver.ResolveExpressions (this, sqlStatement, context);
     }
 
     public virtual Expression ResolveCollectionSourceExpression (Expression expression, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var resolvedExpression = ResolveExpression (expression, context);
       return ApplyContext (resolvedExpression, SqlExpressionContext.ValueRequired, context);
@@ -153,9 +153,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual SqlEntityExpression ResolveEntityRefMemberExpression (SqlEntityRefMemberExpression expression, IJoinInfo joinInfo, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(joinInfo), joinInfo);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var originatingSqlTable = context.GetSqlTableForEntityExpression (expression.OriginatingEntity);
       var join = originatingSqlTable.GetOrAddLeftJoin (joinInfo, expression.MemberInfo);
@@ -167,58 +167,58 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression expression, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       return expression.SqlTable.GetResolvedTableInfo ().ResolveReference (expression.SqlTable, _resolver, context, _uniqueIdentifierGenerator);
     }
 
     public Expression ResolveMemberAccess (Expression resolvedSourceExpression, MemberInfo memberInfo, IMappingResolver mappingResolver, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("resolvedSourceExpression", resolvedSourceExpression);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(resolvedSourceExpression), resolvedSourceExpression);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolver), mappingResolver);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       return MemberAccessResolver.ResolveMemberAccess (resolvedSourceExpression, memberInfo, mappingResolver, this, context);
     }
 
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       return SqlContextExpressionVisitor.ApplySqlExpressionContext (expression, expressionContext, this, mappingResolutionContext);
     }
 
     public virtual SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       return SqlContextSelectionAdjuster.ApplyContext (sqlStatement, expressionContext, this, mappingResolutionContext);
     }
 
     public virtual ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       return SqlContextTableInfoVisitor.ApplyContext (tableInfo, expressionContext, this, mappingResolutionContext);
     }
 
     public virtual IJoinInfo ApplyContext (IJoinInfo joinInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(joinInfo), joinInfo);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       return SqlContextJoinInfoVisitor.ApplyContext (joinInfo, expressionContext, this, mappingResolutionContext);
     }
 
     protected virtual Expression ResolveExpression (Expression expression, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       return ResolvingExpressionVisitor.ResolveExpression (expression, _resolver, this, context, _uniqueIdentifierGenerator);
     }

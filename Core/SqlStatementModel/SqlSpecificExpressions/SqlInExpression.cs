@@ -31,8 +31,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public SqlInExpression (Expression leftExpression, Expression rightExpression)
     {
-      ArgumentUtility.CheckNotNull ("leftExpression", leftExpression);
-      ArgumentUtility.CheckNotNull ("rightExpression", rightExpression);
+      ArgumentUtility.CheckNotNull (nameof(leftExpression), leftExpression);
+      ArgumentUtility.CheckNotNull (nameof(rightExpression), rightExpression);
 
       _leftExpression = leftExpression;
       _rightExpression = rightExpression;

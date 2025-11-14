@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public SqlTableReferenceExpression (SqlTableBase sqlTable)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
 
       _sqlTableBase = sqlTable;
     }
@@ -53,13 +53,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
       return this;
     }
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as ISqlTableReferenceExpressionVisitor;
       if (specificVisitor != null)

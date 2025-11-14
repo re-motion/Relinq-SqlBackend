@@ -41,7 +41,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
     }
 
     public SqlLiteralExpression ([NotNull]string value)
-      : this (ArgumentUtility.CheckNotNull ("value", value), typeof (string))
+      : this (ArgumentUtility.CheckNotNull (nameof(value), value), typeof (string))
     {
     }
 
@@ -79,7 +79,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)

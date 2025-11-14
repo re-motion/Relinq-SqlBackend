@@ -45,8 +45,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
 
       MetaTable table = GetMetaTable (tableInfo.ItemType);
 
@@ -58,8 +58,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull (nameof(joinInfo), joinInfo);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
 
       var metaType = GetMetaType (joinInfo.OriginatingEntity.Type);
       var metaAssociation = GetDataMember (metaType, joinInfo.MemberInfo).Association;
@@ -71,8 +71,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
 
       Type type = tableInfo.ItemType;
       var primaryKeyMembers = GetMetaType (type).IdentityMembers;
@@ -90,8 +90,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
-      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull (nameof(originatingEntity), originatingEntity);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo);
 
       var dataTable = GetMetaType (memberInfo.DeclaringType);
       var dataMember = GetDataMember (dataTable, memberInfo);
@@ -113,7 +113,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
-      ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
+      ArgumentUtility.CheckNotNull (nameof(constantExpression), constantExpression);
 
       if (constantExpression.Value == null)
         return constantExpression;
@@ -133,8 +133,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public Expression ResolveTypeCheck (Expression expression, Type desiredType)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("desiredType", desiredType);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(desiredType), desiredType);
 
       if (desiredType.IsAssignableFrom (expression.Type))
         return Expression.Constant (true);
@@ -158,7 +158,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public Expression TryResolveOptimizedIdentity (SqlEntityRefMemberExpression entityRefMemberExpression)
     {
-      ArgumentUtility.CheckNotNull ("entityRefMemberExpression", entityRefMemberExpression);
+      ArgumentUtility.CheckNotNull (nameof(entityRefMemberExpression), entityRefMemberExpression);
 
       var metaType = GetMetaType (entityRefMemberExpression.OriginatingEntity.Type);
       var metaAssociation = GetDataMember (metaType, entityRefMemberExpression.MemberInfo).Association;
@@ -172,8 +172,8 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public Expression TryResolveOptimizedMemberExpression (SqlEntityRefMemberExpression entityRefMemberExpression, MemberInfo memberInfo)
     {
-      ArgumentUtility.CheckNotNull ("entityRefMemberExpression", entityRefMemberExpression);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull (nameof(entityRefMemberExpression), entityRefMemberExpression);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo);
 
       var metaType = GetMetaType (entityRefMemberExpression.OriginatingEntity.Type);
       var metaAssociation = GetDataMember (metaType, entityRefMemberExpression.MemberInfo).Association;
@@ -187,7 +187,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
-      ArgumentUtility.CheckNotNull ("entityType", entityType);
+      ArgumentUtility.CheckNotNull (nameof(entityType), entityType);
 
       var metaType = _metaModel.GetMetaType (entityType).InheritanceRoot;
       return GetMetaDataMembersRecursive (metaType);

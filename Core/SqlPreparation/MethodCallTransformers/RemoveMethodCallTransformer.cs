@@ -36,7 +36,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1, 2);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);

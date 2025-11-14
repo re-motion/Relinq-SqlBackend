@@ -31,16 +31,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   {
     public virtual void GenerateTextForFromTable (ISqlCommandBuilder commandBuilder, SqlTable table, bool isFirstTable)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("table", table);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(table), table);
 
       SqlTableAndJoinTextGenerator.GenerateSql (table, commandBuilder, this, isFirstTable);
     }
 
     public virtual void GenerateTextForSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }
@@ -50,56 +50,56 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         Expression expression,
         SetOperationsMode setOperationsMode)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       SqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this, setOperationsMode);
     }
 
     public virtual void GenerateTextForWhereExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForOrderByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForTopExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public virtual void GenerateTextForJoinCondition (ISqlCommandBuilder commandBuilder, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public void GenerateTextForGroupByExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       GenerateTextForNonSelectExpression (commandBuilder, expression);
     }
 
     public void GenerateTextForOrdering (ISqlCommandBuilder commandBuilder, Ordering ordering)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("ordering", ordering);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(ordering), ordering);
       
       if (ordering.Expression.NodeType == ExpressionType.Constant || ordering.Expression is SqlLiteralExpression)
       {
@@ -115,8 +115,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual void GenerateTextForSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
 
       var sqlStatementTextGenerator = new SqlStatementTextGenerator (this);
       sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, false);
@@ -124,8 +124,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual void GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
 
       var sqlStatementTextGenerator = new SqlStatementTextGenerator (this);
       sqlStatementTextGenerator.Build (sqlStatement, commandBuilder, true);
@@ -133,8 +133,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected virtual void GenerateTextForNonSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       SqlGeneratingExpressionVisitor.GenerateSql (expression, commandBuilder, this);
     }

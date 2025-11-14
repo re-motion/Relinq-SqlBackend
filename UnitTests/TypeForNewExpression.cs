@@ -77,7 +77,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
     {
       var constructorInfo = typeof (TypeForNewExpression).GetConstructor (parameterTypes);
       if (constructorInfo == null)
-        throw new ArgumentException ("Ctor not found.", "parameterTypes");
+        throw new ArgumentException ("Ctor not found.", nameof(parameterTypes));
       return constructorInfo;
     }
   }

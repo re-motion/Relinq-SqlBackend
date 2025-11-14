@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   {
     public IMethodCallTransformer GetTransformer (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       var key = methodCallExpression.Method;
 
@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     
     public override IMethodCallTransformer GetItem (MethodInfo key)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull (nameof(key), key);
 
       var transformer = GetItemExact (key);
       if (transformer != null)

@@ -32,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       if (methodCallExpression.Arguments.Count == 1)
       {

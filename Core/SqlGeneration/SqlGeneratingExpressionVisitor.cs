@@ -43,9 +43,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       var visitor = new SqlGeneratingExpressionVisitor (commandBuilder, stage);
       visitor.Visit (expression);
@@ -57,8 +57,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected SqlGeneratingExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       _commandBuilder = commandBuilder;
       _binaryExpressionTextGenerator = new BinaryExpressionTextGenerator (commandBuilder, this);
@@ -80,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlEntity (SqlEntityExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.AppendSeparated (",", expression.Columns, (cb, column) => AppendColumnForEntity (expression, column));
       return expression;
@@ -88,7 +88,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlColumnDefinition (SqlColumnDefinitionExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       AppendColumn (expression.ColumnName, expression.OwningTableAlias, null);
 
@@ -97,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlColumnReference (SqlColumnReferenceExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       SqlColumnExpression firstColumn = expression.ReferencedEntity.Columns.FirstOrDefault();
       string referencedEntityName = firstColumn != null && firstColumn.ColumnName == "*" ? null : expression.ReferencedEntity.Name;
@@ -128,7 +128,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlLiteral (SqlLiteralExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (expression.Type == typeof (string))
         _commandBuilder.AppendStringLiteral ((string) expression.Value);
@@ -139,7 +139,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlIn (SqlInExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       Visit (expression.LeftExpression);
       _commandBuilder.Append (" IN ");
@@ -150,7 +150,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append ("(");
       Visit (expression.Expression);
@@ -162,7 +162,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append ("(");
       Visit (expression.Expression);
@@ -174,7 +174,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlFunction (SqlFunctionExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append (expression.SqlFunctioName);
       _commandBuilder.Append ("(");
@@ -185,7 +185,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlConvert (SqlConvertExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append ("CONVERT");
       _commandBuilder.Append ("(");
@@ -199,7 +199,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlExists (SqlExistsExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append ("EXISTS");
       _commandBuilder.Append ("(");
@@ -211,7 +211,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlRowNumber (SqlRowNumberExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append ("ROW_NUMBER() OVER (ORDER BY ");
       _commandBuilder.AppendSeparated (", ", expression.Orderings, _stage.GenerateTextForOrdering);
@@ -222,7 +222,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlLike (SqlLikeExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       Visit (expression.Left);
       _commandBuilder.Append (" LIKE ");
@@ -235,7 +235,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlLength (SqlLengthExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // Since the SQL LEN function ignores trailing blanks, we add one character and subtract 1 from the result.
       // LEN (x + '#') - 1
@@ -252,7 +252,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public Expression VisitSqlCase (SqlCaseExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append ("CASE");
 
@@ -283,7 +283,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected override Expression VisitUnary (UnaryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
       switch (expression.NodeType)
       {
         case ExpressionType.Not:
@@ -341,14 +341,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlCustomTextGenerator (SqlCustomTextGeneratorExpressionBase expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
       expression.Generate (_commandBuilder, this, _stage);
       return expression;
     }
 
     public virtual Expression VisitNamed (NamedExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       Visit (expression.Expression);
 
@@ -357,7 +357,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitAggregation (AggregationExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (expression.AggregationModifier == AggregationModifier.Count)
       {
@@ -389,7 +389,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitConstantCollection (ConstantCollectionExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.Append ("(");
       _commandBuilder.AppendCollection (expression);
@@ -400,7 +400,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected override Expression VisitNew (NewExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _commandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => Visit (expr));
       return expression;
@@ -413,7 +413,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     Expression IResolvedSqlExpressionVisitor.VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var message = string.Format (
           "It is not supported to use a constant entity object in any other context than to compare it with another entity. "

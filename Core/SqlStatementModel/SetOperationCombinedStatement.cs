@@ -13,7 +13,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public SetOperationCombinedStatement (SqlStatement sqlStatement, SetOperation setOperation)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
 
       _sqlStatement = sqlStatement;
       _setOperation = setOperation;

@@ -40,9 +40,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, SetOperationsMode setOperationsMode)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       EnsureNoCollectionExpression (expression);
 
@@ -60,7 +60,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public override Expression VisitNamed (NamedExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var result = base.VisitNamed (expression);
       SetInMemoryProjectionForNamedExpression (expression.Type, Expression.Constant (GetNextColumnID (expression.Name ?? NamedExpression.DefaultName)));
@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public virtual Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var namedExpression = expression.Expression as NamedExpression;
       if (namedExpression != null)
@@ -92,7 +92,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public override Expression VisitSqlEntity (SqlEntityExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var columnIds = expression.Columns
           .Select (e => GetNextColumnID (GetAliasForColumnOfEntity (e, expression) ?? e.ColumnName))
@@ -111,7 +111,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected override Expression VisitNew (NewExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var projectionExpressions = new List<Expression>();
       CommandBuilder.AppendSeparated (",", expression.Arguments, (cb, expr) => projectionExpressions.Add (VisitArgumentOfLocalEvaluation (expr)));
@@ -130,7 +130,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected override Expression VisitMethodCall (MethodCallExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (_setOperationsMode == SetOperationsMode.StatementIsSetCombined)
       {

@@ -17,7 +17,8 @@
 using System;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Common;
+using Microsoft.Data.SqlClient;
 using Remotion.Linq.IntegrationTests.Common.Database;
 using Remotion.Linq.LinqToSqlAdapter;
 
@@ -28,7 +29,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
   /// </summary>
   public class NorthwindConnectionManager : IConnectionManager
   {
-    public IDbConnection Open()
+    public DbConnection Open()
     {
       string connectionString = GetConnectionString();
       var conn = new SqlConnection (connectionString);

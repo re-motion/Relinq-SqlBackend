@@ -30,9 +30,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   {
     public FromExpressionInfo (SqlTable sqlTable, Ordering[] extractedOrderings, Expression itemSelector, Expression whereCondition)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
-      ArgumentUtility.CheckNotNull ("extractedOrderings", extractedOrderings);
-      ArgumentUtility.CheckNotNull ("itemSelector", itemSelector);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(extractedOrderings), extractedOrderings);
+      ArgumentUtility.CheckNotNull (nameof(itemSelector), itemSelector);
       
       SqlTable = sqlTable;
       ExtractedOrderings = Array.AsReadOnly(extractedOrderings);

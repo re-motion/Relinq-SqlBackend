@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data;
+using System.Data.Common;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Linq.LinqToSqlAdapter
@@ -27,9 +28,9 @@ namespace Remotion.Linq.LinqToSqlAdapter
   /// </summary>
   public class ScalarRowWrapper : IDatabaseResultRow
   {
-    private readonly IDataReader _dataReader;
+    private readonly DbDataReader _dataReader;
 
-    public ScalarRowWrapper (IDataReader dataReader)
+    public ScalarRowWrapper (DbDataReader dataReader)
     {
       _dataReader = dataReader;
     }

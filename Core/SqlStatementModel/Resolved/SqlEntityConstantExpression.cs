@@ -31,9 +31,9 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public SqlEntityConstantExpression (Type type, object value, Expression identityExpression)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("identityExpression", identityExpression);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
+      ArgumentUtility.CheckNotNull (nameof(value), value);
+      ArgumentUtility.CheckNotNull (nameof(identityExpression), identityExpression);
 
       _type = type;
       _value = value;

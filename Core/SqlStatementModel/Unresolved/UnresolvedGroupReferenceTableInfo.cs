@@ -32,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public UnresolvedGroupReferenceTableInfo (SqlTableBase referencedGroupSource)
     {
-      ArgumentUtility.CheckNotNull ("referencedGroupSource", referencedGroupSource);
+      ArgumentUtility.CheckNotNull (nameof(referencedGroupSource), referencedGroupSource);
 
       _referencedGroupSource = referencedGroupSource;
       _itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (referencedGroupSource.ItemType, "referencedGroupSource");
@@ -55,7 +55,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public ITableInfo Accept (ITableInfoVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       return visitor.VisitUnresolvedGroupReferenceTableInfo (this);
     }

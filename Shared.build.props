@@ -28,7 +28,7 @@
     <NoWarn>1591</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>True</IsPackable>
-    <TargetFrameworks>net8.0;net9.0;net462</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0;net462</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net462'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 
@@ -36,7 +36,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <TargetFrameworks>net8.0;net9.0;net462</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0;net462</TargetFrameworks>
     <DefineConstants Condition="'$(TargetFramework)' == 'net462'">$(DefineConstants);NETFRAMEWORK</DefineConstants>
   </PropertyGroup>
 

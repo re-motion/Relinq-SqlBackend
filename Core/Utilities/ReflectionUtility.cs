@@ -26,7 +26,7 @@ namespace Remotion.Linq.SqlBackend.Utilities
   {
     public static Type GetMemberReturnType (MemberInfo member)
     {
-      ArgumentUtility.CheckNotNull ("member", member);
+      ArgumentUtility.CheckNotNull (nameof(member), member);
 
       var propertyInfo = member as PropertyInfo;
       if (propertyInfo != null)
@@ -40,13 +40,13 @@ namespace Remotion.Linq.SqlBackend.Utilities
       if (methodInfo != null)
         return methodInfo.ReturnType;
 
-      throw new ArgumentException ("Argument must be FieldInfo, PropertyInfo, or MethodInfo.", "member");
+      throw new ArgumentException ("Argument must be FieldInfo, PropertyInfo, or MethodInfo.", nameof(member));
     }
 
     public static Type GetItemTypeOfClosedGenericIEnumerable (Type enumerableType, string argumentName)
     {
-      ArgumentUtility.CheckNotNull ("enumerableType", enumerableType);
-      ArgumentUtility.CheckNotNullOrEmpty ("argumentName", argumentName);
+      ArgumentUtility.CheckNotNull (nameof(enumerableType), enumerableType);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(argumentName), argumentName);
 
       Type itemType;
       if (!ItemTypeReflectionUtility.TryGetItemTypeOfClosedGenericIEnumerable (enumerableType, out itemType))

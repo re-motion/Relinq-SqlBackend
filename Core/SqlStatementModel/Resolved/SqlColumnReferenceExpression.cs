@@ -32,7 +32,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     public SqlColumnReferenceExpression (Type type, string tableAlias, string referencedColumnName, bool isPrimaryKey, SqlEntityExpression referencedEntity)
       : base (type, tableAlias, referencedColumnName, isPrimaryKey)
     {
-      ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
+      ArgumentUtility.CheckNotNull (nameof(referencedEntity), referencedEntity);
 
       _referencedEntity = referencedEntity;
     }

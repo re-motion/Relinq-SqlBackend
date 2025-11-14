@@ -30,9 +30,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   {
     public static void GenerateSql (SqlTable sqlTable, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage, bool isFirstTable)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       GenerateTextForSqlTable (new SqlTableAndJoinTextGenerator (commandBuilder, stage), sqlTable, commandBuilder, isFirstTable);
       GenerateSqlForJoins (sqlTable, commandBuilder, new SqlTableAndJoinTextGenerator (commandBuilder, stage));
@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     private static void GenerateTextForSqlJoinedTable (IJoinInfoVisitor visitor, SqlJoinedTable joinedTable, ISqlCommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+      ArgumentUtility.CheckNotNull (nameof(joinedTable), joinedTable);
 
       // TODO RMLNQSQL-4: This check can be removed.
       if (joinedTable.JoinSemantics == JoinSemantics.Inner)
@@ -88,8 +88,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected SqlTableAndJoinTextGenerator (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       _commandBuilder = commandBuilder;
       _stage = stage;
@@ -112,7 +112,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
 
       string[] identifiers = tableInfo.TableName.Split ('.');
       var newTableName = string.Join(".", identifiers.Select (idf => "[" + idf + "]").ToArray());
@@ -126,7 +126,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
 
       _commandBuilder.Append ("(");
       _stage.GenerateTextForSqlStatement (_commandBuilder, tableInfo.SqlStatement);
@@ -144,7 +144,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public IJoinInfo VisitResolvedJoinInfo (ResolvedJoinInfo joinInfo)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull (nameof(joinInfo), joinInfo);
 
       joinInfo.ForeignTableInfo.Accept (this);
 

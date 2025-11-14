@@ -30,7 +30,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public UnresolvedTableInfo (Type itemType)
     {
-      ArgumentUtility.CheckNotNull ("itemType", itemType);
+      ArgumentUtility.CheckNotNull (nameof(itemType), itemType);
 
       _itemType = itemType;
     }
@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public virtual ITableInfo Accept (ITableInfoVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
       return visitor.VisitUnresolvedTableInfo (this);
     }
 

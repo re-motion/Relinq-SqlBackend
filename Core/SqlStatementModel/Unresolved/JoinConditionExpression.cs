@@ -30,7 +30,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public JoinConditionExpression (SqlJoinedTable joinedTable)
     {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+      ArgumentUtility.CheckNotNull (nameof(joinedTable), joinedTable);
 
       _joinedTable = joinedTable;
     }
@@ -57,7 +57,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as IJoinConditionExpressionVisitor;
       if (specificVisitor != null)

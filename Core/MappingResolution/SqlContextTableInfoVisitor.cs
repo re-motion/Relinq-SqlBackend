@@ -26,9 +26,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   {
     public static ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionStage stage, IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       var visitor = new SqlContextTableInfoVisitor (stage, expressionContext, mappingResolutionContext);
       return tableInfo.Accept (visitor);
@@ -40,8 +40,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected SqlContextTableInfoVisitor (IMappingResolutionStage stage, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       _stage = stage;
       _expressionContext = expressionContext;
@@ -50,14 +50,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
 
       return tableInfo;
     }
 
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
 
       var newStatement = _stage.ApplySelectionContext (tableInfo.SqlStatement, _expressionContext, _mappingResolutionContext);
       if (newStatement != tableInfo.SqlStatement)
@@ -79,7 +79,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+      ArgumentUtility.CheckNotNull (nameof(joinedTable), joinedTable);
 
       var newJoinInfo = _stage.ApplyContext (joinedTable.JoinInfo, _expressionContext, _mappingResolutionContext); 
       joinedTable.JoinInfo = newJoinInfo;
@@ -89,7 +89,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
 
       return tableInfo;
     }

@@ -32,10 +32,10 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     protected SqlColumnExpression (Type type, string owningTableAlias, string columnName, bool isPrimaryKey)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("owningTableAlias", owningTableAlias);
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
-      ArgumentUtility.CheckNotNull ("isPrimaryKey", isPrimaryKey);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
+      ArgumentUtility.CheckNotNull (nameof(owningTableAlias), owningTableAlias);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(columnName), columnName);
+      ArgumentUtility.CheckNotNull (nameof(isPrimaryKey), isPrimaryKey);
 
       _type = type;
       _owningTableAlias = owningTableAlias;

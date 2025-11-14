@@ -26,7 +26,7 @@ namespace Remotion.Utilities
   {
     public static MethodInfo GetMethod<TReturnType> (Expression<Func<TReturnType>> expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
       return GetMethodInfoFromMethodCallExpression (expression.Body);
     }
 
@@ -34,7 +34,7 @@ namespace Remotion.Utilities
     {
       var methodCallExpression = expression as MethodCallExpression;
       if (methodCallExpression == null)
-        throw new ArgumentException ("Must be a MethodCallExpression.", "expression");
+        throw new ArgumentException ("Must be a MethodCallExpression.", nameof(expression));
 
       // For virtual methods the MethodCallExpression containts the root definition.
       return methodCallExpression.Method;

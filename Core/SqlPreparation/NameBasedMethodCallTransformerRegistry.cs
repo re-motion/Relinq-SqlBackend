@@ -31,14 +31,14 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
   {
     public IMethodCallTransformer GetTransformer (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       return GetItem (methodCallExpression.Method.Name);
     }
     
     public override IMethodCallTransformer GetItem (string key)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(key), key);
 
       return GetItemExact (key);
     }

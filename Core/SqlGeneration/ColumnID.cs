@@ -30,7 +30,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
   {
     public ColumnID (string columnName, int position)
     {
-      ArgumentUtility.CheckNotNull ("columnName", columnName);
+      ArgumentUtility.CheckNotNull (nameof(columnName), columnName);
 
       ColumnName = columnName;
       Position = position;

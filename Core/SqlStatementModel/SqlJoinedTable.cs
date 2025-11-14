@@ -41,8 +41,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public SqlJoinedTable (IJoinInfo joinInfo, JoinSemantics joinSemantics)
         : base (joinInfo.ItemType, joinSemantics)
     {
-      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
-      ArgumentUtility.CheckNotNull ("joinSemantics", joinSemantics);
+      ArgumentUtility.CheckNotNull (nameof(joinInfo), joinInfo);
+      ArgumentUtility.CheckNotNull (nameof(joinSemantics), joinSemantics);
 
       _joinInfo = joinInfo;
     }
@@ -55,11 +55,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _joinInfo; }
       set
       {
-        ArgumentUtility.CheckNotNull ("value", value);
+        ArgumentUtility.CheckNotNull (nameof(value), value);
         if (_joinInfo != null)
         {
           if (_joinInfo.ItemType != value.ItemType)
-            throw ArgumentUtility.CreateArgumentTypeException ("value", value.ItemType, _joinInfo.ItemType);
+            throw ArgumentUtility.CreateArgumentTypeException (nameof(value), value.ItemType, _joinInfo.ItemType);
         }
         _joinInfo = value;
       }
@@ -67,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public override void Accept (ISqlTableBaseVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       visitor.VisitSqlJoinedTable (this);
     }
@@ -79,7 +79,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public ITableInfo Accept (ITableInfoVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       return visitor.VisitSqlJoinedTable (this);
     }

@@ -44,8 +44,8 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
     /// <param name="memberFilter">function that evaluates to true for members that will be serialized</param>
     public TestResultSerializer (TextWriter textWriter, string spacer, int level, Func<MemberInfo, bool> memberFilter)
     {
-      ArgumentUtility.CheckNotNull ("textWriter", textWriter);
-      ArgumentUtility.CheckNotNull ("memberFilter", memberFilter);
+      ArgumentUtility.CheckNotNull (nameof(textWriter), textWriter);
+      ArgumentUtility.CheckNotNull (nameof(memberFilter), memberFilter);
 
       _textWriter = textWriter;
       _spacer = spacer;
@@ -89,7 +89,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     public void Serialize (object value, string name)
     {
-      ArgumentUtility.CheckNotNull ("name", name);
+      ArgumentUtility.CheckNotNull (nameof(name), name);
 
       WriteSpacing();
 
@@ -101,7 +101,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     public void Serialize (object value, MethodBase currentMethod)
     {
-      ArgumentUtility.CheckNotNull ("currentMethod", currentMethod);
+      ArgumentUtility.CheckNotNull (nameof(currentMethod), currentMethod);
 
       _textWriter.Write (currentMethod.Name);
       _textWriter.WriteLine (":");

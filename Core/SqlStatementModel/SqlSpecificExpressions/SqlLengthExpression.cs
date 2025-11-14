@@ -29,14 +29,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     public SqlLengthExpression (Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (expression.Type != typeof (string) && expression.Type != typeof (char))
       {
         throw new ArgumentException (
             "SqlLengthExpression can only be used on values of type 'System.String' or 'System.Char', not on '" + expression.Type
             + "'. (Add a conversion if you need to get the string length of a non-string value.)",
-            "expression");
+            nameof(expression));
       }
 
       _expression = expression;
@@ -59,7 +59,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var newExpression = visitor.Visit (_expression);
 
@@ -71,7 +71,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)

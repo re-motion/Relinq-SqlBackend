@@ -39,12 +39,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         UniqueIdentifierGenerator generator,
         SqlStatementBuilder sqlStatementBuilder)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(resolver), resolver);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
 
       var entityIdentityResolver = new EntityIdentityResolver (stage, resolver, context);
       var comparisonSplitter = new CompoundExpressionComparisonSplitter ();

@@ -27,7 +27,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public CommandParameter (string name, object value)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(name), name);
 
       _name = name;
       _value = value;

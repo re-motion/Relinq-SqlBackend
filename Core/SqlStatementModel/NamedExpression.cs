@@ -40,15 +40,15 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public static NamedExpression CreateFromMemberName (string memberName, Expression innerExpression)
     {
-      ArgumentUtility.CheckNotNull ("memberName", memberName);
-      ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
+      ArgumentUtility.CheckNotNull (nameof(memberName), memberName);
+      ArgumentUtility.CheckNotNull (nameof(innerExpression), innerExpression);
 
       return new NamedExpression (memberName, innerExpression);
     }
 
     public static Expression CreateNewExpressionWithNamedArguments (NewExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
       
       return CreateNewExpressionWithNamedArguments (expression, expression.Arguments);
     }
@@ -99,7 +99,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public NamedExpression (string name, Expression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       _name = name;
       _expression = expression;
@@ -127,7 +127,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var newExpression = visitor.Visit (_expression);
       if (newExpression != _expression)
@@ -138,7 +138,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as INamedExpressionVisitor;
       if (specificVisitor != null)

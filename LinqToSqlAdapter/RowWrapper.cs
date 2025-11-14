@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Data.Linq;
 using System.Linq;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -30,10 +31,10 @@ namespace Remotion.Linq.LinqToSqlAdapter
   /// </summary>
   public class RowWrapper : IDatabaseResultRow
   {
-    private readonly IDataReader _dataReader;
+    private readonly DbDataReader _dataReader;
     private readonly IReverseMappingResolver _resolver;
 
-    public RowWrapper (IDataReader dataReader, IReverseMappingResolver resolver)
+    public RowWrapper (DbDataReader dataReader, IReverseMappingResolver resolver)
     {
       _dataReader = dataReader;
       _resolver = resolver;

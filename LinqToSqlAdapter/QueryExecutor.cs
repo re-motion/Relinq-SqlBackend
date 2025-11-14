@@ -45,10 +45,10 @@ namespace Remotion.Linq.LinqToSqlAdapter
         CompoundMethodCallTransformerProvider methodCallTransformerProvider,
         bool showQuery)
     {
-      ArgumentUtility.CheckNotNull ("mappingResolver", mappingResolver);
-      ArgumentUtility.CheckNotNull ("resultRetriever", resultRetriever);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
+      ArgumentUtility.CheckNotNull (nameof(mappingResolver), mappingResolver);
+      ArgumentUtility.CheckNotNull (nameof(resultRetriever), resultRetriever);
+      ArgumentUtility.CheckNotNull (nameof(resultOperatorHandlerRegistry), resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull (nameof(methodCallTransformerProvider), methodCallTransformerProvider);
 
       _mappingResolver = mappingResolver;
       _resultRetriever = resultRetriever;
@@ -61,7 +61,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public T ExecuteScalar<T> (QueryModel queryModel)
     {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       SqlCommandData commandData = GenerateSqlCommand (queryModel);
       var projection = commandData.GetInMemoryProjection<T> ().Compile ();
@@ -70,7 +70,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public T ExecuteSingle<T> (QueryModel queryModel, bool returnDefaultWhenEmpty)
     {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       var sequence = ExecuteCollection<T> (queryModel);
 
@@ -82,7 +82,7 @@ namespace Remotion.Linq.LinqToSqlAdapter
 
     public IEnumerable<T> ExecuteCollection<T> (QueryModel queryModel)
     {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull (nameof(queryModel), queryModel);
 
       SqlCommandData commandData = GenerateSqlCommand (queryModel);
       var projection = commandData.GetInMemoryProjection<T> ().Compile ();

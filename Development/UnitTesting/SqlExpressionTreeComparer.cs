@@ -30,8 +30,8 @@ namespace Remotion.Linq.SqlBackend.Development.UnitTesting
   {
     public static void CheckAreEqualTrees (Expression expectedTree, Expression actualTree)
     {
-      ArgumentUtility.CheckNotNull ("expectedTree", expectedTree);
-      ArgumentUtility.CheckNotNull ("actualTree", actualTree);
+      ArgumentUtility.CheckNotNull (nameof(expectedTree), expectedTree);
+      ArgumentUtility.CheckNotNull (nameof(actualTree), actualTree);
 
       var comparer = new SqlExpressionTreeComparer (expectedTree.ToString(), actualTree.ToString());
       comparer.CheckAreEqualNodes (expectedTree, actualTree);

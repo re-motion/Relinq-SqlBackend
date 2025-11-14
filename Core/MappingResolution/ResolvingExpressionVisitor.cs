@@ -45,11 +45,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         IMappingResolutionContext context,
         UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("generator", generator);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(resolver), resolver);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
 
       var entityIdentityResolver = new EntityIdentityResolver (stage, resolver, context);
       var comparisonSplitter = new CompoundExpressionComparisonSplitter();
@@ -133,14 +133,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         IGroupAggregateSimplifier groupAggregateSimplifier,
         bool resolveEntityRefMemberExpressions)
     {
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("entityIdentityResolver", entityIdentityResolver);
-      ArgumentUtility.CheckNotNull ("compoundComparisonSplitter", compoundComparisonSplitter);
-      ArgumentUtility.CheckNotNull ("namedExpressionCombiner", namedExpressionCombiner);
-      ArgumentUtility.CheckNotNull ("groupAggregateSimplifier", groupAggregateSimplifier);
+      ArgumentUtility.CheckNotNull (nameof(resolver), resolver);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(entityIdentityResolver), entityIdentityResolver);
+      ArgumentUtility.CheckNotNull (nameof(compoundComparisonSplitter), compoundComparisonSplitter);
+      ArgumentUtility.CheckNotNull (nameof(namedExpressionCombiner), namedExpressionCombiner);
+      ArgumentUtility.CheckNotNull (nameof(groupAggregateSimplifier), groupAggregateSimplifier);
       
       _resolver = resolver;
       _stage = stage;
@@ -156,7 +156,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var resolvedExpression = _stage.ResolveTableReferenceExpression (expression, _context);
       return Visit (resolvedExpression);
@@ -164,7 +164,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitConstant (ConstantExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var resolvedExpression = _resolver.ResolveConstantExpression (expression);
       if (resolvedExpression != expression)
@@ -175,7 +175,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitMember (MemberExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       // First process any nested expressions
       // E.g, for (kitchen.Cook).FirstName, first process kitchen => newExpression1 (SqlEntity)
@@ -191,7 +191,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitBinary (BinaryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var baseVisitedExpression = (BinaryExpression) base.VisitBinary (expression);
 
@@ -206,7 +206,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitTypeBinary (TypeBinaryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newExpression = Visit (expression.Expression);
       var resolvedTypeExpression = _resolver.ResolveTypeCheck (newExpression, expression.TypeOperand);
@@ -215,7 +215,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var resolvedSqlStatement = _stage.ResolveSqlStatement (expression.SqlStatement, _context);
       var resolvedExpression = Equals (resolvedSqlStatement, expression.SqlStatement)
@@ -227,7 +227,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual Expression VisitJoinCondition (JoinConditionExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var resolvedLeftJoinInfo = expression.JoinedTable.JoinInfo.GetResolvedJoinInfo();
       return Visit (resolvedLeftJoinInfo.JoinCondition);
@@ -235,7 +235,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitNamed (NamedExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var baseVisitedExpression =  (NamedExpression) VisitExtension (expression);
 
@@ -249,7 +249,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlExists (SqlExistsExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var baseVisitedExpression = (SqlExistsExpression) VisitExtension (expression);
 
@@ -264,7 +264,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlIn (SqlInExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var baseVisitedExpression = (SqlInExpression) VisitExtension (expression);
 
@@ -278,7 +278,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var baseVisitedExpression = (SqlIsNullExpression) VisitExtension (expression);
 
@@ -293,7 +293,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var baseVisitedExpression = (SqlIsNotNullExpression) VisitExtension (expression);
 
@@ -308,7 +308,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public virtual Expression VisitSqlEntityRefMember (SqlEntityRefMemberExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (!_resolveEntityRefMemberExpressions)
         return VisitExtension (expression);

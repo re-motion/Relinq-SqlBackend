@@ -33,15 +33,15 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public ResolvedSubStatementTableInfo (string tableAlias, SqlStatement sqlStatement)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(tableAlias), tableAlias);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
       
       _sqlStatement = sqlStatement;
       _tableAlias = tableAlias;
       
       var streamedSequenceInfo = sqlStatement.DataInfo as StreamedSequenceInfo;
       if (streamedSequenceInfo == null)
-        throw new ArgumentException ("For a statement to be used as a table, it must return a sequence of items.", "sqlStatement");
+        throw new ArgumentException ("For a statement to be used as a table, it must return a sequence of items.", nameof(sqlStatement));
       _itemType = streamedSequenceInfo.ResultItemType;
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public virtual ITableInfo Accept (ITableInfoVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
       return visitor.VisitSubStatementTableInfo(this);
     }
 

@@ -17,7 +17,7 @@
 
 using System;
 using System.Configuration;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace Remotion.Linq.IntegrationTests.Common.Database
 {

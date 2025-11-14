@@ -35,9 +35,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
         UniqueIdentifierGenerator uniqueIdentifierGenerator)
     {
-      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-      ArgumentUtility.CheckNotNull ("uniqueIdentifierGenerator", uniqueIdentifierGenerator);
+      ArgumentUtility.CheckNotNull (nameof(methodCallTransformerProvider), methodCallTransformerProvider);
+      ArgumentUtility.CheckNotNull (nameof(resultOperatorHandlerRegistry), resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull (nameof(uniqueIdentifierGenerator), uniqueIdentifierGenerator);
 
       _methodCallTransformerProvider = methodCallTransformerProvider;
       _resultOperatorHandlerRegistry = resultOperatorHandlerRegistry;
@@ -102,7 +102,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected virtual Expression PrepareExpression (Expression expression, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       return SqlPreparationExpressionVisitor.TranslateExpression (expression, context, this, _methodCallTransformerProvider);
     }

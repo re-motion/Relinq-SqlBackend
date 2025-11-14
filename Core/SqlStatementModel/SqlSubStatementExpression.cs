@@ -35,7 +35,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     public SqlSubStatementExpression (SqlStatement sqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
 
       _sqlStatement = sqlStatement;
     }
@@ -64,7 +64,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as ISqlSubStatementVisitor;
       if (specificVisitor != null)
@@ -80,8 +80,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     
     public SqlTable ConvertToSqlTable (string uniqueIdentifier)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
-      ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(uniqueIdentifier), uniqueIdentifier);
+      ArgumentUtility.CheckNotNullOrEmpty (nameof(uniqueIdentifier), uniqueIdentifier);
       
       var joinSemantic = CalculateJoinSemantic();
 

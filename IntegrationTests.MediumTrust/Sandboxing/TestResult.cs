@@ -34,21 +34,21 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
     public static TestResult CreateSucceeded (MethodInfo methodInfo)
     {
       if (methodInfo == null)
-        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(methodInfo)); // avoid ArgumentUtility, it doesn't support partial trust ATM
       return new TestResult (methodInfo, SandboxTestStatus.Succeeded, null);
     }
 
     public static TestResult CreateIgnored (MethodInfo methodInfo)
     {
       if (methodInfo == null)
-        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(methodInfo)); // avoid ArgumentUtility, it doesn't support partial trust ATM
       return new TestResult (methodInfo, SandboxTestStatus.Ignored, null);
     }
 
     public static TestResult CreateFailed (MethodInfo methodInfo, Exception exception)
     {
       if (methodInfo == null)
-        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(methodInfo)); // avoid ArgumentUtility, it doesn't support partial trust ATM
       
       return new TestResult (methodInfo, SandboxTestStatus.Failed, exception);
     }
@@ -56,9 +56,9 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
     public static TestResult CreateFailedInSetUp (MethodInfo methodInfo, Exception exception)
     {
       if (methodInfo == null)
-        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(methodInfo)); // avoid ArgumentUtility, it doesn't support partial trust ATM
       if (exception == null)
-        throw new ArgumentNullException ("exception"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(exception)); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
       return new TestResult (methodInfo, SandboxTestStatus.FailedInSetUp, exception);
     }
@@ -66,9 +66,9 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
     public static TestResult CreateFailedInTearDown (MethodInfo methodInfo, Exception exception)
     {
       if (methodInfo == null)
-        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(methodInfo)); // avoid ArgumentUtility, it doesn't support partial trust ATM
       if (exception == null)
-        throw new ArgumentNullException ("exception"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(exception)); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
       return new TestResult (methodInfo, SandboxTestStatus.FailedInTearDown, exception);
     }
@@ -80,7 +80,7 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
     private TestResult (MethodInfo methodInfo, SandboxTestStatus status, Exception exception)
     {
       if (methodInfo == null)
-        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(methodInfo)); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
       MethodInfo = methodInfo;
       Status = status;

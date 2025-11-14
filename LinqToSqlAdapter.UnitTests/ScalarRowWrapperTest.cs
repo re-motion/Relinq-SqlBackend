@@ -17,6 +17,7 @@
 
 using System;
 using System.Data;
+using System.Data.Common;
 using Moq;
 using NUnit.Framework;
 using Remotion.Linq.LinqToSqlAdapter.UnitTests.TestDomain;
@@ -27,12 +28,12 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
   [TestFixture]
   public class ScalarRowWrapperTest
   {
-    private Mock<IDataReader> _readerMock;
+    private Mock<DbDataReader> _readerMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _readerMock = new Mock<IDataReader>();
+      _readerMock = new Mock<DbDataReader>();
     }
 
     [Test]

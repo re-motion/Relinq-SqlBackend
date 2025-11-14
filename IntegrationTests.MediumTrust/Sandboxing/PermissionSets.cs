@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Data.SqlClient;
 using System.Drawing.Printing;
 using System.Net;
 using System.Net.Mail;
@@ -48,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
                    new SecurityPermission (SecurityPermissionFlag.Assertion | SecurityPermissionFlag.Execution | SecurityPermissionFlag.ControlThread
                                            | SecurityPermissionFlag.ControlPrincipal | SecurityPermissionFlag.RemotingConfiguration),
                    new SmtpPermission (SmtpAccess.Connect),
-                   new SqlClientPermission (PermissionState.Unrestricted),
+                   new System.Data.SqlClient.SqlClientPermission (PermissionState.Unrestricted),
                    new WebPermission (NetworkAccess.Connect, originHost),
                    new ReflectionPermission (ReflectionPermissionFlag.RestrictedMemberAccess)
                };

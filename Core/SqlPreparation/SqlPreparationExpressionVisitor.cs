@@ -46,10 +46,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         ISqlPreparationStage stage,
         IMethodCallTransformerProvider provider)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(provider), provider);
 
       var visitor = new SqlPreparationExpressionVisitor (context, stage, provider);
       var result = visitor.Visit (expression);
@@ -59,9 +59,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
     protected SqlPreparationExpressionVisitor (
         ISqlPreparationContext context, ISqlPreparationStage stage, IMethodCallTransformerProvider provider)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(provider), provider);
 
       _context = context;
       _stage = stage;
@@ -97,7 +97,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitQuerySourceReference (QuerySourceReferenceExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (expression.ReferencedQuerySource is GroupJoinClause)
       {
@@ -118,7 +118,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitSubQuery (SubQueryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newExpression = _stage.PrepareSqlStatement (expression.QueryModel, _context).CreateExpression();
 
@@ -127,7 +127,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public virtual Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (expression.SqlStatement.Orderings.Count > 0 && expression.SqlStatement.TopExpression == null)
       {
@@ -140,7 +140,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitMember (MemberExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newInnerExpression = Visit (expression.Expression);
 
@@ -201,7 +201,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitBinary (BinaryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (IsNullConstant (expression.Left))
       {
@@ -227,7 +227,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitMethodCall (MethodCallExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var transformer = _methodCallTransformerProvider.GetTransformer(expression);
       if (transformer != null)
@@ -243,7 +243,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitConditional (ConditionalExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       return SqlCaseExpression.CreateIfThenElse (
           expression.Type, Visit (expression.Test), Visit (expression.IfTrue), Visit (expression.IfFalse));
@@ -251,21 +251,21 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitNew (NewExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       return NamedExpression.CreateNewExpressionWithNamedArguments (expression, expression.Arguments.Select (Visit));
     }
 
     public virtual Expression VisitPartialEvaluationException (PartialEvaluationExceptionExpression partialEvaluationExceptionExpression)
     {
-      ArgumentUtility.CheckNotNull ("partialEvaluationExceptionExpression", partialEvaluationExceptionExpression);
+      ArgumentUtility.CheckNotNull (nameof(partialEvaluationExceptionExpression), partialEvaluationExceptionExpression);
       
       return Visit (partialEvaluationExceptionExpression.EvaluatedExpression);
     }
 
     protected override Expression VisitConstant (ConstantExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (IsSingleValue(expression.Value))
         return base.VisitConstant (expression);

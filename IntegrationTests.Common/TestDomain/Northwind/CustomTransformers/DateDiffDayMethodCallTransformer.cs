@@ -36,7 +36,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind.CustomTrans
 
     public Expression Transform(MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       return new SqlFunctionExpression (
           methodCallExpression.Type, 

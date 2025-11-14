@@ -126,7 +126,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       OnCreated ();
     }
 
-    public NorthwindDataContext (System.Data.IDbConnection connection) :
+    public NorthwindDataContext (System.Data.Common.DbConnection connection) :
       base (connection, mappingSource)
     {
       OnCreated ();
@@ -138,7 +138,7 @@ namespace Remotion.Linq.IntegrationTests.Common.TestDomain.Northwind
       OnCreated ();
     }
 
-    public NorthwindDataContext (System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
+    public NorthwindDataContext (System.Data.Common.DbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) :
       base (connection, mappingSource)
     {
       OnCreated ();

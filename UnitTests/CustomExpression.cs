@@ -27,7 +27,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests
 
     public CustomExpression (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
 
       _type = type;
     }

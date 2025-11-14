@@ -41,8 +41,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         ISqlPreparationContext context, 
         UniqueIdentifierGenerator uniqueIdentifierGenerator)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       _stage = stage;
       _uniqueIdentifierGenerator = uniqueIdentifierGenerator;
@@ -54,8 +54,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         Func<ITableInfo, SqlTable> tableCreator,
         OrderingExtractionPolicy orderingExtractionPolicy)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("tableCreator", tableCreator);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(tableCreator), tableCreator);
 
       if (sqlStatement.Orderings.Count == 0)
       {

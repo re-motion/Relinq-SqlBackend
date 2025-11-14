@@ -34,8 +34,8 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
   {
     public static TestFixtureResult[] RunTestFixturesInSandbox (IEnumerable<Type> testFixtureTypes, IPermission[] permissions, Assembly[] fullTrustAssemblies)
     {
-      ArgumentUtility.CheckNotNull ("testFixtureTypes", testFixtureTypes);
-      ArgumentUtility.CheckNotNull ("permissions", permissions);
+      ArgumentUtility.CheckNotNull (nameof(testFixtureTypes), testFixtureTypes);
+      ArgumentUtility.CheckNotNull (nameof(permissions), permissions);
 
       using (var sandbox = Sandbox.CreateSandbox (permissions, fullTrustAssemblies))
       {
@@ -47,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
     public TestFixtureResult[] RunTestFixtures (IEnumerable<Type> testFixtureTypes)
     {
       if (testFixtureTypes == null)
-        throw new ArgumentNullException ("testFixtureTypes"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(testFixtureTypes)); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
       return testFixtureTypes.Select (t => RunTestFixture (t)).ToArray ();
     }
@@ -55,7 +55,7 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
     public TestFixtureResult RunTestFixture (Type type)
     {
       if (type == null)
-        throw new ArgumentNullException ("type"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(type)); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
       var testFixtureInstance = Activator.CreateInstance (type);
 

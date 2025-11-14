@@ -34,7 +34,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
     public SqlTable (ITableInfo tableInfo, JoinSemantics joinSemantics)
         : base (tableInfo.ItemType, joinSemantics)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
       
       _tableInfo = tableInfo;
     }
@@ -47,11 +47,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
       get { return _tableInfo; }
       set
       {
-        ArgumentUtility.CheckNotNull ("value", value);
+        ArgumentUtility.CheckNotNull (nameof(value), value);
         if (_tableInfo != null)
         {
           if (_tableInfo.ItemType != value.ItemType)
-            throw ArgumentUtility.CreateArgumentTypeException ("value", value.ItemType, _tableInfo.ItemType);
+            throw ArgumentUtility.CreateArgumentTypeException (nameof(value), value.ItemType, _tableInfo.ItemType);
         }
         _tableInfo = value;
       }

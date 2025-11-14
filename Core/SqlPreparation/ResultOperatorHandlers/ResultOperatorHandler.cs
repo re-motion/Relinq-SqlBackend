@@ -46,9 +46,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     protected void EnsureNoTopExpression (
         SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       if (sqlStatementBuilder.TopExpression != null)
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
@@ -57,9 +57,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     protected void EnsureNoDistinctQuery (
         SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       if (sqlStatementBuilder.IsDistinctQuery)
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
@@ -68,10 +68,10 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     protected void EnsureNoGroupExpression (
       SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       if (sqlStatementBuilder.GroupByExpression != null)
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
@@ -80,9 +80,9 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
     protected void EnsureNoSetOperations (
         SqlStatementBuilder sqlStatementBuilder, UniqueIdentifierGenerator generator, ISqlPreparationStage stage, ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       if (sqlStatementBuilder.SetOperationCombinedStatements.Any())
         MoveCurrentStatementToSqlTable (sqlStatementBuilder, context, info => new SqlTable (info, JoinSemantics.Inner), stage);
@@ -148,13 +148,13 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
         ISqlPreparationStage stage,
         ISqlPreparationContext context)
     {
-      ArgumentUtility.CheckNotNull ("resultOperator", resultOperator);
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(resultOperator), resultOperator);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
-      var castOperator = ArgumentUtility.CheckNotNullAndType<T> ("resultOperator", resultOperator);
+      var castOperator = ArgumentUtility.CheckNotNullAndType<T> (nameof(resultOperator), resultOperator);
       HandleResultOperator (castOperator, sqlStatementBuilder, generator, stage, context);
     }
   }

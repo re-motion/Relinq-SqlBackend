@@ -44,8 +44,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public static MethodInfo GetStaticMethod (Type type, string methodName, params Type[] argumentTypes)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("methodName", methodName);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
+      ArgumentUtility.CheckNotNull (nameof(methodName), methodName);
 
       return type.GetMethod (
           methodName,
@@ -57,16 +57,16 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public static MethodInfo GetInstanceMethod (Type type, string methodName, params Type[] argumentTypes)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("methodName", methodName);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
+      ArgumentUtility.CheckNotNull (nameof(methodName), methodName);
 
       return type.GetMethod (methodName, argumentTypes);
     }
 
     public static void CheckArgumentCount (MethodCallExpression methodCallExpression, params int[] allowedArgumentCounts)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-      ArgumentUtility.CheckNotNull ("allowedArgumentCounts", allowedArgumentCounts);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(allowedArgumentCounts), allowedArgumentCounts);
 
       if (!allowedArgumentCounts.Contains (methodCallExpression.Arguments.Count))
       {
@@ -82,7 +82,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public static void CheckStaticMethod (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       if (!methodCallExpression.Method.IsStatic)
       {
@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public static void CheckInstanceMethod (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       if (methodCallExpression.Method.IsStatic)
       {

@@ -17,6 +17,7 @@
 
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
@@ -30,14 +31,14 @@ namespace Remotion.Linq.LinqToSqlAdapter.UnitTests
   [TestFixture]
   public class RowWrapperTest
   {
-    private Mock<IDataReader> _readerMock;
+    private Mock<DbDataReader> _readerMock;
     private Mock<IReverseMappingResolver> _reverseMappingResolverMock;
     private MetaModel _metaModel;
 
     [SetUp]
     public void SetUp ()
     {
-      _readerMock = new Mock<IDataReader>();
+      _readerMock = new Mock<DbDataReader>();
       _reverseMappingResolverMock = new Mock<IReverseMappingResolver>();
 
       _metaModel = new AttributeMappingSource().GetModel (typeof (DataContextTestClass));

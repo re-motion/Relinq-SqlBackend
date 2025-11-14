@@ -34,8 +34,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public UnresolvedJoinInfo (SqlEntityExpression originatingEntity, MemberInfo memberInfo, JoinCardinality cardinality)
     {
-      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+      ArgumentUtility.CheckNotNull (nameof(originatingEntity), originatingEntity);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo);
 
       _originatingEntity = originatingEntity;
       _memberInfo = memberInfo;
@@ -70,7 +70,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
       return visitor.VisitUnresolvedJoinInfo (this);
     }
 

@@ -34,7 +34,7 @@ namespace Remotion.Linq.SqlBackend.IntegrationTests.MediumTrust.Sandboxing
     public TestFixtureResult (Type type, TestResult[] testResults)
     {
       if (type == null)
-        throw new ArgumentNullException ("type"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+        throw new ArgumentNullException (nameof(type)); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
       Type = type;
       TestResults = testResults;

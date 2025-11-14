@@ -37,7 +37,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
         params SqlColumnExpression[] projectionColumns)
       : base (entityType, tableAlias, entityName, identityExpressionGenerator)
     {
-      ArgumentUtility.CheckNotNull ("projectionColumns", projectionColumns);
+      ArgumentUtility.CheckNotNull (nameof(projectionColumns), projectionColumns);
 
       _columns = Array.AsReadOnly (projectionColumns);
     }

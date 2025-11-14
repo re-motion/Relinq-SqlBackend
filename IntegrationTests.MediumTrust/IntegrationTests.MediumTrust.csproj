@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <PackageReference Remove="NUnit" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="NUNit" VersionOverride="2.6.3" />
 
     <PackageReference Remove="NUnit3TestAdapter" />

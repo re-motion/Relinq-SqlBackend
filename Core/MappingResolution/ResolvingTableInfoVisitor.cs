@@ -36,10 +36,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public static IResolvedTableInfo ResolveTableInfo (ITableInfo tableInfo, IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(resolver), resolver);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var visitor = new ResolvingTableInfoVisitor (resolver, generator, stage, context);
       return (IResolvedTableInfo) tableInfo.Accept (visitor);
@@ -47,10 +47,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected ResolvingTableInfoVisitor (IMappingResolver resolver, UniqueIdentifierGenerator generator, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("resolver", resolver);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(resolver), resolver);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       _resolver = resolver;
       _generator = generator;
@@ -80,20 +80,20 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitUnresolvedTableInfo (UnresolvedTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
       var result =  _resolver.ResolveTableInfo (tableInfo, _generator);
       return result.Accept (this);
     }
 
     public ITableInfo VisitSimpleTableInfo (ResolvedSimpleTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
       return tableInfo;
     }
 
     public ITableInfo VisitSubStatementTableInfo (ResolvedSubStatementTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
 
       var newSqlStatement = _stage.ResolveSqlStatement (tableInfo.SqlStatement, _context);
       if (newSqlStatement.Equals (tableInfo.SqlStatement))
@@ -104,7 +104,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitJoinedGroupingTableInfo (ResolvedJoinedGroupingTableInfo tableInfo)
     {
-      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull (nameof(tableInfo), tableInfo);
 
       var newSqlStatement = _stage.ResolveSqlStatement (tableInfo.SqlStatement, _context);
       if (newSqlStatement.Equals (tableInfo.SqlStatement))
@@ -123,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public ITableInfo VisitSqlJoinedTable (SqlJoinedTable joinedTable)
     {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+      ArgumentUtility.CheckNotNull (nameof(joinedTable), joinedTable);
 
       var resolvedJoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo, _context);
       joinedTable.JoinInfo = resolvedJoinInfo;

@@ -40,7 +40,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public override IResultOperatorHandler GetItem (Type key)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull (nameof(key), key);
 
       IResultOperatorHandler handler;
 

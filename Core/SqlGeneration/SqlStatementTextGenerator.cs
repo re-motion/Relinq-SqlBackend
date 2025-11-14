@@ -31,7 +31,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public SqlStatementTextGenerator (ISqlGenerationStage stage)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       _stage = stage;
     }
@@ -46,8 +46,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         ISqlCommandBuilder commandBuilder, 
         bool isOutermostStatement)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
 
       BuildSelectPart (sqlStatement, commandBuilder, isOutermostStatement);
       BuildFromPart (sqlStatement, commandBuilder);
@@ -62,8 +62,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         ISqlCommandBuilder commandBuilder,
         bool isOutermostStatement)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
 
       commandBuilder.Append ("SELECT ");
 
@@ -88,8 +88,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected virtual void BuildFromPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
 
       if (sqlStatement.SqlTables.Count > 0)
       {
@@ -106,8 +106,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected virtual void BuildWherePart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
 
       if ((sqlStatement.WhereCondition != null))
       {
@@ -119,8 +119,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected virtual void BuildGroupByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
 
       if (sqlStatement.GroupByExpression != null)
       {
@@ -132,8 +132,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected virtual void BuildOrderByPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
 
       if (sqlStatement.Orderings.Count > 0)
       {
@@ -160,8 +160,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     protected virtual void BuildSetOperationCombinedStatementsPart (SqlStatement sqlStatement, ISqlCommandBuilder commandBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
 
       foreach (var combinedStatement in sqlStatement.SetOperationCombinedStatements)
       {

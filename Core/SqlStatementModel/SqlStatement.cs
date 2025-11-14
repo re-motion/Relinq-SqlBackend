@@ -56,14 +56,14 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel
         Expression currentRowNumberOffset,
         IEnumerable<SetOperationCombinedStatement> setOperationCombinedStatements)
     {
-      ArgumentUtility.CheckNotNull ("dataInfo", dataInfo);
-      ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
-      ArgumentUtility.CheckNotNull ("sqlTables", sqlTables);
-      ArgumentUtility.CheckNotNull ("orderings", orderings);
-      ArgumentUtility.CheckNotNull ("setOperationCombinedStatements", setOperationCombinedStatements);
+      ArgumentUtility.CheckNotNull (nameof(dataInfo), dataInfo);
+      ArgumentUtility.CheckNotNull (nameof(selectProjection), selectProjection);
+      ArgumentUtility.CheckNotNull (nameof(sqlTables), sqlTables);
+      ArgumentUtility.CheckNotNull (nameof(orderings), orderings);
+      ArgumentUtility.CheckNotNull (nameof(setOperationCombinedStatements), setOperationCombinedStatements);
       
       if (whereCondition != null && whereCondition.Type != typeof (bool))
-        throw ArgumentUtility.CreateArgumentTypeException ("whereCondition", whereCondition.Type, typeof (bool));
+        throw ArgumentUtility.CreateArgumentTypeException (nameof(whereCondition), whereCondition.Type, typeof (bool));
 
       _dataInfo = dataInfo;
       _selectProjection = selectProjection;

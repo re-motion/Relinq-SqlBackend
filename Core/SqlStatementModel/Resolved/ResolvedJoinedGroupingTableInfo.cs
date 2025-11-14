@@ -40,8 +40,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
         string groupSourceTableAlias)
       : base (tableAlias, sqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("associatedGroupingSelectExpression", associatedGroupingSelectExpression);
-      ArgumentUtility.CheckNotNull ("groupSourceTableAlias", groupSourceTableAlias);
+      ArgumentUtility.CheckNotNull (nameof(associatedGroupingSelectExpression), associatedGroupingSelectExpression);
+      ArgumentUtility.CheckNotNull (nameof(groupSourceTableAlias), groupSourceTableAlias);
 
       _associatedGroupingSelectExpression = associatedGroupingSelectExpression;
       _groupSourceTableAlias = groupSourceTableAlias;

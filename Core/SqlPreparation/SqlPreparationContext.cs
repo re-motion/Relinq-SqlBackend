@@ -39,7 +39,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public SqlPreparationContext (ISqlPreparationContext parentContext, SqlStatementBuilder sqlStatementBuilder)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatementBuilder", sqlStatementBuilder);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatementBuilder), sqlStatementBuilder);
 
       _parentContext = parentContext;
       _sqlStatementBuilder = sqlStatementBuilder;
@@ -53,22 +53,22 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public void AddExpressionMapping (Expression original, Expression replacement)
     {
-      ArgumentUtility.CheckNotNull ("original", original);
-      ArgumentUtility.CheckNotNull ("replacement", replacement);
+      ArgumentUtility.CheckNotNull (nameof(original), original);
+      ArgumentUtility.CheckNotNull (nameof(replacement), replacement);
 
       _mapping[original] = replacement;
     }
 
     public void AddSqlTable (SqlTable sqlTable)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
 
       _sqlStatementBuilder.SqlTables.Add (sqlTable);
     }
 
     public Expression GetExpressionMapping (Expression original)
     {
-      ArgumentUtility.CheckNotNull ("original", original);
+      ArgumentUtility.CheckNotNull (nameof(original), original);
 
       Expression result;
       if (_mapping.TryGetValue (original, out result))

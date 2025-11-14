@@ -55,7 +55,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       MethodCallTransformerUtility.CheckArgumentCount (methodCallExpression, 1);
       MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
@@ -98,7 +98,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
         default:
           var argumentExceptionMessage = string.Format (
               "The method '{0}.{1}' is not a supported method.", methodCallExpression.Method.DeclaringType, methodCallExpression.Method.Name);
-          throw new ArgumentException (argumentExceptionMessage, "methodCallExpression");
+          throw new ArgumentException (argumentExceptionMessage, nameof(methodCallExpression));
       }
     }
 

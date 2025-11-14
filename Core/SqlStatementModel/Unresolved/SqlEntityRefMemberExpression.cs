@@ -35,8 +35,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
     
     public SqlEntityRefMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
-      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo); 
+      ArgumentUtility.CheckNotNull (nameof(originatingEntity), originatingEntity);
+      ArgumentUtility.CheckNotNull (nameof(memberInfo), memberInfo); 
 
       _type = ReflectionUtility.GetMemberReturnType (memberInfo);
       _originatingEntity = originatingEntity;
@@ -65,13 +65,13 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
       return this;
     }
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
       var specificVisitor = visitor as ISqlEntityRefMemberExpressionVisitor;
       if (specificVisitor != null)

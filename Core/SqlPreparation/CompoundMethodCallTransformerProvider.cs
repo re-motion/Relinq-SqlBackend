@@ -44,14 +44,14 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public CompoundMethodCallTransformerProvider (params IMethodCallTransformerProvider[] providers)
     {
-      ArgumentUtility.CheckNotNull ("providers", providers);
+      ArgumentUtility.CheckNotNull (nameof(providers), providers);
 
       _providers = providers;
     }
 
     public IMethodCallTransformer GetTransformer (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       return _providers
         .Select (methodCallTransformerRegistry => methodCallTransformerRegistry.GetTransformer (methodCallExpression))

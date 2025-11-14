@@ -55,7 +55,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+      ArgumentUtility.CheckNotNull (nameof(methodCallExpression), methodCallExpression);
 
       var concatenatedItems = GetConcatenatedItems (methodCallExpression);
       return concatenatedItems

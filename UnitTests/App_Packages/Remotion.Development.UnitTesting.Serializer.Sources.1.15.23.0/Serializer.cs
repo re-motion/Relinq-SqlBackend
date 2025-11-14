@@ -32,7 +32,7 @@ namespace Remotion.Development.UnitTesting
     public static T SerializeAndDeserialize<T> (T t)
     {
       if (t == null)
-        throw new ArgumentNullException ("t");
+        throw new ArgumentNullException (nameof(t));
 
       return (T) Serializer.Deserialize (Serializer.Serialize ((object) t));
     }
@@ -40,7 +40,7 @@ namespace Remotion.Development.UnitTesting
     public static byte[] Serialize (object o)
     {
       if (o == null)
-        throw new ArgumentNullException ("o");
+        throw new ArgumentNullException (nameof(o));
 
       using (MemoryStream stream = new MemoryStream ())
       {
@@ -53,7 +53,7 @@ namespace Remotion.Development.UnitTesting
     public static object Deserialize (byte[] bytes)
     {
       if (bytes == null)
-        throw new ArgumentNullException ("bytes");
+        throw new ArgumentNullException (nameof(bytes));
 
       using (MemoryStream stream = new MemoryStream (bytes))
       {

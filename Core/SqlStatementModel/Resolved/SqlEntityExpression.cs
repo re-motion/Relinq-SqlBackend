@@ -35,8 +35,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     protected SqlEntityExpression (Type entityType, string tableAlias, string entityName, Func<SqlEntityExpression, Expression> identityExpressionGenerator)
     {
-      ArgumentUtility.CheckNotNull ("tableAlias", tableAlias);
-      ArgumentUtility.CheckNotNull ("identityExpressionGenerator", identityExpressionGenerator);
+      ArgumentUtility.CheckNotNull (nameof(tableAlias), tableAlias);
+      ArgumentUtility.CheckNotNull (nameof(identityExpressionGenerator), identityExpressionGenerator);
 
       _entityType = entityType;
       _tableAlias = tableAlias;

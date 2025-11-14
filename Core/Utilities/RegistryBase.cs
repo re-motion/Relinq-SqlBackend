@@ -43,16 +43,16 @@ namespace Remotion.Linq.SqlBackend.Utilities
 
     public virtual void Register (TKey key, TItem item)
     {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("item", item);
+      ArgumentUtility.CheckNotNull (nameof(key), key);
+      ArgumentUtility.CheckNotNull (nameof(item), item);
 
       _items[key] = item;
     }
 
     public void Register (IEnumerable<TKey> keys, TItem item)
     {
-      ArgumentUtility.CheckNotNull ("keys", keys);
-      ArgumentUtility.CheckNotNull ("item", item);
+      ArgumentUtility.CheckNotNull (nameof(keys), keys);
+      ArgumentUtility.CheckNotNull (nameof(item), item);
 
       foreach (var key in keys)
         Register (key, item);

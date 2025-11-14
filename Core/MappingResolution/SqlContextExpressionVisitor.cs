@@ -49,9 +49,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public static Expression ApplySqlExpressionContext (
         Expression expression, SqlExpressionContext initialSemantics, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var visitor = new SqlContextExpressionVisitor (initialSemantics, stage, context);
       return visitor.Visit (expression);
@@ -63,8 +63,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected SqlContextExpressionVisitor (SqlExpressionContext currentContext, IMappingResolutionStage stage, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       _currentContext = currentContext;
       _stage = stage;
@@ -91,7 +91,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlConvertedBoolean (SqlConvertedBooleanExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newInner = ApplyValueContext (expression.Expression);
       Assertion.DebugAssert (
@@ -152,7 +152,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitBinary (BinaryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var childContext = BooleanUtility.IsBooleanType (expression.Type)
                              ? GetChildSemanticsForBinaryBoolExpression (expression.NodeType)
@@ -191,7 +191,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitUnary (UnaryExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var childContext = GetChildSemanticsForUnaryExpression (expression);
       var newOperand = ApplySqlExpressionContext (expression.Operand, childContext);
@@ -219,7 +219,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlIsNull (SqlIsNullExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)
@@ -229,7 +229,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlIsNotNull (SqlIsNotNullExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newExpression = ApplySingleValueContext (expression.Expression);
       if (newExpression != expression.Expression)
@@ -239,7 +239,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlEntityConstant (SqlEntityConstantExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
@@ -254,7 +254,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newSqlStatement = _stage.ApplySelectionContext (expression.SqlStatement, _currentContext, _context);
       if (!ReferenceEquals (expression.SqlStatement, newSqlStatement))
@@ -264,7 +264,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected override Expression VisitNew (NewExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       if (_currentContext == SqlExpressionContext.SingleValueRequired)
       {
@@ -362,7 +362,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public Expression VisitSqlCase (SqlCaseExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var newCases = Visit (
           expression.Cases,

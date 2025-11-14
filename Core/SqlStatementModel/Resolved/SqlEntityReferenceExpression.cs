@@ -35,7 +35,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     public SqlEntityReferenceExpression (Type itemType, string tableAlias, string entityName, SqlEntityExpression referencedEntity)
         : base(itemType, tableAlias, entityName, referencedEntity.IdentityExpressionGenerator)
     {
-      ArgumentUtility.CheckNotNull ("referencedEntity", referencedEntity);
+      ArgumentUtility.CheckNotNull (nameof(referencedEntity), referencedEntity);
 
       _referencedEntity = referencedEntity;
       _columns = Array.AsReadOnly (referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());

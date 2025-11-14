@@ -27,7 +27,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
 
     public TestExtensionExpressionWithoutChildren (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull (nameof(type), type);
       _type = type;
     }
 

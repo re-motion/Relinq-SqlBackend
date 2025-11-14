@@ -31,16 +31,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     
     public SqlCustomTextExpression (string sqlText, Type expressionType) : base(expressionType)
     {
-      ArgumentUtility.CheckNotNull ("sqlText", sqlText);
+      ArgumentUtility.CheckNotNull (nameof(sqlText), sqlText);
 
       _sqlText = sqlText;
     }
 
     public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("textGeneratingExpressionVisitor", textGeneratingExpressionVisitor);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(textGeneratingExpressionVisitor), textGeneratingExpressionVisitor);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       commandBuilder.Append (_sqlText);
     }

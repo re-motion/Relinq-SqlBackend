@@ -31,11 +31,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public ResolvedJoinInfo (IResolvedTableInfo foreignTableInfo, Expression joinCondition)
     {
-      ArgumentUtility.CheckNotNull ("foreignTableInfo", foreignTableInfo);
-      ArgumentUtility.CheckNotNull ("joinCondition", joinCondition);
+      ArgumentUtility.CheckNotNull (nameof(foreignTableInfo), foreignTableInfo);
+      ArgumentUtility.CheckNotNull (nameof(joinCondition), joinCondition);
 
       if (!BooleanUtility.IsBooleanType (joinCondition.Type))
-        throw new ArgumentException ("The join condition must have boolean (or nullable boolean) type.", "joinCondition");
+        throw new ArgumentException ("The join condition must have boolean (or nullable boolean) type.", nameof(joinCondition));
       
       _foreignTableInfo = foreignTableInfo;
       _joinCondition = joinCondition;
@@ -58,7 +58,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
 
     public virtual IJoinInfo Accept (IJoinInfoVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
       return visitor.VisitResolvedJoinInfo (this);
     }
 

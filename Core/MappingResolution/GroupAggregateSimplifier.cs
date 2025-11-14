@@ -49,8 +49,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public GroupAggregateSimplifier (IMappingResolutionStage stage, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       _stage = stage;
       _context = context;
@@ -58,7 +58,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public bool IsSimplifiableGroupAggregate (SqlStatement resolvedSqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("resolvedSqlStatement", resolvedSqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(resolvedSqlStatement), resolvedSqlStatement);
 
       return FindAggregationExpression (resolvedSqlStatement.SelectProjection) != null
              && resolvedSqlStatement.WhereCondition == null
@@ -81,8 +81,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         SqlSubStatementExpression subStatementExpression,
         Expression unresolvedSelectProjection)
     {
-      ArgumentUtility.CheckNotNull ("subStatementExpression", subStatementExpression);
-      ArgumentUtility.CheckNotNull ("unresolvedSelectProjection", unresolvedSelectProjection);
+      ArgumentUtility.CheckNotNull (nameof(subStatementExpression), subStatementExpression);
+      ArgumentUtility.CheckNotNull (nameof(unresolvedSelectProjection), unresolvedSelectProjection);
 
       var resolvedSqlStatement = subStatementExpression.SqlStatement;
       if (IsSimplifiableGroupAggregate (resolvedSqlStatement))
@@ -98,7 +98,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         {
           throw new ArgumentException (
               "The unresolved projection doesn't match the resolved statement: it has no aggregation.",
-              "unresolvedSelectProjection");
+              nameof(unresolvedSelectProjection));
         }
         var newAggregation = visitor.Visit (aggregationExpression);
 
@@ -126,8 +126,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
       public SimplifyingVisitor (SqlTableBase oldElementSource, Expression newElementExpression)
       {
-        ArgumentUtility.CheckNotNull ("oldElementSource", oldElementSource);
-        ArgumentUtility.CheckNotNull ("newElementExpression", newElementExpression);
+        ArgumentUtility.CheckNotNull (nameof(oldElementSource), oldElementSource);
+        ArgumentUtility.CheckNotNull (nameof(newElementExpression), newElementExpression);
 
         _oldElementSource = oldElementSource;
         _newElementExpression = newElementExpression;

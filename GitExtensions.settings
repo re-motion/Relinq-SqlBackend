@@ -12,7 +12,7 @@
     &lt;LinkFormats&gt;
       &lt;GitExtLinkFormat&gt;
         &lt;Caption&gt;JIRA {0}&lt;/Caption&gt;
-        &lt;Format&gt;https://re-motion.atlassian.net/browse/{0}&lt;/Format&gt;
+        &lt;Format&gt;https://jira.rubicon.eu/browse/{0}&lt;/Format&gt;
       &lt;/GitExtLinkFormat&gt;
     &lt;/LinkFormats&gt;
     &lt;Name&gt;JIRA&lt;/Name&gt;

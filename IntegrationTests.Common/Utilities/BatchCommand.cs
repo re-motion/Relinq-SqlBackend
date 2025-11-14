@@ -55,7 +55,7 @@ namespace Remotion.Linq.IntegrationTests.Common.Utilities
 
     public void AppendCommandBatchLine (string commandBatchLine)
     {
-      ArgumentUtility.CheckNotNull ("commandBatchLine", commandBatchLine);
+      ArgumentUtility.CheckNotNull (nameof(commandBatchLine), commandBatchLine);
 
       _content.AppendLine (commandBatchLine);
       _lineCount++;

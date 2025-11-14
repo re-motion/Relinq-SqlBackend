@@ -33,9 +33,9 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     public static SqlStatement ResolveExpressions (IMappingResolutionStage stage, SqlStatement statement, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("statement", statement);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(statement), statement);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
       
       var resolver = new SqlStatementResolver (stage, context);
       return resolver.ResolveSqlStatement (statement);
@@ -43,8 +43,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected SqlStatementResolver (IMappingResolutionStage stage, IMappingResolutionContext context)
     {
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
       
       _stage = stage;
       _context = context;
@@ -52,14 +52,14 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected virtual Expression ResolveSelectProjection (Expression selectProjection, SqlStatementBuilder sqlStatementBuilder) 
     {
-      ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
+      ArgumentUtility.CheckNotNull (nameof(selectProjection), selectProjection);
 
       return _stage.ResolveSelectExpression (selectProjection, sqlStatementBuilder, _context);
     }
 
     protected virtual void ResolveSqlTable (SqlTable sqlTable)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull (nameof(sqlTable), sqlTable);
       
       sqlTable.TableInfo = _stage.ResolveTableInfo (sqlTable.TableInfo, _context);
       ResolveJoins (sqlTable);
@@ -67,7 +67,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected virtual void ResolveJoinedTable (SqlJoinedTable joinedTable)
     {
-      ArgumentUtility.CheckNotNull ("joinedTable", joinedTable);
+      ArgumentUtility.CheckNotNull (nameof(joinedTable), joinedTable);
 
       joinedTable.JoinInfo = _stage.ResolveJoinInfo (joinedTable.JoinInfo, _context);
 
@@ -77,35 +77,35 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     protected virtual Expression ResolveWhereCondition (Expression whereCondition)
     {
-      ArgumentUtility.CheckNotNull ("whereCondition", whereCondition);
+      ArgumentUtility.CheckNotNull (nameof(whereCondition), whereCondition);
 
       return _stage.ResolveWhereExpression (whereCondition, _context);
     }
 
     protected virtual Expression ResolveGroupByExpression (Expression groupByExpression)
     {
-      ArgumentUtility.CheckNotNull ("groupByExpression", groupByExpression);
+      ArgumentUtility.CheckNotNull (nameof(groupByExpression), groupByExpression);
 
       return _stage.ResolveGroupByExpression (groupByExpression, _context);
     }
     
     protected virtual Expression ResolveOrderingExpression (Expression orderByExpression)
     {
-      ArgumentUtility.CheckNotNull ("orderByExpression", orderByExpression);
+      ArgumentUtility.CheckNotNull (nameof(orderByExpression), orderByExpression);
 
       return _stage.ResolveOrderingExpression (orderByExpression, _context);
     }
 
     protected virtual Expression ResolveTopExpression (Expression topExpression)
     {
-      ArgumentUtility.CheckNotNull ("topExpression", topExpression);
+      ArgumentUtility.CheckNotNull (nameof(topExpression), topExpression);
 
       return _stage.ResolveTopExpression (topExpression, _context);
     }
 
     protected virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
     {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+      ArgumentUtility.CheckNotNull (nameof(sqlStatement), sqlStatement);
 
       foreach (var sqlTable in sqlStatement.SqlTables)
         sqlTable.Accept (this);

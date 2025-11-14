@@ -52,7 +52,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public CommandParameter GetOrCreateParameter (ConstantExpression constantExpression)
     {
-      ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
+      ArgumentUtility.CheckNotNull (nameof(constantExpression), constantExpression);
 
       CommandParameter result;
       if (!_parameterMap.TryGetValue (constantExpression, out result))
@@ -66,15 +66,15 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public void Append (string stringToAppend)
     {
-      ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);
+      ArgumentUtility.CheckNotNull (nameof(stringToAppend), stringToAppend);
       _stringBuilder.Append (stringToAppend);
     }
 
     public void AppendSeparated<T> (string separator, IEnumerable<T> values, Action<ISqlCommandBuilder, T> appender)
     {
-      ArgumentUtility.CheckNotNull ("separator", separator);
-      ArgumentUtility.CheckNotNull ("values", values);
-      ArgumentUtility.CheckNotNull ("appender", appender);
+      ArgumentUtility.CheckNotNull (nameof(separator), separator);
+      ArgumentUtility.CheckNotNull (nameof(values), values);
+      ArgumentUtility.CheckNotNull (nameof(appender), appender);
 
       bool first = true;
       foreach (T value in values)
@@ -100,14 +100,14 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public void AppendFormat (string stringToAppend, params object[] parameters)
     {
-      ArgumentUtility.CheckNotNull ("stringToAppend", stringToAppend);
+      ArgumentUtility.CheckNotNull (nameof(stringToAppend), stringToAppend);
 
       _stringBuilder.AppendFormat (stringToAppend, parameters);
     }
 
     public void AppendCollection (ConstantCollectionExpression collectionExpression)
     {
-      ArgumentUtility.CheckNotNull ("collectionExpression", collectionExpression);
+      ArgumentUtility.CheckNotNull (nameof(collectionExpression), collectionExpression);
 
       if (collectionExpression.IsEmptyCollection)
       {

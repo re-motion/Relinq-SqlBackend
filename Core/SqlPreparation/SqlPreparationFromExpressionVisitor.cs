@@ -41,11 +41,11 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         Func<ITableInfo, SqlTable> tableGenerator,
         OrderingExtractionPolicy orderingExtractionPolicy)
     {
-      ArgumentUtility.CheckNotNull ("fromExpression", fromExpression);
-      ArgumentUtility.CheckNotNull ("stage", stage);
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("provider", provider);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull (nameof(fromExpression), fromExpression);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(provider), provider);
+      ArgumentUtility.CheckNotNull (nameof(context), context);
 
       var visitor = new SqlPreparationFromExpressionVisitor (generator, stage, provider, context, tableGenerator, orderingExtractionPolicy);
       visitor.Visit (fromExpression);
@@ -72,8 +72,8 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
         OrderingExtractionPolicy orderingExtractionPolicy)
         : base (context, stage, provider)
     {
-      ArgumentUtility.CheckNotNull ("generator", generator);
-      ArgumentUtility.CheckNotNull ("tableGenerator", tableGenerator);
+      ArgumentUtility.CheckNotNull (nameof(generator), generator);
+      ArgumentUtility.CheckNotNull (nameof(tableGenerator), tableGenerator);
 
       _generator = generator;
       _tableGenerator = tableGenerator;
@@ -96,7 +96,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitConstant (ConstantExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var itemType = ReflectionUtility.GetItemTypeOfClosedGenericIEnumerable (expression.Type, "from expression");
       var sqlTable = _tableGenerator (new UnresolvedTableInfo (itemType));
@@ -108,7 +108,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     protected override Expression VisitMember (MemberExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var preparedMemberExpression = (MemberExpression) TranslateExpression (expression, Context, Stage, MethodCallTransformerProvider);
 
@@ -124,7 +124,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public override Expression VisitSqlSubStatement (SqlSubStatementExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var sqlStatement = expression.SqlStatement;
 
@@ -137,7 +137,7 @@ namespace Remotion.Linq.SqlBackend.SqlPreparation
 
     public Expression VisitSqlTableReference (SqlTableReferenceExpression expression)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
       var tableInfo = new UnresolvedGroupReferenceTableInfo (expression.SqlTable);
       var sqlTable = new SqlTable (tableInfo, JoinSemantics.Inner);

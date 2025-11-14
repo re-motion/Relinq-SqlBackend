@@ -42,9 +42,9 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
     public override void Generate (ISqlCommandBuilder commandBuilder, ExpressionVisitor textGeneratingExpressionVisitor, ISqlGenerationStage stage)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("textGeneratingExpressionVisitor", textGeneratingExpressionVisitor);
-      ArgumentUtility.CheckNotNull ("stage", stage);
+      ArgumentUtility.CheckNotNull (nameof(commandBuilder), commandBuilder);
+      ArgumentUtility.CheckNotNull (nameof(textGeneratingExpressionVisitor), textGeneratingExpressionVisitor);
+      ArgumentUtility.CheckNotNull (nameof(stage), stage);
 
       ExpressionVisitor.Visit (_expressions, textGeneratingExpressionVisitor.Visit);
     }
