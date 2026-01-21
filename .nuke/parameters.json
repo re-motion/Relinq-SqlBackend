@@ -1,0 +1,13 @@
+{
+  "$schema": "./build.schema.json",
+  "Solution": "Relinq-SqlBackend.sln",
+  "DependDBProjectName": "re-motion Framework re-linq",
+  "DependDBRetentionTime": "10",
+  "DependDBProjectBranch": "Main",
+  "DependDBProjectImportNotificationMailAddress": "nonexistent@nonexistent.nonexistent",
+  "DependDBProjectImportNotificationMailAddressCc": "nonexistent@nonexistent.nonexistent",
+  "DependDBTrackedReferences": "Remotion.*",
+  "DependDBNugetConfig": "~/nuget.config",
+  "DependDBTargetFramework": "net462",
+  "VcsUrlTemplate": "example.com"
+}
