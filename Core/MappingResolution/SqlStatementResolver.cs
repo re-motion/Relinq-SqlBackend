@@ -147,6 +147,8 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         }
       }
 
+      SetOperationSelectProjectionReconciler.ReconcileIfPossible (sqlStatementBuilder);
+
       return sqlStatementBuilder.GetSqlStatement();
     }
 

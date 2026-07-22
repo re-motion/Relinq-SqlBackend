@@ -160,17 +160,86 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore("TODO RMLNQSQL-63: This should really throw an error, but it generates invalid SQL.")]
     public void SetOperation_WithDifferentColumnLists ()
     {
+      // Chef adds one mapped column (LetterOfRecommendation) beyond Cook's own columns. RMLNQSQL-63: this used to generate invalid SQL because
+      // the two sides' SELECT lists had different column counts; the base (Cook) side is now padded with a trailing NULL placeholder so both
+      // sides of the UNION line up positionally. The Chef side needs no changes here because its own column order already happens to extend
+      // Cook's order exactly (see SetOperation_WithDifferentColumnLists_RequiringReorderingOnBothSides for a case where both sides change).
       CheckQuery (
           () => Cooks.Union (Chefs.Select (c => c)),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],NULL AS [LetterOfRecommendation] "
           + "FROM [CookTable] AS [t0] "
           + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
-          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[LetterOfRecommendation] "
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating],[t1].[LetterOfRecommendation] "
           + "FROM [dbo].[ChefTable] AS [t1])");
+    }
+
+    [Test]
+    public void SetOperation_WithSameColumnLists_IsANoOp ()
+    {
+      // Both sides select whole Cook entities, so their column lists already match; the reconciliation must not alter the generated SQL at all.
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo").Union (Cooks.Where (c => c.Name == "Boss")),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
+          + "FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating] "
+          + "FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2))",
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
+    }
+
+    [Test]
+    public void SetOperation_WithDifferentColumnLists_ThreeWayFlatChain ()
+    {
+      // A flat chain of three sides: Cook (primary), Chef (adds LetterOfRecommendation), Cook again. The master column order is computed once
+      // from the primary and shared across every applicable side; the primary and the third (plain Cook) side both need the same trailing
+      // padding for the column only Chef has, while the Chef side needs no changes.
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo")
+              .Union (Chefs.Where (c => c.Name == "Boss").Select (c => c))
+              .Union (Cooks.Where (c => c.ID == 100)),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],NULL AS [LetterOfRecommendation] "
+          + "FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating],[t1].[LetterOfRecommendation] "
+          + "FROM [dbo].[ChefTable] AS [t1] WHERE ([t1].[Name] = @2)) "
+          + "UNION (SELECT [t2].[ID] AS [ID],[t2].[FirstName] AS [FirstName],[t2].[Name] AS [Name],[t2].[IsStarredCook] AS [IsStarredCook],"
+          + "[t2].[IsFullTimeCook] AS [IsFullTimeCook],[t2].[SubstitutedID] AS [SubstitutedID],[t2].[KitchenID] AS [KitchenID],"
+          + "[t2].[KnifeID] AS [KnifeID],[t2].[KnifeClassID] AS [KnifeClassID],[t2].[CookRating] AS [CookRating],NULL AS [LetterOfRecommendation] "
+          + "FROM [CookTable] AS [t2] WHERE ([t2].[ID] = @3))",
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"),
+          new CommandParameter ("@3", 100));
+    }
+
+    [Test]
+    public void SetOperation_WithDifferentColumnLists_NestedUnionIsNotReconciled ()
+    {
+      // Known limitation (RMLNQSQL-63, v1 scope): reconciliation runs bottom-up during resolution, so in a nested/right-associative union
+      // A.Union(B.Union(C)), the inner B-vs-C pair is reconciled before the outer A-vs-B comparison ever runs - by which point B's projection
+      // is no longer a plain whole-entity shape (B itself got padded to line up with C), so the outer pairing is left unreconciled, with
+      // today's pre-existing (invalid) SQL. Only flat chains (A.Union(B).Union(C)) are fully unified. This test pins down the gap - note the
+      // outer statement (A, [t0]) is NOT padded even though the inner union's result has more columns than A - so it isn't mistaken for a
+      // regression later.
+      CheckQuery (
+          () => Cooks.Where (c => c.FirstName == "Hugo")
+              .Union (Cooks.Where (c => c.Name == "Boss").Union (Chefs.Select (c => c))),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating] "
+          + "FROM [CookTable] AS [t0] WHERE ([t0].[FirstName] = @1) "
+          + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating],NULL AS [LetterOfRecommendation] "
+          + "FROM [CookTable] AS [t1] WHERE ([t1].[Name] = @2) "
+          + "UNION (SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
+          + "[t2].[KnifeID],[t2].[KnifeClassID],[t2].[CookRating],[t2].[LetterOfRecommendation] "
+          + "FROM [dbo].[ChefTable] AS [t2]))",
+          new CommandParameter ("@1", "Hugo"),
+          new CommandParameter ("@2", "Boss"));
     }
 
     [Test]

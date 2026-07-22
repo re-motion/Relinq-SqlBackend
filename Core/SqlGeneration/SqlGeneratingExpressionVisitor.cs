@@ -39,7 +39,8 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
-        IConstantCollectionExpressionVisitor
+        IConstantCollectionExpressionVisitor,
+        ISqlSetOperationPaddedProjectionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -394,6 +395,15 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append ("(");
       _commandBuilder.AppendCollection (expression);
       _commandBuilder.Append (")");
+
+      return expression;
+    }
+
+    public virtual Expression VisitSqlSetOperationPaddedProjection (SqlSetOperationPaddedProjectionExpression expression)
+    {
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+
+      _commandBuilder.AppendSeparated (",", expression.Slots, (cb, slot) => Visit (slot));
 
       return expression;
     }
