@@ -93,10 +93,12 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var primaryPaddingNames = masterColumnOrder.Skip (primaryNames.Count).ToList();
       if (primaryPaddingNames.Count > 0)
       {
-        var primarySlots = new List<Expression> { primaryEntity };
-        primarySlots.AddRange (primaryPaddingNames.Select (name => CreateNullNamedSlot (name, columnNameToType[name])));
+          // TODO: cheap hack - we only supply the additional columns as we assume the rest is visited as an expression
         sqlStatementBuilder.SelectProjection = new SqlSetOperationPaddedProjectionExpression (
-            primaryEntity.Type, primarySlots, preservedEntitySlotIndex: 0);
+                primaryEntity,
+                primaryEntity.Type,
+                primaryPaddingNames.Select (name => CreateNullNamedSlot (name, columnNameToType[name])),
+                isPrimaryExpression: true);
       }
 
       foreach (var i in applicableSecondaryIndices)
@@ -113,7 +115,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
                 : CreateNullNamedSlot (name, columnNameToType[name]))
             .ToList();
 
-        var newProjection = new SqlSetOperationPaddedProjectionExpression (secondaryEntity.Type, secondarySlots);
+        var newProjection = new SqlSetOperationPaddedProjectionExpression (
+                secondaryEntity,
+                secondaryEntity.Type,
+                secondarySlots,
+                isPrimaryExpression: false);
 
         var oldCombinedStatement = sqlStatementBuilder.SetOperationCombinedStatements[i];
         var newInnerStatementBuilder = new SqlStatementBuilder (oldCombinedStatement.SqlStatement) { SelectProjection = newProjection };

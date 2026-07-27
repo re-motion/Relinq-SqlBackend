@@ -72,7 +72,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
 
       var paddedPrimary = builder.SelectProjection as SqlSetOperationPaddedProjectionExpression;
       Assert.That (paddedPrimary, Is.Not.Null);
-      Assert.That (paddedPrimary.PreservedEntitySlotIndex, Is.EqualTo (0));
+      Assert.That (paddedPrimary.IsPrimaryExpression, Is.True);
       // 1 slot for the whole (untouched) entity plus 1 trailing padding slot for the one missing column - the entity's own columns are never
       // split into separate slots.
       Assert.That (paddedPrimary.Slots.Count, Is.EqualTo (2));

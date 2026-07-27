@@ -113,19 +113,23 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
+      // TODO: check if we really need this thing and if the order really matters
       Expression preservedInMemoryProjectionBody = null;
+      if (expression.IsPrimaryExpression)
+      {
+          Visit (expression.InnerExpression);
+          preservedInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
+      }
+
       for (int i = 0; i < expression.Slots.Count; i++)
       {
         if (i > 0)
           CommandBuilder.Append (",");
 
         Visit (expression.Slots[i]);
-
-        if (i == expression.PreservedEntitySlotIndex)
-          preservedInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
       }
 
-      if (expression.PreservedEntitySlotIndex >= 0)
+      if (preservedInMemoryProjectionBody != null)
         CommandBuilder.SetInMemoryProjectionBody (preservedInMemoryProjectionBody);
 
       return expression;
