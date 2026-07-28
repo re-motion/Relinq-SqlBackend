@@ -193,11 +193,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
 
     private static SqlEntityExpression UnwrapEntity (Expression expression)
     {
-      if (expression is SqlEntityExpression entity)
-        return entity;
+      while (expression is UnaryExpression unaryExpression)
+        expression = unaryExpression.Operand;
 
-      if (expression is NamedExpression namedExpression && namedExpression.Expression is SqlEntityExpression innerEntity)
-        return innerEntity;
+      if (expression is SqlEntityExpression sqlEntityExpression)
+        return sqlEntityExpression;
 
       return null;
     }

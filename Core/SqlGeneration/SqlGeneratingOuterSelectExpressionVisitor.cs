@@ -123,7 +123,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
 
       for (int i = 0; i < expression.Slots.Count; i++)
       {
-        if (i > 0)
+        if (i > 0 || (expression.IsPrimaryExpression && expression.Columns.Count > 0))
           CommandBuilder.Append (",");
 
         Visit (expression.Slots[i]);

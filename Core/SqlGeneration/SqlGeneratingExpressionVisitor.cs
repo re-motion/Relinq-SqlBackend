@@ -403,7 +403,19 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
     {
       ArgumentUtility.CheckNotNull (nameof(expression), expression);
 
-      _commandBuilder.AppendSeparated (",", expression.Slots, (cb, slot) => Visit (slot));
+      if (expression.IsPrimaryExpression)
+      {
+          Visit (expression.InnerExpression);
+      }
+
+      // TODO: should we use AppendColumnForEntity instead? that changed in the current implementation
+      for (int i = 0; i < expression.Slots.Count; i++)
+      {
+          if (i > 0 || (expression.IsPrimaryExpression && expression.Columns.Count > 0))
+              CommandBuilder.Append (",");
+
+          Visit (expression.Slots[i]);
+      }
 
       return expression;
     }
