@@ -109,32 +109,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return result;
     }
 
-    public override Expression VisitSqlSetOperationPaddedProjection (SqlSetOperationPaddedProjectionExpression expression)
-    {
-      ArgumentUtility.CheckNotNull (nameof(expression), expression);
-
-      // TODO: check if we really need this thing and if the order really matters
-      Expression preservedInMemoryProjectionBody = null;
-      if (expression.IsPrimaryExpression)
-      {
-          Visit (expression.InnerExpression);
-          preservedInMemoryProjectionBody = CommandBuilder.GetInMemoryProjectionBody();
-      }
-
-      for (int i = 0; i < expression.Slots.Count; i++)
-      {
-        if (i > 0 || (expression.IsPrimaryExpression && expression.Columns.Count > 0))
-          CommandBuilder.Append (",");
-
-        Visit (expression.Slots[i]);
-      }
-
-      if (preservedInMemoryProjectionBody != null)
-        CommandBuilder.SetInMemoryProjectionBody (preservedInMemoryProjectionBody);
-
-      return expression;
-    }
-
     protected override Expression VisitNew (NewExpression expression)
     {
       ArgumentUtility.CheckNotNull (nameof(expression), expression);

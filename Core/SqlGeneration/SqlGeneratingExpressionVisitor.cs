@@ -39,8 +39,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
-        IConstantCollectionExpressionVisitor,
-        ISqlSetOperationPaddedProjectionExpressionVisitor
+        IConstantCollectionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
     {
@@ -105,6 +104,16 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       AppendColumn (expression.ColumnName, expression.OwningTableAlias, referencedEntityName);
 
       return expression;
+    }
+
+    public Expression VisitSqlNullColumn (SqlNullColumnExpression expression)
+    {
+        ArgumentUtility.CheckNotNull (nameof(expression), expression);
+
+        _commandBuilder.Append ("NULL AS");
+        _commandBuilder.AppendIdentifier (expression.ColumnName);
+
+        return expression;
     }
 
     protected override Expression VisitConstant (ConstantExpression expression)
@@ -395,27 +404,6 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       _commandBuilder.Append ("(");
       _commandBuilder.AppendCollection (expression);
       _commandBuilder.Append (")");
-
-      return expression;
-    }
-
-    public virtual Expression VisitSqlSetOperationPaddedProjection (SqlSetOperationPaddedProjectionExpression expression)
-    {
-      ArgumentUtility.CheckNotNull (nameof(expression), expression);
-
-      if (expression.IsPrimaryExpression)
-      {
-          Visit (expression.InnerExpression);
-      }
-
-      // TODO: should we use AppendColumnForEntity instead? that changed in the current implementation
-      for (int i = 0; i < expression.Slots.Count; i++)
-      {
-          if (i > 0 || (expression.IsPrimaryExpression && expression.Columns.Count > 0))
-              CommandBuilder.Append (",");
-
-          Visit (expression.Slots[i]);
-      }
 
       return expression;
     }

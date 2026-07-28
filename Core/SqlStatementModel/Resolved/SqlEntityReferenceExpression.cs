@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -41,6 +42,21 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
       _columns = Array.AsReadOnly (referencedEntity.Columns.Select (col => GetColumn (col.Type, col.ColumnName, col.IsPrimaryKey)).ToArray ());
     }
 
+    private SqlEntityReferenceExpression (
+            Type itemType,
+            string tableAlias,
+            string entityName,
+            SqlEntityExpression referencedEntity,
+            IEnumerable<SqlColumnExpression> columns)
+        : base(itemType, tableAlias, entityName, referencedEntity.IdentityExpressionGenerator)
+    {
+      ArgumentUtility.CheckNotNull (nameof(referencedEntity), referencedEntity);
+
+      _referencedEntity = referencedEntity;
+      _columns = Array.AsReadOnly(columns.ToArray());
+    }
+
+
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
       return this;
@@ -66,6 +82,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     public override SqlEntityExpression Update (Type itemType, string tableAlias, string entityName)
     {
       return new SqlEntityReferenceExpression (itemType, tableAlias, entityName, _referencedEntity);
+    }
+
+    public override SqlEntityExpression UpdateColumns (IEnumerable<SqlColumnExpression> columns)
+    {
+        return new SqlEntityReferenceExpression (Type, TableAlias, Name, _referencedEntity, columns);
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)

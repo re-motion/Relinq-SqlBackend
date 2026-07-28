@@ -54,6 +54,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       if (sqlStatementBuilder.SetOperationCombinedStatements.Count == 0)
         return;
 
+      // TODO: we unwrap but we never re-wrap. As such, some of the tree is lost (the unary convert operations) -> this should not happen and instead be done using a visitor
       var primaryEntity = UnwrapEntity (sqlStatementBuilder.SelectProjection);
       if (primaryEntity == null)
         return;
@@ -93,12 +94,13 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       var primaryPaddingNames = masterColumnOrder.Skip (primaryNames.Count).ToList();
       if (primaryPaddingNames.Count > 0)
       {
-          // TODO: cheap hack - we only supply the additional columns as we assume the rest is visited as an expression
-        sqlStatementBuilder.SelectProjection = new SqlSetOperationPaddedProjectionExpression (
-                primaryEntity,
-                primaryEntity.Type,
-                primaryPaddingNames.Select (name => CreateNullNamedSlot (name, columnNameToType[name])),
-                isPrimaryExpression: true);
+        var primaryColumnsByName = primaryEntity.Columns.ToDictionary (c => c.ColumnName);
+        var primarySlots = masterColumnOrder
+            .Select (name => primaryColumnsByName.TryGetValue (name, out var column)
+                ? column
+                : new SqlNullColumnExpression (typeof(int?), primaryEntity.TableAlias, name, false));
+
+        sqlStatementBuilder.SelectProjection = primaryEntity.UpdateColumns (primarySlots);
       }
 
       foreach (var i in applicableSecondaryIndices)
@@ -111,15 +113,10 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         var secondaryColumnsByName = secondaryEntity.Columns.ToDictionary (c => c.ColumnName);
         var secondarySlots = masterColumnOrder
             .Select (name => secondaryColumnsByName.TryGetValue (name, out var column)
-                ? (Expression) new NamedExpression (name, column)
-                : CreateNullNamedSlot (name, columnNameToType[name]))
-            .ToList();
+                ? column
+                : new SqlNullColumnExpression (typeof(int?), secondaryEntity.TableAlias, name, false));
 
-        var newProjection = new SqlSetOperationPaddedProjectionExpression (
-                secondaryEntity,
-                secondaryEntity.Type,
-                secondarySlots,
-                isPrimaryExpression: false);
+        var newProjection = secondaryEntity.UpdateColumns (secondarySlots);
 
         var oldCombinedStatement = sqlStatementBuilder.SetOperationCombinedStatements[i];
         var newInnerStatementBuilder = new SqlStatementBuilder (oldCombinedStatement.SqlStatement) { SelectProjection = newProjection };
