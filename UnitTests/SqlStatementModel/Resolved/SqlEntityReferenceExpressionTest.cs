@@ -84,6 +84,20 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     }
 
     [Test]
+    public void UpdateColumns ()
+    {
+      var entityReferenceExpression = new SqlEntityReferenceExpression (typeof (Cook), "t", null, _entityDefinitionExpression);
+
+      var newColumns = new[] { new SqlColumnReferenceExpression (typeof (string), "t", "NewName", false, _entityDefinitionExpression) };
+
+      var result = entityReferenceExpression.UpdateColumns (newColumns);
+
+      Assert.That (result, Is.Not.SameAs (entityReferenceExpression));
+      Assert.That (result.Columns, Is.EqualTo (newColumns));
+      Assert.That (((SqlEntityReferenceExpression) result).ReferencedEntity, Is.SameAs (_entityDefinitionExpression));
+    }
+
+    [Test]
     public void ToString_UnnamedReferencedEntity ()
     {
       var referencedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), null); 
