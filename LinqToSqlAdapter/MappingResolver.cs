@@ -185,6 +185,17 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return null;
     }
 
+    public bool TryResolveSetOperationReconciliationContext (Expression[] projections, out ISetOperationReconciliationContext reconciliationContext)
+    {
+      ArgumentUtility.CheckNotNull (nameof(projections), projections);
+
+      // We don't support UNION reconciliation in the LinqToSqlAdapter as it is a consumer implemented detail
+      // so we would only test our implementation that would only be implemented because of testing.
+      // We do have unit tests that ensure that the reconciliation works correctly.
+      reconciliationContext = null;
+      return false;
+    }
+
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
       ArgumentUtility.CheckNotNull (nameof(entityType), entityType);

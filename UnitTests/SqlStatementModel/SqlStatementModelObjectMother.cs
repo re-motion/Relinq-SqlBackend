@@ -275,7 +275,12 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
       return new SqlColumnDefinitionExpression (type ?? typeof (int), owningTableAlias ?? "t0", column ?? "column", isPrimaryKey);
     }
 
-    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (Type type = null, string name = null, string owningTableAlias = null, Type primaryKeyType = null)
+    public static SqlEntityDefinitionExpression CreateSqlEntityDefinitionExpression (
+        Type type = null,
+        string name = null,
+        string owningTableAlias = null,
+        Type primaryKeyType = null,
+        SqlColumnDefinitionExpression[] dataColumns = null)
     {
       type = type ?? typeof (Cook);
       owningTableAlias = owningTableAlias ?? "t0";
@@ -289,9 +294,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel
           new[]
           {
               new SqlColumnDefinitionExpression (primaryKeyType, owningTableAlias, "ID", true),
-              new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "Name", false),
-              new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "City", false)
-          });
+          }.Concat (
+              dataColumns ?? new []
+                             {
+                                 new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "Name", false),
+                                 new SqlColumnDefinitionExpression (typeof (int), owningTableAlias, "City", false)
+                             })
+          .ToArray<SqlColumnExpression>());
     }
 
     public static UnresolvedGroupReferenceTableInfo CreateUnresolvedGroupReferenceTableInfo ()
