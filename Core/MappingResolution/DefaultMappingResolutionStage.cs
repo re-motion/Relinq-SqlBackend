@@ -183,6 +183,15 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return MemberAccessResolver.ResolveMemberAccess (resolvedSourceExpression, memberInfo, mappingResolver, this, context);
     }
 
+    public ISetOperationReconciliationContext ResolveSetOperationReconciliationContext (Expression[] projectionExpressions)
+    {
+      ArgumentUtility.CheckNotNullOrItemsNull (nameof(projectionExpressions), projectionExpressions);
+
+      return _resolver.TryResolveSetOperationReconciliationContext (projectionExpressions, out var reconciliationContext)
+          ? reconciliationContext
+          : null;
+    }
+
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull (nameof(expression), expression);
@@ -197,6 +206,29 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       return SqlContextSelectionAdjuster.ApplyContext (sqlStatement, expressionContext, this, mappingResolutionContext);
+    }
+
+    public SqlEntityExpression ApplySetOperationReconciliationContext (SqlEntityExpression entityExpression, ISetOperationReconciliationContext reconciliationContext)
+    {
+      ArgumentUtility.CheckNotNull (nameof(entityExpression), entityExpression);
+      ArgumentUtility.CheckNotNull (nameof(reconciliationContext), reconciliationContext);
+
+      if (!reconciliationContext.RequiresReconciliation (entityExpression))
+        return entityExpression;
+
+      var columns = reconciliationContext.CreateNullColumnArray(entityExpression);
+      foreach (var column in entityExpression.Columns)
+      {
+        if (!reconciliationContext.TryGetColumnIndex (entityExpression, column, out var columnIndex))
+        {
+          throw new InvalidOperationException (
+              $"Column '{column}' is not supported in set operation reconciliation context that claims to support the entity.");
+        }
+
+        columns[columnIndex] = column;
+      }
+
+      return entityExpression.UpdateColumns (columns);
     }
 
     public virtual ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)

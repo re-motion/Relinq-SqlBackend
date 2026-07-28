@@ -411,6 +411,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests
       return null;
     }
 
+    public bool TryResolveSetOperationReconciliationContext (Expression[] projections, out ISetOperationReconciliationContext reconciliationContext)
+    {
+      // TODO: Implement this or not? Depends on who "owns" the union logic
+      reconciliationContext = null;
+      return false;
+    }
+
     private SqlColumnExpression CreateColumn (Type columnType, string tableAlias, string columnName, bool isPriamryKey)
     {
       return new SqlColumnDefinitionExpression (columnType, tableAlias, columnName, isPriamryKey);

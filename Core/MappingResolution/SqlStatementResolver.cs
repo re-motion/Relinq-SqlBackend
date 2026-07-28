@@ -147,7 +147,37 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         }
       }
 
-      SetOperationSelectProjectionReconciler.ReconcileIfPossible (sqlStatementBuilder);
+      if (sqlStatementBuilder.SetOperationCombinedStatements.Count > 0)
+      {
+        var projectionExpressions = new Expression[sqlStatementBuilder.SetOperationCombinedStatements.Count + 1];
+        projectionExpressions[0] = sqlStatementBuilder.SelectProjection;
+        for (var i = 0; i < sqlStatementBuilder.SetOperationCombinedStatements.Count; i++)
+          projectionExpressions[i + 1] = sqlStatementBuilder.SetOperationCombinedStatements[i].SqlStatement.SelectProjection;
+
+        var reconciliationContext = _stage.ResolveSetOperationReconciliationContext (projectionExpressions);
+        if (reconciliationContext != null)
+        {
+          sqlStatementBuilder.SelectProjection = SetOperationReconciliationVisitor.ApplyReconciliation (
+              sqlStatementBuilder.SelectProjection,
+              reconciliationContext,
+              _stage);
+
+          for (var i = 0; i < sqlStatementBuilder.SetOperationCombinedStatements.Count; i++)
+          {
+            var setOperationCombinedStatement = sqlStatementBuilder.SetOperationCombinedStatements[i];
+
+            var setOperationStatementBuilder = new SqlStatementBuilder(setOperationCombinedStatement.SqlStatement);
+            setOperationStatementBuilder.SelectProjection = SetOperationReconciliationVisitor.ApplyReconciliation (
+                setOperationCombinedStatement.SqlStatement.SelectProjection,
+                reconciliationContext,
+                _stage);
+
+            sqlStatementBuilder.SetOperationCombinedStatements[i] = new SetOperationCombinedStatement (
+                setOperationStatementBuilder.GetSqlStatement(),
+                setOperationCombinedStatement.SetOperation);
+          }
+        }
+      }
 
       return sqlStatementBuilder.GetSqlStatement();
     }

@@ -185,6 +185,13 @@ namespace Remotion.Linq.LinqToSqlAdapter
       return null;
     }
 
+    public bool TryResolveSetOperationReconciliationContext (Expression[] projections, out ISetOperationReconciliationContext reconciliationContext)
+    {
+      // TODO: Implement this or not? Depends on who "owns" the union logic
+      reconciliationContext = null;
+      return false;
+    }
+
     public MetaDataMember[] GetMetaDataMembers (Type entityType)
     {
       ArgumentUtility.CheckNotNull (nameof(entityType), entityType);

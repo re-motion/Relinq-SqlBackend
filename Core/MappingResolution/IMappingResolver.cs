@@ -20,6 +20,7 @@ using System.Reflection;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Utilities;
 
 namespace Remotion.Linq.SqlBackend.MappingResolution
 {
@@ -166,5 +167,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// expression.
     /// </remarks>   
     Expression TryResolveOptimizedMemberExpression (SqlEntityRefMemberExpression entityRefMemberExpression, MemberInfo memberInfo);
+
+    bool TryResolveSetOperationReconciliationContext (Expression[] projections, out ISetOperationReconciliationContext reconciliationContext);
   }
 }
