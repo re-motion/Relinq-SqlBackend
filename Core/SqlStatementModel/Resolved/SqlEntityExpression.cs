@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using Remotion.Utilities;
@@ -79,6 +80,8 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     
     // TODO: Remove itemType parameter
     public abstract SqlEntityExpression Update (Type itemType, string tableAlias, string entityName);
+
+    public abstract SqlEntityExpression UpdateColumns (IEnumerable<SqlColumnExpression> columns);
 
     public Expression GetIdentityExpression()
     {

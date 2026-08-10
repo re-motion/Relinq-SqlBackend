@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
   [TestFixture]
   public class DefaultMappingResolutionStageTest
   {
-    private Mock<IMappingResolver> _resolverMock;
+    private Mock<IMappingResolver2> _resolverMock;
     private UniqueIdentifierGenerator _uniqueIdentifierGenerator;
     private UnresolvedTableInfo _unresolvedTableInfo;
     private SqlTable _sqlTable;
@@ -46,7 +47,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     [SetUp]
     public void SetUp ()
     {
-      _resolverMock = new Mock<IMappingResolver>();
+      _resolverMock = new Mock<IMappingResolver2>();
       _uniqueIdentifierGenerator = new UniqueIdentifierGenerator();
 
       _unresolvedTableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo (typeof (Cook));
@@ -409,6 +410,84 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
       Assert.That (result, Is.SameAs (fakeResolvedExpression));
     }
     
+    [Test]
+    public void ResolveSetOperationReconciliationContext_ResolverReturnsTrue_ReturnsReconciliationContext ()
+    {
+      var projectionExpressions = new Expression[] { Expression.Constant (0), Expression.Constant (1) };
+      var fakeReconciliationContext = Mock.Of<ISetOperationReconciliationContext>();
+
+      _resolverMock
+          .Setup (mock => mock.TryResolveSetOperationReconciliationContext (projectionExpressions, out fakeReconciliationContext))
+          .Returns (true)
+          .Verifiable();
+
+      var result = _stage.ResolveSetOperationReconciliationContext (projectionExpressions);
+
+      _resolverMock.Verify();
+      Assert.That (result, Is.SameAs (fakeReconciliationContext));
+    }
+
+    [Test]
+    public void ResolveSetOperationReconciliationContext_ResolverReturnsFalse_ReturnsNull ()
+    {
+      var projectionExpressions = new Expression[] { Expression.Constant (0), Expression.Constant (1) };
+      ISetOperationReconciliationContext outContext = Mock.Of<ISetOperationReconciliationContext>();
+
+      _resolverMock
+          .Setup (mock => mock.TryResolveSetOperationReconciliationContext (projectionExpressions, out outContext))
+          .Returns (false)
+          .Verifiable();
+
+      var result = _stage.ResolveSetOperationReconciliationContext (projectionExpressions);
+
+      _resolverMock.Verify();
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void ApplySetOperationReconciliationContext_NotRequiringReconciliation_ReturnsSameEntity ()
+    {
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook));
+      var reconciliationContextMock = new Mock<ISetOperationReconciliationContext> (MockBehavior.Strict);
+      reconciliationContextMock
+          .Setup (mock => mock.IsReconciliationRequired (entityExpression))
+          .Returns (false)
+          .Verifiable();
+
+      var result = _stage.ApplySetOperationReconciliationContext (entityExpression, reconciliationContextMock.Object);
+
+      reconciliationContextMock.Verify();
+      Assert.That (result, Is.SameAs (entityExpression));
+    }
+
+    [Test]
+    public void ApplySetOperationReconciliationContext_RequiringReconciliation_PlacesColumnsAtReconciledIndices ()
+    {
+      var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), owningTableAlias: "c0");
+      var columns = new[]
+                        {
+                            SqlStatementModelObjectMother.CreateSqlColumn (typeof (int), "c0", "Padding0"),
+                            SqlStatementModelObjectMother.CreateSqlColumn (typeof (int), "c0", "Padding1"),
+                        };
+
+      var reconciliationContextMock = new Mock<ISetOperationReconciliationContext> (MockBehavior.Strict);
+      reconciliationContextMock
+          .Setup (mock => mock.IsReconciliationRequired (entityExpression))
+          .Returns (true)
+          .Verifiable();
+      reconciliationContextMock
+          .Setup (mock => mock.GetReconciledColumns (entityExpression))
+          .Returns (() => (SqlColumnExpression[]) columns.Clone())
+          .Verifiable();
+
+      var result = _stage.ApplySetOperationReconciliationContext (entityExpression, reconciliationContextMock.Object);
+
+      reconciliationContextMock.Verify();
+      Assert.That (
+          result.Columns,
+          Is.EqualTo (columns));
+    }
+
     [Test]
     public void ApplyContext_Expression ()
     {

@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.UnitTests.TestDomain;
 
 namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.ResultOperators
 {
@@ -160,17 +161,45 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration.IntegrationTests.Resu
     }
 
     [Test]
-    [Ignore("TODO RMLNQSQL-63: This should really throw an error, but it generates invalid SQL.")]
     public void SetOperation_WithDifferentColumnLists ()
     {
       CheckQuery (
           () => Cooks.Union (Chefs.Select (c => c)),
           "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
-          + "[t0].[KnifeID],[t0].[KnifeClassID] "
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],NULL AS [LetterOfRecommendation] "
           + "FROM [CookTable] AS [t0] "
           + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
-          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[LetterOfRecommendation] "
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating],[t1].[LetterOfRecommendation] "
           + "FROM [dbo].[ChefTable] AS [t1])");
+    }
+
+    [Test]
+    public void SetOperation_WithSubClassesAndDifferentColumnLists ()
+    {
+      CheckQuery (
+          () => Servers.Union<Cook> (Chefs.Select (c => c)),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],[t0].[WalkingSpeed],NULL AS [LetterOfRecommendation] "
+          + "FROM [dbo].[ServerTable] AS [t0] "
+          + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating],NULL AS [WalkingSpeed],[t1].[LetterOfRecommendation] "
+          + "FROM [dbo].[ChefTable] AS [t1])");
+    }
+
+    [Test]
+    public void SetOperation_WithDifferentColumnLists_MultipleCombinedStatements ()
+    {
+      CheckQuery (
+          () => Cooks.Union (Chefs.Select (c => c)).Union (Cooks.Select (c => c)),
+          "SELECT [t0].[ID],[t0].[FirstName],[t0].[Name],[t0].[IsStarredCook],[t0].[IsFullTimeCook],[t0].[SubstitutedID],[t0].[KitchenID],"
+          + "[t0].[KnifeID],[t0].[KnifeClassID],[t0].[CookRating],NULL AS [LetterOfRecommendation] "
+          + "FROM [CookTable] AS [t0] "
+          + "UNION (SELECT [t1].[ID],[t1].[FirstName],[t1].[Name],[t1].[IsStarredCook],[t1].[IsFullTimeCook],[t1].[SubstitutedID],[t1].[KitchenID],"
+          + "[t1].[KnifeID],[t1].[KnifeClassID],[t1].[CookRating],[t1].[LetterOfRecommendation] "
+          + "FROM [dbo].[ChefTable] AS [t1]) "
+          + "UNION (SELECT [t2].[ID],[t2].[FirstName],[t2].[Name],[t2].[IsStarredCook],[t2].[IsFullTimeCook],[t2].[SubstitutedID],[t2].[KitchenID],"
+          + "[t2].[KnifeID],[t2].[KnifeClassID],[t2].[CookRating],NULL AS [LetterOfRecommendation] "
+          + "FROM [CookTable] AS [t2])");
     }
 
     [Test]

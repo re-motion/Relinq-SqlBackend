@@ -39,6 +39,7 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
         INamedExpressionVisitor,
         IAggregationExpressionVisitor,
         ISqlColumnExpressionVisitor,
+        ISqlColumnExpressionVisitor2,
         IConstantCollectionExpressionVisitor
   {
     public static void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
@@ -102,6 +103,17 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       SqlColumnExpression firstColumn = expression.ReferencedEntity.Columns.FirstOrDefault();
       string referencedEntityName = firstColumn != null && firstColumn.ColumnName == "*" ? null : expression.ReferencedEntity.Name;
       AppendColumn (expression.ColumnName, expression.OwningTableAlias, referencedEntityName);
+
+      return expression;
+    }
+
+    public virtual Expression VisitSqlComputedColumn (SqlComputedColumnExpression expression)
+    {
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+
+      Visit (expression.Value);
+      _commandBuilder.Append (" AS ");
+      _commandBuilder.AppendIdentifier (expression.ColumnName);
 
       return expression;
     }
