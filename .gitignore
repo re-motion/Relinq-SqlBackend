@@ -195,3 +195,6 @@ remotion.snk
 
 # Named
 GitExtensions.settings.backup
+
+# DependDB Configuration
+*.dependdb.xml
