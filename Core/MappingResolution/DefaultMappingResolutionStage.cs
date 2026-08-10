@@ -28,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// Provides a default implementation of <see cref="IMappingResolutionStage"/>.
   /// </summary>
-  public class DefaultMappingResolutionStage : IMappingResolutionStage
+  public class DefaultMappingResolutionStage : IMappingResolutionStage, IMappingResolutionStage2
   {
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _uniqueIdentifierGenerator;
@@ -183,6 +183,15 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       return MemberAccessResolver.ResolveMemberAccess (resolvedSourceExpression, memberInfo, mappingResolver, this, context);
     }
 
+    public ISetOperationReconciliationContext ResolveSetOperationReconciliationContext (Expression[] projectionExpressions)
+    {
+      ArgumentUtility.CheckNotNullOrItemsNull (nameof(projectionExpressions), projectionExpressions);
+
+      return _resolver is IMappingResolver2 resolver2 && resolver2.TryResolveSetOperationReconciliationContext (projectionExpressions, out var reconciliationContext)
+          ? reconciliationContext
+          : null;
+    }
+
     public virtual Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)
     {
       ArgumentUtility.CheckNotNull (nameof(expression), expression);
@@ -197,6 +206,18 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
       ArgumentUtility.CheckNotNull (nameof(mappingResolutionContext), mappingResolutionContext);
 
       return SqlContextSelectionAdjuster.ApplyContext (sqlStatement, expressionContext, this, mappingResolutionContext);
+    }
+
+    public SqlEntityExpression ApplySetOperationReconciliationContext (SqlEntityExpression entityExpression, ISetOperationReconciliationContext reconciliationContext)
+    {
+      ArgumentUtility.CheckNotNull (nameof(entityExpression), entityExpression);
+      ArgumentUtility.CheckNotNull (nameof(reconciliationContext), reconciliationContext);
+
+      if (!reconciliationContext.IsReconciliationRequired (entityExpression))
+        return entityExpression;
+
+      var reconciledColumns = reconciliationContext.GetReconciledColumns (entityExpression);
+      return entityExpression.UpdateColumns (reconciledColumns);
     }
 
     public virtual ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext)

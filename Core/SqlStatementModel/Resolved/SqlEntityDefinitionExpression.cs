@@ -15,6 +15,7 @@
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -64,6 +65,11 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     public override SqlEntityExpression Update (Type itemType, string tableAlias, string entityName)
     {
       return new SqlEntityDefinitionExpression (itemType, tableAlias, entityName, IdentityExpressionGenerator, Columns.ToArray ());
+    }
+
+    public override SqlEntityExpression UpdateColumns (IEnumerable<SqlColumnExpression> columns)
+    {
+      return new SqlEntityDefinitionExpression (Type, TableAlias, Name, IdentityExpressionGenerator, columns.ToArray());
     }
 
     public override SqlEntityExpression CreateReference (string newTableAlias, Type newType)

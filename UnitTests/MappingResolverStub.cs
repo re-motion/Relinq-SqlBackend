@@ -17,6 +17,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -28,7 +29,7 @@ using Remotion.Linq.SqlBackend.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
-  public class MappingResolverStub : IMappingResolver
+  public class MappingResolverStub : IMappingResolver, IMappingResolver2
   {
     public virtual IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
@@ -41,6 +42,8 @@ namespace Remotion.Linq.SqlBackend.UnitTests
         case "Company":
           return CreateResolvedTableInfo (tableInfo.ItemType, generator);
         case "Chef":
+          return new ResolvedSimpleTableInfo (tableInfo.ItemType, "dbo."+tableInfo.ItemType.Name + "Table", generator.GetUniqueIdentifier ("t"));
+        case "Server":
           return new ResolvedSimpleTableInfo (tableInfo.ItemType, "dbo."+tableInfo.ItemType.Name + "Table", generator.GetUniqueIdentifier ("t"));
       }
 
@@ -222,9 +225,30 @@ namespace Remotion.Linq.SqlBackend.UnitTests
                 CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
                 CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeID", false),
-                CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeClassID", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "KnifeClassID", false),
                 CreateColumn (typeof (CookRating), tableInfo.TableAlias, "CookRating", false),
                 CreateColumn (typeof (string), tableInfo.TableAlias, "LetterOfRecommendation", false)
+            });
+      }
+      else if (type == typeof (Server))
+      {
+        return new SqlEntityDefinitionExpression (
+            tableInfo.ItemType,
+            tableInfo.TableAlias, null,
+            e => e.GetColumn (typeof (int), "ID", true),
+            new[]
+            {
+                CreateColumn (typeof (int), tableInfo.TableAlias, "ID", true),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "FirstName", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "Name", false),
+                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsStarredCook", false),
+                CreateColumn (typeof (bool), tableInfo.TableAlias, "IsFullTimeCook", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "SubstitutedID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KitchenID", false),
+                CreateColumn (typeof (int), tableInfo.TableAlias, "KnifeID", false),
+                CreateColumn (typeof (string), tableInfo.TableAlias, "KnifeClassID", false),
+                CreateColumn (typeof (CookRating), tableInfo.TableAlias, "CookRating", false),
+                CreateColumn (typeof (double), tableInfo.TableAlias, "WalkingSpeed", false)
             });
       }
       else if (type == typeof (Company))
@@ -297,6 +321,14 @@ namespace Remotion.Linq.SqlBackend.UnitTests
         switch (memberInfo.Name)
         {
           case "LetterOfRecommendation":
+            return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
+        }
+      }
+      else if (memberInfo.DeclaringType == typeof (Server))
+      {
+        switch (memberInfo.Name)
+        {
+          case "WalkingSpeed":
             return originatingEntity.GetColumn (memberType, memberInfo.Name, false);
         }
       }
@@ -409,6 +441,26 @@ namespace Remotion.Linq.SqlBackend.UnitTests
         return TryResolveOptimizedIdentity (entityRefMemberExpression);
 
       return null;
+    }
+
+    public bool TryResolveSetOperationReconciliationContext (Expression[] projections, out ISetOperationReconciliationContext reconciliationContext)
+    {
+      // As a stub implementation, we
+      if (projections.All (p => p is SqlEntityExpression entity && typeof(Cook).IsAssignableFrom (entity.Type)))
+      {
+        var builder = DefaultSetOperationReconciliationContext.CreateBuilder();
+        foreach (var entity in projections.Cast<SqlEntityExpression>())
+        {
+          foreach (var column in entity.Columns)
+            builder.AddSqlColumn (entity, column);
+        }
+
+        reconciliationContext = builder.Build();
+        return true;
+      }
+
+      reconciliationContext = null;
+      return false;
     }
 
     private SqlColumnExpression CreateColumn (Type columnType, string tableAlias, string columnName, bool isPriamryKey)

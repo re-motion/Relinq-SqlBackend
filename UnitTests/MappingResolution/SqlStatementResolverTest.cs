@@ -39,13 +39,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     private UnresolvedTableInfo _unresolvedTableInfo;
     private SqlTable _sqlTable;
     private ResolvedSimpleTableInfo _fakeResolvedSimpleTableInfo;
-    private Mock<IMappingResolutionStage> _stageMock;
+    private Mock<IMappingResolutionStage2> _stageMock;
     private IMappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage2> (MockBehavior.Strict);
       _mappingResolutionContext = new MappingResolutionContext();
 
       _visitor = new TestableSqlStatementResolver (_stageMock.Object, _mappingResolutionContext);
@@ -355,6 +355,10 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
           .Returns (fakeSqlStatement)
           .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveSetOperationReconciliationContext (It.IsAny<Expression[]>()))
+          .Returns ((ISetOperationReconciliationContext) null)
+          .Verifiable();
 
       var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
 
@@ -419,12 +423,96 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
           .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement.SqlStatement, _mappingResolutionContext))
           .Returns (setOperationCombinedStatement.SqlStatement)
           .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveSetOperationReconciliationContext (It.IsAny<Expression[]>()))
+          .Returns ((ISetOperationReconciliationContext) null)
+          .Verifiable();
 
       var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
 
       _stageMock.Verify();
 
       Assert.That (resolvedSqlStatement, Is.EqualTo (sqlStatement));
+    }
+
+    [Test]
+    public void ResolveSqlStatement_WithSetOperationCombinedStatements_AppliesSetOperationReconciliation ()
+    {
+      var originalSelectProjection = Expression.Constant (new Cook());
+      var primaryEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), owningTableAlias: "c0");
+      var reconciledPrimaryEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), owningTableAlias: "c0");
+
+      var combinedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), owningTableAlias: "c1");
+      var combinedSqlStatement1 = SqlStatementModelObjectMother.CreateSqlStatement (combinedEntity);
+      var setOperationCombinedStatement1 = new SetOperationCombinedStatement (combinedSqlStatement1, SetOperation.Union);
+      var reconciledCombinedEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), owningTableAlias: "c1");
+
+      var irrelevantEntity = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), owningTableAlias: "c1");
+      var combinedSqlStatement2 = SqlStatementModelObjectMother.CreateSqlStatement (irrelevantEntity);
+      var setOperationCombinedStatement2 = new SetOperationCombinedStatement (combinedSqlStatement2, SetOperation.Union);
+
+      var builder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement_Resolved (typeof (Cook)))
+                    {
+                        SelectProjection = originalSelectProjection,
+                        SetOperationCombinedStatements = { setOperationCombinedStatement1, setOperationCombinedStatement2 }
+                    };
+      var sqlStatement = builder.GetSqlStatement();
+
+      var reconciliationContextMock = new Mock<ISetOperationReconciliationContext> (MockBehavior.Strict);
+
+      _stageMock
+          .Setup (mock => mock.ResolveSelectExpression (originalSelectProjection, It.IsAny<SqlStatementBuilder>(), _mappingResolutionContext))
+          .Returns (primaryEntity)
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveTableInfo (sqlStatement.SqlTables[0].TableInfo, _mappingResolutionContext))
+          .Returns ((IResolvedTableInfo) sqlStatement.SqlTables[0].TableInfo)
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement1.SqlStatement, _mappingResolutionContext))
+          .Returns (combinedSqlStatement1)
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ResolveSqlStatement (setOperationCombinedStatement2.SqlStatement, _mappingResolutionContext))
+          .Returns (combinedSqlStatement2)
+          .Verifiable();
+
+      _stageMock
+          .Setup (mock => mock.ResolveSetOperationReconciliationContext (
+              It.Is<Expression[]> (expressions => expressions.SequenceEqual (new Expression[] { primaryEntity, combinedEntity, irrelevantEntity }))))
+          .Returns (reconciliationContextMock.Object)
+          .Verifiable();
+
+      reconciliationContextMock
+          .Setup (mock => mock.IsReconciliationRequired (primaryEntity))
+          .Returns (true)
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ApplySetOperationReconciliationContext (primaryEntity, reconciliationContextMock.Object))
+          .Returns (reconciledPrimaryEntity)
+          .Verifiable();
+
+      reconciliationContextMock
+          .Setup (mock => mock.IsReconciliationRequired (combinedEntity))
+          .Returns (true)
+          .Verifiable();
+      _stageMock
+          .Setup (mock => mock.ApplySetOperationReconciliationContext (combinedEntity, reconciliationContextMock.Object))
+          .Returns (reconciledCombinedEntity)
+          .Verifiable();
+
+      reconciliationContextMock
+          .Setup (mock => mock.IsReconciliationRequired (irrelevantEntity))
+          .Returns (false)
+          .Verifiable();
+
+      var resolvedSqlStatement = _visitor.ResolveSqlStatement (sqlStatement);
+
+      _stageMock.Verify();
+      reconciliationContextMock.Verify();
+      Assert.That (resolvedSqlStatement.SelectProjection, Is.SameAs (reconciledPrimaryEntity));
+      Assert.That (resolvedSqlStatement.SetOperationCombinedStatements[0].SqlStatement.SelectProjection, Is.SameAs (reconciledCombinedEntity));
+      Assert.That (resolvedSqlStatement.SetOperationCombinedStatements[1].SqlStatement.SelectProjection, Is.SameAs (irrelevantEntity));
     }
   }
 }

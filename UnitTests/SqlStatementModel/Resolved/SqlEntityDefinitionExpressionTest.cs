@@ -140,6 +140,28 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     }
 
     [Test]
+    public void UpdateColumns ()
+    {
+      var newColumns = new[]
+                       {
+                           new SqlColumnDefinitionExpression (typeof (string), "t", "NewColumn1", false),
+                           new SqlColumnDefinitionExpression (typeof (int), "t", "NewColumn2", false)
+                       };
+
+      var result = _entityExpression.UpdateColumns (newColumns);
+
+      var expectedResult = new SqlEntityDefinitionExpression (
+          typeof (Cook),
+          "t",
+          null,
+          _entityExpression.IdentityExpressionGenerator,
+          newColumns);
+
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
+      Assert.That (result.Columns, Is.EqualTo (newColumns));
+    }
+
+    [Test]
     public void ToString_UnnamedEntity ()
     {
       var result = _entityExpression.ToString();

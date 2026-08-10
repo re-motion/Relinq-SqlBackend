@@ -78,6 +78,42 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
+    public void GenerateSql_VisitSqlComputedColumnExpression_WithNullConstantValue ()
+    {
+      var sqlColumnExpression = SqlComputedColumnExpression.CreateConstant (
+          null,
+          typeof (int),
+          "s",
+          "ID",
+          false);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock.Object);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("NULL AS [ID]"));
+      Assert.That (_commandBuilder.GetCommandParameters(), Is.Empty);
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlComputedColumnExpression_WithConstantValue ()
+    {
+      var sqlColumnExpression = SqlComputedColumnExpression.CreateConstant (
+          "constant",
+          typeof (int),
+          "s",
+          "ID",
+          false);
+
+      SqlGeneratingExpressionVisitor.GenerateSql (sqlColumnExpression, _commandBuilder, _stageMock.Object);
+
+      Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("@1 AS [ID]"));
+
+      var parameters = _commandBuilder.GetCommandParameters();
+      Assert.That (parameters.Length, Is.EqualTo (1));
+      Assert.That (parameters[0].Name, Is.EqualTo ("@1"));
+      Assert.That (parameters[0].Value, Is.EqualTo ("constant"));
+    }
+
+    [Test]
     public void GenerateSql_VisitSqlColumnReferenceExpression_WithNamedEntity ()
     {
       var entityExpression = SqlStatementModelObjectMother.CreateSqlEntityDefinitionExpression (typeof (Cook), "Test");
