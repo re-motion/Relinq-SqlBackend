@@ -93,6 +93,17 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       return expression;
     }
 
+    public override Expression VisitSqlComputedColumn (SqlComputedColumnExpression expression)
+    {
+      ArgumentUtility.CheckNotNull (nameof(expression), expression);
+
+      // Because the column name changes for named entities, we only render the value
+      // here and handle the column name in AppendColumnForEntity below.
+      Visit (expression.Value);
+
+      return expression;
+    }
+
     protected override void AppendColumnForEntity (SqlEntityExpression entity, SqlColumnExpression column)
     {
       Visit (column);
@@ -102,6 +113,11 @@ namespace Remotion.Linq.SqlBackend.SqlGeneration
       {
         CommandBuilder.Append (" AS ");
         CommandBuilder.AppendIdentifier (alias);
+      }
+      else if (column is SqlComputedColumnExpression)
+      {
+        CommandBuilder.Append (" AS ");
+        CommandBuilder.AppendIdentifier (column.ColumnName);
       }
     }
 
