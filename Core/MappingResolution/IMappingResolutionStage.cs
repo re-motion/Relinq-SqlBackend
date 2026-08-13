@@ -18,6 +18,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -48,11 +49,15 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         MemberInfo memberInfo,
         IMappingResolver mappingResolver,
         IMappingResolutionContext context);
+    [CanBeNull]
+    ISetOperationReconciliationContext ResolveSetOperationReconciliationContext (Expression[] projectionExpressions);
 
     Expression ApplyContext (Expression expression, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
     ITableInfo ApplyContext (ITableInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
     IJoinInfo ApplyContext (IJoinInfo tableInfo, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
 
     SqlStatement ApplySelectionContext (SqlStatement sqlStatement, SqlExpressionContext expressionContext, IMappingResolutionContext mappingResolutionContext);
+
+    SqlEntityExpression ApplySetOperationReconciliationContext (SqlEntityExpression entityExpression, ISetOperationReconciliationContext reconciliationContext);
   }
 }

@@ -166,5 +166,18 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     /// expression.
     /// </remarks>   
     Expression TryResolveOptimizedMemberExpression (SqlEntityRefMemberExpression entityRefMemberExpression, MemberInfo memberInfo);
+
+    /// <summary>
+    /// Determines if the specified <paramref name="projections"/> for a set operation need to be reconciled.
+    /// If a reconciliation is necessary, returns a <paramref name="reconciliationContext"/> that can be used
+    /// for reconciliation using <see cref="SetOperationReconciliationVisitor"/>.
+    /// </summary>
+    /// <param name="projections">The select projections of all the parts of the set operation (primary and all others; usually there are just two).</param>
+    /// <param name="reconciliationContext">A context that reconcile the different select projections. Only returned if a reconciliation is necessary.</param>
+    /// <returns>
+    /// Returns <see langword="true"/> if a reconciliation is necessary and sets <paramref name="reconciliationContext"/> accordingly.
+    /// Otherwise, returns <see langword="false"/> and no <paramref name="reconciliationContext"/> is provided.
+    /// </returns>
+    bool TryResolveSetOperationReconciliationContext (Expression[] projections, out ISetOperationReconciliationContext reconciliationContext);
   }
 }

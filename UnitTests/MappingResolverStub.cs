@@ -29,7 +29,7 @@ using Remotion.Linq.SqlBackend.Utilities;
 
 namespace Remotion.Linq.SqlBackend.UnitTests
 {
-  public class MappingResolverStub : IMappingResolver, IMappingResolver2
+  public class MappingResolverStub : IMappingResolver
   {
     public virtual IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
