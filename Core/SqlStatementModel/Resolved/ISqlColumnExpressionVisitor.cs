@@ -24,5 +24,6 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
   {
     Expression VisitSqlColumnDefinition (SqlColumnDefinitionExpression expression);
     Expression VisitSqlColumnReference (SqlColumnReferenceExpression expression);
+    Expression VisitSqlComputedColumn (SqlComputedColumnExpression expression);
   }
 }

@@ -63,7 +63,7 @@ namespace Remotion.Linq.SqlBackend.SqlStatementModel.Resolved
     {
       ArgumentUtility.CheckNotNull (nameof(visitor), visitor);
 
-      var specificVisitor = visitor as ISqlColumnExpressionVisitor2;
+      var specificVisitor = visitor as ISqlColumnExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlComputedColumn (this);
       else

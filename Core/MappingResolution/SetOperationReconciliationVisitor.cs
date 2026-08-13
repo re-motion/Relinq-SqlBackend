@@ -33,7 +33,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     public static Expression ApplyReconciliation (
         Expression expression,
         ISetOperationReconciliationContext reconciliationContext,
-        IMappingResolutionStage2 stage)
+        IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull (nameof(reconciliationContext), reconciliationContext);
       ArgumentUtility.CheckNotNull (nameof(stage), stage);
@@ -43,11 +43,11 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     }
 
     private readonly ISetOperationReconciliationContext _reconciliationContext;
-    private readonly IMappingResolutionStage2 _stage;
+    private readonly IMappingResolutionStage _stage;
 
     protected SetOperationReconciliationVisitor (
         ISetOperationReconciliationContext reconciliationContext,
-        IMappingResolutionStage2 stage)
+        IMappingResolutionStage stage)
     {
       ArgumentUtility.CheckNotNull (nameof(reconciliationContext), reconciliationContext);
       ArgumentUtility.CheckNotNull (nameof(stage), stage);

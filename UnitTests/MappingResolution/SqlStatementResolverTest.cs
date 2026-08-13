@@ -39,13 +39,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
     private UnresolvedTableInfo _unresolvedTableInfo;
     private SqlTable _sqlTable;
     private ResolvedSimpleTableInfo _fakeResolvedSimpleTableInfo;
-    private Mock<IMappingResolutionStage2> _stageMock;
+    private Mock<IMappingResolutionStage> _stageMock;
     private IMappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<IMappingResolutionStage2> (MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _mappingResolutionContext = new MappingResolutionContext();
 
       _visitor = new TestableSqlStatementResolver (_stageMock.Object, _mappingResolutionContext);

@@ -28,7 +28,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
   /// <summary>
   /// Provides a default implementation of <see cref="IMappingResolutionStage"/>.
   /// </summary>
-  public class DefaultMappingResolutionStage : IMappingResolutionStage, IMappingResolutionStage2
+  public class DefaultMappingResolutionStage : IMappingResolutionStage
   {
     private readonly IMappingResolver _resolver;
     private readonly UniqueIdentifierGenerator _uniqueIdentifierGenerator;
@@ -187,7 +187,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
     {
       ArgumentUtility.CheckNotNullOrItemsNull (nameof(projectionExpressions), projectionExpressions);
 
-      return _resolver is IMappingResolver2 resolver2 && resolver2.TryResolveSetOperationReconciliationContext (projectionExpressions, out var reconciliationContext)
+      return _resolver.TryResolveSetOperationReconciliationContext (projectionExpressions, out var reconciliationContext)
           ? reconciliationContext
           : null;
     }

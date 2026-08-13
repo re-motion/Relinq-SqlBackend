@@ -131,6 +131,63 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlGeneration
     }
 
     [Test]
+    public void VisitSqlComputedColumnExpression ()
+    {
+      var expression = SqlComputedColumnExpression.CreateConstant (
+          "constant",
+          typeof (int),
+          "s",
+          "ID",
+          false);
+
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock.Object);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("@1"));
+
+      var parameters = _commandBuilder.GetCommandParameters ();
+      Assert.That (parameters.Length, Is.EqualTo (1));
+      Assert.That (parameters[0].Value, Is.EqualTo ("constant"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlEntityExpression_UnnamedEntity_ComputedColumn ()
+    {
+      var sqlColumnListExpression = new SqlEntityDefinitionExpression (
+          typeof (string),
+          "t",
+          null,
+          e => e,
+          new SqlColumnExpression[]
+          {
+              new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
+              SqlComputedColumnExpression.CreateConstant ("constant", typeof (string), "t", "Name", false)
+          });
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (
+          sqlColumnListExpression, _commandBuilder, _stageMock.Object);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[ID],@1 AS [Name]"));
+    }
+
+    [Test]
+    public void GenerateSql_VisitSqlEntityExpression_NamedEntity_ComputedColumn ()
+    {
+      var sqlColumnListExpression = new SqlEntityDefinitionExpression (
+          typeof (string),
+          "t",
+          "Test",
+          e => e,
+          new SqlColumnExpression[]
+          {
+              new SqlColumnDefinitionExpression (typeof (string), "t", "ID", true),
+              SqlComputedColumnExpression.CreateConstant ("constant", typeof (string), "t", "Name", false)
+          });
+      SqlGeneratingSelectExpressionVisitor.GenerateSql (
+          sqlColumnListExpression, _commandBuilder, _stageMock.Object);
+
+      Assert.That (_commandBuilder.GetCommandText (), Is.EqualTo ("[t].[ID] AS [Test_ID],@1 AS [Test_Name]"));
+    }
+
+    [Test]
     public void GenerateSql_VisitSqlEntityExpression_NamedEntity_StarColumn ()
     {
       var sqlColumnListExpression = new SqlEntityDefinitionExpression (
