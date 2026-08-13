@@ -42,7 +42,7 @@ namespace Remotion.Linq.SqlBackend.UnitTests.SqlStatementModel.Resolved
     [Test]
     public void Accept_VisitorSupportingExpressionType ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlComputedColumnExpression, ISqlColumnExpressionVisitor2> (
+      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlComputedColumnExpression, ISqlColumnExpressionVisitor> (
           _columnExpression,
           mock => mock.VisitSqlComputedColumn (_columnExpression));
     }

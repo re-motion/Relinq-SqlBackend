@@ -29,13 +29,13 @@ namespace Remotion.Linq.SqlBackend.UnitTests.MappingResolution
   [TestFixture]
   public class SetOperationReconciliationVisitorTest
   {
-    private Mock<IMappingResolutionStage2> _stageMock;
+    private Mock<IMappingResolutionStage> _stageMock;
     private Mock<ISetOperationReconciliationContext> _reconciliationContextMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _stageMock = new Mock<IMappingResolutionStage2> (MockBehavior.Strict);
+      _stageMock = new Mock<IMappingResolutionStage> (MockBehavior.Strict);
       _reconciliationContextMock = new Mock<ISetOperationReconciliationContext> (MockBehavior.Strict);
     }
 

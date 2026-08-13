@@ -147,20 +147,20 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
         }
       }
 
-      if (_stage is IMappingResolutionStage2 stage2 && sqlStatementBuilder.SetOperationCombinedStatements.Count > 0)
+      if (sqlStatementBuilder.SetOperationCombinedStatements.Count > 0)
       {
         var projectionExpressions = new Expression[sqlStatementBuilder.SetOperationCombinedStatements.Count + 1];
         projectionExpressions[0] = sqlStatementBuilder.SelectProjection;
         for (var i = 0; i < sqlStatementBuilder.SetOperationCombinedStatements.Count; i++)
           projectionExpressions[i + 1] = sqlStatementBuilder.SetOperationCombinedStatements[i].SqlStatement.SelectProjection;
 
-        var reconciliationContext = stage2.ResolveSetOperationReconciliationContext (projectionExpressions);
+        var reconciliationContext = _stage.ResolveSetOperationReconciliationContext (projectionExpressions);
         if (reconciliationContext != null)
         {
           sqlStatementBuilder.SelectProjection = SetOperationReconciliationVisitor.ApplyReconciliation (
               sqlStatementBuilder.SelectProjection,
               reconciliationContext,
-              stage2);
+              _stage);
 
           for (var i = 0; i < sqlStatementBuilder.SetOperationCombinedStatements.Count; i++)
           {
@@ -170,7 +170,7 @@ namespace Remotion.Linq.SqlBackend.MappingResolution
             setOperationStatementBuilder.SelectProjection = SetOperationReconciliationVisitor.ApplyReconciliation (
                 setOperationCombinedStatement.SqlStatement.SelectProjection,
                 reconciliationContext,
-                stage2);
+                _stage);
 
             sqlStatementBuilder.SetOperationCombinedStatements[i] = new SetOperationCombinedStatement (
                 setOperationStatementBuilder.GetSqlStatement(),
